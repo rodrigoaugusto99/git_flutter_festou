@@ -4,14 +4,14 @@ import 'package:git_flutter_festou/pages/cadastrar_page.dart';
 import '../components/my_buttons.dart';
 import 'login_page.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class InitialPage extends StatefulWidget {
+  const InitialPage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<InitialPage> createState() => _InitialPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _InitialPageState extends State<InitialPage> {
   void goToLoginPage() {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => const LoginPage()),
