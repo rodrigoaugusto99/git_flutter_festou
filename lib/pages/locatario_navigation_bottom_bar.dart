@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/pages/locatario_account.dart';
 import 'package:git_flutter_festou/pages/locatario_home_page.dart';
-import 'package:git_flutter_festou/pages/locatario_message.dart';
+import 'package:git_flutter_festou/pages/locatario_search.dart';
 import 'package:git_flutter_festou/pages/locatario_settings.dart';
 
 class LocatarioNavigationBottomBar extends StatefulWidget {
@@ -24,7 +24,7 @@ class _LocatarioNavigationBottomBarState
 
   final List<Widget> pages = [
     const LocatarioHomePage(),
-    const LocatarioMessage(),
+    const LocatarioSearch(),
     const LocatarioSettings(),
     const LocatarioAccount(),
   ];
@@ -39,7 +39,7 @@ class _LocatarioNavigationBottomBarState
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.message), label: 'Message'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
           BottomNavigationBarItem(
               icon: Icon(Icons.settings), label: 'Settings'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
