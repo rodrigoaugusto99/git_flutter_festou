@@ -72,10 +72,11 @@ class _InitialPageState extends State<InitialPage> {
                           decoration: BoxDecoration(
                             color: const Color.fromRGBO(228, 201, 255, 1),
                             borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(27),
-                                topRight: Radius.circular(27),
-                                bottomLeft: Radius.circular(27),
-                                bottomRight: Radius.circular(0)),
+                              topLeft: Radius.circular(27),
+                              topRight: Radius.circular(27),
+                              bottomLeft: Radius.circular(27),
+                              bottomRight: Radius.circular(0),
+                            ),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withOpacity(0.2),
