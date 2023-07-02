@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:git_flutter_festou/model/my_card.dart';
 
-import '../widgets/locatario_cards.dart';
 import '../widgets/locatario_container.dart';
 import '../widgets/locatario_row.dart';
 
@@ -20,21 +20,7 @@ class _LocatarioPageState extends State<LocatarioPage> {
     "lib/assets/images/festa4.png",
   ];
 
-  List<List<String>> listPaths2 = [
-    ['lib/assets/images/salao1.png', '1', '2', '3'],
-    ['lib/assets/images/salao2.png', '4', '5', '6'],
-    ['lib/assets/images/salao3.png', '7', '8', '9'],
-    ['lib/assets/images/salao4.png', '10', '11', '12'],
-  ];
-
-  List<String> listPaths3 = [
-    "lib/assets/images/salao5.png",
-    "lib/assets/images/salao6.png",
-    "lib/assets/images/salao7.png",
-    "lib/assets/images/salao8.png",
-  ];
-
-  List<List<String>> listPaths4 = [
+  List<List<String>> tiposFesta = [
     ["lib/assets/images/toys.png", 'toys'],
     ["lib/assets/images/quinze.png", 'quinze'],
     ["lib/assets/images/buque.png", 'buque'],
@@ -43,6 +29,10 @@ class _LocatarioPageState extends State<LocatarioPage> {
   ];
 
   CarouselController buttonCarouselController = CarouselController();
+
+  final nomeController = TextEditingController();
+  final lugarController = TextEditingController();
+  final numeroController = TextEditingController();
 
   void onPressedBack() {
     buttonCarouselController.previousPage(
@@ -58,6 +48,61 @@ class _LocatarioPageState extends State<LocatarioPage> {
     );
   }
 
+  List<MyCard> myCards = [];
+
+  void createCard() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Column(
+              children: [
+                TextField(
+                  controller: nomeController,
+                  decoration: const InputDecoration(
+                    hintText: 'nome',
+                  ),
+                ),
+                TextField(
+                  controller: lugarController,
+                  decoration: const InputDecoration(
+                    hintText: 'lugar',
+                  ),
+                ),
+                TextField(
+                  controller: numeroController,
+                  decoration: const InputDecoration(
+                    hintText: 'numero',
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    // Atualize a lista com os valores dos controladores
+                    MyCard mycard = MyCard(
+                      image1: 'lib/assets/images/salao1.png',
+                      image2: 'lib/assets/images/salao2.png',
+                      image3: 'lib/assets/images/salao3.png',
+                      image4: 'lib/assets/images/salao4.png',
+                      nome: nomeController.text,
+                      lugar: lugarController.text,
+                      numero: numeroController.text,
+                    );
+
+                    myCards.add(mycard);
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Adicionar'),
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -66,6 +111,9 @@ class _LocatarioPageState extends State<LocatarioPage> {
         double height = constraints.maxHeight;
         return SafeArea(
           child: Scaffold(
+            floatingActionButton: FloatingActionButton(
+              onPressed: createCard,
+            ),
             backgroundColor: Colors.blueGrey,
             body: ListView(
               children: [
@@ -87,7 +135,7 @@ class _LocatarioPageState extends State<LocatarioPage> {
                   onPressedBack: onPressedBack,
                   onPressedNext: onPressedNext,
                   carouselController: buttonCarouselController,
-                  items: listPaths4.map((path) {
+                  items: tiposFesta.map((path) {
                     return Row(
                       children: [
                         Image.asset(
@@ -103,16 +151,66 @@ class _LocatarioPageState extends State<LocatarioPage> {
                 SizedBox(height: height * 0.01),
 
                 //ROLAGEM VERTICAL
-                LocatarioCards(
-                  itemCount: listPaths2.length,
-                  height: height * 0.5,
-                  carouselHeight: height * 0.3,
-                  items: listPaths2.map((path) {
-                    return Image.asset(
-                      path[0],
-                      fit: BoxFit.cover,
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: myCards.length,
+                  itemBuilder: (context, index) {
+                    //MyCard card = myCards[index]; // Obtenha o objeto MyCard
+                    return Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: ClipRRect(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(30.0)),
+                        child: Container(
+                          color: Colors.deepPurple,
+                          height: height * 0.45,
+                          child: Column(
+                            children: [
+                              CarouselSlider(
+                                options: CarouselOptions(
+                                  height: height * 0.25,
+                                  viewportFraction: 1.0,
+                                  enableInfiniteScroll: true,
+                                  scrollDirection: Axis.horizontal,
+                                ),
+                                items: [
+                                  Image.asset(
+                                    myCards[index].image1,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  Image.asset(
+                                    myCards[index].image2,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  Image.asset(
+                                    myCards[index].image3,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  Image.asset(
+                                    myCards[index].image4,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(40),
+                                child: Row(
+                                  children: [
+                                    Text(myCards[index].nome),
+                                    const SizedBox(width: 10),
+                                    Text(myCards[index].lugar),
+                                    const SizedBox(width: 10),
+                                    Text(myCards[index].numero),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
                     );
-                  }).toList(),
+                  },
                 ),
               ],
             ),
