@@ -5,14 +5,14 @@ import 'package:git_flutter_festou/model/my_card.dart';
 import '../widgets/locatario_container.dart';
 import '../widgets/locatario_row.dart';
 
-class LocatarioPage extends StatefulWidget {
-  const LocatarioPage({Key? key}) : super(key: key);
+class LocatarioHomePage extends StatefulWidget {
+  const LocatarioHomePage({Key? key}) : super(key: key);
 
   @override
-  State<LocatarioPage> createState() => _LocatarioPageState();
+  State<LocatarioHomePage> createState() => _LocatarioHomePageState();
 }
 
-class _LocatarioPageState extends State<LocatarioPage> {
+class _LocatarioHomePageState extends State<LocatarioHomePage> {
   List<String> listPaths = [
     "lib/assets/images/festa.png",
     "lib/assets/images/festa2.png",
@@ -111,6 +111,7 @@ class _LocatarioPageState extends State<LocatarioPage> {
         double height = constraints.maxHeight;
         return SafeArea(
           child: Scaffold(
+            appBar: AppBar(),
             floatingActionButton: FloatingActionButton(
               onPressed: createCard,
             ),

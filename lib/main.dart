@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/pages/locatario_page.dart';
+import 'package:git_flutter_festou/pages/locatario_navigation_bottom_bar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const LocatarioPage(),
+      home: const LocatarioNavigationBottomBar(),
     );
   }
 }
