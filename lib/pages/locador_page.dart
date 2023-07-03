@@ -79,6 +79,14 @@ class _LocadorPageState extends State<LocadorPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    nomeController.dispose();
+    lugarController.dispose();
+    numeroController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
