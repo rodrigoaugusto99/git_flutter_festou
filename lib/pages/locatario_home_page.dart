@@ -48,7 +48,7 @@ class _LocatarioHomePageState extends State<LocatarioHomePage> {
     );
   }
 
-  List<MyCard> myCards = [];
+  List<MyCard> cardsParaMostrar = [];
 
   void createCard() {
     showDialog(
@@ -83,16 +83,19 @@ class _LocatarioHomePageState extends State<LocatarioHomePage> {
                   setState(() {
                     // Atualize a lista com os valores dos controladores
                     MyCard mycard = MyCard(
-                      image1: 'lib/assets/images/salao1.png',
-                      image2: 'lib/assets/images/salao2.png',
-                      image3: 'lib/assets/images/salao3.png',
-                      image4: 'lib/assets/images/salao4.png',
+                      //imagens estaticas por enquanto
+                      images: [
+                        'lib/assets/images/salao5.png',
+                        'lib/assets/images/salao6.png',
+                        'lib/assets/images/salao7.png',
+                        'lib/assets/images/salao8.png',
+                      ],
                       nome: nomeController.text,
                       lugar: lugarController.text,
                       numero: numeroController.text,
                     );
 
-                    myCards.add(mycard);
+                    cardsParaMostrar.add(mycard);
                   });
                   Navigator.pop(context);
                 },
@@ -101,6 +104,13 @@ class _LocatarioHomePageState extends State<LocatarioHomePage> {
             ],
           );
         });
+    clear();
+  }
+
+  void clear() {
+    nomeController.clear();
+    lugarController.clear();
+    numeroController.clear();
   }
 
   @override
@@ -155,7 +165,7 @@ class _LocatarioHomePageState extends State<LocatarioHomePage> {
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: myCards.length,
+                  itemCount: cardsParaMostrar.length,
                   itemBuilder: (context, index) {
                     //MyCard card = myCards[index]; // Obtenha o objeto MyCard
                     return Padding(
@@ -175,37 +185,26 @@ class _LocatarioHomePageState extends State<LocatarioHomePage> {
                                   enableInfiniteScroll: true,
                                   scrollDirection: Axis.horizontal,
                                 ),
-                                items: [
-                                  Image.asset(
-                                    myCards[index].image1,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  Image.asset(
-                                    myCards[index].image2,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  Image.asset(
-                                    myCards[index].image3,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  Image.asset(
-                                    myCards[index].image4,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ],
+                                items:
+                                    cardsParaMostrar[index].images.map((image) {
+                                  return Image.asset(
+                                    image,
+                                    fit: BoxFit.contain,
+                                  );
+                                }).toList(),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(40),
                                 child: Row(
                                   children: [
-                                    Text(myCards[index].nome),
+                                    Text(cardsParaMostrar[index].nome),
                                     const SizedBox(width: 10),
-                                    Text(myCards[index].lugar),
+                                    Text(cardsParaMostrar[index].lugar),
                                     const SizedBox(width: 10),
-                                    Text(myCards[index].numero),
+                                    Text(cardsParaMostrar[index].numero),
                                   ],
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         ),

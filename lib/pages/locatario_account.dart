@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/components/my_textbuttons.dart';
 
+import 'locador_page.dart';
+
 class LocatarioAccount extends StatefulWidget {
   const LocatarioAccount({super.key});
 
@@ -9,6 +11,15 @@ class LocatarioAccount extends StatefulWidget {
 }
 
 class _LocatarioAccountState extends State<LocatarioAccount> {
+  void goToLocatorPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const LocadorPage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -80,7 +91,7 @@ class _LocatarioAccountState extends State<LocatarioAccount> {
                     ),
                     MyTextbuttons(
                       icon: Icons.newspaper,
-                      onPressed: () {},
+                      onPressed: goToLocatorPage,
                       text: 'Anunciar um espaço',
                       text2: 'Meu perfil locador',
                     ),
