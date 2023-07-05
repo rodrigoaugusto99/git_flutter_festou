@@ -1,5 +1,6 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../model/my_card.dart';
 
@@ -17,58 +18,95 @@ class _LocadorPageState extends State<LocadorPage> {
 
   List<MyCard> myCards = [];
 
+/*metodo para criar um card, por enquanto as imagens ainda sao padroes*/
   void createCard() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Column(
-              children: [
-                TextField(
-                  controller: nomeController,
-                  decoration: const InputDecoration(
-                    hintText: 'nome',
-                  ),
-                ),
-                TextField(
-                  controller: lugarController,
-                  decoration: const InputDecoration(
-                    hintText: 'lugar',
-                  ),
-                ),
-                TextField(
-                  controller: numeroController,
-                  decoration: const InputDecoration(
-                    hintText: 'numero',
-                  ),
-                ),
-              ],
-            ),
-            actions: [
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    MyCard mycard = MyCard(
-                      images: [
-                        'lib/assets/images/salao5.png',
-                        'lib/assets/images/salao6.png',
-                        'lib/assets/images/salao7.png',
-                        'lib/assets/images/salao8.png',
-                      ],
-                      nome: nomeController.text,
-                      lugar: lugarController.text,
-                      numero: numeroController.text,
-                    );
+    LatLng selectedLocation = const LatLng(-23.5505, -46.6333);
 
-                    myCards.add(mycard);
-                  });
-                  Navigator.pop(context);
-                },
-                child: const Text('Adicionar'),
-              ),
-            ],
-          );
-        });
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Escolher Localização'),
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: nomeController,
+                      decoration: const InputDecoration(
+                        hintText: 'nome',
+                      ),
+                    ),
+                    TextField(
+                      controller: lugarController,
+                      decoration: const InputDecoration(
+                        hintText: 'lugar',
+                      ),
+                    ),
+                    TextField(
+                      controller: numeroController,
+                      decoration: const InputDecoration(
+                        hintText: 'numero',
+                      ),
+                    ),
+                    Text(
+                      'Localização selecionada: $selectedLocation',
+                    ),
+                    SizedBox(
+                      height: 200.0,
+                      child: GoogleMap(
+                        initialCameraPosition: CameraPosition(
+                          target: selectedLocation,
+                          zoom: 15.0,
+                        ),
+                        onTap: (LatLng location) async {
+                          selectedLocation = location;
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                    Text(
+                      'Localização selecionada: $selectedLocation',
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          actions: [
+            ElevatedButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  MyCard mycard = MyCard(
+                    images: [
+                      'lib/assets/images/salao5.png',
+                      'lib/assets/images/salao6.png',
+                      'lib/assets/images/salao7.png',
+                      'lib/assets/images/salao8.png',
+                    ],
+                    nome: nomeController.text,
+                    lugar: lugarController.text,
+                    numero: numeroController.text,
+                    location: selectedLocation,
+                  );
+                  myCards.add(mycard);
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Adicionar'),
+            ),
+          ],
+        );
+      },
+    );
     clear();
   }
 
@@ -89,6 +127,7 @@ class _LocadorPageState extends State<LocadorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.deepPurpleAccent,
       appBar: AppBar(
         title: const Text('Meu Perfil Locador'),
         actions: [
@@ -103,7 +142,7 @@ class _LocadorPageState extends State<LocadorPage> {
       body: Column(
         children: [
           Container(
-            color: Colors.white,
+            color: Colors.blue[800],
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -117,6 +156,8 @@ class _LocadorPageState extends State<LocadorPage> {
                         fontWeight: FontWeight.w400),
                   ),
                 ),
+
+                //botao para abrir janela de criar card
                 SizedBox(
                   height: 25, //feio
                   child: FloatingActionButton(
@@ -135,10 +176,12 @@ class _LocadorPageState extends State<LocadorPage> {
           Expanded(
             //EXPANDED PARA A LISTVIEW PEGAR O RESTANTE E N DAR OVERFLOW
             child: ListView.builder(
+              //lista geral - do tamanho da lista dos cards
               itemCount: myCards.length,
               shrinkWrap: true,
               itemBuilder: (context, index) {
                 return Card(
+                  elevation: 10,
                   margin:
                       const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                   child: Column(
@@ -146,11 +189,14 @@ class _LocadorPageState extends State<LocadorPage> {
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.25,
                           child: Swiper(
+                            //lista do swiper - do tamanho da lista de imagens(images) do elemento do index atual da lista myCard,
                             itemCount: myCards[index].images.length,
                             autoplay: true,
                             pagination: const SwiperPagination(),
                             itemBuilder: (context, itemIndex) {
+                              //serão varias Image.assets
                               return Image.asset(
+                                //index do elemento de myCards, index da propriedade images
                                 myCards[index].images[itemIndex],
                                 fit: BoxFit.contain,
                               );
@@ -160,11 +206,18 @@ class _LocadorPageState extends State<LocadorPage> {
                         padding: const EdgeInsets.all(40),
                         child: Row(
                           children: [
+                            //index do elemento de myCards, propriedade nome.
+/*se myCards fosse uma lista de lista, seria myCards[index][0] 
+(como é no caso do myCards[index].images[itemIndex],)
+onde há images[], pois images é uma lista.*/
                             Text(myCards[index].nome),
                             const SizedBox(width: 10),
                             Text(myCards[index].lugar),
                             const SizedBox(width: 10),
                             Text(myCards[index].numero),
+                            const SizedBox(width: 10),
+                            Text(
+                                'Latitude: ${myCards[index].location.latitude.toStringAsFixed(6)}, Longitude: ${myCards[index].location.longitude.toStringAsFixed(6)}'),
                           ],
                         ),
                       ),
@@ -172,7 +225,7 @@ class _LocadorPageState extends State<LocadorPage> {
                         padding: const EdgeInsets.only(bottom: 10.0),
                         child: Expanded(
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Row(
                                 children: const [
@@ -186,23 +239,14 @@ class _LocadorPageState extends State<LocadorPage> {
                                   ),
                                 ],
                               ),
-                              Container(
-                                alignment: Alignment.topRight,
-                                height: 18,
-                                //width
-                                child: ElevatedButton(
-                                  onPressed: () {},
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          const Color.fromRGBO(125, 0, 254, 1),
-                                      minimumSize: const Size(50, 45),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(15.0),
-                                      )),
-                                  child: const Text('Editar'),
-                                ),
-                              )
+                              ElevatedButton(
+                                onPressed: () {},
+                                child: const Text('Ver no mapa'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {},
+                                child: const Text('Editar'),
+                              ),
                             ],
                           ),
                         ),

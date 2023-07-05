@@ -4,6 +4,7 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:git_flutter_festou/model/my_card.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../widgets/locatario_container.dart';
 import '../widgets/locatario_row.dart';
@@ -96,6 +97,7 @@ class _LocatarioHomePageState extends State<LocatarioHomePage> {
                       nome: nomeController.text,
                       lugar: lugarController.text,
                       numero: numeroController.text,
+                      location: const LatLng(-23.5505, -46.6333),
                     );
 
                     cardsParaMostrar.add(mycard);

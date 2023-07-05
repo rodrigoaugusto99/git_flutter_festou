@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/pages/locatario_navigation_bottom_bar.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
