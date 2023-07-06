@@ -2,6 +2,7 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../helpers/google_maps.dart';
 import '../model/my_card.dart';
 
 class LocadorPage extends StatefulWidget {
@@ -18,9 +19,12 @@ class _LocadorPageState extends State<LocadorPage> {
 
   List<MyCard> myCards = [];
 
+  String selectedLocationName = '';
+
 /*metodo para criar um card, por enquanto as imagens ainda sao padroes*/
-  void createCard() {
-    LatLng selectedLocation = const LatLng(-23.5505, -46.6333);
+  Future<void> createCard() async {
+    LatLng selectedLocation = const LatLng(-22.9259020, -43.1784924);
+    selectedLocationName = await getLocationName(selectedLocation);
 
     showDialog(
       context: context,
@@ -52,7 +56,7 @@ class _LocadorPageState extends State<LocadorPage> {
                       ),
                     ),
                     Text(
-                      'Localização selecionada: $selectedLocation',
+                      'Localização selecionada: $selectedLocationName',
                     ),
                     SizedBox(
                       height: 200.0,
@@ -61,14 +65,19 @@ class _LocadorPageState extends State<LocadorPage> {
                           target: selectedLocation,
                           zoom: 15.0,
                         ),
+                        markers: {
+                          Marker(
+                            markerId: const MarkerId('location'),
+                            position: selectedLocation,
+                          ),
+                        },
                         onTap: (LatLng location) async {
                           selectedLocation = location;
+                          selectedLocationName =
+                              await getLocationName(selectedLocation);
                           setState(() {});
                         },
                       ),
-                    ),
-                    Text(
-                      'Localização selecionada: $selectedLocation',
                     ),
                   ],
                 ),
@@ -122,6 +131,14 @@ class _LocadorPageState extends State<LocadorPage> {
     nomeController.dispose();
     lugarController.dispose();
     numeroController.dispose();
+  }
+
+  Future<String> getLocationName(LatLng coordinates) async {
+    String address = await getAddressFromCoordinates(
+      coordinates.latitude,
+      coordinates.longitude,
+    );
+    return address;
   }
 
   @override
@@ -204,20 +221,21 @@ class _LocadorPageState extends State<LocadorPage> {
                           )),
                       Padding(
                         padding: const EdgeInsets.all(40),
-                        child: Row(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             //index do elemento de myCards, propriedade nome.
 /*se myCards fosse uma lista de lista, seria myCards[index][0] 
 (como é no caso do myCards[index].images[itemIndex],)
 onde há images[], pois images é uma lista.*/
-                            Text(myCards[index].nome),
+                            Text('Nome: ${myCards[index].nome}'),
                             const SizedBox(width: 10),
-                            Text(myCards[index].lugar),
+                            Text('Lugar: ${myCards[index].lugar}'),
                             const SizedBox(width: 10),
-                            Text(myCards[index].numero),
+                            Text('Numero: ${myCards[index].numero}'),
                             const SizedBox(width: 10),
-                            Text(
-                                'Latitude: ${myCards[index].location.latitude.toStringAsFixed(6)}, Longitude: ${myCards[index].location.longitude.toStringAsFixed(6)}'),
+
+                            Text('Localização: $selectedLocationName'),
                           ],
                         ),
                       ),
@@ -240,7 +258,43 @@ onde há images[], pois images é uma lista.*/
                                 ],
                               ),
                               ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title:
+                                            const Text('Localização no Mapa'),
+                                        content: SizedBox(
+                                          height: 200.0,
+                                          child: GoogleMap(
+                                            initialCameraPosition:
+                                                CameraPosition(
+                                              target: myCards[index].location,
+                                              zoom: 15.0,
+                                            ),
+                                            markers: {
+                                              Marker(
+                                                markerId:
+                                                    const MarkerId('location'),
+                                                position:
+                                                    myCards[index].location,
+                                              ),
+                                            },
+                                          ),
+                                        ),
+                                        actions: [
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text('Fechar'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
                                 child: const Text('Ver no mapa'),
                               ),
                               ElevatedButton(
