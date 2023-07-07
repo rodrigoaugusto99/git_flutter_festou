@@ -5,6 +5,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class MyCard {
   List<String> defaultImages;
   List<File> images;
+  List<File> allImages;
+
   String nome;
   String lugar;
   String numero;
@@ -13,6 +15,7 @@ class MyCard {
 
   MyCard({
     required this.images,
+    required this.allImages,
     required this.nome,
     required this.lugar,
     required this.numero,

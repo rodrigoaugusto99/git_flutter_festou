@@ -93,6 +93,7 @@ class _LocatarioHomePageState extends State<LocatarioHomePage> {
                       ],
                       //imagens estaticas por enquanto
                       images: [],
+                      allImages: [],
                       nome: nomeController.text,
                       lugar: lugarController.text,
                       numero: numeroController.text,

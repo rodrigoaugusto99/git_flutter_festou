@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:photo_view/photo_view.dart';
 import '../helpers/google_maps.dart';
 import '../model/my_card.dart';
 
@@ -15,6 +16,14 @@ class LocadorPage extends StatefulWidget {
 }
 
 class _LocadorPageState extends State<LocadorPage> {
+  @override
+  void dispose() {
+    super.dispose();
+    nomeController.dispose();
+    lugarController.dispose();
+    numeroController.dispose();
+  }
+
   final nomeController = TextEditingController();
   final lugarController = TextEditingController();
   final numeroController = TextEditingController();
@@ -29,6 +38,7 @@ class _LocadorPageState extends State<LocadorPage> {
 não pode estar dentro da função*/
   String selectedLocationName = '';
 
+/*----------FUNÇÕES PARA CRIAR O CARD----------- */
   Future<List<File>> _pickImages() async {
     List<File> images = [];
     final picker = ImagePicker();
@@ -53,7 +63,7 @@ não pode estar dentro da função*/
     selectedImages = await _pickImages();
   }
 
-/*metodo para criar um card, por enquanto as imagens ainda sao padroes*/
+//criar o card
   Future<void> createCard() async {
     LatLng selectedLocation = const LatLng(-22.9259020, -43.1784924);
 
@@ -149,6 +159,7 @@ pelo retorno da funcao getLocationName*/
                           "lib/assets/images/festa2.png",
                         ],
                         images: selectedImages,
+                        allImages: selectedImages,
                         nome: nomeController.text,
                         lugar: lugarController.text,
                         numero: numeroController.text,
@@ -172,21 +183,14 @@ pelo retorno da funcao getLocationName*/
     clear();
   }
 
+//limpar controllers
   void clear() {
     nomeController.clear();
     lugarController.clear();
     numeroController.clear();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    nomeController.dispose();
-    lugarController.dispose();
-    numeroController.dispose();
-  }
-
-//função que retorna a string do local a partir de um objeto LatLng(obtido com o mapa)
+//retorna a string do local a partir de um objeto LatLng(obtido com o mapa)
   Future<String> getLocationName(LatLng coordinates) async {
     //getAddressFromCoordinates do arquivo de google_maps
     String address = await getAddressFromCoordinates(
@@ -194,6 +198,129 @@ pelo retorno da funcao getLocationName*/
       coordinates.longitude,
     );
     return address;
+  }
+
+/*----------------FUNÇÕES DO CARD-----------*/
+  void verNoMapa(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Localização no Mapa'),
+          content: SizedBox(
+            height: 200.0,
+            //cada card terá um botao com esse widget
+            child: GoogleMap(
+              /*vai abrir inicialmente na posição cadastrada do card
+                                            (propriedade location(LatLng) do card atual)*/
+              initialCameraPosition: CameraPosition(
+                target: myCards[index].location,
+                zoom: 15.0,
+              ),
+              markers: {
+                Marker(
+                  markerId: const MarkerId('location'),
+                  position: myCards[index].location,
+                ),
+              },
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Fechar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void verFotos(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Todas as fotos'),
+          content: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.9,
+            width: MediaQuery.of(context).size.width * 0.9,
+            //cada card terá um botao com esse widget
+            child: Swiper(
+              itemCount: myCards[index].allImages.length,
+              itemBuilder: (BuildContext context, int itemIndex) {
+                return Image.file(
+                  myCards[index].allImages[itemIndex],
+                  fit: BoxFit.cover,
+                );
+              },
+              // Defina a fração da largura ocupada por cada item do carrossel
+              viewportFraction: 0.9,
+              // Defina o fator de escala para os itens adjacentes ao item central
+              scale: 0.95,
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Fechar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void verFotos2(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Todas as fotos'),
+          content: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.9,
+              width: MediaQuery.of(context).size.width * 0.9,
+              //cada card terá um botao com esse widget
+              child: GridView.builder(
+                itemCount: myCards[index].allImages.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, // Duas imagens por linha
+                ),
+                itemBuilder: (BuildContext context, int itemIndex) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PhotoView(
+                              initialScale: PhotoViewComputedScale.covered,
+                              imageProvider: FileImage(
+                                  myCards[index].allImages[itemIndex])),
+                        ),
+                      );
+                    },
+                    child: Image.file(
+                      myCards[index].allImages[itemIndex],
+                      fit: BoxFit.cover,
+                    ),
+                  );
+                },
+              )),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Fechar'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -262,25 +389,17 @@ pelo retorno da funcao getLocationName*/
                         height: MediaQuery.of(context).size.height * 0.25,
                         child: Swiper(
                           // lista do swiper - do tamanho da lista de imagens(images) do elemento do index atual da lista myCard,
-
-                          //se a lista que o usuario deveria preencher está vazia, entao o itemCount é o do default
-                          itemCount: myCards[index].images.isNotEmpty
-                              ? myCards[index].images.length
-                              : myCards[index].defaultImages.length,
+                          //se o numero de imagens for maior q 4, o tamanho da lista é 4
+                          itemCount: myCards[index].images.length > 4
+                              ? 4
+                              : myCards[index].images.length,
                           autoplay: true,
                           pagination: const SwiperPagination(),
                           itemBuilder: (context, itemIndex) {
-//se a lista não está vazia, imprime os files carregador(seu itemCount já está sincronizado)
-                            return myCards[index].images.isNotEmpty
-                                ? Image.file(
-                                    myCards[index].images[itemIndex],
-                                    fit: BoxFit.cover,
-                                  )
-//se a lista está vazia, imprime as imagens default(seu itemCount já está sincronizado)
-                                : Image.asset(
-                                    myCards[index].defaultImages[itemIndex],
-                                    fit: BoxFit.cover,
-                                  );
+                            return Image.file(
+                              myCards[index].images[itemIndex],
+                              fit: BoxFit.cover,
+                            );
                           },
                         ),
                       ),
@@ -314,8 +433,8 @@ onde há images[], pois images é uma lista.*/
                       Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
                         child: Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: const [
@@ -330,47 +449,18 @@ onde há images[], pois images é uma lista.*/
                                 ],
                               ),
                               ElevatedButton(
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title:
-                                            const Text('Localização no Mapa'),
-                                        content: SizedBox(
-                                          height: 200.0,
-                                          //cada card terá um botao com esse widget
-                                          child: GoogleMap(
-                                            /*vai abrir inicialmente na posição cadastrada do card
-                                            (propriedade location(LatLng) do card atual)*/
-                                            initialCameraPosition:
-                                                CameraPosition(
-                                              target: myCards[index].location,
-                                              zoom: 15.0,
-                                            ),
-                                            markers: {
-                                              Marker(
-                                                markerId:
-                                                    const MarkerId('location'),
-                                                position:
-                                                    myCards[index].location,
-                                              ),
-                                            },
-                                          ),
-                                        ),
-                                        actions: [
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: const Text('Fechar'),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
+                                onPressed: () => verNoMapa(index),
                                 child: const Text('Ver no mapa'),
+                              ),
+                              //ver fotos
+                              ElevatedButton(
+                                onPressed: () => verFotos(index),
+                                child: const Text('Ver mais fotos'),
+                              ),
+                              //ver fotos com zoom
+                              ElevatedButton(
+                                onPressed: () => verFotos2(index),
+                                child: const Text('Ver mais fotos'),
                               ),
                               ElevatedButton(
                                 onPressed: () {},
