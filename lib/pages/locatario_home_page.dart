@@ -87,13 +87,12 @@ class _LocatarioHomePageState extends State<LocatarioHomePage> {
                   setState(() {
                     // Atualize a lista com os valores dos controladores
                     MyCard mycard = MyCard(
-                      //imagens estaticas por enquanto
-                      images: [
-                        'lib/assets/images/salao5.png',
-                        'lib/assets/images/salao6.png',
-                        'lib/assets/images/salao7.png',
-                        'lib/assets/images/salao8.png',
+                      defaultImages: [
+                        "lib/assets/images/festa.png",
+                        "lib/assets/images/festa2.png",
                       ],
+                      //imagens estaticas por enquanto
+                      images: [],
                       nome: nomeController.text,
                       lugar: lugarController.text,
                       numero: numeroController.text,
@@ -222,7 +221,7 @@ class _LocatarioHomePageState extends State<LocatarioHomePage> {
                                         .images
                                         .map((image) {
                                       return Image.asset(
-                                        image,
+                                        image as String,
                                         fit: BoxFit.contain,
                                       );
                                     }).toList(),
