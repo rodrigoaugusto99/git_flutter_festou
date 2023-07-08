@@ -14,6 +14,7 @@ class MyCard {
   String selectedLocationName;
 
   MyCard({
+    required this.defaultImages,
     required this.images,
     required this.allImages,
     required this.nome,
@@ -21,6 +22,5 @@ class MyCard {
     required this.numero,
     required this.location,
     this.selectedLocationName = '',
-    required this.defaultImages,
   });
 }

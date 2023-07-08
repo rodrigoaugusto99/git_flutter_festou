@@ -16,14 +16,6 @@ class LocadorPage extends StatefulWidget {
 }
 
 class _LocadorPageState extends State<LocadorPage> {
-  @override
-  void dispose() {
-    super.dispose();
-    nomeController.dispose();
-    lugarController.dispose();
-    numeroController.dispose();
-  }
-
   final nomeController = TextEditingController();
   final lugarController = TextEditingController();
   final numeroController = TextEditingController();
@@ -38,7 +30,6 @@ class _LocadorPageState extends State<LocadorPage> {
 não pode estar dentro da função*/
   String selectedLocationName = '';
 
-/*----------FUNÇÕES PARA CRIAR O CARD----------- */
   Future<List<File>> _pickImages() async {
     List<File> images = [];
     final picker = ImagePicker();
@@ -158,8 +149,8 @@ pelo retorno da funcao getLocationName*/
                           "lib/assets/images/festa.png",
                           "lib/assets/images/festa2.png",
                         ],
-                        images: selectedImages,
                         allImages: selectedImages,
+                        images: selectedImages,
                         nome: nomeController.text,
                         lugar: lugarController.text,
                         numero: numeroController.text,
@@ -188,6 +179,15 @@ pelo retorno da funcao getLocationName*/
     nomeController.clear();
     lugarController.clear();
     numeroController.clear();
+    selectedImages = [];
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    nomeController.dispose();
+    lugarController.dispose();
+    numeroController.dispose();
   }
 
 //retorna a string do local a partir de um objeto LatLng(obtido com o mapa)
@@ -200,7 +200,7 @@ pelo retorno da funcao getLocationName*/
     return address;
   }
 
-/*----------------FUNÇÕES DO CARD-----------*/
+  /*----------------FUNÇÕES DO CARD-----------*/
   void verNoMapa(int index) {
     showDialog(
       context: context,
@@ -374,10 +374,11 @@ pelo retorno da funcao getLocationName*/
           ),
           Expanded(
             //EXPANDED PARA A LISTVIEW PEGAR O RESTANTE E N DAR OVERFLOW
-            child: ListView.builder(
-              //lista geral - do tamanho da lista dos cards
+            child: ListView.separated(
+              // Lista geral - do tamanho da lista dos cards
               itemCount: myCards.length,
-              shrinkWrap: true,
+              separatorBuilder: (context, index) =>
+                  const SizedBox(height: 10), // Espaço entre os itens da lista
               itemBuilder: (context, index) {
                 return Card(
                   elevation: 10,
@@ -386,9 +387,9 @@ pelo retorno da funcao getLocationName*/
                   child: Column(
                     children: [
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.25,
+                        height: MediaQuery.of(context).size.height *
+                            0.25, // Defina uma altura fixa para o Container
                         child: Swiper(
-                          // lista do swiper - do tamanho da lista de imagens(images) do elemento do index atual da lista myCard,
                           //se o numero de imagens for maior q 4, o tamanho da lista é 4
                           itemCount: myCards[index].images.length > 4
                               ? 4
@@ -415,9 +416,9 @@ pelo retorno da funcao getLocationName*/
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             //index do elemento de myCards, propriedade nome.
-/*se myCards fosse uma lista de lista, seria myCards[index][0] 
-(como é no caso do myCards[index].images[itemIndex],)
-onde há images[], pois images é uma lista.*/
+                            /*se myCards fosse uma lista de lista, seria myCards[index][0] 
+            (como é no caso do myCards[index].images[itemIndex],)
+            onde há images[], pois images é uma lista.*/
                             Text('Nome: ${myCards[index].nome}'),
                             const SizedBox(width: 10),
                             Text('Lugar: ${myCards[index].lugar}'),
