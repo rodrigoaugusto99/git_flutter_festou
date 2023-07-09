@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/pages/locatario_navigation_bottom_bar.dart';
+import 'package:git_flutter_festou/pages/calendar_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
       ),
-      home: const LocatarioNavigationBottomBar(),
+      home: const CalendarPage(),
     );
   }
 }

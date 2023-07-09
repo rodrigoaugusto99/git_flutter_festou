@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:photo_view/photo_view.dart';
 import '../helpers/google_maps.dart';
 import '../model/my_card.dart';
+import 'calendar_page.dart';
 
 class LocadorPage extends StatefulWidget {
   const LocadorPage({super.key});
@@ -30,6 +31,7 @@ class _LocadorPageState extends State<LocadorPage> {
 não pode estar dentro da função*/
   String selectedLocationName = '';
 
+//função para lidar com a seleção de imagens
   Future<List<File>> _pickImages() async {
     List<File> images = [];
     final picker = ImagePicker();
@@ -38,6 +40,7 @@ não pode estar dentro da função*/
       // Permita que o usuário escolha várias imagens
       final pickedImages = await picker.pickMultiImage();
 
+//percorrendo e jogando as imagens no lista
       for (var pickedImage in pickedImages) {
         File image = File(pickedImage.path);
         images.add(image);
@@ -50,6 +53,7 @@ não pode estar dentro da função*/
     return images;
   }
 
+//função para solicitar o usuario escolher as imagens
   Future<void> _openImagePicker() async {
     selectedImages = await _pickImages();
   }
@@ -323,6 +327,7 @@ pelo retorno da funcao getLocationName*/
     );
   }
 
+  void verDisponibilidade(int index) {}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -390,6 +395,7 @@ pelo retorno da funcao getLocationName*/
                         height: MediaQuery.of(context).size.height *
                             0.25, // Defina uma altura fixa para o Container
                         child: Swiper(
+                          //esquema para o swiper exibir apenas as 4 primeiras imagens
                           //se o numero de imagens for maior q 4, o tamanho da lista é 4
                           itemCount: myCards[index].images.length > 4
                               ? 4
@@ -427,50 +433,45 @@ pelo retorno da funcao getLocationName*/
                             const SizedBox(width: 10),
 
                             Text(
-                                'Localização: ${myCards[index].selectedLocationName}'),
+                              'Localização: ${myCards[index].selectedLocationName}',
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const CalendarPage(),
+                                  ),
+                                );
+                              },
+                              child: const Text('Ver Calendário'),
+                            ),
+                            ElevatedButton(
+                              onPressed: () => verNoMapa(index),
+                              child: const Text('Ver no mapa'),
+                            ),
+                            //botoes para ver as outras fotos selecionadas
+                            //ver fotos
+                            ElevatedButton(
+                              onPressed: () => verFotos(index),
+                              child: const Text('Ver mais fotos'),
+                            ),
+                            //ver fotos com zoom
+                            ElevatedButton(
+                              onPressed: () => verFotos2(index),
+                              child: const Text('Ver mais fotos'),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {},
+                              child: const Text('Editar'),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {},
+                              child: const Text('serviços disponiveis'),
+                            ),
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0),
-                        child: Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: const [
-                                  Icon(
-                                    Icons.garage,
-                                    color: Colors.black,
-                                  ),
-                                  Icon(
-                                    Icons.fastfood,
-                                    color: Colors.black,
-                                  ),
-                                ],
-                              ),
-                              ElevatedButton(
-                                onPressed: () => verNoMapa(index),
-                                child: const Text('Ver no mapa'),
-                              ),
-                              //ver fotos
-                              ElevatedButton(
-                                onPressed: () => verFotos(index),
-                                child: const Text('Ver mais fotos'),
-                              ),
-                              //ver fotos com zoom
-                              ElevatedButton(
-                                onPressed: () => verFotos2(index),
-                                child: const Text('Ver mais fotos'),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {},
-                                child: const Text('Editar'),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
                     ],
                   ),
                 );
