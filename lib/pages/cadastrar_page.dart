@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../components/my_buttons.dart';
 import '../components/my_textformfield.dart';
 import '../helpers/form_validator.dart';
+import 'locatario_navigation_bottom_bar.dart';
 
 class CadastrarPage extends StatefulWidget {
   const CadastrarPage({super.key});
@@ -24,6 +25,13 @@ class _CadastrarPageState extends State<CadastrarPage> {
     if (formKeyCadastro.currentState?.validate() == true) {
       // A validação do formulário passou, continue com o processamento
       // Código para cadastrar o usuário aqui
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const LocatarioNavigationBottomBar(),
+        ),
+      );
     }
   }
 

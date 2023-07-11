@@ -3,6 +3,7 @@ import 'package:git_flutter_festou/components/my_buttons.dart';
 import 'package:git_flutter_festou/components/my_textformfield.dart';
 
 import '../helpers/form_validator.dart';
+import 'locatario_navigation_bottom_bar.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -21,6 +22,12 @@ class _LoginPageState extends State<LoginPage> {
     if (formKeyLogin.currentState?.validate() == true) {
       // A validação do formulário passou, continue com o processamento
       // Código para cadastrar o usuário aqui
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const LocatarioNavigationBottomBar(),
+        ),
+      );
     }
   }
 
