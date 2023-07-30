@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:intl/intl.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({Key? key}) : super(key: key);
@@ -11,30 +10,33 @@ class CalendarPage extends StatefulWidget {
 
 class _CalendarPageState extends State<CalendarPage> {
   DateTime today = DateTime.now();
+
+  //conjunto (Set) de DateTime que armazena as datas selecionadas pelo usuário.
   Set<DateTime> selectedDates = {};
 
-  //bool isEditing = true;
-
+  //função chamada quando uma data é selecionada
+  //adiciona ou remove dependendo se ja estiver selecionado ou nao
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
-      //if (isEditing) {
-      if (selectedDates.contains(day)) {
-        selectedDates.remove(day);
-      } else {
-        selectedDates.add(day);
+      {
+        if (selectedDates.contains(day)) {
+          selectedDates.remove(day);
+        } else {
+          selectedDates.add(day);
+        }
       }
-      // }
     });
   }
 
-  String getWeekdayText(int weekday) {
-    final weekdays = DateFormat.E().dateSymbols.WEEKDAYS;
-    return weekdays[weekday % 7];
-  }
-
+  //horario de 1-24 para o dropdownButton
   List<String> hours =
       List.generate(24, (index) => (index + 1).toString().padLeft(2, '0'));
 
+  //listas de horarios pré-selecionados
+  List<String> selectedOpeningHours = List<String>.filled(7, '01');
+  List<String> selectedClosingHours = List<String>.filled(7, '24');
+
+  //cada row com dia da semana, e DropDownButtons
   Widget myRow({
     required String text,
     required String selectedOpeningHour,
@@ -78,153 +80,142 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
-  void markDatesAsRentable() {
-    String selectedOpeningHour2 = '01';
-    String selectedClosingHour2 = '24';
-    String selectedOpeningHour3 = '01';
-    String selectedClosingHour3 = '24';
-    String selectedOpeningHour4 = '01';
-    String selectedClosingHour4 = '24';
-    String selectedOpeningHour5 = '01';
-    String selectedClosingHour5 = '24';
-    String selectedOpeningHour6 = '01';
-    String selectedClosingHour6 = '24';
-    String selectedOpeningHour7 = '01';
-    String selectedClosingHour7 = '24';
-    String selectedOpeningHour8 = '01';
-    String selectedClosingHour8 = '24';
-
-    /*setState(() {
-      isEditing = false;
-    });*/
+  //função para configurar os horarios de abertura e fechamento
+  void configureHours() {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: Column(
-              children: [
-                const Text(
-                  "Configure os horarios",
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                ),
-                myRow(
-                  text: 'segunda',
-                  selectedOpeningHour: selectedOpeningHour2,
-                  selectedClosingHour: selectedClosingHour2,
-                  hours: hours,
-                  onOpeningHourChanged: (String? newValue) {
-                    setState(() {
-                      selectedOpeningHour2 = newValue!;
-                    });
-                  },
-                  onClosingHourChanged: (String? newValue) {
-                    setState(() {
-                      selectedClosingHour2 = newValue!;
-                    });
-                  },
-                ),
-                myRow(
-                  text: 'terca',
-                  selectedOpeningHour: selectedOpeningHour2,
-                  selectedClosingHour: selectedClosingHour2,
-                  hours: hours,
-                  onOpeningHourChanged: (String? newValue) {
-                    setState(() {
-                      selectedOpeningHour2 = newValue!;
-                    });
-                  },
-                  onClosingHourChanged: (String? newValue) {
-                    setState(() {
-                      selectedClosingHour2 = newValue!;
-                    });
-                  },
-                ),
-                myRow(
-                  text: 'quarta',
-                  selectedOpeningHour: selectedOpeningHour2,
-                  selectedClosingHour: selectedClosingHour2,
-                  hours: hours,
-                  onOpeningHourChanged: (String? newValue) {
-                    setState(() {
-                      selectedOpeningHour2 = newValue!;
-                    });
-                  },
-                  onClosingHourChanged: (String? newValue) {
-                    setState(() {
-                      selectedClosingHour2 = newValue!;
-                    });
-                  },
-                ),
-                myRow(
-                  text: 'quinta',
-                  selectedOpeningHour: selectedOpeningHour2,
-                  selectedClosingHour: selectedClosingHour2,
-                  hours: hours,
-                  onOpeningHourChanged: (String? newValue) {
-                    setState(() {
-                      selectedOpeningHour2 = newValue!;
-                    });
-                  },
-                  onClosingHourChanged: (String? newValue) {
-                    setState(() {
-                      selectedClosingHour2 = newValue!;
-                    });
-                  },
-                ),
-                myRow(
-                  text: 'sexta',
-                  selectedOpeningHour: selectedOpeningHour2,
-                  selectedClosingHour: selectedClosingHour2,
-                  hours: hours,
-                  onOpeningHourChanged: (String? newValue) {
-                    setState(() {
-                      selectedOpeningHour2 = newValue!;
-                    });
-                  },
-                  onClosingHourChanged: (String? newValue) {
-                    setState(() {
-                      selectedClosingHour2 = newValue!;
-                    });
-                  },
-                ),
-                myRow(
-                  text: 'sabado',
-                  selectedOpeningHour: selectedOpeningHour2,
-                  selectedClosingHour: selectedClosingHour2,
-                  hours: hours,
-                  onOpeningHourChanged: (String? newValue) {
-                    setState(() {
-                      selectedOpeningHour2 = newValue!;
-                    });
-                  },
-                  onClosingHourChanged: (String? newValue) {
-                    setState(() {
-                      selectedClosingHour2 = newValue!;
-                    });
-                  },
-                ),
-                myRow(
-                  text: 'domingo',
-                  selectedOpeningHour: selectedOpeningHour2,
-                  selectedClosingHour: selectedClosingHour2,
-                  hours: hours,
-                  onOpeningHourChanged: (String? newValue) {
-                    setState(() {
-                      selectedOpeningHour2 = newValue!;
-                    });
-                  },
-                  onClosingHourChanged: (String? newValue) {
-                    setState(() {
-                      selectedClosingHour2 = newValue!;
-                    });
-                  },
-                ),
-              ],
-            ),
-          );
-        });
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              content: Column(
+                children: [
+                  const Text(
+                    "Configure os horarios",
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  ),
+                  myRow(
+                    text: 'segunda',
+                    selectedOpeningHour: selectedOpeningHours[0],
+                    selectedClosingHour: selectedClosingHours[0],
+                    hours: hours,
+                    onOpeningHourChanged: (String? newValue) {
+                      setState(() {
+                        selectedOpeningHours[0] = newValue!;
+                      });
+                    },
+                    onClosingHourChanged: (String? newValue) {
+                      setState(() {
+                        selectedClosingHours[0] = newValue!;
+                      });
+                    },
+                  ),
+                  myRow(
+                    text: 'terça',
+                    selectedOpeningHour: selectedOpeningHours[1],
+                    selectedClosingHour: selectedClosingHours[1],
+                    hours: hours,
+                    onOpeningHourChanged: (String? newValue) {
+                      setState(() {
+                        selectedOpeningHours[1] = newValue!;
+                      });
+                    },
+                    onClosingHourChanged: (String? newValue) {
+                      setState(() {
+                        selectedClosingHours[1] = newValue!;
+                      });
+                    },
+                  ),
+                  myRow(
+                    text: 'quarta',
+                    selectedOpeningHour: selectedOpeningHours[2],
+                    selectedClosingHour: selectedClosingHours[2],
+                    hours: hours,
+                    onOpeningHourChanged: (String? newValue) {
+                      setState(() {
+                        selectedOpeningHours[2] = newValue!;
+                      });
+                    },
+                    onClosingHourChanged: (String? newValue) {
+                      setState(() {
+                        selectedClosingHours[2] = newValue!;
+                      });
+                    },
+                  ),
+                  myRow(
+                    text: 'quinta',
+                    selectedOpeningHour: selectedOpeningHours[3],
+                    selectedClosingHour: selectedClosingHours[3],
+                    hours: hours,
+                    onOpeningHourChanged: (String? newValue) {
+                      setState(() {
+                        selectedOpeningHours[3] = newValue!;
+                      });
+                    },
+                    onClosingHourChanged: (String? newValue) {
+                      setState(() {
+                        selectedClosingHours[3] = newValue!;
+                      });
+                    },
+                  ),
+                  myRow(
+                    text: 'sexta',
+                    selectedOpeningHour: selectedOpeningHours[4],
+                    selectedClosingHour: selectedClosingHours[4],
+                    hours: hours,
+                    onOpeningHourChanged: (String? newValue) {
+                      setState(() {
+                        selectedOpeningHours[4] = newValue!;
+                      });
+                    },
+                    onClosingHourChanged: (String? newValue) {
+                      setState(() {
+                        selectedClosingHours[4] = newValue!;
+                      });
+                    },
+                  ),
+                  myRow(
+                    text: 'sábado',
+                    selectedOpeningHour: selectedOpeningHours[5],
+                    selectedClosingHour: selectedClosingHours[5],
+                    hours: hours,
+                    onOpeningHourChanged: (String? newValue) {
+                      setState(() {
+                        selectedOpeningHours[5] = newValue!;
+                      });
+                    },
+                    onClosingHourChanged: (String? newValue) {
+                      setState(() {
+                        selectedClosingHours[5] = newValue!;
+                      });
+                    },
+                  ),
+                  myRow(
+                    text: 'domingo',
+                    selectedOpeningHour: selectedOpeningHours[6],
+                    selectedClosingHour: selectedClosingHours[6],
+                    hours: hours,
+                    onOpeningHourChanged: (String? newValue) {
+                      setState(() {
+                        selectedOpeningHours[6] = newValue!;
+                      });
+                    },
+                    onClosingHourChanged: (String? newValue) {
+                      setState(() {
+                        selectedClosingHours[6] = newValue!;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
+  //função que mostra as datas e horarios definidos
   void showCalendarDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -232,35 +223,56 @@ class _CalendarPageState extends State<CalendarPage> {
         return AlertDialog(
           title: const Text('Calendário selecionado'),
           content: SizedBox(
-            width: 400,
-            height: 400,
-            child: TableCalendar(
-              headerStyle: const HeaderStyle(
-                formatButtonVisible: false,
-                titleCentered: true,
+            width: double.maxFinite,
+            height: double.maxFinite,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  TableCalendar(
+                    headerStyle: const HeaderStyle(
+                      formatButtonVisible: false,
+                      titleCentered: true,
+                    ),
+                    firstDay: DateTime.utc(2010, 10, 16),
+                    lastDay: DateTime.utc(2030, 10, 16),
+                    selectedDayPredicate: (day) => selectedDates.contains(day),
+                    calendarStyle: CalendarStyle(
+                      todayDecoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.purple[500],
+                      ),
+                      defaultDecoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.red[400],
+                      ),
+                      weekendDecoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.grey[300],
+                      ),
+                      selectedDecoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.green[400],
+                      ),
+                    ),
+                    focusedDay: today,
+                  ),
+                  const Text('Horarios:'),
+                  Text(
+                      'Segunda-feira: ${selectedOpeningHours[0]} até ${selectedClosingHours[0]}'),
+                  Text(
+                      'Terça-feira: ${selectedOpeningHours[1]} até ${selectedClosingHours[1]}'),
+                  Text(
+                      'Quarta-feira: ${selectedOpeningHours[2]} até ${selectedClosingHours[2]}'),
+                  Text(
+                      'Quinta-feira: ${selectedOpeningHours[3]} até ${selectedClosingHours[3]}'),
+                  Text(
+                      'Sexta-feira: ${selectedOpeningHours[4]} até ${selectedClosingHours[4]}'),
+                  Text(
+                      'Sabado: ${selectedOpeningHours[5]} até ${selectedClosingHours[5]}'),
+                  Text(
+                      'Domingo: ${selectedOpeningHours[6]} até ${selectedClosingHours[6]}'),
+                ],
               ),
-              firstDay: DateTime.utc(2010, 10, 16),
-              lastDay: DateTime.utc(2030, 10, 16),
-              selectedDayPredicate: (day) => selectedDates.contains(day),
-              calendarStyle: CalendarStyle(
-                todayDecoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.purple[500],
-                ),
-                defaultDecoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.red[400],
-                ),
-                weekendDecoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.grey[300],
-                ),
-                selectedDecoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.green[400],
-                ),
-              ),
-              focusedDay: today,
             ),
           ),
         );
@@ -277,9 +289,6 @@ class _CalendarPageState extends State<CalendarPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            /*Text(
-              "Selected date(s): ${selectedDates.map((date) => DateFormat('dd/MM/yyyy').format(date)).join(", ")}",
-            ),*/
             Container(
               color: Colors.blueGrey,
               child: TableCalendar(
@@ -317,18 +326,9 @@ class _CalendarPageState extends State<CalendarPage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  onPressed: markDatesAsRentable,
+                  onPressed: configureHours,
                   child: const Text('Definir horários'),
                 ),
-                /*const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      isEditing = true;
-                    });
-                  },
-                  child: const Text('Editar'),
-                ),*/
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () => showCalendarDialog(context),
@@ -336,20 +336,6 @@ class _CalendarPageState extends State<CalendarPage> {
                 ),
               ],
             ),
-            /*const SizedBox(height: 16),
-            if (!isEditing)
-              const Text(
-                "Datas que você marcou como disponíveis:",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            if (!isEditing)
-              Column(
-                children: selectedDates
-                    .map((date) => Text(DateFormat('dd/MM/yyyy').format(date)))
-                    .toList(),
-              ),
-            const SizedBox(height: 16),
-            */
           ],
         ),
       ),
