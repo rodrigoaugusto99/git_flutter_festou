@@ -10,8 +10,12 @@ class MyCard {
   String nome;
   String lugar;
   String numero;
+  String email;
   LatLng location;
   String selectedLocationName;
+  String selectedSpaceType; // Tipo de espaço selecionado
+  List<String> servicos; // Serviços oferecidos pelo espaço
+  String descricao; // Descrição do espaço
 
   MyCard({
     required this.defaultImages,
@@ -20,7 +24,11 @@ class MyCard {
     required this.nome,
     required this.lugar,
     required this.numero,
+    required this.email,
     required this.location,
     this.selectedLocationName = '',
+    required this.selectedSpaceType, // Incluindo o atributo selectedSpaceType
+    required this.servicos, // Incluindo o atributo servicos
+    required this.descricao, // Incluindo o atributo descricao
   });
 }

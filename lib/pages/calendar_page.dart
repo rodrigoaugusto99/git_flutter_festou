@@ -215,7 +215,7 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
-  //função que mostra as datas e horarios definidos
+  //função para mostrar as datas e horarios definidos
   void showCalendarDialog(BuildContext context) {
     showDialog(
       context: context,

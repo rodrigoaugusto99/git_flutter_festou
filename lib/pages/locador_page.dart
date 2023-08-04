@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:table_calendar/table_calendar.dart';
+import '../components/my_textfields.dart';
 import '../helpers/google_maps.dart';
 import '../model/my_card.dart';
 import 'calendar_page.dart';
@@ -17,6 +19,63 @@ class LocadorPage extends StatefulWidget {
 }
 
 class _LocadorPageState extends State<LocadorPage> {
+  DateTime today = DateTime.now();
+
+  //conjunto (Set) de DateTime que armazena as datas selecionadas pelo usuário.
+  Set<DateTime> selectedDates = {};
+
+  //horario de 1-24 para o dropdownButton
+  List<String> hours =
+      List.generate(24, (index) => (index + 1).toString().padLeft(2, '0'));
+
+  //listas de horarios pré-selecionados
+  List<String> selectedOpeningHours = List<String>.filled(7, '01');
+  List<String> selectedClosingHours = List<String>.filled(7, '24');
+
+  //cada row com dia da semana, e DropDownButtons
+  Widget myRow({
+    required String text,
+    required String selectedOpeningHour,
+    required String selectedClosingHour,
+    required List<String> hours,
+    required ValueChanged<String?> onOpeningHourChanged,
+    required ValueChanged<String?> onClosingHourChanged,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(text),
+        Row(
+          children: [
+            DropdownButton<String>(
+              value: selectedOpeningHour,
+              onChanged: onOpeningHourChanged,
+              items: hours.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+            const SizedBox(width: 8),
+            const Text('às'),
+            const SizedBox(width: 8),
+            DropdownButton<String>(
+              value: selectedClosingHour,
+              onChanged: onClosingHourChanged,
+              items: hours.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
   final nomeController = TextEditingController();
   final lugarController = TextEditingController();
   final numeroController = TextEditingController();
@@ -58,6 +117,186 @@ não pode estar dentro da função*/
     selectedImages = await _pickImages();
   }
 
+//função do calendario
+  void configureCalendar(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: const Text('calendario'),
+              content: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.9,
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      TableCalendar(
+                        headerStyle: const HeaderStyle(
+                          formatButtonVisible: false,
+                          titleCentered: true,
+                        ),
+                        focusedDay: today,
+                        firstDay: DateTime.utc(2010, 10, 16),
+                        lastDay: DateTime.utc(2030, 10, 16),
+                        availableGestures: AvailableGestures.all,
+                        selectedDayPredicate: (day) =>
+                            selectedDates.contains(day),
+                        onDaySelected: (day, focusedDay) {
+                          setState(() {
+                            if (selectedDates.contains(day)) {
+                              selectedDates.remove(day);
+                            } else {
+                              selectedDates.add(day);
+                            }
+                          });
+                        },
+                        calendarStyle: CalendarStyle(
+                          todayDecoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.purple[500],
+                          ),
+                          defaultDecoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey[200],
+                          ),
+                          weekendDecoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey[400],
+                          ),
+                          selectedDecoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.green[400],
+                          ),
+                        ),
+                      ),
+                      const Text(
+                        "Configure os horarios",
+                        style: TextStyle(
+                            fontSize: 25, fontWeight: FontWeight.bold),
+                      ),
+                      myRow(
+                        text: 'segunda',
+                        selectedOpeningHour: selectedOpeningHours[0],
+                        selectedClosingHour: selectedClosingHours[0],
+                        hours: hours,
+                        onOpeningHourChanged: (String? newValue) {
+                          setState(() {
+                            selectedOpeningHours[0] = newValue!;
+                          });
+                        },
+                        onClosingHourChanged: (String? newValue) {
+                          setState(() {
+                            selectedClosingHours[0] = newValue!;
+                          });
+                        },
+                      ),
+                      myRow(
+                        text: 'terça',
+                        selectedOpeningHour: selectedOpeningHours[1],
+                        selectedClosingHour: selectedClosingHours[1],
+                        hours: hours,
+                        onOpeningHourChanged: (String? newValue) {
+                          setState(() {
+                            selectedOpeningHours[1] = newValue!;
+                          });
+                        },
+                        onClosingHourChanged: (String? newValue) {
+                          setState(() {
+                            selectedClosingHours[1] = newValue!;
+                          });
+                        },
+                      ),
+                      myRow(
+                        text: 'quarta',
+                        selectedOpeningHour: selectedOpeningHours[2],
+                        selectedClosingHour: selectedClosingHours[2],
+                        hours: hours,
+                        onOpeningHourChanged: (String? newValue) {
+                          setState(() {
+                            selectedOpeningHours[2] = newValue!;
+                          });
+                        },
+                        onClosingHourChanged: (String? newValue) {
+                          setState(() {
+                            selectedClosingHours[2] = newValue!;
+                          });
+                        },
+                      ),
+                      myRow(
+                        text: 'quinta',
+                        selectedOpeningHour: selectedOpeningHours[3],
+                        selectedClosingHour: selectedClosingHours[3],
+                        hours: hours,
+                        onOpeningHourChanged: (String? newValue) {
+                          setState(() {
+                            selectedOpeningHours[3] = newValue!;
+                          });
+                        },
+                        onClosingHourChanged: (String? newValue) {
+                          setState(() {
+                            selectedClosingHours[3] = newValue!;
+                          });
+                        },
+                      ),
+                      myRow(
+                        text: 'sexta',
+                        selectedOpeningHour: selectedOpeningHours[4],
+                        selectedClosingHour: selectedClosingHours[4],
+                        hours: hours,
+                        onOpeningHourChanged: (String? newValue) {
+                          setState(() {
+                            selectedOpeningHours[4] = newValue!;
+                          });
+                        },
+                        onClosingHourChanged: (String? newValue) {
+                          setState(() {
+                            selectedClosingHours[4] = newValue!;
+                          });
+                        },
+                      ),
+                      myRow(
+                        text: 'sábado',
+                        selectedOpeningHour: selectedOpeningHours[5],
+                        selectedClosingHour: selectedClosingHours[5],
+                        hours: hours,
+                        onOpeningHourChanged: (String? newValue) {
+                          setState(() {
+                            selectedOpeningHours[5] = newValue!;
+                          });
+                        },
+                        onClosingHourChanged: (String? newValue) {
+                          setState(() {
+                            selectedClosingHours[5] = newValue!;
+                          });
+                        },
+                      ),
+                      myRow(
+                        text: 'domingo',
+                        selectedOpeningHour: selectedOpeningHours[6],
+                        selectedClosingHour: selectedClosingHours[6],
+                        hours: hours,
+                        onOpeningHourChanged: (String? newValue) {
+                          setState(() {
+                            selectedOpeningHours[6] = newValue!;
+                          });
+                        },
+                        onClosingHourChanged: (String? newValue) {
+                          setState(() {
+                            selectedClosingHours[6] = newValue!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          });
+        });
+  }
+
 //criar o card
   Future<void> createCard() async {
     LatLng selectedLocation = const LatLng(-22.9259020, -43.1784924);
@@ -69,109 +308,163 @@ pelo retorno da funcao getLocationName*/
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Escolher Localização'),
-          //statebuilder pro dialog poder ser atualizado com setsState
-          content: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: nomeController,
-                    decoration: const InputDecoration(
+        return SingleChildScrollView(
+          child: AlertDialog(
+            title: const Text('Escolher Localização'),
+            //statebuilder pro dialog poder ser atualizado com setsState
+            content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    MyTextField(
+                      controller: nomeController,
                       hintText: 'nome',
                     ),
-                  ),
-                  TextField(
-                    controller: lugarController,
-                    decoration: const InputDecoration(
-                      hintText: 'lugar',
+
+                    MyTextField(
+                      controller: lugarController,
+                      hintText: 'localidade',
                     ),
-                  ),
-                  TextField(
-                    controller: numeroController,
-                    decoration: const InputDecoration(
-                      hintText: 'numero',
+
+                    MyTextField(
+                      controller: numeroController,
+                      hintText: 'numero para contato',
                     ),
-                  ),
-                  //printando as coordenadas convertidas em string
-                  Text(
-                    'Localização selecionada: $selectedLocationName',
-                  ),
-                  SizedBox(
-                    height: 200.0,
-                    child: GoogleMap(
-                      initialCameraPosition: CameraPosition(
-                        //ponto central da camera inicial do mapa
-                        target: selectedLocation,
-                        zoom: 15.0,
-                      ),
-                      /*markers é a lista de posicoes selecionadas
-                      no caso, é apenas um, que é sempre
-                      o local clicado(onTap)*/
-                      markers: {
-                        Marker(
-                          markerId: const MarkerId('location'),
-                          position: selectedLocation,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: _openImagePicker,
+                          icon: const Icon(Icons.photo),
+                          label: const Text(
+                            'Escolher Fotos',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            //fixedSize: const Size(10, 10),
+                            foregroundColor: Colors.white,
+                            backgroundColor:
+                                Colors.blue, // Cor do texto do botão
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
                         ),
-                      },
-                      onTap: (LatLng location) async {
-                        //onde é clicado, vira o target
-                        selectedLocation = location;
-                        //aproveita e pega essas coordenadas e transforma em endereço string
-                        selectedLocationName =
-                            await getLocationName(selectedLocation);
-                        setState(() {}); //pra mudar o text no alertDialog
-                      },
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            configureCalendar(context);
+                          },
+                          icon: const Icon(Icons.calendar_month),
+                          label: const Text(
+                            'Calendário',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor:
+                                Colors.green, // Cor do texto do botão
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
+
+                    //printando as coordenadas convertidas em string
+                    const Text(
+                      'Localização:',
+                    ),
+                    SizedBox(
+                      height: 200.0,
+                      child: GoogleMap(
+                        initialCameraPosition: CameraPosition(
+                          //ponto central da camera inicial do mapa
+                          target: selectedLocation,
+                          zoom: 15.0,
+                        ),
+                        /*markers é a lista de posicoes selecionadas
+                        no caso, é apenas um, que é sempre
+                        o local clicado(onTap)*/
+                        markers: {
+                          Marker(
+                            markerId: const MarkerId('location'),
+                            position: selectedLocation,
+                          ),
+                        },
+                        onTap: (LatLng location) async {
+                          //onde é clicado, vira o target
+                          selectedLocation = location;
+                          //aproveita e pega essas coordenadas e transforma em endereço string
+                          selectedLocationName =
+                              await getLocationName(selectedLocation);
+                          setState(() {}); //pra mudar o text no alertDialog
+                        },
+                      ),
+                    ),
+                    Text(
+                      selectedLocationName,
+                    ),
+                  ],
+                );
+              },
+            ),
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    child: const Text('Cancelar'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {},
+                    /*{
+                      //ao adicionar, criar um novo objeto MyCard com todos os atributos recebidos.
+                      //setState para atualizar a lista.
+                      setState(() {
+                        MyCard mycard = MyCard(
+                          defaultImages: [
+                            "lib/assets/images/festa.png",
+                            "lib/assets/images/festa2.png",
+                          ],
+                          allImages: selectedImages,
+                          images: selectedImages,
+                          nome: nomeController.text,
+                          lugar: lugarController.text,
+                          numero: numeroController.text,
+                          email: emailController
+                              .text, // Adicionando o atributo email, caso ele exista no MyCard
+                          selectedSpaceType:
+                              selectedSpaceType, // Tipo de espaço selecionado
+                          //para mostrar no mapa
+                          location: selectedLocation,
+                          //para mostrar o nome
+                          selectedLocationName: selectedLocationName,
+                          servicos: selectedOptions, // Serviços selecionados
+                          descricao: spaceDescription, // Descrição do espaço
+                        );
+
+                        myCards.add(mycard);
+                      });
+                      Navigator.pop(context);
+                    },*/
+                    child: const Text('Adicionar'),
                   ),
                 ],
-              );
-            },
+              ),
+            ],
           ),
-          actions: [
-            Row(
-              children: [
-                ElevatedButton(
-                  child: const Text('Cancelar'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                ElevatedButton(
-                  onPressed: _openImagePicker,
-                  child: const Text('Escolher Fotos'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    //ao adicionar, criar um novo objeto MyCard com todos os atributos recebidos.
-                    //setState para atualizar a lista.
-                    setState(() {
-                      MyCard mycard = MyCard(
-                        defaultImages: [
-                          "lib/assets/images/festa.png",
-                          "lib/assets/images/festa2.png",
-                        ],
-                        allImages: selectedImages,
-                        images: selectedImages,
-                        nome: nomeController.text,
-                        lugar: lugarController.text,
-                        numero: numeroController.text,
-                        //para mostrar no mapa
-                        location: selectedLocation,
-                        //para mostrar o nome
-                        selectedLocationName: selectedLocationName,
-                      );
-                      myCards.add(mycard);
-                    });
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Adicionar'),
-                ),
-              ],
-            ),
-          ],
         );
       },
     );
@@ -328,6 +621,7 @@ pelo retorno da funcao getLocationName*/
   }
 
   void verDisponibilidade(int index) {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -447,6 +741,10 @@ pelo retorno da funcao getLocationName*/
                               child: const Text('Ver Calendário'),
                             ),
                             ElevatedButton(
+                              onPressed: () => {},
+                              child: const Text('Ver calendario 2'),
+                            ),
+                            ElevatedButton(
                               onPressed: () => verNoMapa(index),
                               child: const Text('Ver no mapa'),
                             ),
@@ -459,7 +757,7 @@ pelo retorno da funcao getLocationName*/
                             //ver fotos com zoom
                             ElevatedButton(
                               onPressed: () => verFotos2(index),
-                              child: const Text('Ver mais fotos'),
+                              child: const Text('Ver mais fotos 2'),
                             ),
                             ElevatedButton(
                               onPressed: () {},
