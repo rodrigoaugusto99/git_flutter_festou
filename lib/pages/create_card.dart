@@ -18,27 +18,47 @@ class CreateCard extends StatefulWidget {
 }
 
 class _CreateCardState extends State<CreateCard> {
+  //no escopo do ESTADO pois são propriedades que precisam ser atualizadas
+
+  //O CARD A SER CRIADO
   MyCard? mycard;
-  // Valor inicial para o DropdownButton
+
+  /*--------------------------------------------------*/
+  /*---------------ELEMENTOS DO CARD-----------------*/
+  /*--------------------------------------------------*/
+
+  //controllers dos textfields DO CARD
+  final nomeController = TextEditingController();
+  final lugarController = TextEditingController();
+  final numeroController = TextEditingController();
+  final emailController = TextEditingController();
+
+  //local inicial do mapa(atualizar para o local do usuario)
+  LatLng selectedLocation = const LatLng(-22.9259020, -43.1784924);
+
+  //valor inicial do tipo de espaço
   String selectedSpaceType = 'Casa';
 
-  // Valor inicial para o TextField
-  String spaceDescription = '';
+  //valor inicial da disponibilidade
+  String selectedAvailability = 'Todos os dias';
 
-  // Opções selecionadas para o que a casa oferece
-  List<String> selectedOptions = [];
+  //opções selecionadas para os servicos disponiveis
+  List<String> selectedServices = [];
 
-  //no escopo do ESTADO pois são propriedades que precisam ser atualizadas
-  List<MyCard> myCards = [];
-
-// Inicialize a lista de imagens selecionadas
+  //lista de imagens selecionadas
   List<File> selectedImages = [];
 
-/*tem que ser variavel de estado pra ser usada lá no build
-não pode estar dentro da função*/
+  //nome do local
   String selectedLocationName = '';
 
-  // Opções disponíveis para o que a casa oferece
+  //valor inicial para o TextField
+  String spaceDescription = '';
+
+  /*------------------------------------------------*/
+  /*---------------ELEMENTOS DE SELEÇÃO-------------*/
+  /*------------------------------------------------*/
+
+  //Opções para os servicos disponiveis
   List<MultiSelectItem<String>> availableServices = [
     MultiSelectItem<String>('Cozinha', 'Cozinha'),
     MultiSelectItem<String>('Garçons', 'Garçons'),
@@ -52,12 +72,23 @@ não pode estar dentro da função*/
     MultiSelectItem<String>('Bar', 'Bar'),
   ];
 
-  LatLng selectedLocation = const LatLng(-22.9259020, -43.1784924);
+  //Opções para os tipos de espaçocs
+  List<String> availableTypes = [
+    'Casa',
+    'Apartamento',
+    'Chácara',
+    'Salão',
+  ];
 
-  final nomeController = TextEditingController();
-  final lugarController = TextEditingController();
-  final numeroController = TextEditingController();
-  final emailController = TextEditingController();
+  List<String> availability = [
+    'Todos os dias',
+    'Dias de semana',
+    'Fins de semana',
+  ];
+
+  /*--------------------------------------------------*/
+  /*---------------------FUNÇÕES-------------------- */
+  /*--------------------------------------------------*/
 
   //função para lidar com a seleção de imagens
   Future<List<File>> _pickImages() async {
@@ -112,7 +143,8 @@ não pode estar dentro da função*/
     numeroController.dispose();
   }
 
-  void _showSpaceTypeDialog() {
+  //função para selecionar o tipo de espaço
+  /*void _showSpaceTypeDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -125,8 +157,7 @@ não pode estar dentro da função*/
                 selectedSpaceType = newValue!;
               });
             },
-            items: <String>['Casa', 'Apartamento', 'Chácara', 'Salão']
-                .map<DropdownMenuItem<String>>((String value) {
+            items: availableTypes.map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
                 child: Text(value),
@@ -150,8 +181,49 @@ não pode estar dentro da função*/
         );
       },
     );
-  }
+  }*/
 
+  //função
+  /*void _showAvailabilityDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Selecione a disponibilidade'),
+          content: DropdownButton<String>(
+            value: selectedAvailability,
+            onChanged: (String? newValue) {
+              setState(() {
+                selectedAvailability = newValue!;
+              });
+            },
+            items: availability.map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Selecionar'),
+            ),
+          ],
+        );
+      },
+    );
+  }*/
+
+  //função para selecionar os serviços disponiveis
   void _showServicesDialog() {
     showDialog(
       context: context,
@@ -163,10 +235,10 @@ não pode estar dentro da função*/
             child: MultiSelectDialogField<String>(
               buttonText: const Text('Servicos'),
               items: availableServices,
-              initialValue: selectedOptions,
+              initialValue: selectedServices,
               onConfirm: (values) {
                 setState(() {
-                  selectedOptions = values;
+                  selectedServices = values;
                 });
                 Navigator.of(context).pop();
               },
@@ -225,18 +297,41 @@ não pode estar dentro da função*/
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton.icon(
-                    onPressed: _showSpaceTypeDialog,
-                    icon: const Icon(Icons.category),
-                    label: const Text('Tipo'),
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.blue,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
+                  DropdownButton<String>(
+                    value: selectedSpaceType,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedSpaceType = newValue!;
+                      });
+                    },
+                    items: availableTypes
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
                   ),
+                  DropdownButton<String>(
+                    value: selectedAvailability,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedAvailability = newValue!;
+                      });
+                    },
+                    items: availability
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
                   ElevatedButton.icon(
                     onPressed: _showServicesDialog,
                     icon: const Icon(Icons.settings),
@@ -334,30 +429,28 @@ não pode estar dentro da função*/
                     onPressed: () {
                       //ao adicionar, criar um novo objeto MyCard com todos os atributos recebidos.
                       //setState para atualizar a lista.
-                      setState(() {
-                        MyCard mycard = MyCard(
-                          defaultImages: [
-                            "lib/assets/images/festa.png",
-                            "lib/assets/images/festa2.png",
-                          ],
-                          allImages: selectedImages,
-                          images: selectedImages,
-                          nome: nomeController.text,
-                          lugar: lugarController.text,
-                          numero: numeroController.text,
-                          email: emailController
-                              .text, // Adicionando o atributo email, caso ele exista no MyCard
-                          selectedSpaceType:
-                              selectedSpaceType, // Tipo de espaço selecionado
-                          //para mostrar no mapa
-                          location: selectedLocation,
-                          //para mostrar o nome
-                          selectedLocationName: selectedLocationName,
-                          servicos: selectedOptions, // Serviços selecionados
-                          descricao: spaceDescription, // Descrição do espaço
-                        );
-                        myCards.add(mycard);
-                      });
+
+                      MyCard mycard = MyCard(
+                        defaultImages: [
+                          "lib/assets/images/festa.png",
+                          "lib/assets/images/festa2.png",
+                        ],
+                        allImages: selectedImages,
+                        images: selectedImages,
+                        nome: nomeController.text,
+                        lugar: lugarController.text,
+                        numero: numeroController.text,
+                        email: emailController
+                            .text, // Adicionando o atributo email, caso ele exista no MyCard
+                        selectedSpaceType:
+                            selectedSpaceType, // Tipo de espaço selecionado
+                        //para mostrar no mapa
+                        location: selectedLocation,
+                        //para mostrar o nome
+                        selectedLocationName: selectedLocationName,
+                        servicos: selectedServices, // Serviços selecionados
+                        descricao: spaceDescription, // Descrição do espaço
+                      );
                       Navigator.pop(context, mycard);
                     },
                     child: const Text('Adicionar'),
