@@ -16,6 +16,10 @@ class _LocadorPageState extends State<LocadorPage> {
   //no escopo do ESTADO pois são propriedades que precisam ser atualizadas
   List<MyCard> myCards = [];
 
+  List<MyCard> filteredCards = [];
+
+  bool isFiltered = false;
+
   /*----------------BOTÕES DO CARD------------*/
   void verNoMapa(int index) {
     showDialog(
@@ -139,7 +143,7 @@ class _LocadorPageState extends State<LocadorPage> {
     );
   }
 
-  void maisDetalhes(int index) {
+  void maisDetalhes(int index, List<MyCard> cardsList) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -158,7 +162,7 @@ class _LocadorPageState extends State<LocadorPage> {
                 'Espaço:',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              Text(myCards[index].selectedSpaceType),
+              Text(cardsList[index].selectedSpaceType),
               const SizedBox(height: 8),
               const Text(
                 'Servicos disponiveis:',
@@ -167,7 +171,7 @@ class _LocadorPageState extends State<LocadorPage> {
               // Loop forEach para mostrar cada serviço em um Text
               // Obs: Pode usar ListView.builder caso haja muitos itens
               // para melhorar a rolagem.
-              ...myCards[index].servicos.map((servico) => Text(servico)),
+              ...cardsList[index].servicos.map((servico) => Text(servico)),
             ],
           ),
           actions: [
@@ -183,76 +187,141 @@ class _LocadorPageState extends State<LocadorPage> {
     );
   }
 
+  void clearFilter() {
+    setState(() {
+      isFiltered = false; // Definir como false para remover os filtros
+    });
+  }
+
+  void showFilterAlertDialog(BuildContext context) {
+    List<String> filterTypes = [
+      'Casa',
+      'Apartamento',
+      'Chácara',
+      'Salão',
+    ];
+    String spaceTypeToSearch = 'Casa'; // Valor inicial do DropdownButton
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Filtrar por Tipo de Espaço'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Selecione o Tipo de Espaço:'),
+              DropdownButton<String>(
+                value: spaceTypeToSearch,
+                onChanged: (String? newValue) {
+                  spaceTypeToSearch =
+                      newValue!; // Atualizar a variável diretamente
+                },
+                items:
+                    filterTypes.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                // Aqui você pode realizar a filtragem da lista de cards
+                // com base no spaceTypeToSearch ou qualquer outro atributo que desejar
+                applyFilter(spaceTypeToSearch);
+                Navigator.of(context).pop();
+              },
+              child: const Text('Filtrar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void applyFilter(String spaceType) {
+    setState(() {
+      if (spaceType.isNotEmpty) {
+        filteredCards = myCards
+            .where((card) => card.selectedSpaceType == spaceType)
+            .toList();
+        isFiltered = true; // Definir como true quando há um filtro aplicado
+      } else {
+        filteredCards = []; // Limpar a lista de cards filtrados
+        isFiltered = false; // Definir como false quando não há filtro aplicado
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.deepPurpleAccent,
       appBar: AppBar(
         title: const Text('Meu Perfil Locador'),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text('Voltar'),
-          ),
-        ],
+        centerTitle: true,
       ),
       body: Column(
         children: [
-          Container(
-            color: Colors.blue[800],
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
-                  onPressed: () {},
-                  child: const Text(
-                    'Meus espaços cadastrados',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w400),
-                  ),
-                ),
-
-                //botao para abrir janela de criar card
-                SizedBox(
-                  height: 25,
-                  child: FloatingActionButton(
-                    backgroundColor: Colors.green,
-                    elevation: 0,
-                    onPressed: () async {
-                      MyCard? newCard = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const CreateCard(),
-                        ),
-                      );
-
-                      if (newCard != null) {
-                        setState(() {
-                          myCards.add(newCard);
-                        });
-                      }
-                    },
-                    child: const Icon(
-                      Icons.add,
-                      size: 15,
-                    ),
-                  ),
-                ),
-              ],
+          TextButton(
+            onPressed: () {},
+            child: const Text(
+              'Meus espaços cadastrados',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w400),
             ),
+          ),
+
+          //botao para abrir janela de criar card
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  MyCard? newCard = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CreateCard(),
+                    ),
+                  );
+
+                  if (newCard != null) {
+                    setState(() {
+                      myCards.add(newCard);
+                    });
+                  }
+                },
+                child: const Text('Criar card'),
+              ),
+              ElevatedButton(
+                onPressed: () => showFilterAlertDialog(context),
+                child: const Text('filtrar'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  clearFilter();
+                },
+                child: const Text('Limpar Filtros'),
+              ),
+            ],
           ),
           Expanded(
             //EXPANDED PARA A LISTVIEW PEGAR O RESTANTE E N DAR OVERFLOW
             child: ListView.separated(
               // Lista geral - do tamanho da lista dos cards
-              itemCount: myCards.length,
+              itemCount: isFiltered ? filteredCards.length : myCards.length,
               separatorBuilder: (context, index) =>
                   const SizedBox(height: 10), // Espaço entre os itens da lista
               itemBuilder: (context, index) {
+                MyCard card =
+                    isFiltered ? filteredCards[index] : myCards[index];
                 return Card(
                   elevation: 10,
                   margin:
@@ -265,14 +334,13 @@ class _LocadorPageState extends State<LocadorPage> {
                         child: Swiper(
                           //esquema para o swiper exibir apenas as 4 primeiras imagens
                           //se o numero de imagens for maior q 4, o tamanho da lista é 4
-                          itemCount: myCards[index].images.length > 4
-                              ? 4
-                              : myCards[index].images.length,
+                          itemCount:
+                              card.images.length > 4 ? 4 : card.images.length,
                           autoplay: true,
                           pagination: const SwiperPagination(),
                           itemBuilder: (context, itemIndex) {
                             return Image.file(
-                              myCards[index].images[itemIndex],
+                              card.images[itemIndex],
                               fit: BoxFit.cover,
                             );
                           },
@@ -292,13 +360,14 @@ class _LocadorPageState extends State<LocadorPage> {
                               children: [
                                 // Nome do espaço com fontsize maior
                                 Text(
-                                  myCards[index].nome,
+                                  card.nome,
                                   style: const TextStyle(
                                       fontSize: 24,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 ElevatedButton(
-                                  onPressed: () => maisDetalhes(index),
+                                  onPressed: () => maisDetalhes(index,
+                                      isFiltered ? filteredCards : myCards),
                                   child: const Text('Mais Detalhes'),
                                 ),
                               ],
@@ -306,13 +375,13 @@ class _LocadorPageState extends State<LocadorPage> {
                             const SizedBox(height: 8),
                             // Lugar do espaço com fontsize menor
                             Text(
-                              myCards[index].lugar,
+                              card.lugar,
                               style: const TextStyle(fontSize: 16),
                             ),
                             const SizedBox(height: 16),
                             // Descrição do espaço
                             Text(
-                              'Descrição: ${myCards[index].descricao}',
+                              'Descrição: ${card.descricao}',
                               style: const TextStyle(fontSize: 18),
                             ),
                             const SizedBox(height: 16),
@@ -325,13 +394,13 @@ class _LocadorPageState extends State<LocadorPage> {
                                   children: [
                                     const Text('Contato:'),
                                     Text(
-                                      myCards[index].numero,
+                                      card.numero,
                                       style:
                                           const TextStyle(color: Colors.grey),
                                     ),
                                     const SizedBox(width: 16),
                                     Text(
-                                      myCards[index].email,
+                                      card.email,
                                       style:
                                           const TextStyle(color: Colors.grey),
                                     ),
