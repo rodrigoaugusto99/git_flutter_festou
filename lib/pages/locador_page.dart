@@ -21,7 +21,9 @@ class _LocadorPageState extends State<LocadorPage> {
   bool isFiltered = false;
 
   /*----------------BOTÕES DO CARD------------*/
-  void verNoMapa(int index) {
+
+  //não precisam de int index pois cada card já significa filteredCards[index] ou myCards[index]
+  void verNoMapa(MyCard card) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -34,13 +36,13 @@ class _LocadorPageState extends State<LocadorPage> {
               /*vai abrir inicialmente na posição cadastrada do card
                                             (propriedade location(LatLng) do card atual)*/
               initialCameraPosition: CameraPosition(
-                target: myCards[index].location,
+                target: card.location,
                 zoom: 15.0,
               ),
               markers: {
                 Marker(
                   markerId: const MarkerId('location'),
-                  position: myCards[index].location,
+                  position: card.location,
                 ),
               },
             ),
@@ -58,7 +60,7 @@ class _LocadorPageState extends State<LocadorPage> {
     );
   }
 
-  void verFotos(int index) {
+  void verFotos(MyCard card) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -69,10 +71,10 @@ class _LocadorPageState extends State<LocadorPage> {
             width: MediaQuery.of(context).size.width * 0.9,
             //cada card terá um botao com esse widget
             child: Swiper(
-              itemCount: myCards[index].allImages.length,
+              itemCount: card.allImages.length,
               itemBuilder: (BuildContext context, int itemIndex) {
                 return Image.file(
-                  myCards[index].allImages[itemIndex],
+                  card.allImages[itemIndex],
                   fit: BoxFit.cover,
                 );
               },
@@ -95,7 +97,7 @@ class _LocadorPageState extends State<LocadorPage> {
     );
   }
 
-  void verFotos2(int index) {
+  void verFotos2(MyCard card) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -106,7 +108,7 @@ class _LocadorPageState extends State<LocadorPage> {
               width: MediaQuery.of(context).size.width * 0.9,
               //cada card terá um botao com esse widget
               child: GridView.builder(
-                itemCount: myCards[index].allImages.length,
+                itemCount: card.allImages.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2, // Duas imagens por linha
                 ),
@@ -118,13 +120,13 @@ class _LocadorPageState extends State<LocadorPage> {
                         MaterialPageRoute(
                           builder: (context) => PhotoView(
                               initialScale: PhotoViewComputedScale.covered,
-                              imageProvider: FileImage(
-                                  myCards[index].allImages[itemIndex])),
+                              imageProvider:
+                                  FileImage(card.allImages[itemIndex])),
                         ),
                       );
                     },
                     child: Image.file(
-                      myCards[index].allImages[itemIndex],
+                      card.allImages[itemIndex],
                       fit: BoxFit.cover,
                     ),
                   );
@@ -143,7 +145,7 @@ class _LocadorPageState extends State<LocadorPage> {
     );
   }
 
-  void maisDetalhes(int index, List<MyCard> cardsList) {
+  void maisDetalhes(MyCard card) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -162,7 +164,7 @@ class _LocadorPageState extends State<LocadorPage> {
                 'Espaço:',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              Text(cardsList[index].selectedSpaceType),
+              Text(card.selectedSpaceType),
               const SizedBox(height: 8),
               const Text(
                 'Servicos disponiveis:',
@@ -171,7 +173,7 @@ class _LocadorPageState extends State<LocadorPage> {
               // Loop forEach para mostrar cada serviço em um Text
               // Obs: Pode usar ListView.builder caso haja muitos itens
               // para melhorar a rolagem.
-              ...cardsList[index].servicos.map((servico) => Text(servico)),
+              ...card.servicos.map((servico) => Text(servico)),
             ],
           ),
           actions: [
@@ -315,13 +317,16 @@ class _LocadorPageState extends State<LocadorPage> {
           Expanded(
             //EXPANDED PARA A LISTVIEW PEGAR O RESTANTE E N DAR OVERFLOW
             child: ListView.separated(
-              // Lista geral - do tamanho da lista dos cards
+//listview terá o tamanho da lista de acordo com o BOOL
               itemCount: isFiltered ? filteredCards.length : myCards.length,
               separatorBuilder: (context, index) =>
                   const SizedBox(height: 10), // Espaço entre os itens da lista
               itemBuilder: (context, index) {
+//cada card terá o index da respectiva lista de acordo com o BOOL
                 MyCard card =
                     isFiltered ? filteredCards[index] : myCards[index];
+/*agora, todos os cards que serão criados, ao construir cada elemento, como atributos e funcoes,
+eles serao feitos usando o  CARD + atributo OU passando o CARD como parametro da função(verfotos, vermapa, etc) */
                 return Card(
                   elevation: 10,
                   margin:
@@ -365,9 +370,9 @@ class _LocadorPageState extends State<LocadorPage> {
                                       fontSize: 24,
                                       fontWeight: FontWeight.bold),
                                 ),
+                                //mandar a lista correta com base no estado do filtro
                                 ElevatedButton(
-                                  onPressed: () => maisDetalhes(index,
-                                      isFiltered ? filteredCards : myCards),
+                                  onPressed: () => maisDetalhes(card),
                                   child: const Text('Mais Detalhes'),
                                 ),
                               ],
@@ -416,21 +421,21 @@ class _LocadorPageState extends State<LocadorPage> {
                                 ElevatedButton(
                                   onPressed: () {
                                     // Implemente a função para exibir as fotos
-                                    verFotos(index);
+                                    verFotos(card);
                                   },
                                   child: const Text('Ver Fotos'),
                                 ),
                                 ElevatedButton(
                                   onPressed: () {
                                     // Implemente a função para exibir as fotos
-                                    verFotos2(index);
+                                    verFotos2(card);
                                   },
                                   child: const Text('Ver Fotos'),
                                 ),
                                 ElevatedButton(
                                   onPressed: () {
                                     // Implemente a função para exibir a localização no Google Maps
-                                    verNoMapa(index);
+                                    verNoMapa(card);
                                   },
                                   child: const Text('Ver Localização'),
                                 ),
