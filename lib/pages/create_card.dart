@@ -8,6 +8,7 @@ import 'package:multi_select_flutter/util/multi_select_item.dart';
 
 import '../components/my_textfields.dart';
 import '../helpers/google_maps.dart';
+import '../model/card_reserve.dart';
 import '../model/my_card.dart';
 
 class CreateCard extends StatefulWidget {
@@ -22,6 +23,8 @@ class _CreateCardState extends State<CreateCard> {
 
   //O CARD A SER CRIADO
   MyCard? mycard;
+  List<Reserva> reservas = [];
+  List<DateTime> diasJaReservados = [];
 
   /*--------------------------------------------------*/
   /*---------------ELEMENTOS DO CARD-----------------*/
@@ -213,6 +216,13 @@ class _CreateCardState extends State<CreateCard> {
                 controller: emailController,
                 hintText: 'Email',
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: const [
+                  Text('Tipo de espaço'),
+                  Text('Disponibilidade'),
+                ],
+              ),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -351,26 +361,29 @@ class _CreateCardState extends State<CreateCard> {
                       //setState para atualizar a lista.
 
                       MyCard mycard = MyCard(
-                        defaultImages: [
-                          "lib/assets/images/festa.png",
-                          "lib/assets/images/festa2.png",
-                        ],
-                        allImages: selectedImages,
-                        images: selectedImages,
-                        nome: nomeController.text,
-                        lugar: lugarController.text,
-                        numero: numeroController.text,
-                        email: emailController
-                            .text, // Adicionando o atributo email, caso ele exista no MyCard
-                        selectedSpaceType:
-                            selectedSpaceType, // Tipo de espaço selecionado
-                        //para mostrar no mapa
-                        location: selectedLocation,
-                        //para mostrar o nome
-                        selectedLocationName: selectedLocationName,
-                        servicos: selectedServices, // Serviços selecionados
-                        descricao: spaceDescription, // Descrição do espaço
-                      );
+                          defaultImages: [
+                            "lib/assets/images/festa.png",
+                            "lib/assets/images/festa2.png",
+                          ],
+                          allImages: selectedImages,
+                          images: selectedImages,
+                          nome: nomeController.text,
+                          lugar: lugarController.text,
+                          numero: numeroController.text,
+                          email: emailController
+                              .text, // Adicionando o atributo email, caso ele exista no MyCard
+                          selectedSpaceType:
+                              selectedSpaceType, // Tipo de espaço selecionado
+                          //para mostrar no mapa
+                          location: selectedLocation,
+                          //para mostrar o nome
+                          selectedLocationName: selectedLocationName,
+                          servicos: selectedServices, // Serviços selecionados
+                          descricao: spaceDescription, // Descrição do espaço
+                          selectedAvailability: selectedAvailability,
+                          reservas: reservas,
+                          markedDates: []);
+
                       Navigator.pop(context, mycard);
                     },
                     child: const Text('Adicionar'),

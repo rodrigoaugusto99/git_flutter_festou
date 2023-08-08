@@ -1,5 +1,6 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/pages/reserva_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../model/my_card.dart';
 import 'create_card.dart';
@@ -160,20 +161,62 @@ class _LocadorPageState extends State<LocadorPage> {
               ),
 
               const SizedBox(height: 8),
-              const Text(
-                'Espaço:',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Espaço',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(card.selectedSpaceType)
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Disponibilidade',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(card.selectedAvailability)
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              Text(card.selectedSpaceType),
-              const SizedBox(height: 8),
+              const Divider(
+                height: 10,
+                thickness: 2,
+              ),
               const Text(
                 'Servicos disponiveis:',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               // Loop forEach para mostrar cada serviço em um Text
               // Obs: Pode usar ListView.builder caso haja muitos itens
               // para melhorar a rolagem.
               ...card.servicos.map((servico) => Text(servico)),
+              const Divider(
+                height: 10,
+                thickness: 2,
+              ),
+              const Text(
+                'Reservas:',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: card.reservas.map((reserva) {
+                  return Text(reserva.toString());
+                }).toList(),
+              )
             ],
           ),
           actions: [
@@ -260,6 +303,31 @@ class _LocadorPageState extends State<LocadorPage> {
     });
   }
 
+  /*void fazerReserva(
+    MyCard cardSelecionado,
+    int diaDoMes,
+    DateTime dataInicio,
+    DateTime dataFim,
+  ) {
+    bool isDisponivel =
+        verificarDisponibilidade(cardSelecionado, dataInicio, dataFim);
+
+    if (isDisponivel) {
+      Reserva novaReserva = Reserva(
+        diaDoMes: diaDoMes,
+        dataInicio: dataInicio,
+        dataFim: dataFim,
+      );
+
+      cardSelecionado.reserva = novaReserva;
+      // Resto do código para atualizar a interface do usuário, etc.
+    } else {
+      print('O espaço não está disponível nesse horário.');
+    }
+  }
+
+  void verificarDisponibilidade() {}*/
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -287,13 +355,14 @@ class _LocadorPageState extends State<LocadorPage> {
             children: [
               ElevatedButton(
                 onPressed: () async {
+                  //esperando o retorno do CreateCard para atribuir ao newCard
                   MyCard? newCard = await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const CreateCard(),
                     ),
                   );
-
+                  //se não é null, adicione na  lista
                   if (newCard != null) {
                     setState(() {
                       myCards.add(newCard);
@@ -333,7 +402,8 @@ eles serao feitos usando o  CARD + atributo OU passando o CARD como parametro da
                       const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                   child: Column(
                     children: [
-                      SizedBox(
+                      Container(
+                        color: Colors.black87,
                         height: MediaQuery.of(context).size.height *
                             0.25, // Defina uma altura fixa para o Container
                         child: Swiper(
@@ -356,6 +426,57 @@ eles serao feitos usando o  CARD + atributo OU passando o CARD como parametro da
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            ElevatedButton(
+                              onPressed: () async {
+                                //esperando o retorno do CreateCard para atribuir ao newCard
+                                /*se eu esperasse um retorno, como a reserva, eu faria
+                 Reserva newReserva = await Navigator.push...
+                 e poderia usar esse  valor retornado(newReserva)
+                 para adicionar à lista de Reservas do card
+                 (( if (newReserva != null) {
+                    setState(() {
+                      card.reservas.add(newReserva);
+                    });
+                  }
+                  - para a ReservaPage retornar o valor, passariamos como parametro 
+                  atraves do Navigator.pop(context, NEWCARD)
+                  - para a ReservaPage ter o poder de atribuir a reserva ao card lá mesmo,
+                  precisamos criar um constutor na ReservaPage para ela receber um card,
+                  e mandar esse card por parametro ao chamar a ResersaPage
+                  -obviamente, se a reserva for instanciada nessa pagina, conforme
+                  mostrado acima, não precisaria passar o card como argumento 
+                  na chamada da ReservaPage, pois ela apenas seria usada pra retornar o
+                  valor de newReserva.*/
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ReservaPage(
+                                        card: card,
+                                        markedDates: card.markedDates),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Colors.blue, // Cor de fundo do botão
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 10,
+                                    horizontal: 18), // Espaçamento interno
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      10), // Borda arredondada do botão
+                                ),
+                                elevation: 4, // Elevação do botão
+                              ),
+                              child: const Text(
+                                'Fazer Reserva',
+                                style: TextStyle(
+                                  fontSize: 18, // Tamanho da fonte do texto
+                                  fontWeight: FontWeight.bold, // Negrito
+                                  color: Colors.white, // Cor do texto
+                                ),
+                              ),
+                            ),
                             //index do elemento de myCards, propriedade nome.
                             /*se myCards fosse uma lista de lista, seria myCards[index][0] 
             (como é no caso do myCards[index].images[itemIndex],)
