@@ -6,10 +6,8 @@ import '../model/card_reserve.dart';
 
 class ReservaPage extends StatefulWidget {
   final MyCard card;
-  late List<DateTime> markedDates;
 
-  ReservaPage({Key? key, required this.card, required this.markedDates})
-      : super(key: key);
+  const ReservaPage({Key? key, required this.card}) : super(key: key);
 
   @override
   _ReservaPageState createState() => _ReservaPageState();
@@ -21,6 +19,7 @@ class _ReservaPageState extends State<ReservaPage> {
 // Função para marcar as datas já reservadas na lista markedDates
   List<DateTime> markReservedDates(List<Reserva> reservas) {
     List<DateTime> dates = [];
+    DateTime today = DateTime.now();
 
     for (var reserva in reservas) {
       if (reserva.diaDoMes.isAfter(today)) {
@@ -34,9 +33,9 @@ class _ReservaPageState extends State<ReservaPage> {
   @override
   void initState() {
     super.initState();
-    widget.markedDates = markReservedDates(widget.card.reservas);
+    widget.card.markedDates = markReservedDates(widget.card.reservas);
     print(
-        "markedDates: ${widget.markedDates}"); // Chama a função para marcar as datas reservadas
+        "markedDates: ${widget.card.markedDates}"); // Chama a função para marcar as datas reservadas
   }
 
   //função chamada quando uma data é selecionada
@@ -145,7 +144,7 @@ class _ReservaPageState extends State<ReservaPage> {
                 calendarBuilders: CalendarBuilders(
                   // Customize the marked day
                   markerBuilder: (context, day, events) {
-                    if (widget.markedDates.contains(day)) {
+                    if (widget.card.markedDates.contains(day)) {
                       return Positioned(
                         bottom: 0,
                         child: Container(
@@ -184,7 +183,8 @@ class _ReservaPageState extends State<ReservaPage> {
                 onPressed: () {
                   // Verifica se já existe uma reserva para o dia selecionado
                   bool hasExistingReserva = widget.card.reservas
-                      .any((reserva) => reserva.diaDoMes == today.day);
+                      //DateTime tem a propriedade.day para capturar o DIA.
+                      .any((reserva) => reserva.diaDoMes.day == today.day);
 
                   if (hasExistingReserva) {
                     // Mostra uma mensagem informando que já existe uma reserva para o dia selecionado

@@ -19,8 +19,9 @@ class MyCard {
   List<String> servicos; // Serviços oferecidos pelo espaço
   String descricao; // Descrição do espaço
   String selectedAvailability;
-  List<Reserva> reservas = [];
+  List<Reserva> reservas;
   List<DateTime> markedDates;
+  List<String> comments;
 
   MyCard({
     required this.defaultImages,
@@ -38,5 +39,6 @@ class MyCard {
     required this.selectedAvailability,
     required this.reservas,
     required this.markedDates,
+    required this.comments,
   });
 }

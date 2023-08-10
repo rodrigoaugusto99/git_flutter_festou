@@ -232,6 +232,40 @@ class _LocadorPageState extends State<LocadorPage> {
     );
   }
 
+  void verComentarios(MyCard card) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Comentarios'),
+          content: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.9,
+            width: MediaQuery.of(context).size.width * 0.9,
+            //cada card terá um botao com esse widget
+            child: ListView.separated(
+                separatorBuilder: (context, index) => const SizedBox(
+                    height: 10), // Espaço entre os itens da lista
+                itemBuilder: (context, index) {
+                  return Container(
+                    height: 50,
+                    color: Colors.orange,
+                  );
+                },
+                itemCount: 3),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Fechar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void clearFilter() {
     setState(() {
       isFiltered = false; // Definir como false para remover os filtros
@@ -303,30 +337,66 @@ class _LocadorPageState extends State<LocadorPage> {
     });
   }
 
-  /*void fazerReserva(
-    MyCard cardSelecionado,
-    int diaDoMes,
-    DateTime dataInicio,
-    DateTime dataFim,
-  ) {
-    bool isDisponivel =
-        verificarDisponibilidade(cardSelecionado, dataInicio, dataFim);
+  void showRatingAlertDialog(MyCard card) {
+    int rating = 0;
+    TextEditingController feedbackController = TextEditingController();
 
-    if (isDisponivel) {
-      Reserva novaReserva = Reserva(
-        diaDoMes: diaDoMes,
-        dataInicio: dataInicio,
-        dataFim: dataFim,
-      );
-
-      cardSelecionado.reserva = novaReserva;
-      // Resto do código para atualizar a interface do usuário, etc.
-    } else {
-      print('O espaço não está disponível nesse horário.');
-    }
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Deixe seu feedback'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: feedbackController,
+                maxLines: 5,
+                decoration: const InputDecoration(
+                  hintText: 'Digite aqui seu feedback...',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(5, (index) {
+                  return IconButton(
+                    onPressed: () {
+                      setState(() {
+                        rating = index + 1;
+                      });
+                    },
+                    icon: Icon(
+                      index < rating ? Icons.star : Icons.star_border,
+                      color: Colors.amber,
+                    ),
+                  );
+                }),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                String feedbackText = feedbackController.text;
+                // Você pode usar o valor de _rating e feedbackText como necessário
+                // para enviar o feedback e a classificação para onde desejar.
+                Navigator.of(context).pop();
+              },
+              child: const Text('Enviar'),
+            ),
+          ],
+        );
+      },
+    );
   }
-
-  void verificarDisponibilidade() {}*/
 
   @override
   Widget build(BuildContext context) {
@@ -426,10 +496,14 @@ eles serao feitos usando o  CARD + atributo OU passando o CARD como parametro da
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            ElevatedButton(
-                              onPressed: () async {
-                                //esperando o retorno do CreateCard para atribuir ao newCard
-                                /*se eu esperasse um retorno, como a reserva, eu faria
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    //esperando o retorno do CreateCard para atribuir ao newCard
+                                    /*se eu esperasse um retorno, como a reserva, eu faria
                  Reserva newReserva = await Navigator.push...
                  e poderia usar esse  valor retornado(newReserva)
                  para adicionar à lista de Reservas do card
@@ -447,35 +521,45 @@ eles serao feitos usando o  CARD + atributo OU passando o CARD como parametro da
                   mostrado acima, não precisaria passar o card como argumento 
                   na chamada da ReservaPage, pois ela apenas seria usada pra retornar o
                   valor de newReserva.*/
-                                await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ReservaPage(
-                                        card: card,
-                                        markedDates: card.markedDates),
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ReservaPage(card: card),
+                                      ),
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Colors.blue, // Cor de fundo do botão
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10,
+                                        horizontal: 18), // Espaçamento interno
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          10), // Borda arredondada do botão
+                                    ),
+                                    elevation: 4, // Elevação do botão
                                   ),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Colors.blue, // Cor de fundo do botão
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10,
-                                    horizontal: 18), // Espaçamento interno
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      10), // Borda arredondada do botão
+                                  child: const Text(
+                                    'Fazer Reserva',
+                                    style: TextStyle(
+                                      fontSize: 18, // Tamanho da fonte do texto
+                                      fontWeight: FontWeight.bold, // Negrito
+                                      color: Colors.white, // Cor do texto
+                                    ),
+                                  ),
                                 ),
-                                elevation: 4, // Elevação do botão
-                              ),
-                              child: const Text(
-                                'Fazer Reserva',
-                                style: TextStyle(
-                                  fontSize: 18, // Tamanho da fonte do texto
-                                  fontWeight: FontWeight.bold, // Negrito
-                                  color: Colors.white, // Cor do texto
+                                Column(
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () =>
+                                          showRatingAlertDialog(card),
+                                      child: const Text('Avalie'),
+                                    )
+                                  ],
                                 ),
-                              ),
+                              ],
                             ),
                             //index do elemento de myCards, propriedade nome.
                             /*se myCards fosse uma lista de lista, seria myCards[index][0] 
@@ -561,6 +645,11 @@ eles serao feitos usando o  CARD + atributo OU passando o CARD como parametro da
                                   child: const Text('Ver Localização'),
                                 ),
                               ],
+                            ),
+                            ElevatedButton.icon(
+                              onPressed: () => verComentarios(card),
+                              icon: const Icon(Icons.comment),
+                              label: const Text('Comments'),
                             ),
                           ],
                         ),

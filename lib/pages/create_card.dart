@@ -24,7 +24,8 @@ class _CreateCardState extends State<CreateCard> {
   //O CARD A SER CRIADO
   MyCard? mycard;
   List<Reserva> reservas = [];
-  List<DateTime> diasJaReservados = [];
+  List<DateTime> markedDates = [];
+  List<String> comments = [];
 
   /*--------------------------------------------------*/
   /*---------------ELEMENTOS DO CARD-----------------*/
@@ -382,7 +383,8 @@ class _CreateCardState extends State<CreateCard> {
                           descricao: spaceDescription, // Descrição do espaço
                           selectedAvailability: selectedAvailability,
                           reservas: reservas,
-                          markedDates: []);
+                          markedDates: markedDates,
+                          comments: comments);
 
                       Navigator.pop(context, mycard);
                     },
