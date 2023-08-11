@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:git_flutter_festou/model/card_comment.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
@@ -25,7 +26,7 @@ class _CreateCardState extends State<CreateCard> {
   MyCard? mycard;
   List<Reserva> reservas = [];
   List<DateTime> markedDates = [];
-  List<String> comments = [];
+  List<Comentario> comentarios = [];
 
   /*--------------------------------------------------*/
   /*---------------ELEMENTOS DO CARD-----------------*/
@@ -384,7 +385,7 @@ class _CreateCardState extends State<CreateCard> {
                           selectedAvailability: selectedAvailability,
                           reservas: reservas,
                           markedDates: markedDates,
-                          comments: comments);
+                          comentarios: comentarios);
 
                       Navigator.pop(context, mycard);
                     },

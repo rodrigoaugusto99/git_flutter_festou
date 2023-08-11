@@ -2,6 +2,7 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/pages/reserva_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../model/card_comment.dart';
 import '../model/my_card.dart';
 import 'create_card.dart';
 import 'package:photo_view/photo_view.dart';
@@ -211,12 +212,13 @@ class _LocadorPageState extends State<LocadorPage> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Column(
+              ...card.reservas.map((reserva) => Text(reserva.toString())),
+              /*Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: card.reservas.map((reserva) {
                   return Text(reserva.toString());
                 }).toList(),
-              )
+              ),*/
             ],
           ),
           actions: [
@@ -340,41 +342,87 @@ class _LocadorPageState extends State<LocadorPage> {
   void showRatingAlertDialog(MyCard card) {
     int rating = 0;
     TextEditingController feedbackController = TextEditingController();
+    TextEditingController titleController = TextEditingController();
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Deixe seu feedback'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: feedbackController,
-                maxLines: 5,
-                decoration: const InputDecoration(
-                  hintText: 'Digite aqui seu feedback...',
-                  border: OutlineInputBorder(),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: titleController,
+                  decoration: const InputDecoration(
+                    hintText: 'Titulo',
+                    border: OutlineInputBorder(),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 1.0, horizontal: 5.0),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(5, (index) {
-                  return IconButton(
-                    onPressed: () {
-                      setState(() {
-                        rating = index + 1;
-                      });
-                    },
-                    icon: Icon(
-                      index < rating ? Icons.star : Icons.star_border,
-                      color: Colors.amber,
-                    ),
-                  );
-                }),
-              ),
-            ],
+                const SizedBox(
+                  height: 5,
+                ),
+                TextField(
+                  controller: feedbackController,
+                  maxLines: 5,
+                  decoration: const InputDecoration(
+                    hintText: 'Digite aqui seu feedback...',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(5, (index) {
+                    return IconButton(
+                      onPressed: () {
+                        setState(() {
+                          rating = index + 1;
+                        });
+                      },
+                      icon: Icon(
+                        index < rating ? Icons.star : Icons.star_border,
+                        color: Colors.amber,
+                      ),
+                    );
+                  }),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: card.comentarios.map((comment) {
+                    return Container(
+                      margin: const EdgeInsets.symmetric(vertical: 10.0),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            comment.titulo, // Título em negrito
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18),
+                          ),
+                          const Text(
+                            'Usuário', // Usuário em cinza
+                            style: TextStyle(color: Colors.grey, fontSize: 12),
+                          ),
+                          const SizedBox(height: 5), // Espaçamento
+                          Text(
+                            comment.conteudo.toString(), // Comentário
+                            maxLines: 5,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
           ),
           actions: [
             TextButton(
@@ -385,7 +433,11 @@ class _LocadorPageState extends State<LocadorPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                String feedbackText = feedbackController.text;
+                String conteudo = feedbackController.text;
+                String titulo = titleController.text;
+                Comentario comentario =
+                    Comentario(titulo: titulo, conteudo: conteudo);
+                card.comentarios.add(comentario);
                 // Você pode usar o valor de _rating e feedbackText como necessário
                 // para enviar o feedback e a classificação para onde desejar.
                 Navigator.of(context).pop();
