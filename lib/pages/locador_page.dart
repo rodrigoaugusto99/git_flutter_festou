@@ -435,6 +435,7 @@ class _LocadorPageState extends State<LocadorPage> {
               onPressed: () {
                 String conteudo = feedbackController.text;
                 String titulo = titleController.text;
+
                 Comentario comentario =
                     Comentario(titulo: titulo, conteudo: conteudo);
                 card.comentarios.add(comentario);
