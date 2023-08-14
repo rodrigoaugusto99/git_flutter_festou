@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:git_flutter_festou/model/my_card.dart';
 
-import '../widgets/locatario_container.dart';
-import '../widgets/locatario_row.dart';
+import '../../widgets/locatario_container.dart';
+import '../../widgets/locatario_row.dart';
 
 class LocatarioHomePage extends StatefulWidget {
   const LocatarioHomePage({Key? key}) : super(key: key);

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/pages/locador_page.dart';
+import 'package:git_flutter_festou/pages/locador/locador_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

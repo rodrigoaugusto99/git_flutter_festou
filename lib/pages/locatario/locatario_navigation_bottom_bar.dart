@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/pages/locatario_account.dart';
-import 'package:git_flutter_festou/pages/locatario_home_page.dart';
-import 'package:git_flutter_festou/pages/locatario_search.dart';
-import 'package:git_flutter_festou/pages/locatario_settings.dart';
+import 'package:git_flutter_festou/pages/locatario/locatario_account.dart';
+import 'package:git_flutter_festou/pages/locatario/locatario_home_page.dart';
+import 'package:git_flutter_festou/pages/locatario/locatario_search.dart';
+import 'package:git_flutter_festou/pages/locatario/locatario_settings.dart';
 
 class LocatarioNavigationBottomBar extends StatefulWidget {
   const LocatarioNavigationBottomBar({super.key});

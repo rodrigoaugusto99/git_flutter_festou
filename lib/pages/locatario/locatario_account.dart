@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/components/my_textbuttons.dart';
 
-import 'locador_page.dart';
+import '../locador/locador_page.dart';
 
 class LocatarioAccount extends StatefulWidget {
   const LocatarioAccount({super.key});

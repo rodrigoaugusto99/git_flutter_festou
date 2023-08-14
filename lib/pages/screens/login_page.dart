@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/components/my_buttons.dart';
 import 'package:git_flutter_festou/components/my_textformfield.dart';
 
-import '../helpers/form_validator.dart';
-import 'locatario_navigation_bottom_bar.dart';
+import '../../helpers/form_validator.dart';
+import '../locatario/locatario_navigation_bottom_bar.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

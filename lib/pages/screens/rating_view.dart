@@ -1,9 +1,7 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
-
-import '../model/card_feedback.dart';
-import '../model/my_card.dart';
+import '../../model/card_feedback.dart';
+import '../../model/my_card.dart';
 
 class RatingView extends StatefulWidget {
   final MyCard card;

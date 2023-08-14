@@ -7,11 +7,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 
-import '../components/my_textfields.dart';
-import '../helpers/google_maps.dart';
-import '../model/card_feedback.dart';
-import '../model/card_reserve.dart';
-import '../model/my_card.dart';
+import '../../components/my_textfields.dart';
+import '../../helpers/google_maps.dart';
+import '../../model/card_feedback.dart';
+import '../../model/card_reserve.dart';
+import '../../model/my_card.dart';
 
 class CreateCard extends StatefulWidget {
   const CreateCard({super.key});
