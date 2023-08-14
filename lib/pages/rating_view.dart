@@ -2,8 +2,12 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../model/card_feedback.dart';
+import '../model/my_card.dart';
+
 class RatingView extends StatefulWidget {
-  const RatingView({super.key});
+  final MyCard card;
+  const RatingView({super.key, required this.card});
 
   @override
   State<RatingView> createState() => _RatingViewState();
@@ -16,7 +20,7 @@ class _RatingViewState extends State<RatingView> {
   var _starPosition = 200.0;
 
   //variavel auxiliar para coloração das ESTRELAS de acordo com o clique
-  var _starRatingIndex = 0;
+  var starRatingIndex = 0;
 
   //variavel auxiliar para coloração dos CHIPS de acordo com o clique
   var _selectedChipIndex = -1;
@@ -25,6 +29,8 @@ class _RatingViewState extends State<RatingView> {
   var _isMoreDetailActive = false;
 
   final _moreDetailFocusNode = FocusNode();
+
+  TextEditingController contentController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +49,8 @@ class _RatingViewState extends State<RatingView> {
             controller: _ratingPageController,
             physics: const NeverScrollableScrollPhysics(),
             children: [
-              _buildThanksNote(),
-              _causeOfRating(),
+              buildThanksNote(),
+              causeOfRating(),
             ],
           ),
         ),
@@ -56,7 +62,15 @@ class _RatingViewState extends State<RatingView> {
           child: Container(
             color: Colors.red,
             child: MaterialButton(
-              onPressed: _hideDialog,
+              onPressed: () {
+                CardFeedback cardFeedback = CardFeedback(
+                  content: contentController.text,
+                  rating: starRatingIndex,
+                );
+                widget.card.feedbacks.add(cardFeedback);
+
+                Navigator.pop(context);
+              },
               textColor: Colors.white,
               child: const Text('Done'),
             ),
@@ -73,8 +87,8 @@ class _RatingViewState extends State<RatingView> {
         //Star rating
         AnimatedPositioned(
           /*é animado:
-          esse TOP muda dinamicamente, pois instanciei 
-          como variavel e seu valor muda com setState*/
+            esse TOP muda dinamicamente, pois instanciei 
+            como variavel e seu valor muda com setState*/
           //decorando de acordo com o INDEX
           top: _starPosition,
           left: 0, //not worked
@@ -86,12 +100,12 @@ class _RatingViewState extends State<RatingView> {
               5,
               (index) => IconButton(
                 /*Coloração das estrelas:
-                -de acordo com cada index da estrela
-                e com o _starRating sendo atribuido com 
-                o index + 1 da estrela clicada.*/
+                  -de acordo com cada index da estrela
+                  e com o _starRating sendo atribuido com 
+                  o index + 1 da estrela clicada.*/
                 icon: Icon(
                   //decorando de acordo com o INDEX
-                  index < _starRatingIndex ? Icons.star : Icons.star_border,
+                  index < starRatingIndex ? Icons.star : Icons.star_border,
                   size: 32,
                   color: Colors.red,
                 ),
@@ -108,9 +122,9 @@ class _RatingViewState extends State<RatingView> {
                     _starPosition = 20.0;
 
                     /*se clicar na terceira estrela, _starRating
-                    receberá o valor do index dessa estrela. */
+                      receberá o valor do index dessa estrela. */
                     //MUDANDO INDEX
-                    _starRatingIndex = index + 1;
+                    starRatingIndex = index + 1;
                   });
                 },
               ),
@@ -137,7 +151,7 @@ class _RatingViewState extends State<RatingView> {
   }
 
 //paginas
-  _buildThanksNote() {
+  buildThanksNote() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -157,7 +171,7 @@ class _RatingViewState extends State<RatingView> {
     );
   }
 
-  _causeOfRating() {
+  causeOfRating() {
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -219,6 +233,7 @@ class _RatingViewState extends State<RatingView> {
               const Text('Tell us more'),
               Chip(label: Text('Text ${_selectedChipIndex + 1}')),
               TextField(
+                controller: contentController,
                 decoration: InputDecoration(
                     hintText: 'Write your review here...',
                     hintStyle: TextStyle(color: Colors.grey[400]),

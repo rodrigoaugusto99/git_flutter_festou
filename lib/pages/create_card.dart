@@ -9,6 +9,7 @@ import 'package:multi_select_flutter/util/multi_select_item.dart';
 
 import '../components/my_textfields.dart';
 import '../helpers/google_maps.dart';
+import '../model/card_feedback.dart';
 import '../model/card_reserve.dart';
 import '../model/my_card.dart';
 
@@ -27,6 +28,7 @@ class _CreateCardState extends State<CreateCard> {
   List<Reserva> reservas = [];
   List<DateTime> markedDates = [];
   List<Comentario> comentarios = [];
+  List<CardFeedback> feedbacks = [];
 
   /*--------------------------------------------------*/
   /*---------------ELEMENTOS DO CARD-----------------*/
@@ -363,29 +365,31 @@ class _CreateCardState extends State<CreateCard> {
                       //setState para atualizar a lista.
 
                       MyCard mycard = MyCard(
-                          defaultImages: [
-                            "lib/assets/images/festa.png",
-                            "lib/assets/images/festa2.png",
-                          ],
-                          allImages: selectedImages,
-                          images: selectedImages,
-                          nome: nomeController.text,
-                          lugar: lugarController.text,
-                          numero: numeroController.text,
-                          email: emailController
-                              .text, // Adicionando o atributo email, caso ele exista no MyCard
-                          selectedSpaceType:
-                              selectedSpaceType, // Tipo de espaço selecionado
-                          //para mostrar no mapa
-                          location: selectedLocation,
-                          //para mostrar o nome
-                          selectedLocationName: selectedLocationName,
-                          servicos: selectedServices, // Serviços selecionados
-                          descricao: spaceDescription, // Descrição do espaço
-                          selectedAvailability: selectedAvailability,
-                          reservas: reservas,
-                          markedDates: markedDates,
-                          comentarios: comentarios);
+                        defaultImages: [
+                          "lib/assets/images/festa.png",
+                          "lib/assets/images/festa2.png",
+                        ],
+                        allImages: selectedImages,
+                        images: selectedImages,
+                        nome: nomeController.text,
+                        lugar: lugarController.text,
+                        numero: numeroController.text,
+                        email: emailController
+                            .text, // Adicionando o atributo email, caso ele exista no MyCard
+                        selectedSpaceType:
+                            selectedSpaceType, // Tipo de espaço selecionado
+                        //para mostrar no mapa
+                        location: selectedLocation,
+                        //para mostrar o nome
+                        selectedLocationName: selectedLocationName,
+                        servicos: selectedServices, // Serviços selecionados
+                        descricao: spaceDescription, // Descrição do espaço
+                        selectedAvailability: selectedAvailability,
+                        reservas: reservas,
+                        markedDates: markedDates,
+                        comentarios: comentarios,
+                        feedbacks: feedbacks,
+                      );
 
                       Navigator.pop(context, mycard);
                     },

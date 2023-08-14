@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'card_comment.dart';
+import 'card_feedback.dart';
 import 'card_reserve.dart';
 
 class MyCard {
@@ -23,6 +24,7 @@ class MyCard {
   List<Reserva> reservas;
   List<DateTime> markedDates;
   List<Comentario> comentarios;
+  List<CardFeedback> feedbacks;
 
   MyCard({
     required this.defaultImages,
@@ -41,5 +43,6 @@ class MyCard {
     required this.reservas,
     required this.markedDates,
     required this.comentarios,
+    required this.feedbacks,
   });
 }

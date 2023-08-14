@@ -1,5 +1,6 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/pages/rating_view.dart';
 import 'package:git_flutter_festou/pages/reserva_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../model/card_comment.dart';
@@ -240,29 +241,33 @@ class _LocadorPageState extends State<LocadorPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Comentarios'),
-          content: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.9,
-            width: MediaQuery.of(context).size.width * 0.9,
-            //cada card terá um botao com esse widget
-            child: ListView.separated(
-                separatorBuilder: (context, index) => const SizedBox(
-                    height: 10), // Espaço entre os itens da lista
-                itemBuilder: (context, index) {
-                  return Container(
-                    height: 50,
-                    color: Colors.orange,
-                  );
-                },
-                itemCount: 3),
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Fechar'),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: card.feedbacks.map((feedback) {
+                return Container(
+                  margin: const EdgeInsets.symmetric(vertical: 10.0),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('rating:'),
+                      Text(
+                        feedback.rating.toString(), // Título em negrito
+                      ),
+                      const SizedBox(height: 5), // Espaçamento
+                      const Text('content:'),
+                      Text(
+                        feedback.content.toString(), // Comentário
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
             ),
-          ],
+          ),
         );
       },
     );
@@ -412,7 +417,7 @@ class _LocadorPageState extends State<LocadorPage> {
                           ),
                           const SizedBox(height: 5), // Espaçamento
                           Text(
-                            comment.conteudo.toString(), // Comentário
+                            comment.conteudo, // Comentário
                             maxLines: 5,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -446,6 +451,17 @@ class _LocadorPageState extends State<LocadorPage> {
               child: const Text('Enviar'),
             ),
           ],
+        );
+      },
+    );
+  }
+
+  openRatingDialog(MyCard card) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: RatingView(card: card),
         );
       },
     );
@@ -553,6 +569,18 @@ eles serao feitos usando o  CARD + atributo OU passando o CARD como parametro da
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
+                                //-----------test button----------
+                                ElevatedButton(
+                                  onPressed: () {
+                                    print(
+                                      card.feedbacks.map((feedback) {
+                                        return Text(
+                                            feedback.content.toString());
+                                      }).toList(),
+                                    );
+                                  },
+                                  child: const Icon(Icons.textsms_sharp),
+                                ),
                                 ElevatedButton(
                                   onPressed: () async {
                                     //esperando o retorno do CreateCard para atribuir ao newCard
@@ -603,14 +631,9 @@ eles serao feitos usando o  CARD + atributo OU passando o CARD como parametro da
                                     ),
                                   ),
                                 ),
-                                Column(
-                                  children: [
-                                    ElevatedButton(
-                                      onPressed: () =>
-                                          showRatingAlertDialog(card),
-                                      child: const Text('Avalie'),
-                                    )
-                                  ],
+                                ElevatedButton(
+                                  onPressed: () => showRatingAlertDialog(card),
+                                  child: const Text('Avalie'),
                                 ),
                               ],
                             ),
@@ -699,10 +722,20 @@ eles serao feitos usando o  CARD + atributo OU passando o CARD como parametro da
                                 ),
                               ],
                             ),
-                            ElevatedButton.icon(
-                              onPressed: () => verComentarios(card),
-                              icon: const Icon(Icons.comment),
-                              label: const Text('Comments'),
+                            Row(
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    openRatingDialog(card);
+                                  },
+                                  child: const Text('Avalie'),
+                                ),
+                                ElevatedButton.icon(
+                                  onPressed: () => verComentarios(card),
+                                  icon: const Icon(Icons.comment),
+                                  label: const Text('Comments'),
+                                ),
+                              ],
                             ),
                           ],
                         ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/pages/rating_view.dart';
 
 class AboutUsPage extends StatelessWidget {
   const AboutUsPage({super.key});
@@ -15,7 +14,8 @@ class AboutUsPage extends StatelessWidget {
           children: [
             const Text('feedback'),
             TextButton.icon(
-              onPressed: (() => openRatingDialog(context)),
+              onPressed: () {},
+              //onPressed: (() => openRatingDialog(context)),
               style: ButtonStyle(
                 backgroundColor: MaterialStatePropertyAll(
                   Colors.blue.withOpacity(0.1),
@@ -30,7 +30,7 @@ class AboutUsPage extends StatelessWidget {
     );
   }
 
-  openRatingDialog(BuildContext context) {
+  /*openRatingDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) {
@@ -39,5 +39,5 @@ class AboutUsPage extends StatelessWidget {
         );
       },
     );
-  }
+  }*/
 }
