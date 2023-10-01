@@ -1,10 +1,10 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/pages/screens/rating_view.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:photo_view/photo_view.dart';
 import '../model/card_comment.dart';
 import '../model/my_card.dart';
-import '../pages/screens/rating_view.dart';
 
 /*----------------BOTÕES DO CARD------------*/
 

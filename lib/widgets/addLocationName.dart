@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../helpers/google_maps.dart';
+import '../old/helpers/google_maps.dart';
 
 class AddLocationDialog extends StatefulWidget {
   final LatLng? initialLocation;

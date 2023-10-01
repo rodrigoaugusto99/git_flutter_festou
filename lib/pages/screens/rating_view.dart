@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '../../model/card_feedback.dart';
-import '../../model/my_card.dart';
+import '../../old/model/card_feedback.dart';
+import '../../old/model/my_card.dart';
 
 class RatingView extends StatefulWidget {
   final MyCard card;
@@ -150,10 +150,10 @@ class _RatingViewState extends State<RatingView> {
 
 //paginas
   buildThanksNote() {
-    return Column(
+    return const Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
+      children: [
         Text(
           'Thanks',
           style: TextStyle(

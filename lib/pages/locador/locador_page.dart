@@ -1,10 +1,11 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/pages/screens/reserva_page.dart';
-import '../../helpers/card_functions.dart';
+import '../../old/helpers/card_functions.dart';
 //usando top level functions, com alias
-import '../../helpers/lcoador_page_functions.dart' as locador_page_functions;
-import '../../model/my_card.dart';
+import '../../old/helpers/lcoador_page_functions.dart'
+    as locador_page_functions;
+import '../../old/model/my_card.dart';
 import '../screens/create_card.dart';
 
 class LocadorPage extends StatefulWidget {

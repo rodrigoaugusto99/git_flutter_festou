@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class MyTextbuttons extends StatelessWidget {
-  VoidCallback onPressed;
-  String text;
-  String text2;
-  IconData icon;
-  MyTextbuttons(
+  final VoidCallback onPressed;
+  final String text;
+  final String text2;
+  final IconData icon;
+  const MyTextbuttons(
       {super.key,
       required this.icon,
       required this.onPressed,
@@ -40,8 +40,8 @@ class MyTextbuttons extends StatelessWidget {
                   ),
                 ],
               ),
-              Row(
-                children: const [
+              const Row(
+                children: [
                   Icon(
                     Icons.arrow_right_outlined,
                     color: Colors.black,

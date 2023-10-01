@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/old/components/my_buttons.dart';
 import 'package:git_flutter_festou/pages/screens/cadastrar_page.dart';
-
-import '../../components/my_buttons.dart';
 import 'login_page.dart';
 
 class InitialPage extends StatefulWidget {

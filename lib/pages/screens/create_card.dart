@@ -1,17 +1,16 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:git_flutter_festou/model/card_comment.dart';
+import 'package:git_flutter_festou/old/components/my_textfields.dart';
+import 'package:git_flutter_festou/old/model/card_comment.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
-
-import '../../components/my_textfields.dart';
-import '../../helpers/google_maps.dart';
-import '../../model/card_feedback.dart';
-import '../../model/card_reserve.dart';
-import '../../model/my_card.dart';
+import '../../old/helpers/google_maps.dart';
+import '../../old/model/card_feedback.dart';
+import '../../old/model/card_reserve.dart';
+import '../../old/model/my_card.dart';
 
 class CreateCard extends StatefulWidget {
   const CreateCard({super.key});
@@ -220,9 +219,9 @@ class _CreateCardState extends State<CreateCard> {
                 controller: emailController,
                 hintText: 'Email',
               ),
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: const [
+                children: [
                   Text('Tipo de espaço'),
                   Text('Disponibilidade'),
                 ],

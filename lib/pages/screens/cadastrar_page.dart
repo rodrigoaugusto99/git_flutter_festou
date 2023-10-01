@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../../components/my_buttons.dart';
-import '../../components/my_textformfield.dart';
-import '../../helpers/form_validator.dart';
+import 'package:git_flutter_festou/old/components/my_buttons.dart';
+import 'package:git_flutter_festou/old/components/my_textformfield.dart';
+import '../../old/helpers/form_validator.dart';
 import '../locatario/locatario_navigation_bottom_bar.dart';
 
 class CadastrarPage extends StatefulWidget {

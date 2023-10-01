@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/model/my_card.dart';
+import 'package:git_flutter_festou/old/model/my_card.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../../model/card_reserve.dart';
+import '../../old/model/card_reserve.dart';
 
 class ReservaPage extends StatefulWidget {
   final MyCard card;
