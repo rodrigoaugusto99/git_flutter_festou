@@ -1,8 +1,13 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/pages/locador/locador_page.dart';
+import 'package:git_flutter_festou/firebase_options.dart';
+import 'package:git_flutter_festou/src/features/auth/auth_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -23,7 +28,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const LocadorPage(),
+      home: const AuthPage(),
     );
   }
 }
