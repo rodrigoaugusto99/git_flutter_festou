@@ -25,8 +25,19 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<Either<RepositoryException, Nil>> registerUser(
-      ({String email, String password}) userData) {
-    // TODO: implement registerUser
-    throw UnimplementedError();
+      ({
+        String email,
+        String password,
+      }) userData) async {
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: userData.email,
+        password: userData.password,
+      );
+      return Success(nil);
+    } on Exception catch (e, s) {
+      log('Erro ao cadastrar usuario', error: e, stackTrace: s);
+      return Failure(RepositoryException(message: 'Erro ao cadastrar usuario'));
+    }
   }
 }
