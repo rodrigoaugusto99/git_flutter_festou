@@ -36,5 +36,21 @@ final userLoginServiceProvider = Provider<UserLoginService>.internal(
 );
 
 typedef UserLoginServiceRef = ProviderRef<UserLoginService>;
+String _$userRegisterServiceHash() =>
+    r'c85df047d6a170102661fc74b879d70dedf84458';
+
+/// See also [userRegisterService].
+@ProviderFor(userRegisterService)
+final userRegisterServiceProvider = Provider<UserRegisterService>.internal(
+  userRegisterService,
+  name: r'userRegisterServiceProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$userRegisterServiceHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef UserRegisterServiceRef = ProviderRef<UserRegisterService>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
