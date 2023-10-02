@@ -8,8 +8,7 @@ import '../../../core/ui/widgets/my_squaretile.dart';
 import '../../../services/auth_services.dart';
 
 class UserRegisterPage extends ConsumerStatefulWidget {
-  final Function()? onTap;
-  const UserRegisterPage({super.key, required this.onTap});
+  const UserRegisterPage({super.key});
 
   @override
   ConsumerState<UserRegisterPage> createState() => _UserRegisterPageState();
@@ -216,7 +215,8 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                               ),
                               const SizedBox(width: 4),
                               InkWell(
-                                onTap: widget.onTap,
+                                onTap: () =>
+                                    Navigator.of(context).pushNamed('/login'),
                                 child: const Text(
                                   'Login now',
                                   style: TextStyle(

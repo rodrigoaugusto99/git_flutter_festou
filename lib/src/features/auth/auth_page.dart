@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/home/home_page.dart';
-import 'login_or_register.dart';
+import 'package:git_flutter_festou/src/features/login/login_page.dart';
 
 //transitar entre paginas de acordo com stream
 //checar se o usuario está logado ou nao.
@@ -21,7 +21,7 @@ class AuthPage extends StatelessWidget {
             return const HomePage();
             //se não, logar ou registrar.
           } else {
-            return const LoginOrRegister();
+            return const LoginPage();
           }
         },
       ),

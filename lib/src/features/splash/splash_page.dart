@@ -29,37 +29,46 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: AnimatedOpacity(
-          opacity: _animationOpacityLogo,
-          curve: Curves.easeIn,
-          duration: const Duration(seconds: 3),
-          onEnd: () {
-            Navigator.of(context).pushAndRemoveUntil(
-              PageRouteBuilder(
-                settings: const RouteSettings(name: '/auth'),
-                pageBuilder: (
-                  context,
-                  animation,
-                  secondaryAnimation,
-                ) {
-                  return const AuthPage();
-                },
-                transitionsBuilder: (_, animation, __, child) {
-                  return FadeTransition(opacity: animation, child: child);
-                },
+      body: DecoratedBox(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage(
+                'lib/assets/images/blueparty2.jpeg',
               ),
-              (route) => false,
-            );
-          },
-          child: AnimatedContainer(
-            width: _logoAnimationWidth,
-            height: _logoAnimationHeight,
+              fit: BoxFit.cover),
+        ),
+        child: Center(
+          child: AnimatedOpacity(
+            opacity: _animationOpacityLogo,
+            curve: Curves.easeIn,
             duration: const Duration(seconds: 3),
-            curve: Curves.linearToEaseOut,
-            child: Image.asset(
-              'lib/assets/images/festou-logo.png',
-              fit: BoxFit.contain,
+            onEnd: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                PageRouteBuilder(
+                  settings: const RouteSettings(name: '/auth'),
+                  pageBuilder: (
+                    context,
+                    animation,
+                    secondaryAnimation,
+                  ) {
+                    return const AuthPage();
+                  },
+                  transitionsBuilder: (_, animation, __, child) {
+                    return FadeTransition(opacity: animation, child: child);
+                  },
+                ),
+                (route) => false,
+              );
+            },
+            child: AnimatedContainer(
+              width: _logoAnimationWidth,
+              height: _logoAnimationHeight,
+              duration: const Duration(seconds: 3),
+              curve: Curves.linearToEaseOut,
+              child: Image.asset(
+                'lib/assets/images/festou-logo.png',
+                fit: BoxFit.contain,
+              ),
             ),
           ),
         ),

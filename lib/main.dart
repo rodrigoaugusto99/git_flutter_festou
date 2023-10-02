@@ -5,8 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/firebase_options.dart';
 import 'package:git_flutter_festou/src/core/ui/festou_nav_global_key.dart';
 import 'package:git_flutter_festou/src/features/auth/auth_page.dart';
-import 'package:git_flutter_festou/src/features/auth/login_or_register.dart';
 import 'package:git_flutter_festou/src/features/home/home_page.dart';
+import 'package:git_flutter_festou/src/features/login/login_page.dart';
+import 'package:git_flutter_festou/src/features/register/user/user_register_page.dart';
+import 'package:git_flutter_festou/src/features/splash/splash_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,8 +30,9 @@ class MyApp extends StatelessWidget {
           navigatorKey: FestouNavGlobalKey.instance.navKey,
           routes: {
             '/home': (_) => const HomePage(),
-            '/loginOrRegister': (_) => const LoginOrRegister(),
             '/auth': (_) => const AuthPage(),
+            '/login': (_) => const LoginPage(),
+            '/register': (_) => const UserRegisterPage(),
           },
           theme: ThemeData(
             primarySwatch: Colors.deepPurple,
@@ -40,7 +43,7 @@ class MyApp extends StatelessWidget {
               ),
             ),
           ),
-          home: const AuthPage(),
+          home: const SplashPage(),
         );
       },
     );

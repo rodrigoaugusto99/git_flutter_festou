@@ -10,8 +10,7 @@ import '../../services/auth_services.dart';
 import 'forgot_password_page.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
-  final Function()? onTap;
-  const LoginPage({super.key, required this.onTap});
+  const LoginPage({super.key});
 
   @override
   ConsumerState<LoginPage> createState() => _LoginPageState();
@@ -258,7 +257,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               ),
                               const SizedBox(width: 4),
                               InkWell(
-                                onTap: widget.onTap,
+                                onTap: () => Navigator.of(context)
+                                    .pushNamed('/register'),
                                 child: const Text(
                                   'Register now',
                                   style: TextStyle(
