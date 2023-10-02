@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/features/home/home_vm.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/space_card.dart';
+import 'package:git_flutter_festou/src/models/space/space_model_test.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -16,6 +18,19 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    SpaceModelTest space = SpaceModelTest(
+      name: 'rodrigo',
+      email: 'email',
+      cep: '22221000',
+      endereco: 'endereco',
+      numero: '123',
+      bairro: 'catete',
+      cidade: 'rio de janeiro',
+      selectedTypes: ['type 1', 'type 2'],
+      availableDays: ['Seg', 'Ter', 'Sex', 'Sab'],
+      selectedServices: ['Service 1', 'Service 2', 'Service 3'],
+      feedbacks: [],
+    );
     return Scaffold(
       appBar: AppBar(
         shape: const ContinuousRectangleBorder(
@@ -110,10 +125,9 @@ class _HomePageState extends ConsumerState<HomePage> {
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
                   return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        color: Colors.greenAccent,
-                      ));
+                    padding: const EdgeInsets.all(8.0),
+                    child: SpaceCard(space: space),
+                  );
                 },
                 childCount: 6,
               ),

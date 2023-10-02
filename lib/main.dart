@@ -7,6 +7,7 @@ import 'package:git_flutter_festou/src/core/ui/festou_nav_global_key.dart';
 import 'package:git_flutter_festou/src/features/auth/auth_page.dart';
 import 'package:git_flutter_festou/src/features/home/home_page.dart';
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
+import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
 import 'package:git_flutter_festou/src/features/register/user/user_register_page.dart';
 import 'package:git_flutter_festou/src/features/splash/splash_page.dart';
 
@@ -32,7 +33,8 @@ class MyApp extends StatelessWidget {
             '/home': (_) => const HomePage(),
             '/auth': (_) => const AuthPage(),
             '/login': (_) => const LoginPage(),
-            '/register': (_) => const UserRegisterPage(),
+            '/register/user': (_) => const UserRegisterPage(),
+            '/register/space': (_) => const EspacoRegisterPage(),
           },
           theme: ThemeData(
             primarySwatch: Colors.deepPurple,
