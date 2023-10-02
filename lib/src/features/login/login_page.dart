@@ -258,7 +258,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               const SizedBox(width: 4),
                               InkWell(
                                 onTap: () => Navigator.of(context)
-                                    .pushNamed('/register'),
+                                    .pushNamed('/register/user'),
                                 child: const Text(
                                   'Register now',
                                   style: TextStyle(

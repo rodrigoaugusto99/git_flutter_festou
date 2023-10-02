@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
 import 'package:git_flutter_festou/src/features/home/home_page.dart';
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
 
@@ -18,7 +19,7 @@ class AuthPage extends StatelessWidget {
         builder: (context, snapshot) {
           //se snapshot tem dado, então o usuario está logado.
           if (snapshot.hasData) {
-            return const HomePage();
+            return const BottomNavBarPage();
             //se não, logar ou registrar.
           } else {
             return const LoginPage();

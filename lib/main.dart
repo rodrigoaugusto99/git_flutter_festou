@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/firebase_options.dart';
 import 'package:git_flutter_festou/src/core/ui/festou_nav_global_key.dart';
 import 'package:git_flutter_festou/src/features/auth/auth_page.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
 import 'package:git_flutter_festou/src/features/home/home_page.dart';
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
           navigatorObservers: [asyncNavigatorObserver],
           navigatorKey: FestouNavGlobalKey.instance.navKey,
           routes: {
-            '/home': (_) => const HomePage(),
+            '/home': (_) => const BottomNavBarPage(),
             '/auth': (_) => const AuthPage(),
             '/login': (_) => const LoginPage(),
             '/register/user': (_) => const UserRegisterPage(),

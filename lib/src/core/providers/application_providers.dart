@@ -35,5 +35,5 @@ Future<void> logout(LogoutRef ref) async {
   FirebaseAuth.instance.signOut();
 
   Navigator.of(FestouNavGlobalKey.instance.navKey.currentContext!)
-      .pushNamedAndRemoveUntil('/loginOrRegister', (route) => false);
+      .pushNamedAndRemoveUntil('/register/user', (route) => false);
 }
