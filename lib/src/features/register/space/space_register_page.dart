@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_vm.dart';
+import 'package:git_flutter_festou/src/features/register/widgets/options_panel.dart';
+import 'package:git_flutter_festou/src/features/register/widgets/servicos_painel.dart';
+import 'package:git_flutter_festou/src/features/register/widgets/tipo_painel.dart';
 import 'package:search_cep/search_cep.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -41,6 +44,8 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final spaceRegister = ref.watch(spaceRegisterVmProvider.notifier);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Criar card\nLogged in as: ${user.email}'),
@@ -131,6 +136,24 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                 const SizedBox(
                   height: 10,
                 ),
+                WeekDaysPanel(
+                  onDayPressed: (value) {
+                    log('onDayPressed: $value');
+                    spaceRegister.addOrRemoveAvailableDay(value);
+                  },
+                ),
+                TipoPanel(
+                  onTypePressed: (value) {
+                    log('onTypePressed: $value');
+                    spaceRegister.addOrRemoveType(value);
+                  },
+                ),
+                ServicoPanel(
+                  onServicePressed: (value) {
+                    log('onServicePressed: $value');
+                    spaceRegister.addOrRemoveService(value);
+                  },
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -144,7 +167,15 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                       width: 10,
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () => spaceRegister.register(
+                        nomeEC.text,
+                        emailEC.text,
+                        cepEC.text,
+                        enderecoEC.text,
+                        numeroEC.text,
+                        bairroEC.text,
+                        cidadeEC.text,
+                      ),
                       child: const Text('cadastrar espaco'),
                     ),
                   ],
