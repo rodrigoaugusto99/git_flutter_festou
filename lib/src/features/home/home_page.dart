@@ -1,15 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
+import 'package:git_flutter_festou/src/features/home/home_vm.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
   final user = FirebaseAuth.instance.currentUser!;
 
   @override
@@ -46,7 +48,9 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () {},
+            onPressed: () {
+              ref.read(homeVmProvider.notifier).logout();
+            },
           ),
         ],
       ),
@@ -105,7 +109,11 @@ class _HomePageState extends State<HomePage> {
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
-                  return null;
+                  return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        color: Colors.greenAccent,
+                      ));
                 },
                 childCount: 6,
               ),

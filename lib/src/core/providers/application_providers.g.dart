@@ -52,5 +52,19 @@ final userRegisterServiceProvider = Provider<UserRegisterService>.internal(
 );
 
 typedef UserRegisterServiceRef = ProviderRef<UserRegisterService>;
+String _$logoutHash() => r'a12611e887f1f50de1d87924702299b573e9f52c';
+
+/// See also [logout].
+@ProviderFor(logout)
+final logoutProvider = AutoDisposeFutureProvider<void>.internal(
+  logout,
+  name: r'logoutProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$logoutHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef LogoutRef = AutoDisposeFutureProviderRef<void>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
