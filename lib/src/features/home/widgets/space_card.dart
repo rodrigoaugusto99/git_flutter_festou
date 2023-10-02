@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/card_infos.dart';
 import 'package:git_flutter_festou/src/models/space/space_model_test.dart';
 
 class SpaceCard extends StatefulWidget {
@@ -12,6 +13,19 @@ class SpaceCard extends StatefulWidget {
 }
 
 class _SpaceCardState extends State<SpaceCard> {
+  SpaceModelTest space = SpaceModelTest(
+    name: 'rodrigo',
+    email: 'email',
+    cep: '22221000',
+    endereco: 'endereco',
+    numero: '123',
+    bairro: 'catete',
+    cidade: 'rio de janeiro',
+    selectedTypes: ['type 1', 'type 2'],
+    availableDays: ['Seg', 'Ter', 'Sex', 'Sab'],
+    selectedServices: ['Service 1', 'Service 2', 'Service 3'],
+    feedbacks: [],
+  );
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -64,7 +78,12 @@ class _SpaceCardState extends State<SpaceCard> {
                         '${widget.space.endereco}, ${widget.space.numero} - ${widget.space.cep}\n${widget.space.bairro}, ${widget.space.cidade}',
                       ),
                       InkWell(
-                        onTap: () {},
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CardInfos(space: space),
+                          ),
+                        ),
                         child: const Icon(Icons.info),
                       ),
                       Container(
