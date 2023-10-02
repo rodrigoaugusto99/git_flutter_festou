@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/firebase_options.dart';
 import 'package:git_flutter_festou/src/features/auth/auth_page.dart';
+import 'package:git_flutter_festou/src/features/auth/login_or_register.dart';
+import 'package:git_flutter_festou/src/features/home/home_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +22,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
+      routes: {
+        '/home': (_) => const HomePage(),
+        '/loginOrRegister': (_) => const LoginOrRegister(),
+        '/auth': (_) => const AuthPage(),
+      },
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
         dialogTheme: DialogTheme(
