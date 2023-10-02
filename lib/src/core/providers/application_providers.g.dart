@@ -52,6 +52,21 @@ final userRegisterServiceProvider = Provider<UserRegisterService>.internal(
 );
 
 typedef UserRegisterServiceRef = ProviderRef<UserRegisterService>;
+String _$spaceRepositoryHash() => r'588d1fe1e8c9ea054f58e7d2ce8033e347abe089';
+
+/// See also [spaceRepository].
+@ProviderFor(spaceRepository)
+final spaceRepositoryProvider = Provider<SpaceRepository>.internal(
+  spaceRepository,
+  name: r'spaceRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$spaceRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef SpaceRepositoryRef = ProviderRef<SpaceRepository>;
 String _$logoutHash() => r'a12611e887f1f50de1d87924702299b573e9f52c';
 
 /// See also [logout].
