@@ -47,6 +47,7 @@ dependencies:
   riverpod_lint: ^2.1.1
   build_runner: ^2.4.6
   flutter_riverpod: ^2.4.1
+  asyncstate: ^2.1.0
 
 dev_dependencies:
   flutter_test:

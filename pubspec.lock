@@ -49,6 +49,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  asyncstate:
+    dependency: "direct main"
+    description:
+      name: asyncstate
+      sha256: "662d5c28192f3f7ba1a32e23428296a0e59ad24adbbe92ed703a8376504794d3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   boolean_selector:
     dependency: transitive
     description:

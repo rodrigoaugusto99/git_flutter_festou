@@ -1,7 +1,9 @@
+import 'package:asyncstate/asyncstate.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/firebase_options.dart';
+import 'package:git_flutter_festou/src/core/ui/festou_nav_global_key.dart';
 import 'package:git_flutter_festou/src/features/auth/auth_page.dart';
 import 'package:git_flutter_festou/src/features/auth/login_or_register.dart';
 import 'package:git_flutter_festou/src/features/home/home_page.dart';
@@ -19,24 +21,28 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      routes: {
-        '/home': (_) => const HomePage(),
-        '/loginOrRegister': (_) => const LoginOrRegister(),
-        '/auth': (_) => const AuthPage(),
-      },
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-        dialogTheme: DialogTheme(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
+    return AsyncStateBuilder(
+      builder: (asyncNavigatorObserver) {
+        return MaterialApp(
+          navigatorObservers: [asyncNavigatorObserver],
+          navigatorKey: FestouNavGlobalKey.instance.navKey,
+          routes: {
+            '/home': (_) => const HomePage(),
+            '/loginOrRegister': (_) => const LoginOrRegister(),
+            '/auth': (_) => const AuthPage(),
+          },
+          theme: ThemeData(
+            primarySwatch: Colors.deepPurple,
+            dialogTheme: DialogTheme(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
+            ),
           ),
-        ),
-      ),
-      home: const AuthPage(),
+          home: const AuthPage(),
+        );
+      },
     );
   }
 }
