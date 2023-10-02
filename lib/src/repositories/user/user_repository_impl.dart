@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/exceptions/auth_exception.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
@@ -6,9 +9,18 @@ import './user_repository.dart';
 
 class UserRepositoryImpl implements UserRepository {
   @override
-  Future<Either<AuthException, Nil>> login(String email, String password) {
-    // TODO: implement login
-    throw UnimplementedError();
+  Future<Either<AuthException, Nil>> login(
+      String email, String password) async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return Success(nil);
+    } on FirebaseAuthException catch (e, s) {
+      log('Erro ao realizar login', error: e, stackTrace: s);
+      return Failure(AuthError(message: 'Erro ao realizar login'));
+    }
   }
 
   @override
