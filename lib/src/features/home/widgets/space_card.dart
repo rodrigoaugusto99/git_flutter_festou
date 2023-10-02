@@ -13,19 +13,6 @@ class SpaceCard extends StatefulWidget {
 }
 
 class _SpaceCardState extends State<SpaceCard> {
-  SpaceModelTest space = SpaceModelTest(
-    name: 'rodrigo',
-    email: 'email',
-    cep: '22221000',
-    endereco: 'endereco',
-    numero: '123',
-    bairro: 'catete',
-    cidade: 'rio de janeiro',
-    selectedTypes: ['type 1', 'type 2'],
-    availableDays: ['Seg', 'Ter', 'Sex', 'Sab'],
-    selectedServices: ['Service 1', 'Service 2', 'Service 3'],
-    feedbacks: [],
-  );
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -81,7 +68,9 @@ class _SpaceCardState extends State<SpaceCard> {
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => CardInfos(space: space),
+                            builder: (context) => CardInfos(
+                              space: SpaceModelTest(),
+                            ),
                           ),
                         ),
                         child: const Icon(Icons.info),

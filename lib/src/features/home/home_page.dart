@@ -18,19 +18,6 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    SpaceModelTest space = SpaceModelTest(
-      name: 'rodrigo',
-      email: 'email',
-      cep: '22221000',
-      endereco: 'endereco',
-      numero: '123',
-      bairro: 'catete',
-      cidade: 'rio de janeiro',
-      selectedTypes: ['type 1', 'type 2'],
-      availableDays: ['Seg', 'Ter', 'Sex', 'Sab'],
-      selectedServices: ['Service 1', 'Service 2', 'Service 3'],
-      feedbacks: [],
-    );
     return Scaffold(
       appBar: AppBar(
         shape: const ContinuousRectangleBorder(
@@ -126,7 +113,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 (context, index) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: SpaceCard(space: space),
+                    child: SpaceCard(space: SpaceModelTest()),
                   );
                 },
                 childCount: 6,
