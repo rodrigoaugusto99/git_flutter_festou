@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/card_comments.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/more_details.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/rating_view.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/show_map.dart';
@@ -17,7 +17,7 @@ class CardInfos extends StatefulWidget {
 }
 
 class _CardInfosState extends State<CardInfos> {
-  void openRatingDialog() {
+  void showRatingDialog() {
     showDialog(
       context: context,
       builder: (context) {
@@ -28,17 +28,6 @@ class _CardInfosState extends State<CardInfos> {
     );
   }
 
-  List<Icon> buildStarIcons(int rating) {
-    return List.generate(
-      rating,
-      (index) => const Icon(
-        Icons.star,
-        color: Colors.yellow,
-        size: 24.0,
-      ),
-    );
-  }
-
   void showComments(SpaceModelTest space) {
     showDialog(
       context: context,
@@ -46,79 +35,13 @@ class _CardInfosState extends State<CardInfos> {
         return AlertDialog(
           scrollable: true,
           title: const Text('Comentários'),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: space.feedbackModel.map((feedback) {
-              return Container(
-                margin: const EdgeInsets.symmetric(vertical: 10.0),
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 4,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Usuário X',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.0,
-                          ),
-                        ),
-                        Text(
-                          '01/01/2023',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 12.0,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Text('Avaliação:'),
-                        const SizedBox(width: 8.0),
-                        ...buildStarIcons(feedback.rating),
-                      ],
-                    ),
-                    Text(
-                      'Avaliação: ${feedback.rating}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14.0,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    const Text('Comentário:'),
-                    Text(
-                      feedback.content.toString(),
-                      style: const TextStyle(
-                        fontSize: 16.0,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
-          ),
+          content: CardComments(space: space),
         );
       },
     );
   }
 
-  void openMoreDetails(SpaceModelTest space) {
+  void showMoreDetails(SpaceModelTest space) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -151,7 +74,7 @@ class _CardInfosState extends State<CardInfos> {
           child: Column(
             children: [
               ElevatedButton(
-                onPressed: openRatingDialog,
+                onPressed: showRatingDialog,
                 child: const Text('Avalie'),
               ),
               ElevatedButton(
@@ -159,20 +82,20 @@ class _CardInfosState extends State<CardInfos> {
                 child: const Text('Avaliações'),
               ),
               ElevatedButton(
-                onPressed: () => openMoreDetails(widget.space),
+                onPressed: () => showMoreDetails(widget.space),
                 child: const Text('Mais Detalhes'),
-              ),
-              ElevatedButton(
-                onPressed: () {},
-                child: const Text('Ver Fotos'),
-              ),
-              ElevatedButton(
-                onPressed: () {},
-                child: const Text('Ver Fotos'),
               ),
               ElevatedButton(
                 onPressed: () => showMap(widget.space),
                 child: const Text('Ver Localização'),
+              ),
+              ElevatedButton(
+                onPressed: () {},
+                child: const Text('Ver Fotos'),
+              ),
+              ElevatedButton(
+                onPressed: () {},
+                child: const Text('Ver Fotos'),
               ),
             ],
           ),
