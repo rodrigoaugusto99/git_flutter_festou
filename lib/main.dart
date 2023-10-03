@@ -5,7 +5,6 @@ import 'package:git_flutter_festou/firebase_options.dart';
 import 'package:git_flutter_festou/src/core/ui/festou_nav_global_key.dart';
 import 'package:git_flutter_festou/src/features/auth/auth_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
-import 'package:git_flutter_festou/src/features/home/home_page.dart';
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
 import 'package:git_flutter_festou/src/features/register/user/user_register_page.dart';

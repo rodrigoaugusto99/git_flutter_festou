@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/more_details.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/rating_view.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/show_map.dart';
 import 'package:git_flutter_festou/src/models/space/space_model_test.dart';
 
 class CardInfos extends StatefulWidget {
@@ -125,6 +127,19 @@ class _CardInfosState extends State<CardInfos> {
     );
   }
 
+  void showMap(SpaceModelTest space) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: ShowMap(
+            space: space,
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -156,7 +171,7 @@ class _CardInfosState extends State<CardInfos> {
                 child: const Text('Ver Fotos'),
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () => showMap(widget.space),
                 child: const Text('Ver Localização'),
               ),
             ],

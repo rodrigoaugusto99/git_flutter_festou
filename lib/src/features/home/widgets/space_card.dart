@@ -62,7 +62,7 @@ class _SpaceCardState extends State<SpaceCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${widget.space.endereco}, ${widget.space.numero} - ${widget.space.cep}\n${widget.space.bairro}, ${widget.space.cidade}',
+                        '${widget.space.logradouro}, ${widget.space.numero} - ${widget.space.cep}\n${widget.space.bairro}, ${widget.space.cidade}',
                       ),
                       InkWell(
                         onTap: () => Navigator.push(

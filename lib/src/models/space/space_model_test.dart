@@ -2,8 +2,8 @@ class SpaceModelTest {
   final String name = 'rodrigo';
   final String email = 'email';
   final String cep = '22221000';
-  final String endereco = 'endereco';
-  final String numero = '123';
+  final String logradouro = 'Rua Silveira Martins';
+  final String numero = '68';
   final String bairro = 'catete';
   final String cidade = 'rio de janeiro';
   final List<String> selectedTypes = ['Casamento', 'Festa Infantil'];
