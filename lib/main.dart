@@ -1,4 +1,3 @@
-import 'package:asyncstate/asyncstate.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,30 +24,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AsyncStateBuilder(
-      builder: (asyncNavigatorObserver) {
-        return MaterialApp(
-          navigatorObservers: [asyncNavigatorObserver],
-          navigatorKey: FestouNavGlobalKey.instance.navKey,
-          routes: {
-            '/home': (_) => const BottomNavBarPage(),
-            '/auth': (_) => const AuthPage(),
-            '/login': (_) => const LoginPage(),
-            '/register/user': (_) => const UserRegisterPage(),
-            '/register/space': (_) => const EspacoRegisterPage(),
-          },
-          theme: ThemeData(
-            primarySwatch: Colors.deepPurple,
-            dialogTheme: DialogTheme(
-              backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
-              ),
-            ),
-          ),
-          home: const SplashPage(),
-        );
+    return MaterialApp(
+      navigatorKey: FestouNavGlobalKey.instance.navKey,
+      routes: {
+        '/home': (_) => const BottomNavBarPage(),
+        '/auth': (_) => const AuthPage(),
+        '/login': (_) => const LoginPage(),
+        '/register/user': (_) => const UserRegisterPage(),
+        '/register/space': (_) => const EspacoRegisterPage(),
       },
+      theme: ThemeData(
+        primarySwatch: Colors.deepPurple,
+        dialogTheme: DialogTheme(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+        ),
+      ),
+      home: const SplashPage(),
     );
   }
 }

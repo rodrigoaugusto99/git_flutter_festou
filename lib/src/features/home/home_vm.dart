@@ -1,4 +1,3 @@
-import 'package:asyncstate/asyncstate.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/home/home_state.dart';
 
@@ -16,5 +15,5 @@ class HomeVm extends _$HomeVm {
     return HomeState(status: HomeStateStatus.loaded);
   }
 
-  Future<void> logout() => ref.read(logoutProvider.future).asyncLoader();
+  Future<void> logout() => ref.read(logoutProvider.future);
 }

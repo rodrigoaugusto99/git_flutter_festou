@@ -67,7 +67,7 @@ final spaceRepositoryProvider = Provider<SpaceRepository>.internal(
 );
 
 typedef SpaceRepositoryRef = ProviderRef<SpaceRepository>;
-String _$logoutHash() => r'a12611e887f1f50de1d87924702299b573e9f52c';
+String _$logoutHash() => r'9e943065799eddf9201be58b762ca1f1f18240d6';
 
 /// See also [logout].
 @ProviderFor(logout)

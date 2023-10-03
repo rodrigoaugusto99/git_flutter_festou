@@ -21,7 +21,9 @@ class UserRegisterServiceImpl implements UserRegisterService {
 
     switch (registerResult) {
       case Success():
-        return userLoginService.execute(userData.email, userData.password);
+        final result =
+            userLoginService.execute(userData.email, userData.password);
+        return result;
       case Failure(:final exception):
         return Failure(ServiceException(message: exception.message));
     }

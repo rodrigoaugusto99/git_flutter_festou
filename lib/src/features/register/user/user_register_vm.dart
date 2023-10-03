@@ -1,4 +1,3 @@
-import 'package:asyncstate/asyncstate.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -27,8 +26,7 @@ class UserRegisterVm extends _$UserRegisterVm {
       password: password,
     );
 
-    final registerResult =
-        await userRegisterService.execute(userData).asyncLoader();
+    final registerResult = await userRegisterService.execute(userData);
     switch (registerResult) {
       case Success():
         state = UserRegisterStateStatus.success;
