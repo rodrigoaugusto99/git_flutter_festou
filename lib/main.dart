@@ -8,9 +8,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.da
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
 import 'package:git_flutter_festou/src/features/register/user/user_register_page.dart';
-import 'package:git_flutter_festou/src/features/splash/splash_page.dart';
-import 'package:git_flutter_festou/src/features/test/firebase_teste.dart';
-import 'package:git_flutter_festou/src/features/test/pick_image.dart';
+import 'package:git_flutter_festou/src/features/test/firebase_teste2.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,7 +41,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const FirebaseTeste(),
+      home: const FirebaseTest(),
     );
   }
 }
