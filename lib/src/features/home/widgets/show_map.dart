@@ -91,7 +91,6 @@ class _ShowMapState extends State<ShowMap> {
       markerId: const MarkerId('location'),
       position: selectedLocation ?? const LatLng(0, 0),
       infoWindow: InfoWindow(
-        title: 'Localização',
         snippet: widget.space.numero,
       ),
     );

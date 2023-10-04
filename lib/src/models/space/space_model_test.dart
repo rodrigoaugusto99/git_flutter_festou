@@ -3,7 +3,7 @@ class SpaceModelTest {
   final String email = 'email';
   final String cep = '22221000';
   final String logradouro = 'Rua Silveira Martins';
-  final String numero = '68';
+  final String numero = '123';
   final String bairro = 'catete';
   final String cidade = 'rio de janeiro';
   final List<String> selectedTypes = ['Casamento', 'Festa Infantil'];
