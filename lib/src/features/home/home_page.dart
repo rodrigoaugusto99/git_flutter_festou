@@ -1,10 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/features/home/home_vm.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/space_card.dart';
-import 'package:git_flutter_festou/src/models/space/space_model_test.dart';
+import 'package:git_flutter_festou/src/features/test/firebase_teste3.dart';
+import 'package:git_flutter_festou/src/models/space/space_model_test2.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -15,6 +17,9 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   final user = FirebaseAuth.instance.currentUser!;
+
+  final Stream<QuerySnapshot> _usersStream =
+      FirebaseFirestore.instance.collection('users').snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -108,17 +113,42 @@ class _HomePageState extends ConsumerState<HomePage> {
                 style: const TextStyle(color: Colors.black),
               ),
             ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SpaceCard(space: SpaceModelTest()),
+            SliverToBoxAdapter(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: _usersStream,
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return const Text('Something went wrong');
+                  }
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child:
+                          CircularProgressIndicator(), // Exibe um indicador de carregamento circular
+                    );
+                  }
+
+                  return ListView(
+                    // Define o ListView para usar apenas o espaço necessário
+                    shrinkWrap: true,
+                    // Impede a rolagem do ListView
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: snapshot.data!.docs
+                        .map((DocumentSnapshot document) {
+                          Map<String, dynamic> data =
+                              document.data()! as Map<String, dynamic>;
+                          return ListTile(
+                            title: Text(data['email']),
+                            subtitle: Text(data['uid']),
+                          );
+                        })
+                        .toList()
+                        .cast(),
                   );
                 },
-                childCount: 6,
               ),
-            )
+            ),
           ],
         ),
       ),

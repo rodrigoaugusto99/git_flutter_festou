@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/card_infos.dart';
-import 'package:git_flutter_festou/src/models/space/space_model_test.dart';
+import 'package:git_flutter_festou/src/models/space/space2.dart';
+import 'package:git_flutter_festou/src/models/space/space_model_test2.dart';
 
 class SpaceCard extends StatefulWidget {
-  final SpaceModelTest space;
+  final SpaceModelTest2 space;
 
   const SpaceCard({super.key, required this.space});
 
@@ -69,7 +70,7 @@ class _SpaceCardState extends State<SpaceCard> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => CardInfos(
-                              space: SpaceModelTest(),
+                              space: SpaceModelTest2(),
                             ),
                           ),
                         ),

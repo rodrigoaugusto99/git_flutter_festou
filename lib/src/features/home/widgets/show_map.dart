@@ -1,12 +1,11 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:git_flutter_festou/src/models/space/space_model_test.dart';
+import 'package:git_flutter_festou/src/models/space/space2.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ShowMap extends StatefulWidget {
-  SpaceModelTest space;
+  SpaceModelTest2 space;
   ShowMap({super.key, required this.space});
 
   @override

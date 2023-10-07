@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/exceptions/auth_exception.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
@@ -8,11 +9,17 @@ import 'package:git_flutter_festou/src/core/fp/nil.dart';
 import './user_repository.dart';
 
 class UserRepositoryImpl implements UserRepository {
+  // Autenticação de Usuário
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+// Firestore
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   @override
   Future<Either<AuthException, Nil>> login(
       String email, String password) async {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -23,6 +30,20 @@ class UserRepositoryImpl implements UserRepository {
     }
   }
 
+  // Função para criar um documento de usuário no Firestore ao se cadastrar
+  Future<void> createUserInFirestore(User user) async {
+    final DocumentReference userDocRef =
+        _firestore.collection('users').doc(user.uid);
+
+    // Dados do usuário a serem armazenados no Firestore
+    Map<String, dynamic> userData = {
+      'uid': user.uid,
+      'email': user.email,
+    };
+
+    await userDocRef.set(userData);
+  }
+
   @override
   Future<Either<RepositoryException, Nil>> registerUser(
       ({
@@ -30,10 +51,13 @@ class UserRepositoryImpl implements UserRepository {
         String password,
       }) userData) async {
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
         email: userData.email,
         password: userData.password,
       );
+      User user = userCredential.user!;
+      await createUserInFirestore(user);
       return Success(nil);
     } on Exception catch (e, s) {
       log('Erro ao cadastrar usuario', error: e, stackTrace: s);

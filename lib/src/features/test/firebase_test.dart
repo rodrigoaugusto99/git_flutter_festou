@@ -152,10 +152,10 @@ class _FirebaseTestState extends State<FirebaseTest> {
                     'Número: ${space.numero}\n'
                     'Bairro: ${space.bairro}\n'
                     'Cidade: ${space.cidade}\n'
-                    'Selected Types: ${space.selectedTypes.join(", ")}\n'
-                    'Selected Services: ${space.selectedServices.join(", ")}\n'
-                    'Available Days: ${space.availableDays.join(", ")}\n'
-                    'Feedback Models: ${space.feedbackModel.map((feedback) => 'Rating: ${feedback.rating}, Content: ${feedback.content}').join("\n")}',
+                    'Selected Types: ${space.selectedTypes!.join(", ")}\n'
+                    'Selected Services: ${space.selectedServices!.join(", ")}\n'
+                    'Available Days: ${space.availableDays!.join(", ")}\n'
+                    'Feedback Models: ${space.feedbackModel!.map((feedback) => 'Rating: ${feedback.rating}, Content: ${feedback.content}').join("\n")}',
                   ),
                 );
               },

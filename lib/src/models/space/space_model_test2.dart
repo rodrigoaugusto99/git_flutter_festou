@@ -2,30 +2,30 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:git_flutter_festou/src/models/feedback/feedback_model_test.dart'; // Certifique-se de importar o modelo FeedbackModel correto aqui.
 
 class SpaceModelTest {
-  final String name;
-  final String email;
-  final String cep;
-  final String logradouro;
-  final String numero;
-  final String bairro;
-  final String cidade;
-  final List<String> selectedTypes;
-  final List<String> selectedServices;
-  final List<String> availableDays;
-  final List<FeedbackModel> feedbackModel; // Use o tipo correto aqui
+  final String? name;
+  final String? email;
+  final String? cep;
+  final String? logradouro;
+  final String? numero;
+  final String? bairro;
+  final String? cidade;
+  final List<String>? selectedTypes;
+  final List<String>? selectedServices;
+  final List<String>? availableDays;
+  final List<FeedbackModel>? feedbackModel; // Use o tipo correto aqui
 
   SpaceModelTest({
-    required this.name,
-    required this.email,
-    required this.cep,
-    required this.logradouro,
-    required this.numero,
-    required this.bairro,
-    required this.cidade,
-    required this.selectedTypes,
-    required this.selectedServices,
-    required this.availableDays,
-    required this.feedbackModel,
+    this.name,
+    this.email,
+    this.cep,
+    this.logradouro,
+    this.numero,
+    this.bairro,
+    this.cidade,
+    this.selectedTypes,
+    this.selectedServices,
+    this.availableDays,
+    this.feedbackModel,
   });
 
   factory SpaceModelTest.fromFirestore(
@@ -64,7 +64,7 @@ class SpaceModelTest {
       "selectedTypes": selectedTypes,
       "selectedServices": selectedServices,
       "availableDays": availableDays,
-      "feedbackModel": feedbackModel.map((item) {
+      "feedbackModel": feedbackModel!.map((item) {
         return item.toMap();
       }).toList(),
     };

@@ -3,10 +3,10 @@ import 'package:git_flutter_festou/src/features/home/widgets/card_comments.dart'
 import 'package:git_flutter_festou/src/features/home/widgets/more_details.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/rating_view.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/show_map.dart';
-import 'package:git_flutter_festou/src/models/space/space_model_test.dart';
+import 'package:git_flutter_festou/src/models/space/space2.dart';
 
 class CardInfos extends StatefulWidget {
-  final SpaceModelTest space;
+  final SpaceModelTest2 space;
   const CardInfos({
     super.key,
     required this.space,
@@ -28,7 +28,7 @@ class _CardInfosState extends State<CardInfos> {
     );
   }
 
-  void showComments(SpaceModelTest space) {
+  void showComments(SpaceModelTest2 space) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -41,7 +41,7 @@ class _CardInfosState extends State<CardInfos> {
     );
   }
 
-  void showMoreDetails(SpaceModelTest space) {
+  void showMoreDetails(SpaceModelTest2 space) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -50,7 +50,7 @@ class _CardInfosState extends State<CardInfos> {
     );
   }
 
-  void showMap(SpaceModelTest space) {
+  void showMap(SpaceModelTest2 space) {
     showDialog(
       context: context,
       builder: (context) {

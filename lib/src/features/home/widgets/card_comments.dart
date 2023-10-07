@@ -1,9 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/models/space/space_model_test.dart';
+import 'package:git_flutter_festou/src/models/space/space2.dart';
+
+import 'package:git_flutter_festou/src/models/space/space_model_test2.dart';
 
 class CardComments extends StatelessWidget {
-  SpaceModelTest space;
+  SpaceModelTest2 space;
   CardComments({
     super.key,
     required this.space,
