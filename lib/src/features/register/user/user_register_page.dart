@@ -40,7 +40,7 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
         case UserRegisterStateStatus.initial:
           break;
         case UserRegisterStateStatus.success:
-          Navigator.of(context).pushNamed('/home');
+          Navigator.of(context).pushNamed('/register/user/infos');
         case UserRegisterStateStatus.error:
           Messages.showError('Erro ao registrar usuario', context);
       }

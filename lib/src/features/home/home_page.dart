@@ -125,23 +125,34 @@ class _HomePageState extends ConsumerState<HomePage> {
                           CircularProgressIndicator(), // Exibe um indicador de carregamento circular
                     );
                   }
+                  /*pegando todos os documentos*/
+                  List docsList = snapshot.data!.docs;
 
-                  return ListView(
+                  return ListView.builder(
                     // Define o ListView para usar apenas o espaço necessário
                     shrinkWrap: true,
                     // Impede a rolagem do ListView
                     physics: const NeverScrollableScrollPhysics(),
-                    children: snapshot.data!.docs
-                        .map((DocumentSnapshot document) {
-                          Map<String, dynamic> data =
-                              document.data()! as Map<String, dynamic>;
-                          return ListTile(
-                            title: Text(data['email']),
-                            subtitle: Text(data['uid']),
-                          );
-                        })
-                        .toList()
-                        .cast(),
+                    itemCount: docsList.length,
+                    itemBuilder: (context, index) {
+                      /*pegando cada documento(até o index acabar)*/
+                      DocumentSnapshot document = docsList[index];
+                      /*Obtém o ID do documento atual
+                      - pode ser usado para editar ou deletar esse documento.*/
+                      String docID = document.id;
+                      /*Obtém os dados do documento atual como um mapa*/
+                      Map<String, dynamic> data =
+                          document.data() as Map<String, dynamic>;
+                      /*Obtém o valor associado à chave 'email' no mapa de dados */
+                      String emailText = data['email'];
+                      /*Obtém o valor associado à chave 'uid' no mapa de dados */
+                      String uidText = data['uid'];
+
+                      return ListTile(
+                        title: Text(emailText),
+                        subtitle: Text(uidText),
+                      );
+                    },
                   );
                 },
               ),
