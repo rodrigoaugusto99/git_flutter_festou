@@ -7,6 +7,7 @@ import 'package:git_flutter_festou/src/features/auth/auth_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
+import 'package:git_flutter_festou/src/features/register/user%20infos/user_infos.dart';
 import 'package:git_flutter_festou/src/features/register/user/user_register_page.dart';
 import 'package:git_flutter_festou/src/features/splash/splash_page.dart';
 import 'package:git_flutter_festou/src/features/test/firebase_test.dart';
@@ -43,7 +44,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const SplashPage(),
+      home: const UserRegisterInfosPage(),
     );
   }
 }

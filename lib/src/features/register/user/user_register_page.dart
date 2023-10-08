@@ -134,6 +134,7 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                             controller: confirmPasswordEC,
                             obscureText: false,
                           ),
+
                           const SizedBox(height: 10),
 
                           ElevatedButton(

@@ -15,4 +15,5 @@ sealed class ImageConstants {
   static const blueBackground = 'lib/assets/images/blueparty2.jpeg';
   static const gliterBlackground = 'lib/assets/images/gliter.jpeg';
   static const ballsBackground = 'lib/assets/images/balls.jpeg';
+  static const avatar = 'lib/assets/images/avatar.png';
 }

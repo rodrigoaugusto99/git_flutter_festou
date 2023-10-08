@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/features/home/home_vm.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/space_card.dart';
-import 'package:git_flutter_festou/src/features/test/firebase_teste3.dart';
-import 'package:git_flutter_festou/src/models/space/space_model_test2.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
