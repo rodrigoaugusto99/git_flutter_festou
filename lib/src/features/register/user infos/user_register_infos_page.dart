@@ -2,7 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
+import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
+import 'package:git_flutter_festou/src/features/register/user%20infos/user_register_infos_vm.dart';
 import 'package:git_flutter_festou/src/features/register/user%20infos/widgets/avatar_widget.dart';
+import 'package:git_flutter_festou/src/features/register/user/user_register_vm.dart';
 import 'package:git_flutter_festou/src/features/test/write%20data/firestore_service.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -44,6 +47,19 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
 
   @override
   Widget build(BuildContext context) {
+    final userRegisterInfosVM = ref.watch(userRegisterInfosVmProvider.notifier);
+
+    ref.listen(userRegisterInfosVmProvider, (_, state) {
+      switch (state) {
+        case UserRegisterInfosStateStatus.initial:
+        case UserRegisterInfosStateStatus.success:
+          Navigator.of(context).pushNamed('/home');
+        case UserRegisterInfosStateStatus.error:
+          Messages.showError(
+              'Erro ao registrar informações do usuario', context);
+      }
+    });
+
     return Scaffold(
       backgroundColor: Colors.grey,
       body: Center(
@@ -145,4 +161,16 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
       ),
     );
   }
+
+  @override
+  List<Object?> get props => [
+        user,
+        fullNameEC,
+        telefoneEC,
+        cepEC,
+        logradouroEC,
+        bairroEC,
+        cidadeEC,
+        formKey
+      ];
 }

@@ -9,4 +9,7 @@ abstract interface class UserRepository {
   Future<Either<RepositoryException, Nil>> registerUser(
     ({String email, String password}) userData,
   );
+
+  Future<Either<RepositoryException, Nil>> registerUserInfos(() userData);
+  Future<Either<RepositoryException, Nil>> registerUserDocument(() userData);
 }

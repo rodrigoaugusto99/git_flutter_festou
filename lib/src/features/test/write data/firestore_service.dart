@@ -63,7 +63,7 @@ class FirestoreService {
     }
   }
 
-  //adicionando endereco do usuario
+  /*adicionando endereco do usuario
   static Future<void> addUserAddress(User user, String cep, String logradouro,
       String numero, String bairro, String cidade) async {
     // Obtendo uma referência ao documento do usuário
@@ -81,7 +81,7 @@ class FirestoreService {
         },
       ]),
     });
-  }
+  }*/
 
 //GET USERS FROM DATABASE
   static Stream<QuerySnapshot> getUsersStream() {

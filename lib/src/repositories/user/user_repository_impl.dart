@@ -43,4 +43,17 @@ class UserRepositoryImpl implements UserRepository {
       return Failure(RepositoryException(message: 'Erro ao cadastrar usuario'));
     }
   }
+
+  @override
+  Future<Either<RepositoryException, Nil>> registerUserInfos(() userData) {
+    // TODO: implement registerUserInfos
+    throw UnimplementedError();
+  }
+
+  //depois arrumar para registerUserAuth e registerUserFirestore
+  @override
+  Future<Either<RepositoryException, Nil>> registerUserDocument(() userData) {
+    // TODO: implement registerUserDocument
+    throw UnimplementedError();
+  }
 }
