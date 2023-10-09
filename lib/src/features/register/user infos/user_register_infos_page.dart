@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
@@ -14,11 +15,18 @@ class UserRegisterInfosPage extends ConsumerStatefulWidget {
 }
 
 class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
+  final user = FirebaseAuth.instance.currentUser!;
   //text editing controllers
 
   final fullNameEC = TextEditingController();
-  final phoneNumberEC = TextEditingController();
+  final telefoneEC = TextEditingController();
   final cepEC = TextEditingController();
+  final logradouroEC = TextEditingController();
+  /*necessarios apenas quando o cliente de fato alugar um espaço  
+  final numeroEC = TextEditingController();
+  final complementoEC = TextEditingController();*/
+  final bairroEC = TextEditingController();
+  final cidadeEC = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
 
@@ -26,8 +34,11 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
   void dispose() {
     //Limpeza do controller
     fullNameEC.dispose();
-    phoneNumberEC.dispose();
+    telefoneEC.dispose();
     cepEC.dispose();
+    logradouroEC.dispose();
+    bairroEC.dispose();
+    cidadeEC.dispose();
     super.dispose();
   }
 
@@ -64,27 +75,53 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
                         decoration: const InputDecoration(
                           hintText: 'Celular',
                         ),
-                        controller: phoneNumberEC,
+                        controller: telefoneEC,
                       ),
-
-                      const SizedBox(height: 10),
-
-                      //confirm password textfield
+                      const SizedBox(height: 24),
                       TextFormField(
-                        validator: Validatorless.required('CEP obrigatório'),
+                        validator: Validatorless.required('Campo obrigatório'),
                         decoration: const InputDecoration(
-                          hintText: 'Seu CEP',
+                          hintText: 'cep',
                         ),
                         controller: cepEC,
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        validator: Validatorless.required('Campo obrigatório'),
+                        decoration: const InputDecoration(
+                          hintText: 'logradouro',
+                        ),
+                        controller: logradouroEC,
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        validator: Validatorless.required('Campo obrigatório'),
+                        decoration: const InputDecoration(
+                          hintText: 'bairro',
+                        ),
+                        controller: bairroEC,
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        validator: Validatorless.required('Campo obrigatório'),
+                        decoration: const InputDecoration(
+                          hintText: 'cidade',
+                        ),
+                        controller: cidadeEC,
+                      ),
+                      const SizedBox(height: 10),
 
                       ElevatedButton(
                         onPressed: () async {
                           // Chama a função addUserInfos com os dados desejados
                           await FirestoreService.addUserInfos(
-                              fullNameEC.text, phoneNumberEC.text, cepEC.text);
-
+                              user,
+                              fullNameEC.text,
+                              telefoneEC.text,
+                              cepEC.text,
+                              logradouroEC.text,
+                              bairroEC.text,
+                              cidadeEC.text);
                           // Navega para a página '/home'
                           Navigator.of(context).pushNamed('/home');
                         },

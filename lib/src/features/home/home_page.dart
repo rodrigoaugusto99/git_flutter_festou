@@ -147,7 +147,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                       String emailText = data['email'];
                       /*Obtém o valor associado à chave 'uid' no mapa de dados */
                       String uidText = data['uid'];
-
                       return ListTile(
                         title: Text(emailText),
                         subtitle: Text(uidText),
