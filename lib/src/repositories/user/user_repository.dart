@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/exceptions/auth_exception.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
@@ -10,6 +11,14 @@ abstract interface class UserRepository {
     ({String email, String password}) userData,
   );
 
-  Future<Either<RepositoryException, Nil>> registerUserInfos(() userData);
-  Future<Either<RepositoryException, Nil>> registerUserDocument(() userData);
+  Future<Either<RepositoryException, Nil>> registerUserInfos(
+      ({
+        User user,
+        String name,
+        String telefone,
+        String cep,
+        String logradouro,
+        String bairro,
+        String cidade,
+      }) userData);
 }

@@ -6,7 +6,6 @@ import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/user%20infos/user_register_infos_vm.dart';
 import 'package:git_flutter_festou/src/features/register/user%20infos/widgets/avatar_widget.dart';
 import 'package:git_flutter_festou/src/features/register/user/user_register_vm.dart';
-import 'package:git_flutter_festou/src/features/test/write%20data/firestore_service.dart';
 import 'package:validatorless/validatorless.dart';
 
 class UserRegisterInfosPage extends ConsumerStatefulWidget {
@@ -130,16 +129,14 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
                       ElevatedButton(
                         onPressed: () async {
                           // Chama a função addUserInfos com os dados desejados
-                          await FirestoreService.addUserInfos(
-                              user,
-                              fullNameEC.text,
-                              telefoneEC.text,
-                              cepEC.text,
-                              logradouroEC.text,
-                              bairroEC.text,
-                              cidadeEC.text);
-                          // Navega para a página '/home'
-                          Navigator.of(context).pushNamed('/home');
+                          await userRegisterInfosVM.register(
+                              user: user,
+                              name: fullNameEC.text,
+                              telefone: telefoneEC.text,
+                              cep: cepEC.text,
+                              logradouro: logradouroEC.text,
+                              bairro: bairroEC.text,
+                              cidade: cidadeEC.text);
                         },
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(56),

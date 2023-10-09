@@ -7,7 +7,7 @@ part of 'user_register_infos_vm.dart';
 // **************************************************************************
 
 String _$userRegisterInfosVmHash() =>
-    r'1007fd43aa06860ed2d90206c21104adeb5ba7f7';
+    r'd56888dc45380e285a1daf8f14c20dc387d7c980';
 
 /// See also [UserRegisterInfosVm].
 @ProviderFor(UserRegisterInfosVm)
