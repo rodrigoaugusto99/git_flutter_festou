@@ -45,7 +45,11 @@ class SpaceRepositoryImpl implements SpaceRepository {
 
         // Atualize o documento do usuário com o mapa de espaços
         await userDocRef.update({
-          'user_spaces': userSpaces,
+          'user_spaces': FieldValue.arrayUnion([
+            {
+              'user_spaces': userSpaces,
+            },
+          ]),
         });
 
         log('Informações de usuário adicionadas com sucesso!');
