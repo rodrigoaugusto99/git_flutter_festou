@@ -10,6 +10,9 @@ import './user_repository.dart';
 class UserRepositoryImpl implements UserRepository {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
+  final CollectionReference users =
+      FirebaseFirestore.instance.collection('users');
+
   @override
   Future<Either<AuthException, Nil>> login(
       String email, String password) async {
@@ -44,9 +47,6 @@ class UserRepositoryImpl implements UserRepository {
       return Failure(RepositoryException(message: 'Erro ao cadastrar usuario'));
     }
   }
-
-  final CollectionReference users =
-      FirebaseFirestore.instance.collection('users');
 
   Future<void> createUserInFirestore(User user) async {
     final DocumentReference userDocRef = users.doc();

@@ -18,8 +18,8 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
   final List<Widget> _pages = [
     const HomePage(),
     const Settings(),
-    const Account(),
     const Notifications(),
+    const Account(),
   ];
 
   @override
@@ -72,12 +72,12 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
             label: 'Settings',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
             label: 'Notifications',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
           ),
         ],
       ),
