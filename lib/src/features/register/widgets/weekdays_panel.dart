@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 
 class WeekDaysPanel extends StatelessWidget {
   final ValueChanged<String> onDayPressed;
+  final String text;
   const WeekDaysPanel({
     required this.onDayPressed,
+    required this.text,
     super.key,
   });
 
@@ -15,12 +17,9 @@ class WeekDaysPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text(
-            'Selecione os dias da semana',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-          ),
-          const SizedBox(
-            height: 16,
+          Text(
+            text,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
           ),
           //rolagem caso dispositivo pequeno
           SingleChildScrollView(

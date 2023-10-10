@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_vm.dart';
-import 'package:git_flutter_festou/src/features/register/widgets/options_panel.dart';
-import 'package:git_flutter_festou/src/features/register/widgets/servicos_painel.dart';
-import 'package:git_flutter_festou/src/features/register/widgets/tipo_painel.dart';
+import 'package:git_flutter_festou/src/features/register/widgets/weekdays_panel.dart';
+import 'package:git_flutter_festou/src/features/register/widgets/services_panel.dart';
+import 'package:git_flutter_festou/src/features/register/widgets/type_panel.dart';
 import 'package:search_cep/search_cep.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -74,7 +74,10 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                 ),
                 TextFormField(
                   controller: emailEC,
-                  validator: Validatorless.email('email invalido'),
+                  validator: Validatorless.multiple([
+                    Validatorless.required('Email obrigatorio'),
+                    Validatorless.email('Email invalido')
+                  ]),
                   decoration: const InputDecoration(
                     hintText: 'email',
                   ),
@@ -107,9 +110,9 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                 ),
                 TextFormField(
                   controller: enderecoEC,
-                  validator: Validatorless.required('endereço obrigatorio'),
+                  validator: Validatorless.required('logradouro obrigatorio'),
                   decoration: const InputDecoration(
-                    hintText: 'Endereço',
+                    hintText: 'Logradouro',
                   ),
                 ),
                 TextFormField(
@@ -137,18 +140,21 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                   height: 10,
                 ),
                 WeekDaysPanel(
+                  text: 'Selecione os DIAS da semana',
                   onDayPressed: (value) {
                     log('onDayPressed: $value');
                     spaceRegister.addOrRemoveAvailableDay(value);
                   },
                 ),
-                TipoPanel(
+                TypePanel(
+                  text: 'Selecione o TIPO de espaço',
                   onTypePressed: (value) {
                     log('onTypePressed: $value');
                     spaceRegister.addOrRemoveType(value);
                   },
                 ),
-                ServicoPanel(
+                ServicesPanel(
+                  text: 'Selecione os SERVIÇOS do espaço',
                   onServicePressed: (value) {
                     log('onServicePressed: $value');
                     spaceRegister.addOrRemoveService(value);
@@ -168,6 +174,7 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                     ),
                     ElevatedButton(
                       onPressed: () => spaceRegister.register(
+                        user,
                         nomeEC.text,
                         emailEC.text,
                         cepEC.text,

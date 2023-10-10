@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_state.dart';
@@ -48,10 +49,11 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
   }
 
   Future<void> register(
+    User user,
     String name,
     String email,
     String cep,
-    String endereco,
+    String logradouro,
     String numero,
     String bairro,
     String cidade,
@@ -62,22 +64,27 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
       :selectedServices,
     ) = state;
 
+    final Map<String, dynamic> space = {
+      'name': name,
+      'email': email,
+      'cep': cep,
+      'logradouro': logradouro,
+      'numero': numero,
+      'bairro': bairro,
+      'cidade': cidade,
+    };
+
     final spaceData = (
-      name: name,
-      email: email,
-      cep: cep,
-      endereco: endereco,
-      numero: numero,
-      bairro: bairro,
-      cidade: cidade,
+      space: space,
+      user: user,
       selectedTypes: selectedTypes,
       availableDays: availableDays,
       selectedServices: selectedServices,
     );
 
-    final spaceRegister = ref.watch(spaceRepositoryProvider);
-    log('$spaceData');
-    final registerResult = spaceRegister.save(spaceData);
+    final spaceRepository = ref.watch(spaceRepositoryProvider);
+    log('Registrando espaço: $spaceData');
+    final registerResult = spaceRepository.save(spaceData);
 
     switch (registerResult) {
       case Success():

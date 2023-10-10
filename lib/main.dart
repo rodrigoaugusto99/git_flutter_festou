@@ -10,8 +10,6 @@ import 'package:git_flutter_festou/src/features/register/space/space_register_pa
 import 'package:git_flutter_festou/src/features/register/user%20infos/user_register_infos_page.dart';
 import 'package:git_flutter_festou/src/features/register/user/user_register_page.dart';
 import 'package:git_flutter_festou/src/features/splash/splash_page.dart';
-import 'package:git_flutter_festou/src/features/test/firebase_test.dart';
-import 'package:git_flutter_festou/src/features/test/firebase_teste3.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,6 +35,7 @@ class MyApp extends StatelessWidget {
         '/register/user/infos': (_) => const UserRegisterInfosPage(),
       },
       theme: ThemeData(
+        brightness: Brightness.dark,
         primarySwatch: Colors.deepPurple,
         dialogTheme: DialogTheme(
           backgroundColor: Colors.white,
