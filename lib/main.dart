@@ -6,6 +6,8 @@ import 'package:git_flutter_festou/src/core/ui/festou_nav_global_key.dart';
 import 'package:git_flutter_festou/src/features/auth/auth_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/dados/dados_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/help/help_page.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/locador/quero_ser_locador.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/account.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
@@ -37,6 +39,7 @@ class MyApp extends StatelessWidget {
         '/register/user/infos': (_) => const UserRegisterInfosPage(),
         '/account/help': (_) => const HelpPage(),
         '/account/dados': (_) => const DadosPage(),
+        '/account/locador': (_) => const QueroSerLocadorPage(),
       },
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
@@ -47,7 +50,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const DadosPage(),
+      home: const Account(),
     );
   }
 }

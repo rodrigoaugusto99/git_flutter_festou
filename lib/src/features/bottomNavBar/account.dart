@@ -1,16 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/help/help_page.dart';
 
-class Account extends StatefulWidget {
+class Account extends StatelessWidget {
   const Account({super.key});
 
   @override
-  State<Account> createState() => _AccountState();
-}
-
-class _AccountState extends State<Account> {
-  @override
   Widget build(BuildContext context) {
+    showConfirmationDialog() {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Confirmação"),
+            content: const Text(
+                "Tem certeza de que deseja se tornar um locador? Isso atualizará seu status no aplicativo."),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Fechar o diálogo
+                },
+                child: const Text("Cancelar"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/account/locador');
+                },
+                child: const Text("Confirmar"),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
@@ -68,7 +90,7 @@ class _AccountState extends State<Account> {
             AcountButton(
               text: 'Anunciar um espaço',
               icon: const Icon(Icons.chat),
-              onTap: () {},
+              onTap: showConfirmationDialog,
             ),
             const SizedBox(height: 40),
             AcountButton(
