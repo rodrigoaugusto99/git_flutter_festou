@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account_pages/help_page.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/help/help_page.dart';
 
 class Account extends StatefulWidget {
   const Account({super.key});
@@ -62,7 +62,7 @@ class _AccountState extends State<Account> {
               text: 'Dados',
               text2: 'Minhas informações da conta',
               icon: const Icon(Icons.dataset),
-              onTap: () {},
+              onTap: () => Navigator.of(context).pushNamed('/account/dados'),
             ),
             const SizedBox(height: 40),
             AcountButton(
