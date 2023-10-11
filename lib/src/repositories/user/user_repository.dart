@@ -21,4 +21,10 @@ abstract interface class UserRepository {
         String bairro,
         String cidade,
       }) userData);
+  Future<Either<RepositoryException, Nil>> updateToLocador(
+      ({
+        User user,
+        String cnpj,
+        String emailComercial,
+      }) userData);
 }

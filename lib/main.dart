@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
         '/register/user/infos': (_) => const UserRegisterInfosPage(),
         '/account/help': (_) => const HelpPage(),
         '/account/dados': (_) => const DadosPage(),
-        '/account/locador': (_) => const QueroSerLocadorPage(),
+        '/account/locador': (_) => QueroSerLocadorPage(),
         '/account/favorites': (_) => const FavoriteSpacesPage(),
       },
       theme: ThemeData(
@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const Account(),
+      home: const SplashPage(),
     );
   }
 }

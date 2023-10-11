@@ -96,4 +96,33 @@ class UserRepositoryImpl implements UserRepository {
       return Failure(RepositoryException(message: 'Erro ao cadastrar usuario'));
     }
   }
+
+  @override
+  Future<Either<RepositoryException, Nil>> updateToLocador(
+      ({
+        User user,
+        String cnpj,
+        String emailComercial,
+      }) userData) async {
+    try {
+      QuerySnapshot querySnapshot =
+          await users.where("uid", isEqualTo: userData.user.uid).get();
+
+      if (querySnapshot.docs.length == 1) {
+        DocumentReference userDocRef = querySnapshot.docs[0].reference;
+
+        await userDocRef.update({
+          'cnpj': userData.cnpj,
+          'emailComercial': userData.emailComercial,
+          'userType': 'LOCADOR',
+        });
+
+        log('Informações de usuário adicionadas com sucesso!');
+      }
+      return Success(nil);
+    } catch (e) {
+      log('Erro ao adicionar informações de usuário: $e');
+      return Failure(RepositoryException(message: 'Erro ao cadastrar usuario'));
+    }
+  }
 }
