@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/card_infos.dart';
 import 'package:git_flutter_festou/src/models/space/space2.dart';
-import 'package:git_flutter_festou/src/models/space/space_model_test2.dart';
 
 class SpaceCard extends StatefulWidget {
-  final SpaceModelTest2 space;
-
-  const SpaceCard({super.key, required this.space});
+  const SpaceCard({super.key});
 
   @override
   State<SpaceCard> createState() => _SpaceCardState();
@@ -25,82 +22,85 @@ class _SpaceCardState extends State<SpaceCard> {
         elevation: 4,
         child: Column(
           children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              ),
-              child: Container(
-                height: 200,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(ImageConstants.gliterBlackground),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20),
-                ),
-                color: Color.fromARGB(255, 240, 235, 235),
-              ),
-              child: Column(
+            SizedBox(
+              height: 240,
+              child: Stack(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(widget.space.name),
-                      const Text('800,00/h'),
-                    ],
+                  ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                    child: Container(
+                      height: 220,
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(ImageConstants.gliterBlackground),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
                   ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '${widget.space.logradouro}, ${widget.space.numero} - ${widget.space.cep}\n${widget.space.bairro}, ${widget.space.cidade}',
-                      ),
-                      InkWell(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CardInfos(
-                              space: SpaceModelTest2(),
-                            ),
-                          ),
-                        ),
-                        child: const Icon(Icons.info),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.purple,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: InkWell(
-                          onTap: () {},
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 14.0, vertical: 2),
-                            child: Text(
-                              'Editar',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          color: Colors.white),
+                      child: Column(
+                        children: [
+                          const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('San Diego Apart Hotel'),
+                              Icon(
+                                //Icons.favorite,
+                                Icons.favorite_outline,
+                                color: Colors.red,
                               ),
-                            ),
+                            ],
                           ),
-                        ),
-                      )
-                    ],
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const SizedBox(
+                                width: 250,
+                                child: Text(
+                                  'Este apart-hotel possui piscina externa e fica perto de Praia de Canasvieiras',
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  InkWell(
+                                    onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CardInfos(
+                                          space: SpaceModelTest2(),
+                                        ),
+                                      ),
+                                    ),
+                                    child: const Icon(Icons.info),
+                                  ),
+                                  InkWell(
+                                    onTap: () {},
+                                    child: const Icon(Icons.edit),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/space_card.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -21,6 +22,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey,
       appBar: AppBar(
         shape: const ContinuousRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -66,98 +68,83 @@ class _HomePageState extends ConsumerState<HomePage> {
         },
         child: const Icon(Icons.add),
       ),
-      body: DecoratedBox(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage(ImageConstants.ballsBackground),
-              fit: BoxFit.cover),
-        ),
-        child: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              actions: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Meus espaços cadastrados'),
-                        Container(
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.green,
-                          ),
-                          child: const Icon(
-                            Icons.add,
-                            color: Colors.white,
-                            size: 25,
-                          ),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            actions: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                          'Meus espaços cadastrados\nLogged in as: ${user.email}'),
+                      Container(
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.green,
                         ),
-                      ],
-                    ),
+                        child: const Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 25,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-              foregroundColor: Colors.black,
-              backgroundColor: Colors.white,
-              pinned: true,
-            ),
-            SliverToBoxAdapter(
-              child: Text(
-                'Logged in as: ${user.email}',
-                style: const TextStyle(color: Colors.black),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: StreamBuilder<QuerySnapshot>(
-                stream: _usersStream,
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (snapshot.hasError) {
-                    return const Text('Something went wrong');
-                  }
+            ],
+            foregroundColor: Colors.black,
+            backgroundColor: Colors.white,
+            pinned: true,
+          ),
+          SliverToBoxAdapter(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _usersStream,
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return const Text('Something went wrong');
+                }
 
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child:
-                          CircularProgressIndicator(), // Exibe um indicador de carregamento circular
-                    );
-                  }
-                  /*pegando todos os documentos*/
-                  List docsList = snapshot.data!.docs;
-
-                  return ListView.builder(
-                    // Define o ListView para usar apenas o espaço necessário
-                    shrinkWrap: true,
-                    // Impede a rolagem do ListView
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: docsList.length,
-                    itemBuilder: (context, index) {
-                      /*pegando cada documento(até o index acabar)*/
-                      DocumentSnapshot document = docsList[index];
-                      /*Obtém o ID do documento atual
-                      - pode ser usado para editar ou deletar esse documento.*/
-                      String docID = document.id;
-                      /*Obtém os dados do documento atual como um mapa*/
-                      Map<String, dynamic> data =
-                          document.data() as Map<String, dynamic>;
-                      /*Obtém o valor associado à chave 'email' no mapa de dados */
-                      String emailText = data['email'];
-                      /*Obtém o valor associado à chave 'uid' no mapa de dados */
-                      String uidText = data['uid'];
-                      return ListTile(
-                        title: Text(emailText),
-                        subtitle: Text(uidText),
-                      );
-                    },
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child:
+                        CircularProgressIndicator(), // Exibe um indicador de carregamento circular
                   );
-                },
-              ),
+                }
+                /*pegando todos os documentos*/
+                List docsList = snapshot.data!.docs;
+
+                return ListView.builder(
+                  // Define o ListView para usar apenas o espaço necessário
+                  shrinkWrap: true,
+                  // Impede a rolagem do ListView
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: docsList.length,
+                  itemBuilder: (context, index) {
+                    /*pegando cada documento(até o index acabar)*/
+                    DocumentSnapshot document = docsList[index];
+                    /*Obtém o ID do documento atual
+                    - pode ser usado para editar ou deletar esse documento.*/
+                    String docID = document.id;
+                    /*Obtém os dados do documento atual como um mapa*/
+                    Map<String, dynamic> data =
+                        document.data() as Map<String, dynamic>;
+                    /*Obtém o valor associado à chave 'email' no mapa de dados */
+                    String emailText = data['email'];
+                    /*Obtém o valor associado à chave 'uid' no mapa de dados */
+                    String uidText = data['uid'];
+                    return const SpaceCard();
+                  },
+                );
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
