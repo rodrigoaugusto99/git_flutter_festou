@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/account_pages/help_page.dart';
 
 class Account extends StatefulWidget {
   const Account({super.key});
@@ -73,7 +74,7 @@ class _AccountState extends State<Account> {
             AcountButton(
               text: 'Ajuda',
               icon: const Icon(Icons.help),
-              onTap: () {},
+              onTap: () => Navigator.of(context).pushNamed('/account/help'),
             ),
             AcountButton(
               text: 'Configurações',
@@ -122,14 +123,11 @@ class AcountButton extends StatelessWidget {
               Row(
                 children: [
                   icon,
-                  Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    child: Text(
-                      text,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                      ),
+                  Text(
+                    text,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                 ],

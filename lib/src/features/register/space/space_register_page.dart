@@ -76,7 +76,7 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                   controller: emailEC,
                   validator: Validatorless.multiple([
                     Validatorless.required('Email obrigatorio'),
-                    Validatorless.email('Email invalido')
+                    Validatorless.email('Email inválido')
                   ]),
                   decoration: const InputDecoration(
                     hintText: 'email',

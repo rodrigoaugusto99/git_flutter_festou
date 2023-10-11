@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/firebase_options.dart';
 import 'package:git_flutter_festou/src/core/ui/festou_nav_global_key.dart';
 import 'package:git_flutter_festou/src/features/auth/auth_page.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/account_pages/help_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
@@ -33,9 +34,9 @@ class MyApp extends StatelessWidget {
         '/register/user': (_) => const UserRegisterPage(),
         '/register/space': (_) => const EspacoRegisterPage(),
         '/register/user/infos': (_) => const UserRegisterInfosPage(),
+        '/account/help': (_) => const HelpPage(),
       },
       theme: ThemeData(
-        brightness: Brightness.dark,
         primarySwatch: Colors.deepPurple,
         dialogTheme: DialogTheme(
           backgroundColor: Colors.white,

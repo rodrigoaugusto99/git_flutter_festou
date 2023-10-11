@@ -54,6 +54,7 @@ class UserRepositoryImpl implements UserRepository {
     Map<String, dynamic> userData = {
       'uid': user.uid,
       'email': user.email,
+      'userType': 'LOCATARIO',
       'user_infos': [],
       'user_spaces': [],
     };
