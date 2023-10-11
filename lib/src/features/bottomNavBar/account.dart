@@ -23,6 +23,7 @@ class Account extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () {
+                  Navigator.of(context).pop();
                   Navigator.of(context).pushNamed('/account/locador');
                 },
                 child: const Text("Confirmar"),
@@ -78,7 +79,8 @@ class Account extends StatelessWidget {
               text: 'Favoritos',
               text2: 'Meus espaços favoritos',
               icon: const Icon(Icons.star),
-              onTap: () {},
+              onTap: () =>
+                  Navigator.of(context).pushNamed('/account/favorites'),
             ),
             AcountButton(
               text: 'Dados',

@@ -5,6 +5,7 @@ import 'package:git_flutter_festou/firebase_options.dart';
 import 'package:git_flutter_festou/src/core/ui/festou_nav_global_key.dart';
 import 'package:git_flutter_festou/src/features/auth/auth_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/dados/dados_page.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/favorites/favorites_spaces.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/help/help_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/locador/quero_ser_locador.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account.dart';
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
         '/account/help': (_) => const HelpPage(),
         '/account/dados': (_) => const DadosPage(),
         '/account/locador': (_) => const QueroSerLocadorPage(),
+        '/account/favorites': (_) => const FavoriteSpacesPage(),
       },
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
