@@ -26,7 +26,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         shape: const ContinuousRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -75,85 +75,143 @@ class _HomePageState extends ConsumerState<HomePage> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            actions: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Logged in as: ${user.email}'),
-                      InkWell(
-                        onTap: () => Navigator.of(context)
-                            .pushNamed('/home/my_spaces', arguments: user),
-                        child: Container(
-                          padding: const EdgeInsets.all(3),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.black, // Cor da borda
-                              width: 2.0, // Largura da borda
+            expandedHeight: 133.0,  // ajuste esse valor conforme necessário
+            flexibleSpace: FlexibleSpaceBar(
+              background: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    // Lista horizontal de botões
+                    Container(
+                      height: 80.0,  // Defina a altura apropriada para os botões
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          SizedBox(
+                            width: 100.0,
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              child: Text('Kids'),
                             ),
-                            borderRadius: const BorderRadius.all(
-                                Radius.circular(10.0)), // Raio da borda
                           ),
-                          child: const Text(
-                            'Meus espaços cadastrados',
-                            style: TextStyle(fontSize: 11),
+                          SizedBox(width: 10), // Espaçamento entre os botões
+                          SizedBox(
+                            width: 110.0,
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              child: Text('Casamento'),
+                            ),
+                          ),
+                          SizedBox(width: 10), // Espaçamento entre os botões
+                          SizedBox(
+                            width: 100.0,
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              child: Text('Debutante'),
+                            ),
+                          ),
+                          SizedBox(width: 10), // Espaçamento entre os botões
+                          SizedBox(
+                            width: 100.0,
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              child: Text('Batismo'),
+                            ),
+                          ),
+                          SizedBox(width: 10), // Espaçamento entre os botões
+                          SizedBox(
+                            width: 100.0,
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              child: Text('Chá'),
+                            ),
+                          ),
+                          SizedBox(width: 10), // Espaçamento entre os botões
+                          SizedBox(
+                            width: 100.0,
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              child: Text('Reunião'),
+                            ),
+                          ),
+                          SizedBox(width: 10), // Espaçamento entre os botões
+                          SizedBox(
+                            width: 100.0,
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              child: Text('Outros'),
+                            ),
+                          ),
+                          SizedBox(width: 10), // Espaçamento entre os botões
+                          // ... adicione mais botões conforme necessário
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10), // Espaçamento entre a lista de botões e o resto do conteúdo
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Logged in as: ${user.email}'),
+                        InkWell(
+                          onTap: () => Navigator.of(context)
+                              .pushNamed('/home/my_spaces', arguments: user),
+                          child: Container(
+                            padding: const EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 2.0,
+                              ),
+                              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                            ),
+                            child: const Text(
+                              'Meus espaços cadastrados',
+                              style: TextStyle(fontSize: 11),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
             foregroundColor: Colors.black,
             backgroundColor: Colors.white,
-            pinned: true,
+            pinned: false,
           ),
-          SliverToBoxAdapter(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: _usersStream,
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  return const Text('Something went wrong');
-                }
+          StreamBuilder<QuerySnapshot>(
+            stream: _usersStream,
+            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError) {
+                return SliverToBoxAdapter(child: const Text('Something went wrong'));
+              }
 
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child:
-                        CircularProgressIndicator(), // Exibe um indicador de carregamento circular
-                  );
-                }
-                /*pegando todos os documentos*/
-                List docsList = snapshot.data!.docs;
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return SliverToBoxAdapter(
+                  child: const Center(child: CircularProgressIndicator()),
+                );
+              }
 
-                return ListView.builder(
-                  // Define o ListView para usar apenas o espaço necessário
-                  shrinkWrap: true,
-                  // Impede a rolagem do ListView
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: docsList.length,
-                  itemBuilder: (context, index) {
-                    /*pegando cada documento(até o index acabar)*/
+              List docsList = snapshot.data!.docs;
+
+              return SliverList(
+                delegate: SliverChildBuilderDelegate(
+                      (context, index) {
                     DocumentSnapshot document = docsList[index];
-                    /*Obtém o ID do documento atual
-                    - pode ser usado para editar ou deletar esse documento.*/
                     String docID = document.id;
-                    /*Obtém os dados do documento atual como um mapa*/
                     Map<String, dynamic> data =
-                        document.data() as Map<String, dynamic>;
-                    /*Obtém o valor associado à chave 'email' no mapa de dados */
+                    document.data() as Map<String, dynamic>;
                     String emailText = data['email'];
-                    /*Obtém o valor associado à chave 'uid' no mapa de dados */
                     String uidText = data['uid'];
                     return const SpaceCard();
                   },
-                );
-              },
-            ),
+                  childCount: docsList.length,
+                ),
+              );
+            },
           ),
         ],
       ),
