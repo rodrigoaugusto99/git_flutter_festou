@@ -19,6 +19,10 @@ class _HomePageState extends ConsumerState<HomePage> {
   final Stream<QuerySnapshot> _usersStream =
       FirebaseFirestore.instance.collection('users').snapshots();
 
+  final query = FirebaseFirestore.instance
+      .collection('users')
+      .where("uid", isEqualTo: FirebaseAuth.instance.currentUser!.uid);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,17 +83,24 @@ class _HomePageState extends ConsumerState<HomePage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                          'Meus espaços cadastrados\nLogged in as: ${user.email}'),
-                      Container(
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.green,
-                        ),
-                        child: const Icon(
-                          Icons.add,
-                          color: Colors.white,
-                          size: 25,
+                      Text('Logged in as: ${user.email}'),
+                      InkWell(
+                        onTap: () => Navigator.of(context)
+                            .pushNamed('/home/my_spaces', arguments: user),
+                        child: Container(
+                          padding: const EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.black, // Cor da borda
+                              width: 2.0, // Largura da borda
+                            ),
+                            borderRadius: const BorderRadius.all(
+                                Radius.circular(10.0)), // Raio da borda
+                          ),
+                          child: const Text(
+                            'Meus espaços cadastrados',
+                            style: TextStyle(fontSize: 11),
+                          ),
                         ),
                       ),
                     ],

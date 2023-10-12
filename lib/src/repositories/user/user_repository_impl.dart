@@ -55,8 +55,8 @@ class UserRepositoryImpl implements UserRepository {
       'uid': user.uid,
       'email': user.email,
       'userType': 'LOCATARIO',
-      'user_infos': [],
-      'user_spaces': [],
+      'user_infos': <String, dynamic>{},
+      'user_spaces': <String, dynamic>{},
     };
     await userDocRef.set(userData);
   }

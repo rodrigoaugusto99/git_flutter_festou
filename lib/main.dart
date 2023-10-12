@@ -10,6 +10,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/h
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/locador/quero_ser_locador.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/my_spaces.dart';
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
 import 'package:git_flutter_festou/src/features/register/user%20infos/user_register_infos_page.dart';
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
         '/account/dados': (_) => const DadosPage(),
         '/account/locador': (_) => QueroSerLocadorPage(),
         '/account/favorites': (_) => const FavoriteSpacesPage(),
+        '/home/my_spaces': (_) => const MySpaces(),
       },
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,

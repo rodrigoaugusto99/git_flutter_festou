@@ -27,8 +27,7 @@ class SpaceRepositoryImpl implements SpaceRepository {
       if (querySnapshot.docs.length == 1) {
         DocumentReference userDocRef = querySnapshot.docs[0].reference;
 
-        // Crie um mapa para representar os espaços
-        Map<String, dynamic> userSpaces = {
+        Map<String, dynamic> spaceItem = {
           'name': spaceData.space['name'],
           'email': spaceData.space['email'],
           'space_address': {
@@ -43,13 +42,13 @@ class SpaceRepositoryImpl implements SpaceRepository {
           'selectedServices': spaceData.selectedServices,
         };
 
+        // Crie um mapa para representar os espaços
+        Map<String, dynamic> userSpaces = {};
+        userSpaces.addAll(spaceItem);
+
         // Atualize o documento do usuário com o mapa de espaços
         await userDocRef.update({
-          'user_spaces': FieldValue.arrayUnion([
-            {
-              'user_spaces': userSpaces,
-            },
-          ]),
+          'user_spaces': userSpaces,
         });
 
         log('Informações de usuário adicionadas com sucesso!');
