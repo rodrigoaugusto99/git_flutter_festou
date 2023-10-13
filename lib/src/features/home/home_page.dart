@@ -92,63 +92,63 @@ class _HomePageState extends ConsumerState<HomePage> {
                             width: 100.0,
                             child: ElevatedButton(
                               onPressed: () {},
-                              child: Text('Kids'),
+                              child: const Text('Kids'),
                             ),
                           ),
-                          SizedBox(width: 10), // Espaçamento entre os botões
+                          const SizedBox(width: 10), // Espaçamento entre os botões
                           SizedBox(
                             width: 110.0,
                             child: ElevatedButton(
                               onPressed: () {},
-                              child: Text('Casamento'),
+                              child: const Text('Casamento'),
                             ),
                           ),
-                          SizedBox(width: 10), // Espaçamento entre os botões
+                          const SizedBox(width: 10), // Espaçamento entre os botões
                           SizedBox(
                             width: 100.0,
                             child: ElevatedButton(
                               onPressed: () {},
-                              child: Text('Debutante'),
+                              child: const Text('Debutante'),
                             ),
                           ),
-                          SizedBox(width: 10), // Espaçamento entre os botões
+                          const SizedBox(width: 10), // Espaçamento entre os botões
                           SizedBox(
                             width: 100.0,
                             child: ElevatedButton(
                               onPressed: () {},
-                              child: Text('Batismo'),
+                              child: const Text('Batismo'),
                             ),
                           ),
-                          SizedBox(width: 10), // Espaçamento entre os botões
+                          const SizedBox(width: 10), // Espaçamento entre os botões
                           SizedBox(
                             width: 100.0,
                             child: ElevatedButton(
                               onPressed: () {},
-                              child: Text('Chá'),
+                              child: const Text('Chá'),
                             ),
                           ),
-                          SizedBox(width: 10), // Espaçamento entre os botões
+                          const SizedBox(width: 10), // Espaçamento entre os botões
                           SizedBox(
                             width: 100.0,
                             child: ElevatedButton(
                               onPressed: () {},
-                              child: Text('Reunião'),
+                              child: const Text('Reunião'),
                             ),
                           ),
-                          SizedBox(width: 10), // Espaçamento entre os botões
+                          const SizedBox(width: 10), // Espaçamento entre os botões
                           SizedBox(
                             width: 100.0,
                             child: ElevatedButton(
                               onPressed: () {},
-                              child: Text('Outros'),
+                              child: const Text('Outros'),
                             ),
                           ),
-                          SizedBox(width: 10), // Espaçamento entre os botões
+                          const SizedBox(width: 10), // Espaçamento entre os botões
                           // ... adicione mais botões conforme necessário
                         ],
                       ),
                     ),
-                    SizedBox(height: 10), // Espaçamento entre a lista de botões e o resto do conteúdo
+                    const SizedBox(height: 10), // Espaçamento entre a lista de botões e o resto do conteúdo
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -186,12 +186,12 @@ class _HomePageState extends ConsumerState<HomePage> {
             stream: _usersStream,
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) {
-                return SliverToBoxAdapter(child: const Text('Something went wrong'));
+                return const SliverToBoxAdapter(child: Text('Something went wrong'));
               }
 
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return SliverToBoxAdapter(
-                  child: const Center(child: CircularProgressIndicator()),
+                return const SliverToBoxAdapter(
+                  child: Center(child: CircularProgressIndicator()),
                 );
               }
 
