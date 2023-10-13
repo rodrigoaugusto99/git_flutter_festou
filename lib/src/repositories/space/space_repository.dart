@@ -7,7 +7,13 @@ abstract interface class SpaceRepository {
   Future<Either<RepositoryException, Nil>> save(
     ({
       User user,
-      Map<String, dynamic> space,
+      String email,
+      String name,
+      String cep,
+      String logradouro,
+      String numero,
+      String bairro,
+      String cidade,
       List<String> selectedTypes,
       List<String> selectedServices,
       List<String> availableDays,

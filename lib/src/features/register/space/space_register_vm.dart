@@ -64,18 +64,14 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
       :selectedServices,
     ) = state;
 
-    final Map<String, dynamic> space = {
-      'name': name,
-      'email': email,
-      'cep': cep,
-      'logradouro': logradouro,
-      'numero': numero,
-      'bairro': bairro,
-      'cidade': cidade,
-    };
-
     final spaceData = (
-      space: space,
+      name: name,
+      email: email,
+      cep: cep,
+      logradouro: logradouro,
+      numero: numero,
+      bairro: bairro,
+      cidade: cidade,
       user: user,
       selectedTypes: selectedTypes,
       availableDays: availableDays,

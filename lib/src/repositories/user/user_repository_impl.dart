@@ -55,8 +55,8 @@ class UserRepositoryImpl implements UserRepository {
       'uid': user.uid,
       'email': user.email,
       'userType': 'LOCATARIO',
-      'user_infos': <String, dynamic>{},
-      'user_spaces': <String, dynamic>{},
+      'user_infos': {},
+      'user_spaces': {},
     };
     await userDocRef.set(userData);
   }
@@ -79,13 +79,21 @@ class UserRepositoryImpl implements UserRepository {
       if (querySnapshot.docs.length == 1) {
         DocumentReference userDocRef = querySnapshot.docs[0].reference;
 
+//criando um mapa dessas informacoes
+        Map<String, dynamic> newInfo = {
+          'name': userData.name,
+          'numero_de_telefone': userData.telefone,
+          'user_address': {
+            'cep': userData.cep,
+            'logradouro': userData.logradouro,
+            'bairro': userData.bairro,
+            'cidade': userData.cidade,
+          }
+        };
+        //jogando esse mapa no campo "user_infos" do documento referenciado
+        //se o campo nao existir no firestore, é criado
         await userDocRef.update({
-          'user_infos.name': userData.name,
-          'user_infos.numero_de_telefone': userData.telefone,
-          'user_infos.user_address.cep': userData.cep,
-          'user_infos.user_address.logradouro': userData.logradouro,
-          'user_infos.user_address.bairro': userData.bairro,
-          'user_infos.user_address.cidade': userData.cidade,
+          'user_infos': newInfo,
         });
 
         log('Informações de usuário adicionadas com sucesso!');
