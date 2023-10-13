@@ -75,16 +75,17 @@ class _HomePageState extends ConsumerState<HomePage> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 133.0,  // ajuste esse valor conforme necessário
+            expandedHeight: 142.0, // ajuste esse valor conforme necessário
             flexibleSpace: FlexibleSpaceBar(
               background: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0, vertical: 10.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     // Lista horizontal de botões
-                    Container(
-                      height: 80.0,  // Defina a altura apropriada para os botões
+                    SizedBox(
+                      height: 80.0, // Defina a altura apropriada para os botões
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
@@ -95,7 +96,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                               child: const Text('Kids'),
                             ),
                           ),
-                          const SizedBox(width: 10), // Espaçamento entre os botões
+                          const SizedBox(
+                              width: 10), // Espaçamento entre os botões
                           SizedBox(
                             width: 110.0,
                             child: ElevatedButton(
@@ -103,7 +105,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                               child: const Text('Casamento'),
                             ),
                           ),
-                          const SizedBox(width: 10), // Espaçamento entre os botões
+                          const SizedBox(
+                              width: 10), // Espaçamento entre os botões
                           SizedBox(
                             width: 100.0,
                             child: ElevatedButton(
@@ -111,7 +114,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                               child: const Text('Debutante'),
                             ),
                           ),
-                          const SizedBox(width: 10), // Espaçamento entre os botões
+                          const SizedBox(
+                              width: 10), // Espaçamento entre os botões
                           SizedBox(
                             width: 100.0,
                             child: ElevatedButton(
@@ -119,7 +123,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                               child: const Text('Batismo'),
                             ),
                           ),
-                          const SizedBox(width: 10), // Espaçamento entre os botões
+                          const SizedBox(
+                              width: 10), // Espaçamento entre os botões
                           SizedBox(
                             width: 100.0,
                             child: ElevatedButton(
@@ -127,7 +132,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                               child: const Text('Chá'),
                             ),
                           ),
-                          const SizedBox(width: 10), // Espaçamento entre os botões
+                          const SizedBox(
+                              width: 10), // Espaçamento entre os botões
                           SizedBox(
                             width: 100.0,
                             child: ElevatedButton(
@@ -135,7 +141,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                               child: const Text('Reunião'),
                             ),
                           ),
-                          const SizedBox(width: 10), // Espaçamento entre os botões
+                          const SizedBox(
+                              width: 10), // Espaçamento entre os botões
                           SizedBox(
                             width: 100.0,
                             child: ElevatedButton(
@@ -143,17 +150,20 @@ class _HomePageState extends ConsumerState<HomePage> {
                               child: const Text('Outros'),
                             ),
                           ),
-                          const SizedBox(width: 10), // Espaçamento entre os botões
+                          const SizedBox(
+                              width: 10), // Espaçamento entre os botões
                           // ... adicione mais botões conforme necessário
                         ],
                       ),
                     ),
-                    const SizedBox(height: 10), // Espaçamento entre a lista de botões e o resto do conteúdo
+                    const SizedBox(
+                        height:
+                            10), // Espaçamento entre a lista de botões e o resto do conteúdo
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Logged in as: ${user.email}'),
+                        Expanded(child: Text('Logged in as: ${user.email}')),
                         InkWell(
                           onTap: () => Navigator.of(context)
                               .pushNamed('/home/my_spaces', arguments: user),
@@ -164,11 +174,14 @@ class _HomePageState extends ConsumerState<HomePage> {
                                 color: Colors.black,
                                 width: 2.0,
                               ),
-                              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(10.0)),
                             ),
-                            child: const Text(
-                              'Meus espaços cadastrados',
-                              style: TextStyle(fontSize: 11),
+                            child: const Expanded(
+                              child: Text(
+                                'Meus espaços cadastrados',
+                                style: TextStyle(fontSize: 11),
+                              ),
                             ),
                           ),
                         ),
@@ -184,9 +197,11 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
           StreamBuilder<QuerySnapshot>(
             stream: _usersStream,
-            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) {
-                return const SliverToBoxAdapter(child: Text('Something went wrong'));
+                return const SliverToBoxAdapter(
+                    child: Text('Something went wrong'));
               }
 
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -199,11 +214,11 @@ class _HomePageState extends ConsumerState<HomePage> {
 
               return SliverList(
                 delegate: SliverChildBuilderDelegate(
-                      (context, index) {
+                  (context, index) {
                     DocumentSnapshot document = docsList[index];
                     String docID = document.id;
                     Map<String, dynamic> data =
-                    document.data() as Map<String, dynamic>;
+                        document.data() as Map<String, dynamic>;
                     String emailText = data['email'];
                     String uidText = data['uid'];
                     return const SpaceCard();
