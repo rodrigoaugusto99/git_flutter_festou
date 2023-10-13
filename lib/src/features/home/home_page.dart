@@ -75,7 +75,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 142.0, // ajuste esse valor conforme necessário
+            expandedHeight: 144.0, // ajuste esse valor conforme necessário
             flexibleSpace: FlexibleSpaceBar(
               background: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -90,64 +90,169 @@ class _HomePageState extends ConsumerState<HomePage> {
                         scrollDirection: Axis.horizontal,
                         children: [
                           SizedBox(
-                            width: 100.0,
+                            width: 165.0,
                             child: ElevatedButton(
                               onPressed: () {},
-                              child: const Text('Kids'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.grey[100], // fundo branco
+                                shape: RoundedRectangleBorder(  // bordas arredondadas
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                elevation: 0
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset('lib/assets/images/iconKids.png', width: 50,),
+                                  const SizedBox(width: 8),  // espaço entre ícone e texto
+                                  const Text('Kids', style: TextStyle(color: Colors.black),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           const SizedBox(
                               width: 10), // Espaçamento entre os botões
                           SizedBox(
-                            width: 110.0,
+                            width: 165.0,
                             child: ElevatedButton(
                               onPressed: () {},
-                              child: const Text('Casamento'),
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey[100], // fundo branco
+                                  shape: RoundedRectangleBorder(  // bordas arredondadas
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  elevation: 0
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset('lib/assets/images/iconBuque.png', width: 50,),
+                                  const SizedBox(width: 8),  // espaço entre ícone e texto
+                                  const Text('Casamento', style: TextStyle(color: Colors.black),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           const SizedBox(
                               width: 10), // Espaçamento entre os botões
                           SizedBox(
-                            width: 100.0,
+                            width: 165.0,
                             child: ElevatedButton(
                               onPressed: () {},
-                              child: const Text('Debutante'),
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey[100], // fundo branco
+                                  shape: RoundedRectangleBorder(  // bordas arredondadas
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  elevation: 0
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset('lib/assets/images/iconQuinze.png', width: 50,),
+                                  const SizedBox(width: 8),  // espaço entre ícone e texto
+                                  const Text('Debutante', style: TextStyle(color: Colors.black),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           const SizedBox(
                               width: 10), // Espaçamento entre os botões
                           SizedBox(
-                            width: 100.0,
+                            width: 165.0,
                             child: ElevatedButton(
                               onPressed: () {},
-                              child: const Text('Batismo'),
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey[100], // fundo branco
+                                  shape: RoundedRectangleBorder(  // bordas arredondadas
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  elevation: 0
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset('lib/assets/images/iconCruz.png', width: 50,),
+                                  const SizedBox(width: 8),  // espaço entre ícone e texto
+                                  const Text('Batizado', style: TextStyle(color: Colors.black),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           const SizedBox(
                               width: 10), // Espaçamento entre os botões
                           SizedBox(
-                            width: 100.0,
+                            width: 165.0,
                             child: ElevatedButton(
                               onPressed: () {},
-                              child: const Text('Chá'),
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey[100], // fundo branco
+                                  shape: RoundedRectangleBorder(  // bordas arredondadas
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  elevation: 0
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset('lib/assets/images/iconCha.png', width: 50,),
+                                  const SizedBox(width: 8),  // espaço entre ícone e texto
+                                  const Text('Chá', style: TextStyle(color: Colors.black),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           const SizedBox(
                               width: 10), // Espaçamento entre os botões
                           SizedBox(
-                            width: 100.0,
+                            width: 165.0,
                             child: ElevatedButton(
                               onPressed: () {},
-                              child: const Text('Reunião'),
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey[100], // fundo branco
+                                  shape: RoundedRectangleBorder(  // bordas arredondadas
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  elevation: 0
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset('lib/assets/images/iconReuniao.png', width: 50,),
+                                  const SizedBox(width: 8),  // espaço entre ícone e texto
+                                  const Text('Reunião', style: TextStyle(color: Colors.black),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           const SizedBox(
                               width: 10), // Espaçamento entre os botões
                           SizedBox(
-                            width: 100.0,
+                            width: 165.0,
                             child: ElevatedButton(
                               onPressed: () {},
-                              child: const Text('Outros'),
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey[100], // fundo branco
+                                  shape: RoundedRectangleBorder(  // bordas arredondadas
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  elevation: 0
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset('lib/assets/images/iconOutros.png', width: 50,),
+                                  const SizedBox(width: 8),  // espaço entre ícone e texto
+                                  const Text('Outros', style: TextStyle(color: Colors.black),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           const SizedBox(
@@ -163,12 +268,18 @@ class _HomePageState extends ConsumerState<HomePage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(child: Text('Logged in as: ${user.email}')),
+                        Expanded(// Adicionado o widget Flexible
+                          child: Text(
+                            'Logged in as: ${user.email}',
+                            overflow: TextOverflow.ellipsis, // Adicionado para mostrar reticências se o email for muito longo e não couber em uma linha.
+                            maxLines: 2, // Permite até 2 linhas. Ajuste conforme necessário.
+                          ),
+                        ),
                         InkWell(
                           onTap: () => Navigator.of(context)
                               .pushNamed('/home/my_spaces', arguments: user),
                           child: Container(
-                            padding: const EdgeInsets.all(3),
+                            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
                             decoration: BoxDecoration(
                               border: Border.all(
                                 color: Colors.black,
@@ -177,11 +288,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(10.0)),
                             ),
-                            child: const Expanded(
-                              child: Text(
-                                'Meus espaços cadastrados',
-                                style: TextStyle(fontSize: 11),
-                              ),
+                            child: const Text(
+                              'Meus espaços cadastrados',
+                              style: TextStyle(fontSize: 11),
                             ),
                           ),
                         ),
