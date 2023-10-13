@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const BottomNavBarPage(),
+      home: const SplashPage(),
     );
   }
 }
