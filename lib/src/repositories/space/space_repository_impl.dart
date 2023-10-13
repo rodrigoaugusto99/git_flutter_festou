@@ -15,7 +15,13 @@ class SpaceRepositoryImpl implements SpaceRepository {
   Future<Either<RepositoryException, Nil>> save(
       ({
         User user,
-        Map<String, dynamic> space,
+        String email,
+        String name,
+        String cep,
+        String logradouro,
+        String numero,
+        String bairro,
+        String cidade,
         List<String> selectedTypes,
         List<String> selectedServices,
         List<String> availableDays,
@@ -27,36 +33,35 @@ class SpaceRepositoryImpl implements SpaceRepository {
       if (querySnapshot.docs.length == 1) {
         DocumentReference userDocRef = querySnapshot.docs[0].reference;
 
-        Map<String, dynamic> spaceItem = {
-          'name': spaceData.space['name'],
-          'email': spaceData.space['email'],
+        // Crie um novo espaço com os dados fornecidos
+        Map<String, dynamic> newSpace = {
+          'emailComercial': spaceData.email,
+          'nome_do_espaco': spaceData.name,
           'space_address': {
-            'cep': spaceData.space['cep'],
-            'logradouro': spaceData.space['logradouro'],
-            'numero': spaceData.space['numero'],
-            'bairro': spaceData.space['bairro'],
-            'cidade': spaceData.space['cidade'],
+            'cep': spaceData.cep,
+            'logradouro': spaceData.logradouro,
+            'numero': spaceData.numero,
+            'bairro': spaceData.bairro,
+            'cidade': spaceData.cidade,
           },
-          'availableDays': spaceData.availableDays,
-          'selectedTypes': spaceData.selectedTypes,
-          'selectedServices': spaceData.selectedServices,
+          'space_infos': {
+            'selectedTypes': spaceData.selectedTypes,
+            'selectedServices': spaceData.selectedServices,
+            'availableDays': spaceData.availableDays,
+          },
         };
 
-        // Crie um mapa para representar os espaços
-        Map<String, dynamic> userSpaces = {};
-        userSpaces.addAll(spaceItem);
-
-        // Atualize o documento do usuário com o mapa de espaços
+        // Atualize o documento do usuário com a lista de espaços atualizada
         await userDocRef.update({
-          'user_spaces': userSpaces,
+          'user_spaces': FieldValue.arrayUnion([newSpace]),
         });
 
-        log('Informações de usuário adicionadas com sucesso!');
+        log('Informações de espaço adicionadas com sucesso!');
       }
-      return Success(nil);
+      return Success(Nil());
     } catch (e) {
-      log('Erro ao adicionar informações de usuário: $e');
-      return Failure(RepositoryException(message: 'Erro ao cadastrar usuario'));
+      log('Erro ao adicionar informações de espaço: $e');
+      return Failure(RepositoryException(message: 'Erro ao cadastrar espaço'));
     }
   }
 }
