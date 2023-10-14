@@ -1,7 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/card_infos.dart';
-import 'package:git_flutter_festou/src/models/space/space2.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 
@@ -48,6 +49,8 @@ class SpaceCard extends StatefulWidget {
 }
 
 class _SpaceCardState extends State<SpaceCard> {
+  bool isLiked = false;
+  String spaceId = '3';
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -93,10 +96,56 @@ class _SpaceCardState extends State<SpaceCard> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(widget.spaceEmail),
-                              const Icon(
-                                //Icons.favorite,
-                                Icons.favorite_outline,
-                                color: Colors.red,
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    isLiked = !isLiked;
+                                  });
+
+                                  // Adicione ou remova o espaço favorito no Firestore
+                                  if (isLiked) {
+                                    // Adicionar espaço favorito
+                                    final user =
+                                        FirebaseAuth.instance.currentUser;
+                                    spaceId =
+                                        '1'; // Substitua pelo ID real do espaço
+                                    final userDocRef = FirebaseFirestore
+                                        .instance
+                                        .collection('users')
+                                        .doc(user!.uid);
+
+                                    // Use o método `update` para adicionar o espaço favorito à lista existente
+                                    userDocRef.update({
+                                      'spaces_favorite':
+                                          FieldValue.arrayUnion([spaceId]),
+                                    });
+                                  } else {
+                                    // Remover espaço favorito
+                                    final user =
+                                        FirebaseAuth.instance.currentUser;
+                                    spaceId =
+                                        '2'; // Substitua pelo ID real do espaço
+                                    final userDocRef = FirebaseFirestore
+                                        .instance
+                                        .collection('users')
+                                        .doc(user!.uid);
+
+                                    // Use o método `update` para remover o espaço favorito da lista
+                                    userDocRef.update({
+                                      'spaces_favorite':
+                                          FieldValue.arrayRemove([spaceId]),
+                                    });
+                                  }
+                                },
+                                child: isLiked
+                                    ? const Icon(
+                                        Icons.favorite_outline,
+                                        color: Colors.red,
+                                      )
+                                    : const Icon(
+                                        Icons.favorite,
+                                        color: Colors.red,
+                                      ),
                               ),
                             ],
                           ),

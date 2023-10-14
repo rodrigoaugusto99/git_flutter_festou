@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/models/space/space2.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class MoreDetails extends StatelessWidget {

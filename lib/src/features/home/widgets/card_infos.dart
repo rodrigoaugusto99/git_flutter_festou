@@ -67,6 +67,36 @@ class _CardInfosState extends State<CardInfos> {
     );
   }
 
+  void userInfos(UserModel user) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Informações do Usuário:',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                  color: Colors.deepPurple,
+                ),
+              ),
+              Text(user.email),
+              Text(user.name),
+              Text(user.telefone),
+              Text(user.cep),
+              Text(user.logradouro),
+              Text(user.bairro),
+              Text(user.cidade),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,6 +122,10 @@ class _CardInfosState extends State<CardInfos> {
               ElevatedButton(
                 onPressed: () => showMap(widget.space),
                 child: const Text('Ver Localização'),
+              ),
+              ElevatedButton(
+                onPressed: () => userInfos(widget.user),
+                child: const Text('USER INFOS'),
               ),
               ElevatedButton(
                 onPressed: () {},

@@ -75,30 +75,10 @@ class _FavoriteSpacesPageState extends State<FavoriteSpacesPage> {
                 ));
               }
 
-              userWidgets.add(Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Informações do Usuário:',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                        color: Colors.deepPurple,
-                      ),
-                    ),
-                    Text('Email: $userEmail'),
-                    Text('Nome: ${userInfos['name']}'),
-                    Text(
-                        'Número de Telefone: ${userInfos['numero_de_telefone']}'),
-                    Text('CEP: ${userAddress['cep']}'),
-                    Text('Logradouro: ${userAddress['logradouro']}'),
-                    Text('Bairro: ${userAddress['bairro']}'),
-                    Text('Cidade: ${userAddress['cidade']}'),
-                    ...spaceWidgets,
-                  ],
-                ),
+              userWidgets.add(Column(
+                children: [
+                  ...spaceWidgets,
+                ],
               ));
             }
             return Column(
