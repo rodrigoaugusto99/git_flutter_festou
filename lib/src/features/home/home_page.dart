@@ -48,7 +48,13 @@ class _HomePageState extends ConsumerState<HomePage> {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: 3,
               itemBuilder: (context, index) {
-                return const SpaceCard();
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    color: Colors.deepPurple,
+                    height: 140,
+                  ),
+                );
               },
             ),
           ),

@@ -43,13 +43,17 @@ class _AllSpacesState extends State<AllSpaces> {
             List<Widget> userWidgets = [];
 
             for (var userDocument in userDocuments) {
+              //pega o email do documento que é string
               String userEmail = userDocument['email'];
+              //pega o campo user_infos que é um mapa
               Map<String, dynamic> userInfos = userDocument['user_infos'];
               Map<String, dynamic> userAddress = userInfos['user_address'];
+              //pega o campo user_spaces que é uma lista(de mapas)
               List<dynamic> userSpaces = userDocument['user_spaces'];
 
               List<Widget> spaceWidgets = [];
 
+//pra cada documento(lista) lido, vamos ler os espaços(lista) dos documentos
               for (var space in userSpaces) {
                 Map<String, dynamic> spaceAddress = space['space_address'];
 

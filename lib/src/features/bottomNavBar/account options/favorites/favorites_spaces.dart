@@ -1,21 +1,111 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/space_card.dart';
 
-class FavoriteSpacesPage extends StatelessWidget {
+class FavoriteSpacesPage extends StatefulWidget {
   const FavoriteSpacesPage({super.key});
 
   @override
+  State<FavoriteSpacesPage> createState() => _FavoriteSpacesPageState();
+}
+
+final user = FirebaseAuth.instance.currentUser!;
+
+final _usersStream = FirebaseFirestore.instance.collection('users').snapshots();
+
+class _FavoriteSpacesPageState extends State<FavoriteSpacesPage> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text("Meus Espaços Favoritos"),
-      ),
-      body: ListView.builder(
-        itemCount: 5, // Número de containers a serem exibidos
-        itemBuilder: (context, index) {
-          return const SpaceCard();
-        },
+      appBar: AppBar(title: Text('Logged in as: ${user.email}\nFavorites')),
+      body: SingleChildScrollView(
+        child: StreamBuilder<QuerySnapshot>(
+          stream: _usersStream,
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return const Text('Algo deu errado');
+            }
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            if (!snapshot.hasData) {
+              return const Text('Documento do usuário não encontrado');
+            }
+
+//pegando todos os documentos(Lista de QueryDocumentSnapshot)
+            final userDocuments = snapshot.data!.docs;
+
+            List<Widget> userWidgets = [];
+
+            for (var userDocument in userDocuments) {
+              String userEmail = userDocument['email'];
+              Map<String, dynamic> userInfos = userDocument['user_infos'];
+              Map<String, dynamic> userAddress = userInfos['user_address'];
+              List<dynamic> userSpaces = userDocument['user_spaces'];
+
+              List<Widget> spaceWidgets = [];
+
+              for (var space in userSpaces) {
+                Map<String, dynamic> spaceAddress = space['space_address'];
+
+                spaceWidgets.add(SpaceCard(
+                  spaceEmail: space['emailComercial'],
+                  spaceName: space['nome_do_espaco'],
+                  spaceCep: spaceAddress['cep'],
+                  spaceLogradouro: spaceAddress['logradouro'],
+                  spaceNumero: spaceAddress['numero'],
+                  spaceBairro: spaceAddress['bairro'],
+                  spaceCidade: spaceAddress['cidade'],
+                  selectedTypes: space['space_infos']['selectedTypes'],
+                  selectedServices: space['space_infos']['selectedServices'],
+                  availableDays: space['space_infos']['availableDays'],
+                  userEmail: userEmail,
+                  userTelefone: userInfos['name'],
+                  userName: userInfos['numero_de_telefone'],
+                  userCep: userAddress['cep'],
+                  userLogradouro: userAddress['logradouro'],
+                  userBairro: userAddress['bairro'],
+                  userCidade: userAddress['cidade'],
+                ));
+              }
+
+              userWidgets.add(Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Informações do Usuário:',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                        color: Colors.deepPurple,
+                      ),
+                    ),
+                    Text('Email: $userEmail'),
+                    Text('Nome: ${userInfos['name']}'),
+                    Text(
+                        'Número de Telefone: ${userInfos['numero_de_telefone']}'),
+                    Text('CEP: ${userAddress['cep']}'),
+                    Text('Logradouro: ${userAddress['logradouro']}'),
+                    Text('Bairro: ${userAddress['bairro']}'),
+                    Text('Cidade: ${userAddress['cidade']}'),
+                    ...spaceWidgets,
+                  ],
+                ),
+              ));
+            }
+            return Column(
+              children: userWidgets,
+            );
+          },
+        ),
       ),
     );
   }
