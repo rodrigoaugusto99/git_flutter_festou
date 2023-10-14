@@ -313,35 +313,34 @@ class _HomePageState extends ConsumerState<HomePage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(
-                          child: InkWell(
-                            onTap: () => Navigator.of(context)
-                                .pushNamed('/home/all_spaces', arguments: user),
-                            child: Container(
-                              padding: EdgeInsets.all(
-                                  MediaQuery.of(context).size.width * 0.02),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.black,
-                                  width: 2.0,
-                                ),
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(10.0)),
+                        InkWell(
+                          onTap: () => Navigator.of(context)
+                              .pushNamed('/home/all_spaces', arguments: user),
+                          child: Container(
+                            padding: EdgeInsets.all(
+                                MediaQuery.of(context).size.width * 0.02),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 2.0,
                               ),
-                              child: const Text(
-                                'all spaces',
-                                style: TextStyle(fontSize: 11),
-                              ),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(10.0)),
+                            ),
+                            child: const Text(
+                              'all spaces',
+                              style: TextStyle(fontSize: 11),
                             ),
                           ),
+                        ),
+                        const SizedBox(
+                          width: 20,
                         ),
                         Expanded(
                           child: Text(
                             'Logged in as: ${user.email}',
-                            overflow: TextOverflow
-                                .ellipsis, // Adicionado para mostrar reticências se o email for muito longo e não couber em uma linha.
-                            maxLines:
-                                2, // Permite até 2 linhas. Ajuste conforme necessário.
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
                           ),
                         ),
                         InkWell(
