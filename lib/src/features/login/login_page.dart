@@ -45,7 +45,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           Messages.showInfo('Erro ao realizar login', context);
         case LoginState(status: LoginStateStatus.userLogin):
           Navigator.of(context).pushNamedAndRemoveUntil(
-              '/register/user/infos', (route) => false);
+              '/home', (route) => false);
           break;
       }
     });
