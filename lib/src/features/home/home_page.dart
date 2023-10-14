@@ -44,8 +44,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             expandedHeight: y * 0.25,
             flexibleSpace: FlexibleSpaceBar(
               background: Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: x * 0.06),
+                padding: EdgeInsets.symmetric(horizontal: x * 0.06),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -57,7 +56,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                             style: const TextStyle(
                               color: Colors.black,
                               fontSize: 18,
-                              fontFamily: 'Inter',
                             ),
                           ),
                         ),
@@ -82,8 +80,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                               child: ElevatedButton(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Colors.grey[100],
+                                    backgroundColor: Colors.grey[100],
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15),
                                     ),
@@ -98,16 +95,14 @@ class _HomePageState extends ConsumerState<HomePage> {
                                     SizedBox(width: x * 0.02),
                                     const Text(
                                       'Kids',
-                                      style: TextStyle(color: Colors.black, fontFamily: 'Inter'),
-
+                                      style: TextStyle(color: Colors.black),
                                     ),
                                   ],
                                 ),
                               ),
                             ),
                           ),
-                          SizedBox(
-                              width: x * 0.025),
+                          SizedBox(width: x * 0.025),
                           Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
                             child: SizedBox(
@@ -115,8 +110,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                               child: ElevatedButton(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Colors.grey[100],
+                                    backgroundColor: Colors.grey[100],
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15),
                                     ),
@@ -146,8 +140,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                               child: ElevatedButton(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Colors.grey[100],
+                                    backgroundColor: Colors.grey[100],
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15),
                                     ),
@@ -177,8 +170,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                               child: ElevatedButton(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Colors.grey[100],
+                                    backgroundColor: Colors.grey[100],
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15),
                                     ),
@@ -193,7 +185,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                     SizedBox(width: x * 0.02),
                                     const Text(
                                       'Religioso',
-                                      style: TextStyle(color: Colors.black, fontFamily: 'Inter'),
+                                      style: TextStyle(color: Colors.black),
                                     ),
                                   ],
                                 ),
@@ -208,8 +200,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                               child: ElevatedButton(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Colors.grey[100],
+                                    backgroundColor: Colors.grey[100],
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15),
                                     ),
@@ -239,8 +230,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                               child: ElevatedButton(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Colors.grey[100],
+                                    backgroundColor: Colors.grey[100],
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15),
                                     ),
@@ -270,8 +260,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                               child: ElevatedButton(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Colors.grey[100],
+                                    backgroundColor: Colors.grey[100],
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15),
                                     ),
@@ -297,7 +286,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                         ],
                       ),
                     ),
-                    SizedBox(height: y * 0.015), // Espaçamento entre a lista de botões e o resto do conteúdo
+                    SizedBox(
+                        height: y *
+                            0.015), // Espaçamento entre a lista de botões e o resto do conteúdo
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -306,8 +297,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           onTap: () => Navigator.of(context)
                               .pushNamed('/home/all_spaces', arguments: user),
                           child: Container(
-                            padding: EdgeInsets.all(
-                                x * 0.02),
+                            padding: EdgeInsets.all(x * 0.02),
                             decoration: BoxDecoration(
                               border: Border.all(
                                 color: Colors.black,
@@ -326,8 +316,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           onTap: () => Navigator.of(context)
                               .pushNamed('/home/my_spaces', arguments: user),
                           child: Container(
-                            padding: EdgeInsets.all(
-                                x * 0.02),
+                            padding: EdgeInsets.all(x * 0.02),
                             decoration: BoxDecoration(
                               border: Border.all(
                                 color: Colors.black,
@@ -338,6 +327,26 @@ class _HomePageState extends ConsumerState<HomePage> {
                             ),
                             child: const Text(
                               'Meus espaços cadastrados',
+                              style: TextStyle(fontSize: 11),
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () => Navigator.of(context)
+                              .pushNamed('/home/my_favorites', arguments: user),
+                          child: Container(
+                            padding: EdgeInsets.all(
+                                MediaQuery.of(context).size.width * 0.02),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 2.0,
+                              ),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(10.0)),
+                            ),
+                            child: const Text(
+                              'M',
                               style: TextStyle(fontSize: 11),
                             ),
                           ),
