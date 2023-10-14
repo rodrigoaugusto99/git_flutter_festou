@@ -16,14 +16,19 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   final user = FirebaseAuth.instance.currentUser!;
 
-  String formatString(String input) {
-    if (input.isEmpty) return '';
+  String extractUsernameFromEmail(String email) {
+    if (email.isEmpty) return '';
 
-    // Limita a string a 6 caracteres
-    String truncated = input.length > 6 ? input.substring(0, 6) : input;
+    int atIndex = email.indexOf('@');
+    if (atIndex == -1) {
+      // Caso não haja um "@" no e-mail, retornar o e-mail completo.
+      return email;
+    }
 
-    // Converte a primeira letra para maiúscula e o restante para minúscula
-    return truncated[0].toUpperCase() + truncated.substring(1).toLowerCase();
+    // Extrair o nome de usuário até o "@".
+    String username = email.substring(0, atIndex);
+
+    return username;
   }
 
   @override
@@ -43,7 +48,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         title: Column(
           children: [
             Text(
-              'Olá, ${formatString(user.email!)}',
+              'Olá, ${extractUsernameFromEmail(user.email!)}',
               style: const TextStyle(
                 color: Colors.black,
                 fontSize: 18,
