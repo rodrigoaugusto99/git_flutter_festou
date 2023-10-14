@@ -194,12 +194,12 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Image.asset(
-                                      'lib/assets/images/iconCruz.png',
+                                      'lib/assets/images/iconReligioso.png',
                                       width: x * 0.12,
                                     ),
                                     SizedBox(width: x * 0.02),
                                     const Text(
-                                      'Batizado',
+                                      'Religioso',
                                       style: TextStyle(color: Colors.black),
                                     ),
                                   ],
