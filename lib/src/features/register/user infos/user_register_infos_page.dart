@@ -158,16 +158,4 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
       ),
     );
   }
-
-  @override
-  List<Object?> get props => [
-        user,
-        fullNameEC,
-        telefoneEC,
-        cepEC,
-        logradouroEC,
-        bairroEC,
-        cidadeEC,
-        formKey
-      ];
 }

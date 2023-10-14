@@ -173,16 +173,19 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                       width: 10,
                     ),
                     ElevatedButton(
-                      onPressed: () => spaceRegister.register(
-                        user,
-                        nomeEC.text,
-                        emailEC.text,
-                        cepEC.text,
-                        enderecoEC.text,
-                        numeroEC.text,
-                        bairroEC.text,
-                        cidadeEC.text,
-                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        spaceRegister.register(
+                          user,
+                          nomeEC.text,
+                          emailEC.text,
+                          cepEC.text,
+                          enderecoEC.text,
+                          numeroEC.text,
+                          bairroEC.text,
+                          cidadeEC.text,
+                        );
+                      },
                       child: const Text('cadastrar espaco'),
                     ),
                   ],

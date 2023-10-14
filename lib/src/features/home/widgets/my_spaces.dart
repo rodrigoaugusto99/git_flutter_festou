@@ -19,7 +19,9 @@ class _MySpacesState extends State<MySpaces> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Logged in as: ${user.email}')),
+      appBar: AppBar(
+        title: Text('Logged in as: ${user.email}'),
+      ),
       body: SingleChildScrollView(
         child: StreamBuilder<QuerySnapshot>(
           stream: _usersStream.where('uid', isEqualTo: user.uid).snapshots(),
@@ -31,8 +33,7 @@ class _MySpacesState extends State<MySpaces> {
 
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
-                child:
-                    CircularProgressIndicator(), // Exibe um indicador de carregamento circular
+                child: CircularProgressIndicator(),
               );
             }
 
@@ -128,7 +129,4 @@ class _MySpacesState extends State<MySpaces> {
       ),
     );
   }
-
-  @override
-  List<Object?> get props => [userSpacesList];
 }
