@@ -16,12 +16,20 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   final user = FirebaseAuth.instance.currentUser!;
 
-  final Stream<QuerySnapshot> _usersStream =
-      FirebaseFirestore.instance.collection('users').snapshots();
+  String extractUsernameFromEmail(String email) {
+    if (email.isEmpty) return '';
 
-  final query = FirebaseFirestore.instance
-      .collection('users')
-      .where("uid", isEqualTo: FirebaseAuth.instance.currentUser!.uid);
+    int atIndex = email.indexOf('@');
+    if (atIndex == -1) {
+      // Caso não haja um "@" no e-mail, retornar o e-mail completo.
+      return email;
+    }
+
+    // Extrair o nome de usuário até o "@".
+    String username = email.substring(0, atIndex);
+
+    return username;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,24 +43,17 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
         ),
         backgroundColor: Colors.white,
-        elevation: 5,
+        elevation: 0,
         centerTitle: true,
-        title: const Column(
+        title: Column(
           children: [
             Text(
-              'Espaço Alegria Kids',
-              style: TextStyle(
+              'Olá, ${extractUsernameFromEmail(user.email!)}',
+              style: const TextStyle(
                 color: Colors.black,
-                fontSize: 14,
+                fontSize: 18,
               ),
             ),
-            Text(
-              'Rua Maria da Graça, 123, Maria da graça - RJ',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 10,
-              ),
-            )
           ],
         ),
         actions: [
@@ -94,18 +95,25 @@ class _HomePageState extends ConsumerState<HomePage> {
                             child: ElevatedButton(
                               onPressed: () {},
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.grey[100], // fundo branco
-                                shape: RoundedRectangleBorder(  // bordas arredondadas
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                elevation: 0
-                              ),
+                                  backgroundColor:
+                                      Colors.grey[100], // fundo branco
+                                  shape: RoundedRectangleBorder(
+                                    // bordas arredondadas
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  elevation: 0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Image.asset('lib/assets/images/iconKids.png', width: 50,),
-                                  const SizedBox(width: 8),  // espaço entre ícone e texto
-                                  const Text('Kids', style: TextStyle(color: Colors.black),
+                                  Image.asset(
+                                    'lib/assets/images/iconKids.png',
+                                    width: 50,
+                                  ),
+                                  const SizedBox(
+                                      width: 8), // espaço entre ícone e texto
+                                  const Text(
+                                    'Kids',
+                                    style: TextStyle(color: Colors.black),
                                   ),
                                 ],
                               ),
@@ -118,18 +126,25 @@ class _HomePageState extends ConsumerState<HomePage> {
                             child: ElevatedButton(
                               onPressed: () {},
                               style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.grey[100], // fundo branco
-                                  shape: RoundedRectangleBorder(  // bordas arredondadas
+                                  backgroundColor:
+                                      Colors.grey[100], // fundo branco
+                                  shape: RoundedRectangleBorder(
+                                    // bordas arredondadas
                                     borderRadius: BorderRadius.circular(15),
                                   ),
-                                  elevation: 0
-                              ),
+                                  elevation: 0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Image.asset('lib/assets/images/iconBuque.png', width: 50,),
-                                  const SizedBox(width: 8),  // espaço entre ícone e texto
-                                  const Text('Casamento', style: TextStyle(color: Colors.black),
+                                  Image.asset(
+                                    'lib/assets/images/iconBuque.png',
+                                    width: 50,
+                                  ),
+                                  const SizedBox(
+                                      width: 8), // espaço entre ícone e texto
+                                  const Text(
+                                    'Casamento',
+                                    style: TextStyle(color: Colors.black),
                                   ),
                                 ],
                               ),
@@ -142,18 +157,25 @@ class _HomePageState extends ConsumerState<HomePage> {
                             child: ElevatedButton(
                               onPressed: () {},
                               style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.grey[100], // fundo branco
-                                  shape: RoundedRectangleBorder(  // bordas arredondadas
+                                  backgroundColor:
+                                      Colors.grey[100], // fundo branco
+                                  shape: RoundedRectangleBorder(
+                                    // bordas arredondadas
                                     borderRadius: BorderRadius.circular(15),
                                   ),
-                                  elevation: 0
-                              ),
+                                  elevation: 0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Image.asset('lib/assets/images/iconQuinze.png', width: 50,),
-                                  const SizedBox(width: 8),  // espaço entre ícone e texto
-                                  const Text('Debutante', style: TextStyle(color: Colors.black),
+                                  Image.asset(
+                                    'lib/assets/images/iconQuinze.png',
+                                    width: 50,
+                                  ),
+                                  const SizedBox(
+                                      width: 8), // espaço entre ícone e texto
+                                  const Text(
+                                    'Debutante',
+                                    style: TextStyle(color: Colors.black),
                                   ),
                                 ],
                               ),
@@ -166,18 +188,25 @@ class _HomePageState extends ConsumerState<HomePage> {
                             child: ElevatedButton(
                               onPressed: () {},
                               style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.grey[100], // fundo branco
-                                  shape: RoundedRectangleBorder(  // bordas arredondadas
+                                  backgroundColor:
+                                      Colors.grey[100], // fundo branco
+                                  shape: RoundedRectangleBorder(
+                                    // bordas arredondadas
                                     borderRadius: BorderRadius.circular(15),
                                   ),
-                                  elevation: 0
-                              ),
+                                  elevation: 0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Image.asset('lib/assets/images/iconCruz.png', width: 50,),
-                                  const SizedBox(width: 8),  // espaço entre ícone e texto
-                                  const Text('Batizado', style: TextStyle(color: Colors.black),
+                                  Image.asset(
+                                    'lib/assets/images/iconCruz.png',
+                                    width: 50,
+                                  ),
+                                  const SizedBox(
+                                      width: 8), // espaço entre ícone e texto
+                                  const Text(
+                                    'Batizado',
+                                    style: TextStyle(color: Colors.black),
                                   ),
                                 ],
                               ),
@@ -190,18 +219,25 @@ class _HomePageState extends ConsumerState<HomePage> {
                             child: ElevatedButton(
                               onPressed: () {},
                               style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.grey[100], // fundo branco
-                                  shape: RoundedRectangleBorder(  // bordas arredondadas
+                                  backgroundColor:
+                                      Colors.grey[100], // fundo branco
+                                  shape: RoundedRectangleBorder(
+                                    // bordas arredondadas
                                     borderRadius: BorderRadius.circular(15),
                                   ),
-                                  elevation: 0
-                              ),
+                                  elevation: 0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Image.asset('lib/assets/images/iconCha.png', width: 50,),
-                                  const SizedBox(width: 8),  // espaço entre ícone e texto
-                                  const Text('Chá', style: TextStyle(color: Colors.black),
+                                  Image.asset(
+                                    'lib/assets/images/iconCha.png',
+                                    width: 50,
+                                  ),
+                                  const SizedBox(
+                                      width: 8), // espaço entre ícone e texto
+                                  const Text(
+                                    'Chá',
+                                    style: TextStyle(color: Colors.black),
                                   ),
                                 ],
                               ),
@@ -214,18 +250,25 @@ class _HomePageState extends ConsumerState<HomePage> {
                             child: ElevatedButton(
                               onPressed: () {},
                               style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.grey[100], // fundo branco
-                                  shape: RoundedRectangleBorder(  // bordas arredondadas
+                                  backgroundColor:
+                                      Colors.grey[100], // fundo branco
+                                  shape: RoundedRectangleBorder(
+                                    // bordas arredondadas
                                     borderRadius: BorderRadius.circular(15),
                                   ),
-                                  elevation: 0
-                              ),
+                                  elevation: 0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Image.asset('lib/assets/images/iconReuniao.png', width: 50,),
-                                  const SizedBox(width: 8),  // espaço entre ícone e texto
-                                  const Text('Reunião', style: TextStyle(color: Colors.black),
+                                  Image.asset(
+                                    'lib/assets/images/iconReuniao.png',
+                                    width: 50,
+                                  ),
+                                  const SizedBox(
+                                      width: 8), // espaço entre ícone e texto
+                                  const Text(
+                                    'Reunião',
+                                    style: TextStyle(color: Colors.black),
                                   ),
                                 ],
                               ),
@@ -238,18 +281,25 @@ class _HomePageState extends ConsumerState<HomePage> {
                             child: ElevatedButton(
                               onPressed: () {},
                               style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.grey[100], // fundo branco
-                                  shape: RoundedRectangleBorder(  // bordas arredondadas
+                                  backgroundColor:
+                                      Colors.grey[100], // fundo branco
+                                  shape: RoundedRectangleBorder(
+                                    // bordas arredondadas
                                     borderRadius: BorderRadius.circular(15),
                                   ),
-                                  elevation: 0
-                              ),
+                                  elevation: 0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Image.asset('lib/assets/images/iconOutros.png', width: 50,),
-                                  const SizedBox(width: 8),  // espaço entre ícone e texto
-                                  const Text('Outros', style: TextStyle(color: Colors.black),
+                                  Image.asset(
+                                    'lib/assets/images/iconOutros.png',
+                                    width: 50,
+                                  ),
+                                  const SizedBox(
+                                      width: 8), // espaço entre ícone e texto
+                                  const Text(
+                                    'Outros',
+                                    style: TextStyle(color: Colors.black),
                                   ),
                                 ],
                               ),
@@ -268,18 +318,42 @@ class _HomePageState extends ConsumerState<HomePage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(// Adicionado o widget Flexible
+                        InkWell(
+                          onTap: () => Navigator.of(context)
+                              .pushNamed('/home/all_spaces', arguments: user),
+                          child: Container(
+                            padding: EdgeInsets.all(
+                                MediaQuery.of(context).size.width * 0.02),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 2.0,
+                              ),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(10.0)),
+                            ),
+                            child: const Text(
+                              'all spaces',
+                              style: TextStyle(fontSize: 11),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
                           child: Text(
                             'Logged in as: ${user.email}',
-                            overflow: TextOverflow.ellipsis, // Adicionado para mostrar reticências se o email for muito longo e não couber em uma linha.
-                            maxLines: 2, // Permite até 2 linhas. Ajuste conforme necessário.
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
                           ),
                         ),
                         InkWell(
                           onTap: () => Navigator.of(context)
                               .pushNamed('/home/my_spaces', arguments: user),
                           child: Container(
-                            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                            padding: EdgeInsets.all(
+                                MediaQuery.of(context).size.width * 0.02),
                             decoration: BoxDecoration(
                               border: Border.all(
                                 color: Colors.black,
@@ -304,38 +378,15 @@ class _HomePageState extends ConsumerState<HomePage> {
             backgroundColor: Colors.white,
             pinned: false,
           ),
-          StreamBuilder<QuerySnapshot>(
-            stream: _usersStream,
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.hasError) {
-                return const SliverToBoxAdapter(
-                    child: Text('Something went wrong'));
-              }
-
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const SliverToBoxAdapter(
-                  child: Center(child: CircularProgressIndicator()),
-                );
-              }
-
-              List docsList = snapshot.data!.docs;
-
-              return SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    DocumentSnapshot document = docsList[index];
-                    String docID = document.id;
-                    Map<String, dynamic> data =
-                        document.data() as Map<String, dynamic>;
-                    String emailText = data['email'];
-                    String uidText = data['uid'];
-                    return const SpaceCard();
-                  },
-                  childCount: docsList.length,
-                ),
-              );
-            },
+          SliverToBoxAdapter(
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: 3,
+              itemBuilder: (context, index) {
+                return const SpaceCard();
+              },
+            ),
           ),
         ],
       ),
