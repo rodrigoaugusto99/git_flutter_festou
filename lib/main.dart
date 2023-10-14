@@ -32,6 +32,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       navigatorKey: FestouNavGlobalKey.instance.navKey,
       routes: {
         '/home': (_) => const BottomNavBarPage(),
