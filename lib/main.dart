@@ -49,6 +49,7 @@ class MyApp extends StatelessWidget {
         '/home/all_spaces': (_) => const AllSpaces(),
       },
       theme: ThemeData(
+        fontFamily: 'inter',
         primarySwatch: Colors.deepPurple,
         dialogTheme: DialogTheme(
           backgroundColor: Colors.white,
