@@ -13,9 +13,12 @@ class SpaceCard extends StatefulWidget {
 class _SpaceCardState extends State<SpaceCard> {
   @override
   Widget build(BuildContext context) {
+    final x = MediaQuery.of(context).size.width;
+    final y = MediaQuery.of(context).size.height;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18),
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Card(
+        margin: EdgeInsets.symmetric(horizontal: x * 0.03),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),

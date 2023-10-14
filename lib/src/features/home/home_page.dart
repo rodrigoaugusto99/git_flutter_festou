@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/app_bar_home.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/menu_space_types.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/search_button.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/space_buttons.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/space_card.dart';
 
 class HomePage extends StatefulWidget {
@@ -32,6 +33,9 @@ class _HomePageState extends State<HomePage> {
           ),
           const SliverToBoxAdapter(
             child: SearchButton(),
+          ),
+          const SliverToBoxAdapter(
+            child: SpaceButtons(),
           ),
           SliverToBoxAdapter(
             child: ListView.builder(

@@ -247,55 +247,6 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
               ],
             ),
           ),
-          SizedBox(height: y * 0.015), // Espaçamento entre a lista de botões e o resto do conteúdo
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              InkWell(
-                onTap: () =>
-                    Navigator.of(context)
-                        .pushNamed('/home/all_spaces', arguments: user),
-                child: Container(
-                  padding: EdgeInsets.all(
-                      x * 0.02),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.black,
-                      width: 2.0,
-                    ),
-                    borderRadius:
-                    const BorderRadius.all(Radius.circular(10.0)),
-                  ),
-                  child: const Text(
-                    'Todos os espaços',
-                    style: TextStyle(fontSize: 11),
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: () =>
-                    Navigator.of(context)
-                        .pushNamed('/home/my_spaces', arguments: user),
-                child: Container(
-                  padding: EdgeInsets.all(
-                      x * 0.02),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.black,
-                      width: 2.0,
-                    ),
-                    borderRadius:
-                    const BorderRadius.all(Radius.circular(10.0)),
-                  ),
-                  child: const Text(
-                    'Meus espaços cadastrados',
-                    style: TextStyle(fontSize: 11),
-                  ),
-                ),
-              ),
-            ],
-          ),
         ],
       ),
     );

@@ -13,7 +13,7 @@ class _SearchButtonState extends State<SearchButton> {
     final x = MediaQuery.of(context).size.width;
     final y = MediaQuery.of(context).size.height;
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: x * 0.03, vertical: y * 0.03),
+      padding: EdgeInsets.symmetric(horizontal: x * 0.03, vertical: y * 0.02),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -39,8 +39,7 @@ class _SearchButtonState extends State<SearchButton> {
                       TextSpan(text: 'Festou', style: TextStyle(fontWeight: FontWeight.bold)),
                     ],
                   ),
-                )
-
+                ),
               ],
             ),
           ),

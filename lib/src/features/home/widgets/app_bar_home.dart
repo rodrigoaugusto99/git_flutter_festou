@@ -13,7 +13,7 @@ class AppBarHome extends ConsumerStatefulWidget {
 class _AppBarMenuSpaceTypesState extends ConsumerState<AppBarHome> {
   final user = FirebaseAuth.instance.currentUser!;
 
-  String formatString(String input) {
+  String formatString(String input) { // TODO: Apagar este método ao adicionar a busca do nome do usuário no banco
     if (input.isEmpty) return '';
 
     // Limita a string a 6 caracteres
@@ -28,7 +28,6 @@ class _AppBarMenuSpaceTypesState extends ConsumerState<AppBarHome> {
     final x = MediaQuery.of(context).size.width;
     final y = MediaQuery.of(context).size.height;
     return SliverAppBar(
-      expandedHeight: y * 0.1,
       flexibleSpace: FlexibleSpaceBar(
         background: Padding(
           padding: EdgeInsets.symmetric(
@@ -40,7 +39,8 @@ class _AppBarMenuSpaceTypesState extends ConsumerState<AppBarHome> {
                 children: [
                   Expanded(
                     child: Text(
-                      'Olá, ${formatString(user.email!)}, Festou?',
+                      'Olá, ${formatString(user.email!)}, Festou?', // TODO: Buscar o nome do usuário direto de users/
+                      // user_infos no banco
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 16,
