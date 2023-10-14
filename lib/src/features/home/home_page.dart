@@ -1,9 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
-import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/space_card.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -16,22 +14,15 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   final user = FirebaseAuth.instance.currentUser!;
 
-  String extractUsernameFromEmail(String email) {
-    if (email.isEmpty) return '';
+  String formatString(String input) {
+    if (input.isEmpty) return '';
 
-    int atIndex = email.indexOf('@');
-    if (atIndex == -1) {
-      // Caso não haja um "@" no e-mail, retornar o e-mail completo.
-      return email;
-    }
+    // Limita a string a 6 caracteres
+    String truncated = input.length > 6 ? input.substring(0, 6) : input;
 
-    // Extrair o nome de usuário até o "@".
-    String username = email.substring(0, atIndex);
-
-    return username;
+    // Converte a primeira letra para maiúscula e o restante para minúscula
+    return truncated[0].toUpperCase() + truncated.substring(1).toLowerCase();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +53,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                       children: [
                         Expanded(
                           child: Text(
-                            'Olá, ${extractUsernameFromEmail(user.email!)}',
+                            'Olá, ${formatString(user.email!)}',
                             style: const TextStyle(
                               color: Colors.black,
                               fontSize: 18,
+                              fontFamily: 'Inter',
                             ),
                           ),
                         ),
@@ -86,7 +78,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
                             child: SizedBox(
-                              width: x * 0.40,
+                              width: x * 0.41,
                               child: ElevatedButton(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
@@ -106,7 +98,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                                     SizedBox(width: x * 0.02),
                                     const Text(
                                       'Kids',
-                                      style: TextStyle(color: Colors.black),
+                                      style: TextStyle(color: Colors.black, fontFamily: 'Inter'),
+
                                     ),
                                   ],
                                 ),
@@ -118,7 +111,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
                             child: SizedBox(
-                              width: x * 0.40,
+                              width: x * 0.41,
                               child: ElevatedButton(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
@@ -149,7 +142,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
                             child: SizedBox(
-                              width: x * 0.40,
+                              width: x * 0.41,
                               child: ElevatedButton(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
@@ -180,7 +173,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
                             child: SizedBox(
-                              width: x * 0.40,
+                              width: x * 0.41,
                               child: ElevatedButton(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
@@ -200,7 +193,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                     SizedBox(width: x * 0.02),
                                     const Text(
                                       'Religioso',
-                                      style: TextStyle(color: Colors.black),
+                                      style: TextStyle(color: Colors.black, fontFamily: 'Inter'),
                                     ),
                                   ],
                                 ),
@@ -211,7 +204,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
                             child: SizedBox(
-                              width: x * 0.40,
+                              width: x * 0.41,
                               child: ElevatedButton(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
@@ -242,7 +235,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
                             child: SizedBox(
-                              width: x * 0.40,
+                              width: x * 0.41,
                               child: ElevatedButton(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
@@ -273,7 +266,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
                             child: SizedBox(
-                              width: x * 0.40,
+                              width: x * 0.41,
                               child: ElevatedButton(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
