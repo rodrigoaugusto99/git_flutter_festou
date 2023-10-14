@@ -52,7 +52,7 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
       switch (state) {
         case UserRegisterInfosStateStatus.initial:
         case UserRegisterInfosStateStatus.success:
-          Navigator.of(context).pushNamed('/home');
+          Navigator.of(context).pushReplacementNamed('/home');
         case UserRegisterInfosStateStatus.error:
           Messages.showError(
               'Erro ao registrar informações do usuario', context);
