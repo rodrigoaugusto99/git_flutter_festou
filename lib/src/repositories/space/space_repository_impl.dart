@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
@@ -14,6 +13,7 @@ class SpaceRepositoryImpl implements SpaceRepository {
   @override
   Future<Either<RepositoryException, Nil>> save(
       ({
+        String spaceId,
         User user,
         String email,
         String name,
@@ -35,6 +35,7 @@ class SpaceRepositoryImpl implements SpaceRepository {
 
         // Crie um novo espaço com os dados fornecidos
         Map<String, dynamic> newSpace = {
+          'space_id': spaceData.spaceId,
           'emailComercial': spaceData.email,
           'nome_do_espaco': spaceData.name,
           'space_address': {

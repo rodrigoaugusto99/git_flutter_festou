@@ -4,6 +4,7 @@ import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:uuid/uuid.dart';
 
 part 'space_register_vm.g.dart';
 
@@ -11,6 +12,8 @@ part 'space_register_vm.g.dart';
 class SpaceRegisterVm extends _$SpaceRegisterVm {
   @override
   SpaceRegisterState build() => SpaceRegisterState.initial();
+
+  final uuid = const Uuid();
 
   void addOrRemoveAvailableDay(String weekDay) {
     final availableDays = state.availableDays;
@@ -64,7 +67,10 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
       :selectedServices,
     ) = state;
 
+    final newSpaceId = uuid.v4();
+
     final spaceData = (
+      spaceId: newSpaceId,
       name: name,
       email: email,
       cep: cep,

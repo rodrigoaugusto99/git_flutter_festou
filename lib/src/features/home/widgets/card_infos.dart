@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/card_comments.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/more_details.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/rating_view.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/show_map.dart';
-import 'package:git_flutter_festou/src/models/space/space2.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:git_flutter_festou/src/models/user_model.dart';
 
 class CardInfos extends StatefulWidget {
-  final SpaceModelTest2 space;
+  final SpaceModel space;
+  final UserModel user;
   const CardInfos({
     super.key,
     required this.space,
+    required this.user,
   });
 
   @override
@@ -28,20 +29,23 @@ class _CardInfosState extends State<CardInfos> {
     );
   }
 
-  void showComments(SpaceModelTest2 space) {
+//TODO: colocar SpaceModel no arquivo card_commments
+  void showAvaliacoes(SpaceModel space) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
+        return const AlertDialog(
           scrollable: true,
-          title: const Text('Comentários'),
-          content: CardComments(space: space),
+          title: Text('Comentários'),
+          content:
+              Center(child: Text('A implementar "avaliar" e "avaliações".')),
+          //content: CardComments(space: space),
         );
       },
     );
   }
 
-  void showMoreDetails(SpaceModelTest2 space) {
+  void showMoreDetails(SpaceModel space) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -50,13 +54,43 @@ class _CardInfosState extends State<CardInfos> {
     );
   }
 
-  void showMap(SpaceModelTest2 space) {
+//TODO: colocar SpaceModel no arquivo show_map
+  void showMap(SpaceModel space) {
     showDialog(
       context: context,
       builder: (context) {
         return Dialog(
-          child: ShowMap(
-            space: space,
+          child: Container(),
+          //ShowMap(space: space),
+        );
+      },
+    );
+  }
+
+  void userInfos(UserModel user) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Informações do Usuário:',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                  color: Colors.deepPurple,
+                ),
+              ),
+              Text(user.email),
+              Text(user.name),
+              Text(user.telefone),
+              Text(user.cep),
+              Text(user.logradouro),
+              Text(user.bairro),
+              Text(user.cidade),
+            ],
           ),
         );
       },
@@ -78,7 +112,7 @@ class _CardInfosState extends State<CardInfos> {
                 child: const Text('Avalie'),
               ),
               ElevatedButton(
-                onPressed: () => showComments(widget.space),
+                onPressed: () => showAvaliacoes(widget.space),
                 child: const Text('Avaliações'),
               ),
               ElevatedButton(
@@ -88,6 +122,10 @@ class _CardInfosState extends State<CardInfos> {
               ElevatedButton(
                 onPressed: () => showMap(widget.space),
                 child: const Text('Ver Localização'),
+              ),
+              ElevatedButton(
+                onPressed: () => userInfos(widget.user),
+                child: const Text('USER INFOS'),
               ),
               ElevatedButton(
                 onPressed: () {},

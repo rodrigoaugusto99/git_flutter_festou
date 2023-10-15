@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/models/space/space2.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class MoreDetails extends StatelessWidget {
-  final SpaceModelTest2 space;
+  final SpaceModel space;
   const MoreDetails({super.key, required this.space});
 
   @override

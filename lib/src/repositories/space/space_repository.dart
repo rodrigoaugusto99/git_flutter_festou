@@ -6,6 +6,7 @@ import 'package:git_flutter_festou/src/core/fp/nil.dart';
 abstract interface class SpaceRepository {
   Future<Either<RepositoryException, Nil>> save(
     ({
+      String spaceId,
       User user,
       String email,
       String name,

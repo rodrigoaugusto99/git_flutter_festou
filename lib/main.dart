@@ -8,7 +8,6 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/d
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/favorites/favorites_spaces.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/help/help_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/locador/quero_ser_locador.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/all_spaces.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/my_spaces.dart';
