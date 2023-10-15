@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const FavoriteSpacesPage(),
+      home: const SplashPage(),
     );
   }
 }

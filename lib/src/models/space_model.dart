@@ -1,4 +1,5 @@
 class SpaceModel {
+  final bool isFavorited;
   final String spaceId;
   final String email;
   final String name;
@@ -12,6 +13,7 @@ class SpaceModel {
   final List<dynamic> availableDays;
 
   SpaceModel(
+    this.isFavorited,
     this.spaceId,
     this.email,
     this.name,

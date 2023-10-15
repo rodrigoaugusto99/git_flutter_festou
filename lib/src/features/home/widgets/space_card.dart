@@ -8,6 +8,7 @@ import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 
 class SpaceCard extends StatefulWidget {
+  bool isFavorited;
   final String spaceId;
   final String userEmail;
   final String userName;
@@ -26,7 +27,7 @@ class SpaceCard extends StatefulWidget {
   final List<dynamic> selectedTypes;
   final List<dynamic> selectedServices;
   final List<dynamic> availableDays;
-  const SpaceCard({
+  SpaceCard({
     super.key,
     required this.userEmail,
     required this.userName,
@@ -46,6 +47,7 @@ class SpaceCard extends StatefulWidget {
     required this.selectedServices,
     required this.availableDays,
     required this.spaceId,
+    required this.isFavorited,
   });
 
   @override
@@ -64,24 +66,24 @@ class _SpaceCardState extends State<SpaceCard> {
 
     if (querySnapshot.docs.length == 1) {
       final userDocument = querySnapshot.docs.first;
-
-      if (isLiked) {
+      String x;
+      if (widget.isFavorited) {
         userDocument.reference.update({
           'spaces_favorite': FieldValue.arrayUnion([spaceId]),
         });
+        x = 'add';
       } else {
         userDocument.reference.update({
           'spaces_favorite': FieldValue.arrayRemove([spaceId]),
         });
+        x = 'removed';
       }
 
-      log('sucesso! -  $isLiked - $spaceId');
+      log('sucesso! - $x -  $spaceId');
     } else {
       log('Documento do usuário não encontrado');
     }
   }
-
-  var isLiked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -131,18 +133,17 @@ class _SpaceCardState extends State<SpaceCard> {
                               InkWell(
                                 onTap: () {
                                   setState(() {
-                                    isLiked = !isLiked;
+                                    widget.isFavorited = !widget.isFavorited;
                                   });
                                   toggleFavoriteSpace(widget.spaceId);
                                 },
-                                child: isLiked
+                                child: widget.isFavorited
                                     ? const Icon(
                                         Icons.favorite,
                                         color: Colors.red,
                                       )
                                     : const Icon(
                                         Icons.favorite_outline,
-                                        color: Colors.red,
                                       ),
                               ),
                             ],
@@ -162,6 +163,7 @@ class _SpaceCardState extends State<SpaceCard> {
                                       MaterialPageRoute(
                                         builder: (context) => CardInfos(
                                           space: SpaceModel(
+                                            widget.isFavorited,
                                             '',
                                             widget.spaceEmail,
                                             widget.spaceName,

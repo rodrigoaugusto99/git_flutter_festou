@@ -12,6 +12,8 @@ class FavoriteSpacesPage extends StatefulWidget {
 
 final user = FirebaseAuth.instance.currentUser!;
 
+final userId = user.uid;
+
 final _usersStream = FirebaseFirestore.instance.collection('users').snapshots();
 
 class _FavoriteSpacesPageState extends State<FavoriteSpacesPage> {
@@ -41,6 +43,21 @@ class _FavoriteSpacesPageState extends State<FavoriteSpacesPage> {
 //pegando todos os documentos(Lista de QueryDocumentSnapshot)
             final userDocuments = snapshot.data!.docs;
 
+            /*criando uma lista com os documentos que tem o uid
+            igual ao userId
+            (tem que ser assim pois o where retorna um iterable
+            de documentos) */
+            final userDocumentsAux = snapshot.data!.docs
+                .where((doc) => doc['uid'] == userId)
+                .toList();
+
+/*como a lista terá apenas um documento, pegue o primeiro. */
+            final userDocument = userDocumentsAux[0];
+
+            // Obtenha a lista de espaços favoritos do usuário atual
+            final List<dynamic> userSpacesFavorite =
+                userDocument['spaces_favorite'] ?? [];
+
             List<Widget> userWidgets = [];
 
             for (var userDocument in userDocuments) {
@@ -54,7 +71,11 @@ class _FavoriteSpacesPageState extends State<FavoriteSpacesPage> {
               for (var space in userSpaces) {
                 Map<String, dynamic> spaceAddress = space['space_address'];
 
+                final isFavorited =
+                    userSpacesFavorite.contains(space['space_id']);
+
                 spaceWidgets.add(SpaceCard(
+                  isFavorited: isFavorited,
                   spaceId: space['space_id'],
                   spaceEmail: space['emailComercial'],
                   spaceName: space['nome_do_espaco'],
