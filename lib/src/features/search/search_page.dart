@@ -77,7 +77,8 @@ class _SearchPageState extends State<SearchPage> {
                             ],
                           ),
                         )
-                      : Container(),
+                      : Container(height: 0),
+                  //ou Text(''),
                   Row(
                     children: [
                       Expanded(
