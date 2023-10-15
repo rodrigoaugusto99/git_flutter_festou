@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/space_card.dart';
 
 class MySpaces extends StatefulWidget {
   const MySpaces({super.key});
@@ -85,44 +86,50 @@ class _MySpacesState extends State<MySpaces> {
              userSpacesList[0] acessa o primeiro espaço, userSpacesList[1] 
              o segundo e assim por diante*/
 
-            return Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Informações do Usuário:',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
-                  Text('Email: $userEmail'),
-                  Text('Nome: ${mapUserInfos['name']}'),
-                  Text(
-                      'Número de Telefone: ${mapUserInfos['numero_de_telefone']}'),
-                  Text('CEP: ${mapUserInfos['cep']}'),
-                  Text('logradouro: ${mapUserInfos['logradouro']}'),
-                  Text('bairro: ${mapUserInfos['bairro']}'),
-                  Text('cidade: ${mapUserInfos['cidade']}'),
-                  for (var space in userSpacesList) ...[
-                    const Text('Informações do Espaço:',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 24)),
-                    Text('Email do Espaço: ${space['emailComercial']}'),
-                    Text('Nome do Espaço: ${space['nome_do_espaco']}'),
-                    Text(
-                        'Tipos Selecionados: ${space['space_infos']['selectedTypes'].join(', ')}'),
-                    Text(
-                        'Serviços Selecionados: ${space['space_infos']['selectedServices'].join(', ')}'),
-                    Text(
-                        'Dias Disponíveis: ${space['space_infos']['availableDays'].join(', ')}'),
-                    const Text('Endereço:',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text('CEP: ${space['space_address']['cep']}'),
-                    Text('Logradouro: ${space['space_address']['logradouro']}'),
-                    Text('Número: ${space['space_address']['numero']}'),
-                    Text('Bairro: ${space['space_address']['bairro']}'),
-                    Text('Cidade: ${space['space_address']['cidade']}'),
-                  ],
-                ],
-              ),
+            final userDocumentsAux = snapshot.data!.docs
+                .where((doc) => doc['uid'] == user.uid)
+                .toList();
+
+/*como a lista terá apenas um documento, pegue o primeiro. */
+            final userDocumentAux = userDocumentsAux[0];
+
+            // Obtenha a lista de espaços favoritos do usuário atual
+            final List<dynamic> userSpacesFavorite =
+                userDocumentAux['spaces_favorite'] ?? [];
+
+            List<Widget> spaceWidgets = [];
+
+            for (var space in userSpaces) {
+              Map<String, dynamic> userAddress = userInfos['user_address'];
+              Map<String, dynamic> spaceAddress = space['space_address'];
+
+              final isFavorited =
+                  userSpacesFavorite.contains(space['space_id']);
+
+              spaceWidgets.add(SpaceCard(
+                isFavorited: isFavorited,
+                spaceId: space['space_id'],
+                spaceEmail: space['emailComercial'],
+                spaceName: space['nome_do_espaco'],
+                spaceCep: spaceAddress['cep'],
+                spaceLogradouro: spaceAddress['logradouro'],
+                spaceNumero: spaceAddress['numero'],
+                spaceBairro: spaceAddress['bairro'],
+                spaceCidade: spaceAddress['cidade'],
+                selectedTypes: space['space_infos']['selectedTypes'],
+                selectedServices: space['space_infos']['selectedServices'],
+                availableDays: space['space_infos']['availableDays'],
+                userEmail: userEmail,
+                userTelefone: userInfos['name'],
+                userName: userInfos['numero_de_telefone'],
+                userCep: userAddress['cep'],
+                userLogradouro: userAddress['logradouro'],
+                userBairro: userAddress['bairro'],
+                userCidade: userAddress['cidade'],
+              ));
+            }
+            return Column(
+              children: spaceWidgets,
             );
           },
         ),
