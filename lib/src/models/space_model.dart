@@ -1,4 +1,5 @@
 class SpaceModel {
+  final String spaceId;
   final String email;
   final String name;
   final String cep;
@@ -11,6 +12,7 @@ class SpaceModel {
   final List<dynamic> availableDays;
 
   SpaceModel(
+    this.spaceId,
     this.email,
     this.name,
     this.cep,

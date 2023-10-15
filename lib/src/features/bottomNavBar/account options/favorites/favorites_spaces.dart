@@ -55,6 +55,7 @@ class _FavoriteSpacesPageState extends State<FavoriteSpacesPage> {
                 Map<String, dynamic> spaceAddress = space['space_address'];
 
                 spaceWidgets.add(SpaceCard(
+                  spaceId: space['space_id'],
                   spaceEmail: space['emailComercial'],
                   spaceName: space['nome_do_espaco'],
                   spaceCep: spaceAddress['cep'],

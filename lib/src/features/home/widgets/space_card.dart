@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 
 class SpaceCard extends StatefulWidget {
+  final String spaceId;
   final String userEmail;
   final String userName;
   final String userTelefone;
@@ -24,33 +26,63 @@ class SpaceCard extends StatefulWidget {
   final List<dynamic> selectedTypes;
   final List<dynamic> selectedServices;
   final List<dynamic> availableDays;
-  const SpaceCard(
-      {super.key,
-      required this.userEmail,
-      required this.userName,
-      required this.userTelefone,
-      required this.userCep,
-      required this.userLogradouro,
-      required this.userBairro,
-      required this.userCidade,
-      required this.spaceEmail,
-      required this.spaceName,
-      required this.spaceCep,
-      required this.spaceLogradouro,
-      required this.spaceNumero,
-      required this.spaceBairro,
-      required this.spaceCidade,
-      required this.selectedTypes,
-      required this.selectedServices,
-      required this.availableDays});
+  const SpaceCard({
+    super.key,
+    required this.userEmail,
+    required this.userName,
+    required this.userTelefone,
+    required this.userCep,
+    required this.userLogradouro,
+    required this.userBairro,
+    required this.userCidade,
+    required this.spaceEmail,
+    required this.spaceName,
+    required this.spaceCep,
+    required this.spaceLogradouro,
+    required this.spaceNumero,
+    required this.spaceBairro,
+    required this.spaceCidade,
+    required this.selectedTypes,
+    required this.selectedServices,
+    required this.availableDays,
+    required this.spaceId,
+  });
 
   @override
   State<SpaceCard> createState() => _SpaceCardState();
 }
 
+final user = FirebaseAuth.instance.currentUser!;
+
 class _SpaceCardState extends State<SpaceCard> {
-  bool isLiked = false;
-  String spaceId = '3';
+  Future<void> toggleFavoriteSpace(String spaceId) async {
+    final CollectionReference users =
+        FirebaseFirestore.instance.collection('users');
+
+    QuerySnapshot querySnapshot =
+        await users.where("uid", isEqualTo: user.uid).get();
+
+    if (querySnapshot.docs.length == 1) {
+      final userDocument = querySnapshot.docs.first;
+
+      if (isLiked) {
+        userDocument.reference.update({
+          'spaces_favorite': FieldValue.arrayUnion([spaceId]),
+        });
+      } else {
+        userDocument.reference.update({
+          'spaces_favorite': FieldValue.arrayRemove([spaceId]),
+        });
+      }
+
+      log('sucesso! -  $isLiked - $spaceId');
+    } else {
+      log('Documento do usuário não encontrado');
+    }
+  }
+
+  var isLiked = false;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -101,49 +133,15 @@ class _SpaceCardState extends State<SpaceCard> {
                                   setState(() {
                                     isLiked = !isLiked;
                                   });
-
-                                  // Adicione ou remova o espaço favorito no Firestore
-                                  if (isLiked) {
-                                    // Adicionar espaço favorito
-                                    final user =
-                                        FirebaseAuth.instance.currentUser;
-                                    spaceId =
-                                        '1'; // Substitua pelo ID real do espaço
-                                    final userDocRef = FirebaseFirestore
-                                        .instance
-                                        .collection('users')
-                                        .doc(user!.uid);
-
-                                    // Use o método `update` para adicionar o espaço favorito à lista existente
-                                    userDocRef.update({
-                                      'spaces_favorite':
-                                          FieldValue.arrayUnion([spaceId]),
-                                    });
-                                  } else {
-                                    // Remover espaço favorito
-                                    final user =
-                                        FirebaseAuth.instance.currentUser;
-                                    spaceId =
-                                        '2'; // Substitua pelo ID real do espaço
-                                    final userDocRef = FirebaseFirestore
-                                        .instance
-                                        .collection('users')
-                                        .doc(user!.uid);
-
-                                    // Use o método `update` para remover o espaço favorito da lista
-                                    userDocRef.update({
-                                      'spaces_favorite':
-                                          FieldValue.arrayRemove([spaceId]),
-                                    });
-                                  }
+                                  toggleFavoriteSpace(widget.spaceId);
                                 },
                                 child: isLiked
                                     ? const Icon(
-                                        Icons.favorite_outline,
+                                        Icons.favorite,
                                         color: Colors.red,
                                       )
                                     : const Icon(
-                                        Icons.favorite,
+                                        Icons.favorite_outline,
                                         color: Colors.red,
                                       ),
                               ),
@@ -164,6 +162,7 @@ class _SpaceCardState extends State<SpaceCard> {
                                       MaterialPageRoute(
                                         builder: (context) => CardInfos(
                                           space: SpaceModel(
+                                            '',
                                             widget.spaceEmail,
                                             widget.spaceName,
                                             widget.spaceCep,
