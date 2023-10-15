@@ -39,16 +39,17 @@ class _SearchPageState extends State<SearchPage> {
         elevation: 0,
         title: _buildSearchBox(x, y),
         actions: [
-          TextButton(
-            onPressed: () {
-              // Ação ao clicar em "Cancelar"
-            },
-            child: Text(
-              'Cancelar',
-              style: TextStyle(
-                color: Colors.purple[300],
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
+          InkWell(
+            onTap: () => Navigator.of(context).pushReplacementNamed('/home'),
+            child: Align(
+              alignment: AlignmentDirectional.center,
+              child: Text(
+                'Cancelar',
+                style: TextStyle(
+                  color: Colors.purple[300],
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
               ),
             ),
           ),
@@ -77,14 +78,14 @@ class _SearchPageState extends State<SearchPage> {
               children: [
                 _controller.text.isEmpty
                     ? RichText(
-                        text: TextSpan(
-                          style: TextStyle(color: Colors.blueGrey[500]),
-                          children: const <TextSpan>[
-                            TextSpan(text: 'Buscar no '),
-                            TextSpan(text: 'Festou', style: TextStyle(fontWeight: FontWeight.bold)),
-                          ],
-                        ),
-                      ) : Container(),
+                  text: TextSpan(
+                    style: TextStyle(color: Colors.blueGrey[500]),
+                    children: const <TextSpan>[
+                      TextSpan(text: 'Buscar no '),
+                      TextSpan(text: 'Festou', style: TextStyle(fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ) : Container(),
                 Row(
                   children: [
                     Expanded(
@@ -103,11 +104,9 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                     Visibility(
                       visible: _controller.text.isNotEmpty,
-                      child: IconButton(
-                        icon: Icon(Icons.clear, color: Colors.blueGrey[900], size: 14),
-                        onPressed: () => _controller.clear(),
-                        padding: EdgeInsets.zero
-                      ),
+                      child: InkWell(
+                        onTap: () => _controller.clear(),
+                        child: Icon(Icons.clear, color: Colors.blueGrey[900], size: 14, ),),
                     ),
                   ],
                 )

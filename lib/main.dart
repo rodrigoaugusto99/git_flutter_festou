@@ -16,6 +16,7 @@ import 'package:git_flutter_festou/src/features/login/login_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
 import 'package:git_flutter_festou/src/features/register/user%20infos/user_register_infos_page.dart';
 import 'package:git_flutter_festou/src/features/register/user/user_register_page.dart';
+import 'package:git_flutter_festou/src/features/search/search_page.dart';
 import 'package:git_flutter_festou/src/features/splash/splash_page.dart';
 
 Future<void> main() async {
@@ -47,6 +48,7 @@ class MyApp extends StatelessWidget {
         '/account/favorites': (_) => const FavoriteSpacesPage(),
         '/home/my_spaces': (_) => const MySpaces(),
         '/home/all_spaces': (_) => const AllSpaces(),
+        '/home/search_page': (_) => const SearchPage(),
       },
       theme: ThemeData(
         fontFamily: 'inter',

@@ -19,7 +19,7 @@ class _SearchButtonState extends State<SearchButton> {
         child: InkWell(
           borderRadius: BorderRadius.circular(8.0),
           onTap: () {
-            Navigator.of(context).pushNamed('/caminhoDaPagina'); // TODO: Adicionar o caminho da página de pesquisa aqui (precisa criá-la)
+            Navigator.of(context).pushReplacementNamed('/home/search_page');
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: x * 0.02, vertical: y * 0.01),
