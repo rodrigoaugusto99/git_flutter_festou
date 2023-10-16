@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import '../bottomNavBar/bottomNavBarPage.dart';
+import 'package:lottie/lottie.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -37,18 +38,39 @@ class _SearchPageState extends State<SearchPage> {
       backgroundColor: Colors.white,
       body: Padding(
         padding: EdgeInsets.only(top: y * 0.04),
-        child: FadeInUp(
-          duration: const Duration(milliseconds: 400),
-          from: y * 0.3,
-          child: Row(
-            children: [
-              _buildSearchBox(x, y),
-              _buildCancelButton(),
-              SizedBox(
-                width: x * 0.03,
+        child: Column(
+          children: [
+            FadeInUp(
+              duration: const Duration(milliseconds: 400),
+              from: y * 0.3,
+              child: Row(
+                children: [
+                  _buildSearchBox(x, y),
+                  _buildCancelButton(),
+                  SizedBox(
+                    width: x * 0.03,
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            Expanded(
+              child: Center(
+                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  const Spacer(flex: 5),
+                  Lottie.asset(
+                    'lib/assets/animations/searchAnimation.json',
+                    height: y * 0.3,
+                  ),
+                  const Spacer(flex: 2),
+                  const Text(
+                    'Busque pelos melhores espaços disponíveis para o seu Festou!',
+                    textAlign: TextAlign.center,
+                  ),
+                  const Spacer(flex: 13),
+                ]),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -76,10 +98,7 @@ class _SearchPageState extends State<SearchPage> {
                             style: TextStyle(color: Colors.blueGrey[500]),
                             children: const <TextSpan>[
                               TextSpan(text: 'Buscar no '),
-                              TextSpan(
-                                  text: 'Festou',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
+                              TextSpan(text: 'Festou', style: TextStyle(fontWeight: FontWeight.bold)),
                             ],
                           ),
                         )
@@ -97,11 +116,9 @@ class _SearchPageState extends State<SearchPage> {
                             hintStyle: TextStyle(color: Colors.transparent),
                             border: InputBorder.none,
                             isDense: true,
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 0, horizontal: 0),
+                            contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
                           ),
-                          style: TextStyle(
-                              color: Colors.blueGrey[900], fontSize: 12),
+                          style: TextStyle(color: Colors.blueGrey[900], fontSize: 12),
                           cursorColor: Colors.blueGrey[900],
                         ),
                       ),
