@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 
 class SearchPage extends StatefulWidget {
@@ -35,14 +36,18 @@ class _SearchPageState extends State<SearchPage> {
       backgroundColor: Colors.white,
       body: Padding(
         padding: EdgeInsets.only(top: y * 0.04),
-        child: Row(
-          children: [
-            _buildSearchBox(x, y),
-            _buildCancelButton(),
-            SizedBox(
-              width: x * 0.03,
-            ),
-          ],
+        child: FadeInUp(
+          duration: const Duration(milliseconds: 400),
+          from: 150,
+          child: Row(
+            children: [
+              _buildSearchBox(x, y),
+              _buildCancelButton(),
+              SizedBox(
+                width: x * 0.03,
+              ),
+            ],
+          ),
         ),
       ),
     );
