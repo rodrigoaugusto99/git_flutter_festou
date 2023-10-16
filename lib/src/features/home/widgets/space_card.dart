@@ -164,7 +164,7 @@ class _SpaceCardState extends State<SpaceCard> {
                                         builder: (context) => CardInfos(
                                           space: SpaceModel(
                                             widget.isFavorited,
-                                            '',
+                                            widget.spaceId,
                                             widget.spaceEmail,
                                             widget.spaceName,
                                             widget.spaceCep,
