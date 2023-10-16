@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       navigatorKey: FestouNavGlobalKey.instance.navKey,
       routes: {
-        '/home': (_) => const BottomNavBarPage(),
+        '/home': (_) => BottomNavBarPage(),
         '/auth': (_) => const AuthPage(),
         '/login': (_) => const LoginPage(),
         '/register/user': (_) => const UserRegisterPage(),
@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const SearchPage(),
+      home: const SplashPage(),
     );
   }
 }

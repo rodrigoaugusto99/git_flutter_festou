@@ -1,6 +1,9 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 
+import '../bottomNavBar/bottomNavBarPage.dart';
+import '../home/home_page.dart';
+
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
 
@@ -38,7 +41,7 @@ class _SearchPageState extends State<SearchPage> {
         padding: EdgeInsets.only(top: y * 0.04),
         child: FadeInUp(
           duration: const Duration(milliseconds: 400),
-          from: 150,
+          from: y * 0.1,
           child: Row(
             children: [
               _buildSearchBox(x, y),
@@ -91,6 +94,7 @@ class _SearchPageState extends State<SearchPage> {
                       Expanded(
                         child: TextField(
                           controller: _controller,
+                          autofocus: true,
                           decoration: const InputDecoration(
                             hintText: 'Buscar no Festou',
                             hintStyle: TextStyle(color: Colors.transparent),
@@ -130,7 +134,9 @@ class _SearchPageState extends State<SearchPage> {
     return InkWell(
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
-      onTap: () => Navigator.of(context).pushReplacementNamed('/home'),
+      onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => BottomNavBarPage(previousRoute: '/home/search_page'),
+      )),
       child: Text(
         'Cancelar',
         style: TextStyle(

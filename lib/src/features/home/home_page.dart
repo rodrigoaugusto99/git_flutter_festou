@@ -6,7 +6,8 @@ import 'package:git_flutter_festou/src/features/home/widgets/space_buttons.dart'
 import 'package:git_flutter_festou/src/features/home/widgets/space_card.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String? previousRoute;
+  const HomePage({this.previousRoute, Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -15,6 +16,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    final fadeInDuration = (widget.previousRoute == '/home/search_page')
+        ? const Duration(milliseconds: 400)
+        : Duration.zero;
+
     return Scaffold(
       backgroundColor: Colors.white,
       floatingActionButton: FloatingActionButton(
@@ -31,8 +36,8 @@ class _HomePageState extends State<HomePage> {
           const SliverToBoxAdapter(
             child: MenuSpaceTypes(),
           ),
-          const SliverToBoxAdapter(
-            child: SearchButton(),
+          SliverToBoxAdapter(
+            child: SearchButton(fadeInDuration: fadeInDuration),
           ),
           const SliverToBoxAdapter(
             child: SpaceButtons(),
