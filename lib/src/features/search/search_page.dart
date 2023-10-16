@@ -1,8 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-
 import '../bottomNavBar/bottomNavBarPage.dart';
-import '../home/home_page.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -28,7 +26,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _onTextChanged() {
-    setState(() {}); // isso irá reconstruir o widget toda vez que o texto mudar
+    setState(() {});
   }
 
   @override
@@ -41,7 +39,7 @@ class _SearchPageState extends State<SearchPage> {
         padding: EdgeInsets.only(top: y * 0.04),
         child: FadeInUp(
           duration: const Duration(milliseconds: 400),
-          from: y * 0.1,
+          from: y * 0.3,
           child: Row(
             children: [
               _buildSearchBox(x, y),
@@ -59,8 +57,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildSearchBox(double x, double y) {
     return Expanded(
       child: Container(
-        //TODO: margin
-        margin: const EdgeInsets.all(8),
+        margin: EdgeInsets.symmetric(horizontal: x * 0.03, vertical: 0.03),
         padding: EdgeInsets.symmetric(horizontal: x * 0.02, vertical: y * 0.01),
         decoration: BoxDecoration(
           color: Colors.grey[100],
