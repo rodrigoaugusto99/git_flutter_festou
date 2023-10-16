@@ -7,6 +7,7 @@ import 'package:git_flutter_festou/src/features/home/widgets/space_card.dart';
 
 class HomePage extends StatefulWidget {
   final String? previousRoute;
+
   const HomePage({this.previousRoute, Key? key}) : super(key: key);
 
   @override

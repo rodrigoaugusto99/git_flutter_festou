@@ -56,7 +56,6 @@ dependencies:
   uuid: ^3.0.7
   animate_do: ^3.1.2
   lottie: ^1.2.0
-  
 
 dev_dependencies:
   flutter_test:

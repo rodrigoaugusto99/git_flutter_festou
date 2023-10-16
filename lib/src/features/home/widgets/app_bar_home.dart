@@ -39,7 +39,7 @@ class _AppBarMenuSpaceTypesState extends ConsumerState<AppBarHome> {
                 children: [
                   Expanded(
                     child: Text(
-                      'Olá, ${formatString(user.email!)}, Festou?', // TODO: Buscar o nome do usuário direto de users/
+                      'Olá, ${formatString(user.email!)}! Festou?', // TODO: Buscar o nome do usuário direto de users/
                       // user_infos no banco
                       style: const TextStyle(
                         color: Colors.black,
