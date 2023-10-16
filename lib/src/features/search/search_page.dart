@@ -31,10 +31,11 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     final x = MediaQuery.of(context).size.width;
     final y = MediaQuery.of(context).size.height;
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Row(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Padding(
+        padding: EdgeInsets.only(top: y * 0.04),
+        child: Row(
           children: [
             _buildSearchBox(x, y),
             _buildCancelButton(),
@@ -77,8 +78,9 @@ class _SearchPageState extends State<SearchPage> {
                             ],
                           ),
                         )
-                      : Container(height: 0),
-                  //ou Text(''),
+                      : Container(
+                          height: 0,
+                        ),
                   Row(
                     children: [
                       Expanded(
