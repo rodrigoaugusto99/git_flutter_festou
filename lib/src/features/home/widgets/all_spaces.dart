@@ -68,31 +68,38 @@ class _AllSpacesState extends State<AllSpaces> {
 //pra cada documento(lista) lido, vamos ler os espaços(lista) dos documentos
               for (var space in userSpaces) {
                 Map<String, dynamic> spaceAddress = space['space_address'];
+                List<dynamic> spaceRatings = space['space_ratings'];
+                for (var ratingData in spaceRatings) {
+                  String starRating = ratingData['starRating'];
+                  String textRating = ratingData['text'];
 
-                final isFavorited =
-                    userSpacesFavorite.contains(space['space_id']);
+                  final isFavorited =
+                      userSpacesFavorite.contains(space['space_id']);
 
-                spaceWidgets.add(SpaceCard(
-                  isFavorited: isFavorited,
-                  spaceId: space['space_id'],
-                  spaceEmail: space['emailComercial'],
-                  spaceName: space['nome_do_espaco'],
-                  spaceCep: spaceAddress['cep'],
-                  spaceLogradouro: spaceAddress['logradouro'],
-                  spaceNumero: spaceAddress['numero'],
-                  spaceBairro: spaceAddress['bairro'],
-                  spaceCidade: spaceAddress['cidade'],
-                  selectedTypes: space['space_infos']['selectedTypes'],
-                  selectedServices: space['space_infos']['selectedServices'],
-                  availableDays: space['space_infos']['availableDays'],
-                  userEmail: userEmail,
-                  userTelefone: userInfos['name'],
-                  userName: userInfos['numero_de_telefone'],
-                  userCep: userAddress['cep'],
-                  userLogradouro: userAddress['logradouro'],
-                  userBairro: userAddress['bairro'],
-                  userCidade: userAddress['cidade'],
-                ));
+                  spaceWidgets.add(SpaceCard(
+                    isFavorited: isFavorited,
+                    spaceId: space['space_id'],
+                    spaceEmail: space['emailComercial'],
+                    spaceName: space['nome_do_espaco'],
+                    spaceCep: spaceAddress['cep'],
+                    spaceLogradouro: spaceAddress['logradouro'],
+                    spaceNumero: spaceAddress['numero'],
+                    spaceBairro: spaceAddress['bairro'],
+                    spaceCidade: spaceAddress['cidade'],
+                    selectedTypes: space['space_infos']['selectedTypes'],
+                    selectedServices: space['space_infos']['selectedServices'],
+                    availableDays: space['space_infos']['availableDays'],
+                    userEmail: userEmail,
+                    userTelefone: userInfos['name'],
+                    userName: userInfos['numero_de_telefone'],
+                    userCep: userAddress['cep'],
+                    userLogradouro: userAddress['logradouro'],
+                    userBairro: userAddress['bairro'],
+                    userCidade: userAddress['cidade'],
+                    starRating: starRating,
+                    textRating: textRating,
+                  ));
+                }
               }
 
               userWidgets.add(Column(

@@ -102,6 +102,7 @@ class _MySpacesState extends State<MySpaces> {
             for (var space in userSpaces) {
               Map<String, dynamic> userAddress = userInfos['user_address'];
               Map<String, dynamic> spaceAddress = space['space_address'];
+              Map<String, dynamic> spaceRatings = space['space_ratings'];
 
               final isFavorited =
                   userSpacesFavorite.contains(space['space_id']);
@@ -126,6 +127,8 @@ class _MySpacesState extends State<MySpaces> {
                 userLogradouro: userAddress['logradouro'],
                 userBairro: userAddress['bairro'],
                 userCidade: userAddress['cidade'],
+                starRating: spaceRatings['starRating'],
+                textRating: spaceRatings['text'],
               ));
             }
             return Column(

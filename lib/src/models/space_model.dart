@@ -8,6 +8,8 @@ class SpaceModel {
   final String numero;
   final String bairro;
   final String cidade;
+  final String starRating;
+  final String textRating;
   final List<dynamic> selectedTypes;
   final List<dynamic> selectedServices;
   final List<dynamic> availableDays;
@@ -25,5 +27,7 @@ class SpaceModel {
     this.selectedTypes,
     this.selectedServices,
     this.availableDays,
+    this.starRating,
+    this.textRating,
   );
 }

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/card_avaliacoes.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/more_details.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/rating_view.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
@@ -36,12 +37,12 @@ class _CardInfosState extends State<CardInfos> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const AlertDialog(
+        return AlertDialog(
           scrollable: true,
-          title: Text('Comentários'),
-          content:
-              Center(child: Text('A implementar "avaliar" e "avaliações".')),
-          //content: CardComments(space: space),
+          title: const Text('Comentários'),
+          content: Center(
+            child: CardAvaliacoes(space: space),
+          ),
         );
       },
     );

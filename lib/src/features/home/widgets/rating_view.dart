@@ -203,6 +203,8 @@ class _RatingViewState extends State<RatingView> {
     if (Navigator.canPop(context)) Navigator.pop(context);
   }
 
+  //TODO: resolver: mesmo achando o espaço, todos os espacos de todos os docs sao lidos
+
   void saveRating(int starRatingIndex, String text, SpaceModel space) async {
     final CollectionReference users =
         FirebaseFirestore.instance.collection('users');

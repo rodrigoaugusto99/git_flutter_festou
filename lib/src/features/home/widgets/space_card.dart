@@ -24,6 +24,8 @@ class SpaceCard extends StatefulWidget {
   final String spaceNumero;
   final String spaceBairro;
   final String spaceCidade;
+  final String starRating;
+  final String textRating;
   final List<dynamic> selectedTypes;
   final List<dynamic> selectedServices;
   final List<dynamic> availableDays;
@@ -48,6 +50,8 @@ class SpaceCard extends StatefulWidget {
     required this.availableDays,
     required this.spaceId,
     required this.isFavorited,
+    required this.starRating,
+    required this.textRating,
   });
 
   @override
@@ -175,6 +179,8 @@ class _SpaceCardState extends State<SpaceCard> {
                                             widget.selectedTypes,
                                             widget.selectedServices,
                                             widget.availableDays,
+                                            widget.starRating,
+                                            widget.textRating,
                                           ),
                                           user: UserModel(
                                             widget.userEmail,
