@@ -13,9 +13,9 @@ class LoginVM extends _$LoginVM {
   LoginState build() => LoginState.initial();
 
   Future<void> login(String email, String password) async {
-    final userRepository = ref.watch(userRepositoryProvider);
+    final userAuthRepository = ref.watch(userAuthRepositoryProvider);
 
-    final loginResult = await userRepository.login(email, password);
+    final loginResult = await userAuthRepository.login(email, password);
 
     switch (loginResult) {
       case Success():

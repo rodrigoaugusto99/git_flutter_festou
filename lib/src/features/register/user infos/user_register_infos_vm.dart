@@ -25,7 +25,7 @@ class UserRegisterInfosVm extends _$UserRegisterInfosVm {
     required String bairro,
     required String cidade,
   }) async {
-    final userRepository = ref.watch(userRepositoryProvider);
+    final userFirestoreRepository = ref.watch(userFirestoreRepositoryProvider);
 
     final userData = (
       user: user,
@@ -37,7 +37,8 @@ class UserRegisterInfosVm extends _$UserRegisterInfosVm {
       cidade: cidade,
     );
 
-    final registerResult = await userRepository.registerUserInfos(userData);
+    final registerResult =
+        await userFirestoreRepository.registerUserInfos(userData);
     switch (registerResult) {
       case Success():
         state = UserRegisterInfosStateStatus.success;

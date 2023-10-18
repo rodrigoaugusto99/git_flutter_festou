@@ -14,6 +14,7 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
   SpaceRegisterState build() => SpaceRegisterState.initial();
 
   final uuid = const Uuid();
+  final user = FirebaseAuth.instance.currentUser!;
 
   void addOrRemoveAvailableDay(String weekDay) {
     final availableDays = state.availableDays;
@@ -52,7 +53,6 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
   }
 
   Future<void> register(
-    User user,
     String name,
     String email,
     String cep,
@@ -67,28 +67,42 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
       :selectedServices,
     ) = state;
 
-    final newSpaceId = uuid.v4();
+    final spaceId = uuid.v4();
+    final userId = user.uid;
 
-    final spaceData = (
-      spaceId: newSpaceId,
+    final space = (
+      spaceId: spaceId,
       name: name,
       email: email,
+      userId: userId,
+    );
+
+    final spaceAddress = (
       cep: cep,
       logradouro: logradouro,
       numero: numero,
       bairro: bairro,
       cidade: cidade,
-      user: user,
+      spaceId: spaceId,
+    );
+    final spaceInfos = (
       selectedTypes: selectedTypes,
       availableDays: availableDays,
       selectedServices: selectedServices,
+      spaceId: spaceId,
     );
 
-    final spaceRepository = ref.watch(spaceRepositoryProvider);
-    log('Registrando espaço: $spaceData');
-    final registerResult = spaceRepository.save(spaceData);
+    final spaceFirestoreRepository =
+        ref.watch(spaceFirestoreRepositoryProvider);
+    log('Registrando espaço: $space');
+    final registerResultSpace = spaceFirestoreRepository.saveSpace(space);
+    //todo: esses dois - entrar no switch
+    final registerResultSpaceAddress =
+        spaceFirestoreRepository.saveSpaceAddress(spaceAddress);
+    final registerResultSpaceInfos =
+        spaceFirestoreRepository.saveSpaceInfos(spaceInfos);
 
-    switch (registerResult) {
+    switch (registerResultSpace) {
       case Success():
         break;
       case Failure():

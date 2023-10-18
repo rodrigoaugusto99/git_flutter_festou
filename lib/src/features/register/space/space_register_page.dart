@@ -17,7 +17,7 @@ class EspacoRegisterPage extends ConsumerStatefulWidget {
 }
 
 class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
-  final user = FirebaseAuth.instance.currentUser!;
+  //final user = FirebaseAuth.instance.currentUser!;
 
   //controllers
   final formKey = GlobalKey<FormState>();
@@ -48,7 +48,8 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Criar card\nLogged in as: ${user.email}'),
+        title: Text(
+            'Criar card\nLogged in as: ${FirebaseAuth.instance.currentUser!.email}'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -176,7 +177,6 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                       onPressed: () {
                         Navigator.of(context).pop();
                         spaceRegister.register(
-                          user,
                           nomeEC.text,
                           emailEC.text,
                           cepEC.text,
