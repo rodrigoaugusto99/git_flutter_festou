@@ -8,10 +8,6 @@ import 'package:git_flutter_festou/src/repositories/space/space_firestore_reposi
 class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
   final CollectionReference spacesCollection =
       FirebaseFirestore.instance.collection('spaces');
-  final CollectionReference spaceAddressCollection =
-      FirebaseFirestore.instance.collection('space_addresses');
-  final CollectionReference spaceInfosCollection =
-      FirebaseFirestore.instance.collection('space_infos');
 
   @override
   Future<Either<RepositoryException, Nil>> saveSpace(
@@ -20,13 +16,30 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
         String userId,
         String email,
         String name,
+        String bairro,
+        String cep,
+        String cidade,
+        String logradouro,
+        String numero,
+        List<String> selectedTypes,
+        List<String> selectedServices,
+        List<String> availableDays,
       }) spaceData) async {
     try {
       // Crie um novo espaço com os dados fornecidos
       Map<String, dynamic> newSpace = {
         'space_id': spaceData.spaceId,
+        'user_id': spaceData.userId,
         'email_do_espaço': spaceData.email,
         'nome_do_espaco': spaceData.name,
+        'cep': spaceData.cep,
+        'logradouro': spaceData.logradouro,
+        'numero': spaceData.numero,
+        'bairro': spaceData.bairro,
+        'cidade': spaceData.cidade,
+        'selectedTypes': spaceData.selectedTypes,
+        'selectedServices': spaceData.selectedServices,
+        'availableDays': spaceData.availableDays,
       };
 
       // Insira o espaço na coleção 'spaces'
@@ -37,66 +50,6 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
     } catch (e) {
       log('Erro ao adicionar informações de espaço: $e');
       return Failure(RepositoryException(message: 'Erro ao cadastrar espaço'));
-    }
-  }
-
-  @override
-  Future<Either<RepositoryException, Nil>> saveSpaceAddress(
-      ({
-        String bairro,
-        String cep,
-        String cidade,
-        String logradouro,
-        String numero,
-        String spaceId,
-      }) spaceAddress) async {
-    try {
-      // Crie um novo documento de endereço com os dados fornecidos
-      Map<String, dynamic> newAddress = {
-        'cep': spaceAddress.cep,
-        'logradouro': spaceAddress.logradouro,
-        'numero': spaceAddress.numero,
-        'bairro': spaceAddress.bairro,
-        'cidade': spaceAddress.cidade,
-      };
-
-      // Insira o endereço na coleção 'space_addresses'
-      await spaceAddressCollection.add(newAddress);
-
-      log('Informações de endereço adicionadas com sucesso!');
-      return Success(Nil());
-    } catch (e) {
-      log('Erro ao adicionar informações de endereço: $e');
-      return Failure(
-          RepositoryException(message: 'Erro ao cadastrar endereço'));
-    }
-  }
-
-  @override
-  Future<Either<RepositoryException, Nil>> saveSpaceInfos(
-      ({
-        List<String> availableDays,
-        List<String> selectedServices,
-        List<String> selectedTypes,
-        String spaceId,
-      }) spaceInfos) async {
-    try {
-      // Crie um novo documento de informações de espaço com os dados fornecidos
-      Map<String, dynamic> newSpaceInfos = {
-        'selectedTypes': spaceInfos.selectedTypes,
-        'selectedServices': spaceInfos.selectedServices,
-        'availableDays': spaceInfos.availableDays,
-      };
-
-      // Insira as informações do espaço na coleção 'space_infos'
-      await spaceInfosCollection.add(newSpaceInfos);
-
-      log('Informações de espaço adicionadas com sucesso!');
-      return Success(Nil());
-    } catch (e) {
-      log('Erro ao adicionar informações de espaço: $e');
-      return Failure(RepositoryException(
-          message: 'Erro ao cadastrar informações do espaço'));
     }
   }
 }

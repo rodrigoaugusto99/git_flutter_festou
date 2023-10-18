@@ -9,24 +9,14 @@ abstract interface class SpaceFirestoreRepository {
       String userId,
       String email,
       String name,
-    }) spaceData,
-  );
-  Future<Either<RepositoryException, Nil>> saveSpaceAddress(
-    ({
       String cep,
       String logradouro,
       String numero,
       String bairro,
       String cidade,
-      String spaceId,
-    }) spaceAddressData,
-  );
-  Future<Either<RepositoryException, Nil>> saveSpaceInfos(
-    ({
       List<String> selectedTypes,
       List<String> selectedServices,
       List<String> availableDays,
-      String spaceId
-    }) spaceInfosData,
+    }) spaceData,
   );
 }

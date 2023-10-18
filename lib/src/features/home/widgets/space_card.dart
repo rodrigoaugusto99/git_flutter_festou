@@ -10,6 +10,7 @@ import 'package:git_flutter_festou/src/models/user_model.dart';
 class SpaceCard extends StatefulWidget {
   bool isFavorited;
   final String spaceId;
+  final String userId;
   final String userEmail;
   final String userName;
   final String userTelefone;
@@ -29,6 +30,9 @@ class SpaceCard extends StatefulWidget {
   final List<dynamic> availableDays;
   SpaceCard({
     super.key,
+    required this.isFavorited,
+    required this.spaceId,
+    required this.userId,
     required this.userEmail,
     required this.userName,
     required this.userTelefone,
@@ -46,8 +50,6 @@ class SpaceCard extends StatefulWidget {
     required this.selectedTypes,
     required this.selectedServices,
     required this.availableDays,
-    required this.spaceId,
-    required this.isFavorited,
   });
 
   @override
@@ -164,7 +166,8 @@ class _SpaceCardState extends State<SpaceCard> {
                                         builder: (context) => CardInfos(
                                           space: SpaceModel(
                                             widget.isFavorited,
-                                            '',
+                                            widget.spaceId,
+                                            widget.userId,
                                             widget.spaceEmail,
                                             widget.spaceName,
                                             widget.spaceCep,
@@ -177,6 +180,7 @@ class _SpaceCardState extends State<SpaceCard> {
                                             widget.availableDays,
                                           ),
                                           user: UserModel(
+                                            widget.userId,
                                             widget.userEmail,
                                             widget.userName,
                                             widget.userTelefone,

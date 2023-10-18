@@ -12,12 +12,46 @@ import 'package:git_flutter_festou/src/core/fp/nil.dart';
 import './user_firestore_repository.dart';
 
 class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
-  final CollectionReference users =
+  final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
   @override
-  Future<Either<RepositoryException, Nil>> registerUserInfos(
+  Future<Either<RepositoryException, Nil>> saveUser(
       ({
-        User user,
+        String id,
+        String email,
+      }) userData) async {
+    try {
+// Crie um novo usuario com os dados fornecidos
+      Map<String, dynamic> newUser = {
+        'uid': userData.id,
+        'email': userData.email,
+        'userType': 'LOCATARIO',
+        'nome': '',
+        'telefone': '',
+        'user_address': {
+          'cep': '',
+          'logradouro': '',
+          'bairro': '',
+          'cidade': '',
+        }
+      };
+
+      // Insira o espaço na coleção 'spaces'
+      await usersCollection.add(newUser);
+
+      log('usuario criado na coleção users');
+
+      return Success(nil);
+    } catch (e) {
+      log('Erro ao adicionar informações de usuário: $e');
+      return Failure(RepositoryException(message: 'Erro ao cadastrar usuario'));
+    }
+  }
+
+  @override
+  Future<Either<RepositoryException, Nil>> saveUserInfos(
+      ({
+        String userId,
         String name,
         String telefone,
         String cep,
@@ -26,30 +60,29 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         String cidade,
       }) userData) async {
     try {
+      log('userData: $userData');
+
       QuerySnapshot querySnapshot =
-          await users.where("uid", isEqualTo: userData.user.uid).get();
+          await usersCollection.where("uid", isEqualTo: userData.userId).get();
 
       if (querySnapshot.docs.length == 1) {
         DocumentReference userDocRef = querySnapshot.docs[0].reference;
-
-//criando um mapa dessas informacoes
         Map<String, dynamic> newInfo = {
-          'name': userData.name,
-          'numero_de_telefone': userData.telefone,
           'user_address': {
             'cep': userData.cep,
             'logradouro': userData.logradouro,
             'bairro': userData.bairro,
             'cidade': userData.cidade,
-          }
+          },
+          'name': userData.name,
+          'telefone': userData.telefone,
         };
-        //jogando esse mapa no campo "user_infos" do documento referenciado
-        //se o campo nao existir no firestore, é criado
-        await userDocRef.update({
-          'user_infos': newInfo,
-        });
+
+        // Atualize o documento do usuário com os novos dados
+        await userDocRef.update(newInfo);
 
         log('Informações de usuário adicionadas com sucesso!');
+        log('id do usuario alterado: ${userData.userId}');
       }
       return Success(nil);
     } catch (e) {
@@ -66,15 +99,16 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         String emailComercial,
       }) userData) async {
     try {
-      QuerySnapshot querySnapshot =
-          await users.where("uid", isEqualTo: userData.user.uid).get();
+      QuerySnapshot querySnapshot = await usersCollection
+          .where("uid", isEqualTo: userData.user.uid)
+          .get();
 
       if (querySnapshot.docs.length == 1) {
         DocumentReference userDocRef = querySnapshot.docs[0].reference;
 
         await userDocRef.update({
           'cnpj': userData.cnpj,
-          'emailComercial': userData.emailComercial,
+          'email_comercial': userData.emailComercial,
           'userType': 'LOCADOR',
         });
 
@@ -85,19 +119,5 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       log('Erro ao adicionar informações de usuário: $e');
       return Failure(RepositoryException(message: 'Erro ao cadastrar usuario'));
     }
-  }
-
-  @override
-  Future<void> createUserInFirestore(User user) async {
-    final DocumentReference userDocRef = users.doc();
-
-    Map<String, dynamic> userData = {
-      'uid': user.uid,
-      'email': user.email,
-      'userType': 'LOCATARIO',
-      //'user_infos': {},
-      //'user_spaces': {},
-    };
-    await userDocRef.set(userData);
   }
 }

@@ -95,6 +95,7 @@ class _FavoriteSpacesPageState extends State<FavoriteSpacesPage> {
                     userLogradouro: userAddress['logradouro'],
                     userBairro: userAddress['bairro'],
                     userCidade: userAddress['cidade'],
+                    userId: '',
                   ));
                 }
               }

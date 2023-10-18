@@ -126,6 +126,7 @@ class _MySpacesState extends State<MySpaces> {
                 userLogradouro: userAddress['logradouro'],
                 userBairro: userAddress['bairro'],
                 userCidade: userAddress['cidade'],
+                userId: '',
               ));
             }
             return Column(

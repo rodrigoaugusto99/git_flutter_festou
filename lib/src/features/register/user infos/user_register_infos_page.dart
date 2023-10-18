@@ -17,9 +17,6 @@ class UserRegisterInfosPage extends ConsumerStatefulWidget {
 }
 
 class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
-  final user = FirebaseAuth.instance.currentUser!;
-  //text editing controllers
-
   final fullNameEC = TextEditingController();
   final telefoneEC = TextEditingController();
   final cepEC = TextEditingController();
@@ -130,7 +127,6 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
                         onPressed: () async {
                           // Chama a função addUserInfos com os dados desejados
                           await userRegisterInfosVM.register(
-                              user: user,
                               name: fullNameEC.text,
                               telefone: telefoneEC.text,
                               cep: cepEC.text,

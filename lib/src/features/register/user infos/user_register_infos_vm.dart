@@ -13,11 +13,11 @@ enum UserRegisterInfosStateStatus {
 
 @riverpod
 class UserRegisterInfosVm extends _$UserRegisterInfosVm {
+  final user = FirebaseAuth.instance.currentUser!;
   @override
   UserRegisterInfosStateStatus build() => UserRegisterInfosStateStatus.initial;
 
   Future<void> register({
-    required User user,
     required String name,
     required String telefone,
     required String cep,
@@ -27,8 +27,9 @@ class UserRegisterInfosVm extends _$UserRegisterInfosVm {
   }) async {
     final userFirestoreRepository = ref.watch(userFirestoreRepositoryProvider);
 
+    final userId = user.uid;
     final userData = (
-      user: user,
+      userId: userId,
       name: name,
       telefone: telefone,
       cep: cep,
@@ -38,7 +39,7 @@ class UserRegisterInfosVm extends _$UserRegisterInfosVm {
     );
 
     final registerResult =
-        await userFirestoreRepository.registerUserInfos(userData);
+        await userFirestoreRepository.saveUserInfos(userData);
     switch (registerResult) {
       case Success():
         state = UserRegisterInfosStateStatus.success;

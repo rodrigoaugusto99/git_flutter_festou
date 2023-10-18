@@ -4,9 +4,15 @@ import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
 
 abstract interface class UserFirestoreRepository {
-  Future<Either<RepositoryException, Nil>> registerUserInfos(
+  Future<Either<RepositoryException, Nil>> saveUser(
       ({
-        User user,
+        String id,
+        String email,
+      }) userData);
+
+  Future<Either<RepositoryException, Nil>> saveUserInfos(
+      ({
+        String userId,
         String name,
         String telefone,
         String cep,
@@ -21,7 +27,4 @@ abstract interface class UserFirestoreRepository {
         String cnpj,
         String emailComercial,
       }) userData);
-
-//todo:Retornar either
-  Future<void> createUserInFirestore(User user) async {}
 }

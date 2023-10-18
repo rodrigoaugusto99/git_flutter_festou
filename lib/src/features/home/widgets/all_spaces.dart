@@ -92,6 +92,7 @@ class _AllSpacesState extends State<AllSpaces> {
                   userLogradouro: userAddress['logradouro'],
                   userBairro: userAddress['bairro'],
                   userCidade: userAddress['cidade'],
+                  userId: '',
                 ));
               }
 

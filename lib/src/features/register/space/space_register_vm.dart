@@ -70,37 +70,25 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
     final spaceId = uuid.v4();
     final userId = user.uid;
 
-    final space = (
+    final spaceData = (
       spaceId: spaceId,
+      userId: userId,
       name: name,
       email: email,
-      userId: userId,
-    );
-
-    final spaceAddress = (
       cep: cep,
       logradouro: logradouro,
       numero: numero,
       bairro: bairro,
       cidade: cidade,
-      spaceId: spaceId,
-    );
-    final spaceInfos = (
       selectedTypes: selectedTypes,
       availableDays: availableDays,
       selectedServices: selectedServices,
-      spaceId: spaceId,
     );
 
     final spaceFirestoreRepository =
         ref.watch(spaceFirestoreRepositoryProvider);
-    log('Registrando espaço: $space');
-    final registerResultSpace = spaceFirestoreRepository.saveSpace(space);
-    //todo: esses dois - entrar no switch
-    final registerResultSpaceAddress =
-        spaceFirestoreRepository.saveSpaceAddress(spaceAddress);
-    final registerResultSpaceInfos =
-        spaceFirestoreRepository.saveSpaceInfos(spaceInfos);
+
+    final registerResultSpace = spaceFirestoreRepository.saveSpace(spaceData);
 
     switch (registerResultSpace) {
       case Success():
