@@ -9,8 +9,8 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/f
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/help/help_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/locador/quero_ser_locador.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
-import 'package:git_flutter_festou/src/features/home/all%20space%20mvvm/all_space_page.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/all_spaces.dart';
+import 'package:git_flutter_festou/src/features/home/all%20space%20mvvm/all_spaces_page.dart';
+import 'package:git_flutter_festou/src/features/home/my%20space%20mvvm/my_spaces_page.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/my_spaces.dart';
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
@@ -45,8 +45,8 @@ class MyApp extends StatelessWidget {
         '/account/dados': (_) => const DadosPage(),
         '/account/locador': (_) => QueroSerLocadorPage(),
         '/account/favorites': (_) => const FavoriteSpacesPage(),
-        '/home/my_spaces': (_) => const MySpaces(),
-        '/home/all_spaces': (_) => const AllSpacePage(),
+        '/home/my_spaces': (_) => const MySpacesPage(),
+        '/home/all_spaces': (_) => const AllSpacesPage(),
       },
       theme: ThemeData(
         fontFamily: 'inter',

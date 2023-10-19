@@ -6,19 +6,17 @@ import 'package:git_flutter_festou/src/features/home/all%20space%20mvvm/all_spac
 import 'package:git_flutter_festou/src/features/home/all%20space%20mvvm/all_spaces_vm.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/space_card2.dart';
 
-class AllSpacePage extends ConsumerStatefulWidget {
-  const AllSpacePage({super.key});
+class AllSpacesPage extends ConsumerStatefulWidget {
+  const AllSpacesPage({super.key});
 
   @override
-  ConsumerState<AllSpacePage> createState() => _AllSpacePageState();
+  ConsumerState<AllSpacesPage> createState() => _AllSpacesPageState();
 }
 
-class _AllSpacePageState extends ConsumerState<AllSpacePage> {
-  @override
+class _AllSpacesPageState extends ConsumerState<AllSpacesPage> {
   @override
   Widget build(BuildContext context) {
     final spaces = ref.watch(allSpacesVmProvider);
-    log('$spaces');
 
     return Scaffold(
       appBar: AppBar(
@@ -30,13 +28,19 @@ class _AllSpacePageState extends ConsumerState<AllSpacePage> {
             slivers: [
               //paras colocar widgets nao rolaveis.
               const SliverToBoxAdapter(
-                child: Text('Spaces'),
+                child: Center(
+                    child: Text(
+                  'ALL SPACES',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )),
               ),
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                     (context, index) => Column(
                           children: [
-                            const Text('alo'),
                             SpaceCard2(space: data.spaces[index]),
                           ],
                         ),

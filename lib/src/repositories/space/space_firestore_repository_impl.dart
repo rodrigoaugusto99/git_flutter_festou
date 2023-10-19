@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
@@ -11,6 +12,8 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
 
   final CollectionReference spacesCollection =
       FirebaseFirestore.instance.collection('spaces');
+
+  final user = FirebaseAuth.instance.currentUser!;
 
   @override
   Future<Either<RepositoryException, Nil>> saveSpace(
@@ -60,7 +63,6 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
   Future<Either<RepositoryException, List<SpaceModel>>> getAllSpaces() async {
     try {
       final spaceDocuments = await _firestore.collection('spaces').get();
-      log('$spaceDocuments');
       final spaceModels = spaceDocuments.docs.map((spaceDocument) {
         //final spaceAddress = spaceDocument['space_address'];
 
@@ -86,6 +88,41 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
       log('Erro ao recuperar todos os espaços: $e');
       return Failure(
           RepositoryException(message: 'Erro ao carregar todos os espaços'));
+    }
+  }
+
+  @override
+  Future<Either<RepositoryException, List<SpaceModel>>> getMySpaces() async {
+    try {
+      final spaceDocuments = await _firestore
+          .collection('spaces')
+          .where('user_id', isEqualTo: user.uid)
+          .get();
+      final spaceModels = spaceDocuments.docs.map((spaceDocument) {
+        //final spaceAddress = spaceDocument['space_address'];
+
+        return SpaceModel(
+          false,
+          spaceDocument['space_id'],
+          spaceDocument['user_id'],
+          spaceDocument['email_do_espaço'],
+          spaceDocument['nome_do_espaço'],
+          spaceDocument['cep'],
+          spaceDocument['logradouro'],
+          spaceDocument['numero'],
+          spaceDocument['bairro'],
+          spaceDocument['cidade'],
+          spaceDocument['selectedTypes'],
+          spaceDocument['selectedServices'],
+          spaceDocument['availableDays'],
+        );
+      }).toList();
+
+      return Success(spaceModels);
+    } catch (e) {
+      log('Erro ao recuperar meus espaços: $e');
+      return Failure(
+          RepositoryException(message: 'Erro ao carregar meus espaços'));
     }
   }
 }
