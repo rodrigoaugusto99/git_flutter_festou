@@ -1,10 +1,15 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/card_infos.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 
-class SpaceCard2 extends StatefulWidget {
+class SpaceCard2 extends ConsumerStatefulWidget {
   final SpaceModel space;
   const SpaceCard2({
     super.key,
@@ -12,42 +17,16 @@ class SpaceCard2 extends StatefulWidget {
   });
 
   @override
-  State<SpaceCard2> createState() => _SpaceCard2State();
+  ConsumerState<SpaceCard2> createState() => _SpaceCard2State();
 }
 
 final user = FirebaseAuth.instance.currentUser!;
 
-class _SpaceCard2State extends State<SpaceCard2> {
-  /*Future<void> toggleFavoriteSpace(String spaceId) async {
-    final CollectionReference users =
-        FirebaseFirestore.instance.collection('users');
-
-    QuerySnapshot querySnapshot =
-        await users.where("uid", isEqualTo: user.uid).get();
-
-    if (querySnapshot.docs.length == 1) {
-      final userDocument = querySnapshot.docs.first;
-      String x;
-      if (widget.space.isFavorited) {
-        userDocument.reference.update({
-          'spaces_favorite': FieldValue.arrayUnion([spaceId]),
-        });
-        x = 'add';
-      } else {
-        userDocument.reference.update({
-          'spaces_favorite': FieldValue.arrayRemove([spaceId]),
-        });
-        x = 'removed';
-      }
-
-      log('sucesso! - $x -  $spaceId');
-    } else {
-      log('Documento do usuário não encontrado');
-    }
-  }*/
-
+class _SpaceCard2State extends ConsumerState<SpaceCard2> {
   @override
   Widget build(BuildContext context) {
+    final spaceRepository = ref.watch(spaceFirestoreRepositoryProvider);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18),
       child: Card(
@@ -97,7 +76,9 @@ class _SpaceCard2State extends State<SpaceCard2> {
                                     widget.space.isFavorited =
                                         !widget.space.isFavorited;
                                   });
-                                  //toggleFavoriteSpace(widget.space.spaceId);
+                                  spaceRepository.toggleFavoriteSpace(
+                                      widget.space.spaceId,
+                                      widget.space.isFavorited);
                                 },
                                 child: widget.space.isFavorited
                                     ? const Icon(

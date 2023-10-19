@@ -23,4 +23,7 @@ abstract interface class SpaceFirestoreRepository {
 
   Future<Either<RepositoryException, List<SpaceModel>>> getAllSpaces();
   Future<Either<RepositoryException, List<SpaceModel>>> getMySpaces();
+  Future<Either<RepositoryException, List<SpaceModel>>> getMyFavoriteSpaces();
+  Future<Either<RepositoryException, Nil>> toggleFavoriteSpace(
+      String spaceId, bool isFavorited);
 }

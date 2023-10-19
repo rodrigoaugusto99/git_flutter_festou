@@ -8,10 +8,13 @@ import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/repositories/space/space_firestore_repository.dart';
 
 class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  //final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final CollectionReference spacesCollection =
       FirebaseFirestore.instance.collection('spaces');
+
+  final CollectionReference usersCollection =
+      FirebaseFirestore.instance.collection('users');
 
   final user = FirebaseAuth.instance.currentUser!;
 
@@ -62,7 +65,7 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
   @override
   Future<Either<RepositoryException, List<SpaceModel>>> getAllSpaces() async {
     try {
-      final spaceDocuments = await _firestore.collection('spaces').get();
+      final spaceDocuments = await spacesCollection.get();
       final spaceModels = spaceDocuments.docs.map((spaceDocument) {
         //final spaceAddress = spaceDocument['space_address'];
 
@@ -94,10 +97,8 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
   @override
   Future<Either<RepositoryException, List<SpaceModel>>> getMySpaces() async {
     try {
-      final spaceDocuments = await _firestore
-          .collection('spaces')
-          .where('user_id', isEqualTo: user.uid)
-          .get();
+      final spaceDocuments =
+          await spacesCollection.where('user_id', isEqualTo: user.uid).get();
       final spaceModels = spaceDocuments.docs.map((spaceDocument) {
         //final spaceAddress = spaceDocument['space_address'];
 
@@ -123,6 +124,100 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
       log('Erro ao recuperar meus espaços: $e');
       return Failure(
           RepositoryException(message: 'Erro ao carregar meus espaços'));
+    }
+  }
+
+  @override
+  Future<Either<RepositoryException, List<SpaceModel>>>
+      getMyFavoriteSpaces() async {
+    try {
+      final userDocument =
+          await usersCollection.where('uid', isEqualTo: user.uid).get();
+
+      List<dynamic> spacesFavoriteList = [];
+
+      if (userDocument.docs.isNotEmpty) {
+        log('O documento do usuário foi encontrado');
+        // O documento do usuário foi encontrado
+        final userData = userDocument.docs[0].data() as Map<String, dynamic>;
+        if (userData.containsKey('spaces_favorite')) {
+          spacesFavoriteList.add(userData['spaces_favorite']);
+          log('Lista de espaços favoritos: $spacesFavoriteList');
+
+          // Agora você tem a lista de espaços favoritos em `spacesFavoriteList`
+        } else {
+          log('O campo "spaces_favorite" não existe no documento do usuário.');
+        }
+      } else {
+        log('Nenhum documento do usuário foi encontrado.');
+      }
+
+//lista a ser colocada os modelos buildados
+      List<SpaceModel> result = [];
+
+//pegando todos os documentos da coleção de espaços
+      final spaceDocuments = await spacesCollection.get();
+
+      //percorrendo cada documento dessa coleção
+      for (var spaceDocument in spaceDocuments.docs) {
+        log('entrou no for');
+        final isFavorited =
+            spacesFavoriteList.contains(spaceDocument['space_id']);
+        log('$isFavorited');
+
+        if (isFavorited) {
+          result.add(SpaceModel(
+            isFavorited,
+            spaceDocument['space_id'] ?? '',
+            spaceDocument['user_id'] ?? '',
+            spaceDocument['email_do_espaço'] ?? '',
+            spaceDocument['nome_do_espaço'] ?? '',
+            spaceDocument['cep'] ?? '',
+            spaceDocument['logradouro'] ?? '',
+            spaceDocument['numero'] ?? '',
+            spaceDocument['bairro'] ?? '',
+            spaceDocument['cidade'] ?? '',
+            spaceDocument['selectedTypes'] ?? '',
+            spaceDocument['selectedServices'] ?? '',
+            spaceDocument['availableDays'] ?? '',
+          ));
+        }
+      }
+
+      return Success(result);
+    } catch (e) {
+      log('Erro ao recuperar meus espaços favoritos: $e');
+      return Failure(RepositoryException(
+          message: 'Erro ao carregar meus espaços favoritos'));
+    }
+  }
+
+  @override
+  Future<Either<RepositoryException, Nil>> toggleFavoriteSpace(
+      String spaceId, bool isFavorited) async {
+    QuerySnapshot querySnapshot =
+        await usersCollection.where("uid", isEqualTo: user.uid).get();
+
+    if (querySnapshot.docs.length == 1) {
+      final userDocument = querySnapshot.docs.first;
+      String x;
+      if (isFavorited) {
+        userDocument.reference.update({
+          'spaces_favorite': FieldValue.arrayUnion([spaceId]),
+        });
+        x = 'add';
+      } else {
+        userDocument.reference.update({
+          'spaces_favorite': FieldValue.arrayRemove([spaceId]),
+        });
+        x = 'removed';
+      }
+      log('sucesso! - $x -  $spaceId');
+      return Success(nil);
+    } else {
+      log('Documento do usuário não encontrado');
+      return Failure(
+          RepositoryException(message: 'Documento do usuário não encontrado'));
     }
   }
 }

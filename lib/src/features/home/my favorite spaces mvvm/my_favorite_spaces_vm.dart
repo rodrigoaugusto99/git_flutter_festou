@@ -13,7 +13,7 @@ class MyFavoriteSpacesVm extends _$MyFavoriteSpacesVm {
     final spaceRepository = ref.read(spaceFirestoreRepositoryProvider);
     //final BarbershopModel(id: barbershopId) =
     //await ref.read(getMyBarbershopProvider.future);
-    final spacesResult = await spaceRepository.getMySpaces();
+    final spacesResult = await spaceRepository.getMyFavoriteSpaces();
 
     switch (spacesResult) {
       case Success(value: final spacesData):
