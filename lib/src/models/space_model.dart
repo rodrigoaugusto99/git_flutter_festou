@@ -1,5 +1,5 @@
 class SpaceModel {
-  final bool isFavorited;
+  bool isFavorited;
   final String spaceId;
   final String userId;
   final String email;

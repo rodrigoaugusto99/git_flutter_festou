@@ -6,11 +6,10 @@ import 'package:git_flutter_festou/src/models/user_model.dart';
 
 class CardInfos extends StatefulWidget {
   final SpaceModel space;
-  final UserModel user;
+
   const CardInfos({
     super.key,
     required this.space,
-    required this.user,
   });
 
   @override
@@ -123,10 +122,11 @@ class _CardInfosState extends State<CardInfos> {
                 onPressed: () => showMap(widget.space),
                 child: const Text('Ver Localização'),
               ),
-              ElevatedButton(
+              //implementar logica pra pegar os dados do usuario que criou o espaço
+              /*ElevatedButton(
                 onPressed: () => userInfos(widget.user),
                 child: const Text('USER INFOS'),
-              ),
+              ),*/
               ElevatedButton(
                 onPressed: () {},
                 child: const Text('Ver Fotos'),

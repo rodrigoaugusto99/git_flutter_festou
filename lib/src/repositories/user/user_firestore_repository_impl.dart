@@ -1,14 +1,10 @@
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
-
 import 'package:git_flutter_festou/src/core/fp/either.dart';
-
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
-
+import 'package:git_flutter_festou/src/features/home/widgets/space_card.dart';
 import './user_firestore_repository.dart';
 
 class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
@@ -74,7 +70,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
             'bairro': userData.bairro,
             'cidade': userData.cidade,
           },
-          'name': userData.name,
+          'nome': userData.name,
           'telefone': userData.telefone,
         };
 
@@ -82,12 +78,21 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         await userDocRef.update(newInfo);
 
         log('Informações de usuário adicionadas com sucesso!');
-        log('id do usuario alterado: ${userData.userId}');
+
+        return Success(nil);
+      } else if (querySnapshot.docs.isEmpty) {
+        // Nenhum documento com o userId especificado foi encontrado
+        return Failure(RepositoryException(
+            message: 'Usuário não encontrado no Firestore.'));
+      } else {
+        // Mais de um documento com o mesmo userId foi encontrado (situação incomum)
+        return Failure(
+            RepositoryException(message: 'Conflito de dados no Firestore.'));
       }
-      return Success(nil);
     } catch (e) {
       log('Erro ao adicionar informações de usuário: $e');
-      return Failure(RepositoryException(message: 'Erro ao cadastrar usuario'));
+      return Failure(RepositoryException(
+          message: 'Erro ao atualizar informações de usuário.'));
     }
   }
 

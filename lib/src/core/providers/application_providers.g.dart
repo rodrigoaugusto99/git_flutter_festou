@@ -70,22 +70,6 @@ final userRegisterServiceProvider = Provider<UserRegisterService>.internal(
 );
 
 typedef UserRegisterServiceRef = ProviderRef<UserRegisterService>;
-String _$spaceAuthRepositoryHash() =>
-    r'ce19f4e1cda1c8e4b1813a699c1281c5d68d0341';
-
-/// See also [spaceAuthRepository].
-@ProviderFor(spaceAuthRepository)
-final spaceAuthRepositoryProvider = Provider<SpaceFirestoreRepository>.internal(
-  spaceAuthRepository,
-  name: r'spaceAuthRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$spaceAuthRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef SpaceAuthRepositoryRef = ProviderRef<SpaceFirestoreRepository>;
 String _$spaceFirestoreRepositoryHash() =>
     r'675ddba674e078685a05ad64044a5fbc51b25096';
 

@@ -88,13 +88,6 @@ class _FavoriteSpacesPageState extends State<FavoriteSpacesPage> {
                     selectedTypes: space['space_infos']['selectedTypes'],
                     selectedServices: space['space_infos']['selectedServices'],
                     availableDays: space['space_infos']['availableDays'],
-                    userEmail: userEmail,
-                    userTelefone: userInfos['name'],
-                    userName: userInfos['numero_de_telefone'],
-                    userCep: userAddress['cep'],
-                    userLogradouro: userAddress['logradouro'],
-                    userBairro: userAddress['bairro'],
-                    userCidade: userAddress['cidade'],
                     userId: '',
                   ));
                 }

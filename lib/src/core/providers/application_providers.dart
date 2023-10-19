@@ -37,10 +37,6 @@ UserRegisterService userRegisterService(UserRegisterServiceRef ref) =>
         userLoginService: ref.watch(userLoginServiceProvider),
         userFirestoreRepository: ref.watch(userFirestoreRepositoryProvider));
 
-@Riverpod(keepAlive: true)
-SpaceFirestoreRepository spaceAuthRepository(SpaceAuthRepositoryRef ref) =>
-    SpaceFirestoreRepositoryImpl();
-
 //firestore
 @Riverpod(keepAlive: true)
 SpaceFirestoreRepository spaceFirestoreRepository(

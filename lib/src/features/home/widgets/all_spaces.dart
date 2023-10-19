@@ -12,7 +12,8 @@ class AllSpaces extends StatefulWidget {
 
 final user = FirebaseAuth.instance.currentUser!;
 
-final _usersStream = FirebaseFirestore.instance.collection('users').snapshots();
+final _spacesStream =
+    FirebaseFirestore.instance.collection('spaces').snapshots();
 
 class _AllSpacesState extends State<AllSpaces> {
   @override
@@ -21,7 +22,7 @@ class _AllSpacesState extends State<AllSpaces> {
       appBar: AppBar(title: Text('Logged in as: ${user.email}')),
       body: SingleChildScrollView(
         child: StreamBuilder<QuerySnapshot>(
-          stream: _usersStream,
+          stream: _spacesStream,
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) {
@@ -39,71 +40,29 @@ class _AllSpacesState extends State<AllSpaces> {
             }
 
 //pegando todos os documentos(Lista de QueryDocumentSnapshot)
-            final userDocuments = snapshot.data!.docs;
+            final spaceDocuments = snapshot.data!.docs;
 
-            final userDocumentsAux = snapshot.data!.docs
-                .where((doc) => doc['uid'] == user.uid)
-                .toList();
+            List<Widget> spaceWidgets = [];
 
-/*como a lista terá apenas um documento, pegue o primeiro. */
-            final userDocument = userDocumentsAux[0];
-
-            // Obtenha a lista de espaços favoritos do usuário atual
-            final List<dynamic> userSpacesFavorite =
-                userDocument['spaces_favorite'] ?? [];
-
-            List<Widget> userWidgets = [];
-
-            for (var userDocument in userDocuments) {
-              //pega o email do documento que é string
-              String userEmail = userDocument['email'];
-              //pega o campo user_infos que é um mapa
-              Map<String, dynamic> userInfos = userDocument['user_infos'];
-              Map<String, dynamic> userAddress = userInfos['user_address'];
-              //pega o campo user_spaces que é uma lista(de mapas)
-              List<dynamic> userSpaces = userDocument['user_spaces'];
-
-              List<Widget> spaceWidgets = [];
-
-//pra cada documento(lista) lido, vamos ler os espaços(lista) dos documentos
-              for (var space in userSpaces) {
-                Map<String, dynamic> spaceAddress = space['space_address'];
-
-                final isFavorited =
-                    userSpacesFavorite.contains(space['space_id']);
-
-                spaceWidgets.add(SpaceCard(
-                  isFavorited: isFavorited,
-                  spaceId: space['space_id'],
-                  spaceEmail: space['emailComercial'],
-                  spaceName: space['nome_do_espaco'],
-                  spaceCep: spaceAddress['cep'],
-                  spaceLogradouro: spaceAddress['logradouro'],
-                  spaceNumero: spaceAddress['numero'],
-                  spaceBairro: spaceAddress['bairro'],
-                  spaceCidade: spaceAddress['cidade'],
-                  selectedTypes: space['space_infos']['selectedTypes'],
-                  selectedServices: space['space_infos']['selectedServices'],
-                  availableDays: space['space_infos']['availableDays'],
-                  userEmail: userEmail,
-                  userTelefone: userInfos['name'],
-                  userName: userInfos['numero_de_telefone'],
-                  userCep: userAddress['cep'],
-                  userLogradouro: userAddress['logradouro'],
-                  userBairro: userAddress['bairro'],
-                  userCidade: userAddress['cidade'],
-                  userId: '',
-                ));
-              }
-
-              userWidgets.add(Column(
-                children: [
-                  ...spaceWidgets,
-                ],
+            for (var space in spaceDocuments) {
+              spaceWidgets.add(SpaceCard(
+                isFavorited: false,
+                spaceId: space['space_id'],
+                spaceEmail: space['email_do_espaço'],
+                spaceName: space['nome_do_espaco'],
+                spaceCep: space['cep'],
+                spaceLogradouro: space['logradouro'],
+                spaceNumero: space['numero'],
+                spaceBairro: space['bairro'],
+                spaceCidade: space['cidade'],
+                selectedTypes: space['selectedTypes'],
+                selectedServices: space['selectedServices'],
+                availableDays: space['availableDays'],
+                userId: '',
               ));
             }
             return Column(
-              children: userWidgets,
+              children: spaceWidgets,
             );
           },
         ),
