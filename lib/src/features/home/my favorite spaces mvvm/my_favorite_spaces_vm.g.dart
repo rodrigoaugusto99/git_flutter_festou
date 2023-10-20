@@ -7,7 +7,7 @@ part of 'my_favorite_spaces_vm.dart';
 // **************************************************************************
 
 String _$myFavoriteSpacesVmHash() =>
-    r'2aab55722dbc7a445e38d9b8181b92d636b75c75';
+    r'd9209d714a8f5b88e230a5543e87fca96a09bb08';
 
 /// See also [MyFavoriteSpacesVm].
 @ProviderFor(MyFavoriteSpacesVm)
