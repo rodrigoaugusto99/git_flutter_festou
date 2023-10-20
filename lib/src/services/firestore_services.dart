@@ -1,0 +1,1 @@
+//metodos referentes ao firestore

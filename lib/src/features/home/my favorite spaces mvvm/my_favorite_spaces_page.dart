@@ -16,12 +16,13 @@ class MyFavoriteSpacePage extends ConsumerStatefulWidget {
 class _MyFavoriteSpacePageState extends ConsumerState<MyFavoriteSpacePage> {
   @override
   Widget build(BuildContext context) {
-    final spaces = ref.watch(myFavoriteSpacesVmProvider);
+    final favSpaces = ref.watch(myFavoriteSpacesVmProvider);
+
     return Scaffold(
       appBar: AppBar(
           title: Text(
               'Logged in as: ${FirebaseAuth.instance.currentUser!.email}')),
-      body: spaces.when(
+      body: favSpaces.when(
         data: (MyFavoriteSpacesState data) {
           return CustomScrollView(
             slivers: [

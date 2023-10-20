@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
+import 'package:git_flutter_festou/src/features/home/my%20favorite%20spaces%20mvvm/my_favorite_spaces_vm.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/repositories/space/space_firestore_repository.dart';
 
@@ -134,17 +135,15 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
       final userDocument =
           await usersCollection.where('uid', isEqualTo: user.uid).get();
 
-      List<dynamic> spacesFavoriteList = [];
+      List<dynamic> userSpacesFavorite = [];
 
       if (userDocument.docs.isNotEmpty) {
         log('O documento do usuário foi encontrado');
         // O documento do usuário foi encontrado
         final userData = userDocument.docs[0].data() as Map<String, dynamic>;
         if (userData.containsKey('spaces_favorite')) {
-          spacesFavoriteList.add(userData['spaces_favorite']);
-          log('Lista de espaços favoritos: $spacesFavoriteList');
-
-          // Agora você tem a lista de espaços favoritos em `spacesFavoriteList`
+          userSpacesFavorite = userData['spaces_favorite'] ?? [];
+          log('Lista de espaços favoritos: $userSpacesFavorite');
         } else {
           log('O campo "spaces_favorite" não existe no documento do usuário.');
         }
@@ -152,17 +151,17 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
         log('Nenhum documento do usuário foi encontrado.');
       }
 
-//lista a ser colocada os modelos buildados
+      // Lista a ser usada para armazenar os modelos construídos
       List<SpaceModel> result = [];
 
-//pegando todos os documentos da coleção de espaços
+      // Pegando todos os documentos da coleção de espaços
       final spaceDocuments = await spacesCollection.get();
 
-      //percorrendo cada documento dessa coleção
+      // Percorrendo cada documento dessa coleção
       for (var spaceDocument in spaceDocuments.docs) {
         log('entrou no for');
         final isFavorited =
-            spacesFavoriteList.contains(spaceDocument['space_id']);
+            userSpacesFavorite.contains(spaceDocument['space_id']);
         log('$isFavorited');
 
         if (isFavorited) {
@@ -201,6 +200,7 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
     if (querySnapshot.docs.length == 1) {
       final userDocument = querySnapshot.docs.first;
       String x;
+
       if (isFavorited) {
         userDocument.reference.update({
           'spaces_favorite': FieldValue.arrayUnion([spaceId]),
