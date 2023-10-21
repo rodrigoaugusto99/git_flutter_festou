@@ -39,7 +39,7 @@ class _SearchPageState extends State<SearchPage> {
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: Padding(
-        padding: EdgeInsets.only(top: y * 0.04),
+        padding: EdgeInsets.only(top: y * 0.05),
         child: Column(
           children: [
             FadeInUp(
@@ -61,7 +61,7 @@ class _SearchPageState extends State<SearchPage> {
                       margin: EdgeInsets.symmetric(horizontal: x * 0.03),
                       padding: EdgeInsets.symmetric(horizontal: x * 0.0, vertical: y * 0.0),
                       child: ConstrainedBox(
-                        constraints: BoxConstraints(minHeight: y * 0.1, maxHeight: y * 0.905),
+                        constraints: BoxConstraints(minHeight: y * 0.1, maxHeight: y * 0.9),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -91,7 +91,7 @@ class _SearchPageState extends State<SearchPage> {
                           'Busque pelos melhores espaços disponíveis para o seu Festou!',
                           textAlign: TextAlign.center,
                         ),
-                        const Spacer(flex: 13),
+                        const Spacer (flex: 13),
                       ]),
                     ),
                   ),
