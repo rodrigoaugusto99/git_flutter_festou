@@ -1,34 +1,26 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/app_bar_menu_space_types.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/app_bar_home.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/menu_space_types.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/search_button.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/space_buttons.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/space_card.dart';
 
-class HomePage extends ConsumerStatefulWidget {
-  const HomePage({super.key});
+class HomePage extends StatefulWidget {
+  final String? previousRoute;
+
+  const HomePage({this.previousRoute, Key? key}) : super(key: key);
 
   @override
-  ConsumerState<HomePage> createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends ConsumerState<HomePage> {
-  final user = FirebaseAuth.instance.currentUser!;
-
-  String formatString(String input) {
-    if (input.isEmpty) return '';
-
-    // Limita a string a 6 caracteres
-    String truncated = input.length > 6 ? input.substring(0, 6) : input;
-
-    // Converte a primeira letra para maiúscula e o restante para minúscula
-    return truncated[0].toUpperCase() + truncated.substring(1).toLowerCase();
-  }
-
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    final x = MediaQuery.of(context).size.width;
-    final y = MediaQuery.of(context).size.height;
+    final fadeInDuration = (widget.previousRoute == '/home/search_page')
+        ? const Duration(milliseconds: 400)
+        : Duration.zero;
+
     return Scaffold(
       backgroundColor: Colors.white,
       floatingActionButton: FloatingActionButton(
@@ -41,7 +33,16 @@ class _HomePageState extends ConsumerState<HomePage> {
       ),
       body: CustomScrollView(
         slivers: [
-          const AppBarMenuSpaceTypes(),
+          const AppBarHome(),
+          const SliverToBoxAdapter(
+            child: MenuSpaceTypes(),
+          ),
+          SliverToBoxAdapter(
+            child: SearchButton(fadeInDuration: fadeInDuration),
+          ),
+          const SliverToBoxAdapter(
+            child: SpaceButtons(),
+          ),
           SliverToBoxAdapter(
             child: ListView.builder(
               shrinkWrap: true,
