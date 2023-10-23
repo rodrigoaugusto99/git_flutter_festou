@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:git_flutter_festou/src/models/feedback/feedback_model_test.dart'; // Certifique-se de importar o modelo FeedbackModel correto aqui.
+import 'package:git_flutter_festou/src/models/feedback_model.dart'; // Certifique-se de importar o modelo FeedbackModel correto aqui.
 
 class SpaceModelTest {
   final String? name;

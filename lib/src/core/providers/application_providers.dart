@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/ui/festou_nav_global_key.dart';
+import 'package:git_flutter_festou/src/repositories/feedback/feedback_firestore_repository.dart';
+import 'package:git_flutter_festou/src/repositories/feedback/feedback_firestore_repository_impl.dart';
 import 'package:git_flutter_festou/src/repositories/space/space_firestore_repository.dart';
 import 'package:git_flutter_festou/src/repositories/space/space_firestore_repository_impl.dart';
 import 'package:git_flutter_festou/src/repositories/user/user_auth_repository.dart';
@@ -42,6 +44,11 @@ UserRegisterService userRegisterService(UserRegisterServiceRef ref) =>
 SpaceFirestoreRepository spaceFirestoreRepository(
         SpaceFirestoreRepositoryRef ref) =>
     SpaceFirestoreRepositoryImpl();
+
+@Riverpod(keepAlive: true)
+FeedbackFirestoreRepository feedbackFirestoreRepository(
+        FeedbackFirestoreRepositoryRef ref) =>
+    FeedbackFirestoreRepositoryImpl();
 
 @riverpod
 Future<void> logout(LogoutRef ref) async {

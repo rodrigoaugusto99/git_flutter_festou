@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const UserRegisterPage(),
+      home: const SplashPage(),
     );
   }
 }

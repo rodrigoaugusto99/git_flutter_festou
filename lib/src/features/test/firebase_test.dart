@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/models/feedback/feedback_model_test.dart';
+import 'package:git_flutter_festou/src/models/feedback_model.dart';
 import 'package:git_flutter_festou/src/models/space/space_model_test2.dart';
 
 class FirebaseTest extends StatefulWidget {

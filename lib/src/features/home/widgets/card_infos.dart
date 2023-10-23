@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/more_details.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/rating_view.dart';
+import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 
@@ -17,12 +17,12 @@ class CardInfos extends StatefulWidget {
 }
 
 class _CardInfosState extends State<CardInfos> {
-  void showRatingDialog() {
+  void showRatingDialog(SpaceModel space) {
     showDialog(
       context: context,
       builder: (context) {
-        return const Dialog(
-          child: RatingView(),
+        return Dialog(
+          child: FeedbackPage(space: widget.space),
         );
       },
     );
@@ -107,7 +107,7 @@ class _CardInfosState extends State<CardInfos> {
           child: Column(
             children: [
               ElevatedButton(
-                onPressed: showRatingDialog,
+                onPressed: () => showRatingDialog(widget.space),
                 child: const Text('Avalie'),
               ),
               ElevatedButton(
