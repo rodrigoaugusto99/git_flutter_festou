@@ -19,7 +19,7 @@ class FeedbackRegisterVm extends _$FeedbackRegisterVm {
 
   Future<void> register({
     required String spaceId,
-    required String rating,
+    required int rating,
     required String content,
   }) async {
     final feedbackFirestoreRepository =

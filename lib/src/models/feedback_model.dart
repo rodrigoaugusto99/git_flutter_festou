@@ -12,7 +12,7 @@ class FeedbackModel {
   });
 
   // Converte um objeto FeedbackModel em um Map
-  Map<String, dynamic> toMap() {
+  /*Map<String, dynamic> toMap() {
     return {
       'rating': rating,
       'content': content,
@@ -29,5 +29,5 @@ class FeedbackModel {
       userId: map['user_id'] ?? '',
       spaceId: map['space_id'] ?? '',
     );
-  }
+  }*/
 }

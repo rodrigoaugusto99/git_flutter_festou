@@ -62,7 +62,7 @@ class _RatingViewState extends ConsumerState<FeedbackPage> {
                 onPressed: () {
                   feedbackRegisterVm.register(
                     spaceId: widget.space.spaceId,
-                    rating: starRatingIndex.toString(),
+                    rating: starRatingIndex,
                     content: contentController.text,
                   );
                   Navigator.pop(context);

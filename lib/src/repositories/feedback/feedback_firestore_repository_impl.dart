@@ -4,10 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
+import 'package:git_flutter_festou/src/models/feedback_model.dart';
 import './feedback_firestore_repository.dart';
 
 class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
-  final CollectionReference feedbackCollection =
+  final CollectionReference feedbacksCollection =
       FirebaseFirestore.instance.collection('feedbacks');
 
   final CollectionReference usersCollection =
@@ -20,7 +21,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
     ({
       String spaceId,
       String userId,
-      String rating,
+      int rating,
       String content,
     }) feedbackData,
   ) async {
@@ -33,7 +34,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
         'content': feedbackData.content,
       };
 
-      await feedbackCollection.add(newFeedback);
+      await feedbacksCollection.add(newFeedback);
       log('Avaliação adicionado com sucesso!');
       return Success(Nil());
     } catch (e) {
@@ -43,9 +44,31 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
   }
 
   @override
-  Future<Either<RepositoryException, Nil>> getSpaceFeedback() {
-    // TODO: implement getSpaceFeedback
-    throw UnimplementedError();
+  Future<Either<RepositoryException, List<FeedbackModel>>> getFeedbacks(
+      String spaceId) async {
+    try {
+      final allFeedbacksDocuments = await feedbacksCollection.get();
+
+      List<FeedbackModel> feedbackModels =
+          allFeedbacksDocuments.docs.map((feedbackDocument) {
+        return mapFeedbackDocumentToModel(feedbackDocument);
+      }).toList();
+      return Success(feedbackModels);
+    } catch (e) {
+      log('Erro ao recuperar meus espaços favoritos: $e');
+      return Failure(RepositoryException(
+          message: 'Erro ao carregar meus espaços favoritos'));
+    }
+  }
+
+  FeedbackModel mapFeedbackDocumentToModel(
+      QueryDocumentSnapshot feedbackDocument) {
+    return FeedbackModel(
+      spaceId: feedbackDocument['space_id'] ?? '',
+      userId: feedbackDocument['user_id'] ?? '',
+      rating: feedbackDocument['rating'] ?? 0,
+      content: feedbackDocument['content'] ?? '',
+    );
   }
 
   Future<DocumentSnapshot> getUserId() async {

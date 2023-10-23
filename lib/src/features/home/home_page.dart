@@ -1,9 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/app_bar_menu_space_types.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/space_card.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
