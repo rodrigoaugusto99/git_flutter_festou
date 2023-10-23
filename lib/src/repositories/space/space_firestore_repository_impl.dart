@@ -65,11 +65,17 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
   @override
   Future<Either<RepositoryException, List<SpaceModel>>> getAllSpaces() async {
     try {
+      //pega todos os documentos dos espaços
       final allSpaceDocuments = await spacesCollection.get();
 
 //await pois retorna future
+//pega os favoritos do usuario
       final userSpacesFavorite = await getUserFavoriteSpaces();
 
+/*percorre todos os espaços levando em conta os favoritos
+p decidir o isFavorited*/
+
+//todo: mapSpaceDocumentToModel ajustado
       List<SpaceModel> spaceModels =
           allSpaceDocuments.docs.map((spaceDocument) {
         final isFavorited =
@@ -88,11 +94,15 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
   @override
   Future<Either<RepositoryException, List<SpaceModel>>> getMySpaces() async {
     try {
+      //espaços a serem buildados
       final mySpaceDocuments =
           await spacesCollection.where('user_id', isEqualTo: user.uid).get();
 
+//favoritos do usuario
       final userSpacesFavorite = await getUserFavoriteSpaces();
 
+//percorre tudo.
+//todo: mapSpaceDocumentToModel ajustado
       List<SpaceModel> spaceModels = mySpaceDocuments.docs.map((spaceDocument) {
         final isFavorited =
             userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
@@ -107,7 +117,74 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
     }
   }
 
-//build dos
+  @override
+  Future<Either<RepositoryException, List<SpaceModel>>>
+      getMyFavoriteSpaces() async {
+    try {
+      //lista de espaços favoritados pelo usuario
+      final userSpacesFavorite = await getUserFavoriteSpaces();
+
+/*pegando os documentos dos espaços que seu id está na tal lista de favoritados pelo usuario
+    Agora, em vez de buscar todos os espaços, filtramos diretamente os favoritos
+    
+    o retorno da lista de espaços favoritados serve para atribuir o 
+    isFavorited na hora de exibir os espaços
+    
+    */
+      final favoriteSpaceDocuments = await spacesCollection
+          .where('space_id', whereIn: userSpacesFavorite)
+          .get();
+
+//pra percorrer tudo, precisamos ter a lista de favoritados pelo usuario
+//e a lista de documentos dos espaços que devem ser buildados
+//todo: mapSpaceDocumentToModel ajustado
+      List<SpaceModel> spaceModels =
+          favoriteSpaceDocuments.docs.map((spaceDocument) {
+        final isFavorited =
+            userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
+        return mapSpaceDocumentToModel(spaceDocument, isFavorited);
+      }).toList();
+
+      return Success(spaceModels);
+    } catch (e) {
+      log('Erro ao recuperar meus espaços favoritos: $e');
+      return Failure(RepositoryException(
+          message: 'Erro ao carregar meus espaços favoritos'));
+    }
+  }
+
+  @override
+  Future<Either<RepositoryException, Nil>> toggleFavoriteSpace(
+      String spaceId, bool isFavorited) async {
+    QuerySnapshot querySnapshot =
+        await usersCollection.where("uid", isEqualTo: user.uid).get();
+
+    if (querySnapshot.docs.length == 1) {
+      final userDocument = querySnapshot.docs.first;
+      String x;
+
+      if (isFavorited) {
+        userDocument.reference.update({
+          'spaces_favorite': FieldValue.arrayUnion([spaceId]),
+        });
+        x = 'add';
+      } else {
+        userDocument.reference.update({
+          'spaces_favorite': FieldValue.arrayRemove([spaceId]),
+        });
+        x = 'removed';
+      }
+      log('sucesso! - $x -  $spaceId');
+      return Success(nil);
+    } else {
+      log('Documento do usuário não encontrado');
+      return Failure(
+          RepositoryException(message: 'Documento do usuário não encontrado'));
+    }
+  }
+
+//build dos espaços
+//todo: buildar levando em conta espaços e lista de favoritos
   SpaceModel mapSpaceDocumentToModel(
       QueryDocumentSnapshot spaceDocument, bool isFavorited) {
     return SpaceModel(
@@ -151,117 +228,5 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
     }
 
     return null;
-  }
-
-  /*Future<Either<RepositoryException, List<SpaceModel>>> getMySpaces() async {
-    try {
-      final spaceDocuments =
-          await spacesCollection.where('user_id', isEqualTo: user.uid).get();
-      final spaceModels = spaceDocuments.docs.map((spaceDocument) {
-        //final spaceAddress = spaceDocument['space_address'];
-
-        return SpaceModel(
-          false,
-          spaceDocument['space_id'],
-          spaceDocument['user_id'],
-          spaceDocument['email_do_espaço'],
-          spaceDocument['nome_do_espaço'],
-          spaceDocument['cep'],
-          spaceDocument['logradouro'],
-          spaceDocument['numero'],
-          spaceDocument['bairro'],
-          spaceDocument['cidade'],
-          spaceDocument['selectedTypes'],
-          spaceDocument['selectedServices'],
-          spaceDocument['availableDays'],
-        );
-      }).toList();
-
-      return Success(spaceModels);
-    } catch (e) {
-      log('Erro ao recuperar meus espaços: $e');
-      return Failure(
-          RepositoryException(message: 'Erro ao carregar meus espaços'));
-    }
-  }*/
-
-  @override
-  Future<Either<RepositoryException, List<SpaceModel>>>
-      getMyFavoriteSpaces() async {
-    try {
-      final userDocument =
-          await usersCollection.where('uid', isEqualTo: user.uid).get();
-
-      List<dynamic> userSpacesFavorite = [];
-
-      if (userDocument.docs.isNotEmpty) {
-        final userData = userDocument.docs[0].data() as Map<String, dynamic>;
-        if (userData.containsKey('spaces_favorite')) {
-          userSpacesFavorite = userData['spaces_favorite'] ?? [];
-        }
-      }
-
-      // Agora, em vez de buscar todos os espaços, filtramos diretamente os favoritos
-      final favoriteSpaceDocuments = await spacesCollection
-          .where('space_id', whereIn: userSpacesFavorite)
-          .get();
-
-      List<SpaceModel> result = [];
-
-      for (var spaceDocument in favoriteSpaceDocuments.docs) {
-        log('entrou no for');
-        result.add(SpaceModel(
-          true, // Este espaço é favorito
-          spaceDocument['space_id'] ?? '',
-          spaceDocument['user_id'] ?? '',
-          spaceDocument['email_do_espaço'] ?? '',
-          spaceDocument['nome_do_espaço'] ?? '',
-          spaceDocument['cep'] ?? '',
-          spaceDocument['logradouro'] ?? '',
-          spaceDocument['numero'] ?? '',
-          spaceDocument['bairro'] ?? '',
-          spaceDocument['cidade'] ?? '',
-          spaceDocument['selectedTypes'] ?? '',
-          spaceDocument['selectedServices'] ?? '',
-          spaceDocument['availableDays'] ?? '',
-        ));
-      }
-
-      return Success(result);
-    } catch (e) {
-      log('Erro ao recuperar meus espaços favoritos: $e');
-      return Failure(RepositoryException(
-          message: 'Erro ao carregar meus espaços favoritos'));
-    }
-  }
-
-  @override
-  Future<Either<RepositoryException, Nil>> toggleFavoriteSpace(
-      String spaceId, bool isFavorited) async {
-    QuerySnapshot querySnapshot =
-        await usersCollection.where("uid", isEqualTo: user.uid).get();
-
-    if (querySnapshot.docs.length == 1) {
-      final userDocument = querySnapshot.docs.first;
-      String x;
-
-      if (isFavorited) {
-        userDocument.reference.update({
-          'spaces_favorite': FieldValue.arrayUnion([spaceId]),
-        });
-        x = 'add';
-      } else {
-        userDocument.reference.update({
-          'spaces_favorite': FieldValue.arrayRemove([spaceId]),
-        });
-        x = 'removed';
-      }
-      log('sucesso! - $x -  $spaceId');
-      return Success(nil);
-    } else {
-      log('Documento do usuário não encontrado');
-      return Failure(
-          RepositoryException(message: 'Documento do usuário não encontrado'));
-    }
   }
 }

@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/space_card.dart';
 import './user_firestore_repository.dart';
 
 class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
@@ -56,8 +55,6 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         String cidade,
       }) userData) async {
     try {
-      log('userData: $userData');
-
       QuerySnapshot querySnapshot =
           await usersCollection.where("uid", isEqualTo: userData.userId).get();
 
