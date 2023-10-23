@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/user/user_register_vm.dart';
-import 'package:validatorless/validatorless.dart';
 import '../../../core/ui/widgets/my_squaretile.dart';
 import '../../../services/auth_services.dart';
 
@@ -41,13 +40,10 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
           break;
         case UserRegisterStateStatus.success:
           Navigator.of(context).pushNamed('/register/user/infos');
-          break;
         case UserRegisterStateStatus.registrationError:
           Messages.showError('Erro ao registrar usuário', context);
-          break;
         case UserRegisterStateStatus.formInvalid:
           Messages.showError('Formulário inválido', context);
-          break;
       }
     });
 

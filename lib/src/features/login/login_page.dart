@@ -4,7 +4,6 @@ import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/login/login_state.dart';
 import 'package:git_flutter_festou/src/features/login/login_vm.dart';
-import 'package:validatorless/validatorless.dart';
 import '../../core/ui/widgets/my_squaretile.dart';
 import '../../services/auth_services.dart';
 import 'forgot_password_page.dart';
@@ -25,7 +24,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   void dispose() {
     emailEC.dispose();
     passwordEC.dispose();
-
     super.dispose();
   }
 
@@ -33,7 +31,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final LoginVM(:login) = ref.watch(loginVMProvider.notifier);
+    final loginVM = ref.watch(loginVMProvider.notifier);
 
     ref.listen(loginVMProvider, (_, state) {
       switch (state) {
@@ -43,10 +41,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           Messages.showError(errorMessage, context);
         case LoginState(status: LoginStateStatus.error):
           Messages.showInfo('Erro ao realizar login', context);
+        case LoginState(status: LoginStateStatus.invalidForm):
+          Messages.showError('Formulário inválido', context);
         case LoginState(status: LoginStateStatus.userLogin):
           Navigator.of(context)
               .pushNamedAndRemoveUntil('/home', (route) => false);
-          break;
+          Messages.showSuccess('Logado com sucesso!', context);
       }
     });
 
@@ -91,24 +91,17 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             children: [
                               // email textfield
                               TextFormField(
-                                validator: Validatorless.multiple([
-                                  Validatorless.required('Email obrigatorio'),
-                                  Validatorless.email('Email invalido'),
-                                ]),
+                                validator: loginVM.validateEmail(),
                                 controller: emailEC,
                                 decoration: const InputDecoration(
-                                  hintText: 'Username',
+                                  hintText: 'Email',
                                 ),
                               ),
                               const SizedBox(
                                 height: 24,
                               ),
                               TextFormField(
-                                validator: Validatorless.multiple([
-                                  Validatorless.required('Senha obrigatorio'),
-                                  Validatorless.min(6,
-                                      'Senha deve conter pelo menos 6 caracteres'),
-                                ]),
+                                validator: loginVM.validatePassword(),
                                 obscureText: isVisible ? false : true,
                                 controller: passwordEC,
                                 decoration: InputDecoration(
@@ -156,18 +149,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               // sign in button
                               ElevatedButton(
                                 onPressed: () {
-                                  //ações com a validação
-                                  switch (formKey.currentState?.validate()) {
-                                    case (false || null):
-                                      //mandando msg pro usuario
-                                      Messages.showError(
-                                          'Campos invalidos!', context);
-                                      break;
-                                    case true:
-                                      Messages.showSuccess(
-                                          'Logado com sucesso!', context);
-                                      login(emailEC.text, passwordEC.text);
-                                  }
+                                  loginVM.validateForm(
+                                      context, formKey, emailEC, passwordEC);
                                 },
                                 style: ElevatedButton.styleFrom(
                                   minimumSize: const Size.fromHeight(56),
