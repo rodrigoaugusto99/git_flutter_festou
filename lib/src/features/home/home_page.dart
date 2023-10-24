@@ -25,8 +25,6 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final x = MediaQuery.of(context).size.width;
-    final y = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.white,
       floatingActionButton: FloatingActionButton(

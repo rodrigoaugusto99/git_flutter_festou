@@ -1,12 +1,12 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:git_flutter_festou/src/models/space/space2.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ShowMap extends StatefulWidget {
-  SpaceModelTest2 space;
-  ShowMap({super.key, required this.space});
+  final SpaceModel space;
+  const ShowMap({super.key, required this.space});
 
   @override
   State<ShowMap> createState() => _ShowMapState();
@@ -19,7 +19,7 @@ class _ShowMapState extends State<ShowMap> {
   @override
   void initState() {
     super.initState();
-    showMap(
+    loadLocalInfo(
       cidade: widget.space.cidade,
       bairro: widget.space.bairro,
       logradouro: widget.space.logradouro,
@@ -27,7 +27,7 @@ class _ShowMapState extends State<ShowMap> {
     );
   }
 
-  Future<void> showMap({
+  Future<void> loadLocalInfo({
     String? cidade,
     String? bairro,
     String? logradouro,
@@ -89,9 +89,6 @@ class _ShowMapState extends State<ShowMap> {
     Marker marker = Marker(
       markerId: const MarkerId('location'),
       position: selectedLocation ?? const LatLng(0, 0),
-      infoWindow: InfoWindow(
-        snippet: widget.space.numero,
-      ),
     );
 
     Set<Marker> markers = {marker};

@@ -1,8 +1,6 @@
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/home/my%20favorite%20spaces%20mvvm/my_favorite_spaces_state.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'my_favorite_spaces_vm.g.dart';

@@ -10,7 +10,7 @@ class ServicesPanel extends StatelessWidget {
     required this.text,
   });
 
-  List<String> availableServices = [
+  final List<String> availableServices = [
     'Cozinha',
     'Garçons',
     'Decoração',

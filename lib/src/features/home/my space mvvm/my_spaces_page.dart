@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/features/home/my%20space%20mvvm/my_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/home/my%20space%20mvvm/my_spaces_vm.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/space_card2.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/space_card.dart';
 
 class MySpacesPage extends ConsumerStatefulWidget {
   const MySpacesPage({super.key});

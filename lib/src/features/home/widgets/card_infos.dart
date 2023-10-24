@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/home/space%20feedbacks%20mvvm/space_feedbacks_page.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/more_details.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/show_map.dart';
 import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
@@ -47,14 +48,12 @@ class _CardInfosState extends State<CardInfos> {
     );
   }
 
-//TODO: colocar SpaceModel no arquivo show_map
   void showMap(SpaceModel space) {
     showDialog(
       context: context,
       builder: (context) {
         return Dialog(
-          child: Container(),
-          //ShowMap(space: space),
+          child: ShowMap(space: space),
         );
       },
     );

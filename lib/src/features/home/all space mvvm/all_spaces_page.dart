@@ -1,10 +1,9 @@
-import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/features/home/all%20space%20mvvm/all_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/home/all%20space%20mvvm/all_spaces_vm.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/space_card2.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/space_card.dart';
 
 class AllSpacesPage extends ConsumerStatefulWidget {
   const AllSpacesPage({super.key});

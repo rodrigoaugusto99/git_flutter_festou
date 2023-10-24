@@ -10,7 +10,7 @@ class TypePanel extends StatelessWidget {
     super.key,
   });
 
-  List<String> availableServices = [
+  final List<String> availableServices = [
     'Casa',
     'Apartmaentio',
     'Salao',
