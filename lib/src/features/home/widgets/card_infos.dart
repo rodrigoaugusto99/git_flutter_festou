@@ -29,7 +29,6 @@ class _CardInfosState extends State<CardInfos> {
     );
   }
 
-//TODO: colocar SpaceModel no arquivo card_commments
   void showAvaliacoes(SpaceModel space) {
     showDialog(
       context: context,

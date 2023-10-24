@@ -18,8 +18,7 @@ class SpaceFeedbacksPage extends ConsumerStatefulWidget {
 class _SpaceFeedbacksPageState extends ConsumerState<SpaceFeedbacksPage> {
   @override
   Widget build(BuildContext context) {
-    final spaceFeedbacks =
-        ref.watch(spaceFeedbacksVmProvider(widget.space.spaceId));
+    final spaceFeedbacks = ref.watch(spaceFeedbacksVmProvider(widget.space));
 
     List<Icon> buildStarIcons(int rating) {
       return List.generate(

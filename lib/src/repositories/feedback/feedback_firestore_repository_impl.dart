@@ -47,7 +47,8 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
   Future<Either<RepositoryException, List<FeedbackModel>>> getFeedbacks(
       String spaceId) async {
     try {
-      final allFeedbacksDocuments = await feedbacksCollection.get();
+      final allFeedbacksDocuments =
+          await feedbacksCollection.where('space_id', isEqualTo: spaceId).get();
 
       List<FeedbackModel> feedbackModels =
           allFeedbacksDocuments.docs.map((feedbackDocument) {
