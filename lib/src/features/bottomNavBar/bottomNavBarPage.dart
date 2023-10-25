@@ -5,7 +5,10 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/settings.dart';
 import 'package:git_flutter_festou/src/features/home/home_page.dart';
 
 class BottomNavBarPage extends StatefulWidget {
-  const BottomNavBarPage({Key? key}) : super(key: key);
+  final ValueNotifier<String?> previousRouteNotifier;
+  BottomNavBarPage({Key? key, String? previousRoute})
+      : previousRouteNotifier = ValueNotifier<String?>(previousRoute),
+        super(key: key);
 
   @override
   _BottomNavBarPageState createState() => _BottomNavBarPageState();
@@ -15,17 +18,25 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
   late PageController _pageController;
   int _currentIndex = 0;
 
-  final List<Widget> _pages = [
-    const HomePage(),
-    const Settings(),
-    const Notifications(),
-    const Account(),
-  ];
+  late List<Widget> _pages;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: _currentIndex);
+
+    _pages = [
+      ValueListenableBuilder<String?>(
+        valueListenable: widget.previousRouteNotifier,
+        builder: (context, value, child) {
+          widget.previousRouteNotifier.value = null;
+          return HomePage(previousRoute: value);
+        },
+      ),
+      const Settings(),
+      const Notifications(),
+      const Account(),
+    ];
   }
 
   @override

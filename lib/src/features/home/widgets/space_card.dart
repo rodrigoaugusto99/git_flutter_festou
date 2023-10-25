@@ -23,10 +23,12 @@ class _SpaceCard2State extends ConsumerState<SpaceCard2> {
   @override
   Widget build(BuildContext context) {
     final spaceRepository = ref.watch(spaceFirestoreRepositoryProvider);
-
+    final x = MediaQuery.of(context).size.width;
+    final y = MediaQuery.of(context).size.height;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18),
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Card(
+        margin: EdgeInsets.symmetric(horizontal: x * 0.03),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
