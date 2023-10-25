@@ -70,7 +70,7 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
 
                   //lets create your account!
                   Text(
-                    'Lets create your account!',
+                    TextConstants.letsCreateAccount,
                     style: TextStyle(
                       color: Colors.grey[700],
                       fontSize: 16,
@@ -146,7 +146,7 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10.0),
                               child: Text(
-                                'Or continue with',
+                                TextConstants.orContinueWith,
                                 style: TextStyle(color: Colors.grey[700]),
                               ),
                             ),
@@ -184,7 +184,7 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Already have an account?',
+                              TextConstants.alreadyHaveAccount,
                               style: TextStyle(color: Colors.grey[700]),
                             ),
                             const SizedBox(width: 4),

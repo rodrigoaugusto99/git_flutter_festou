@@ -76,7 +76,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
                         // lets create your account!
                         Text(
-                          'Welcome back you\'ve been missed!',
+                          TextConstants.welcomeLogin,
                           style: TextStyle(
                             color: Colors.grey[700],
                             fontSize: 16,
@@ -186,7 +186,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10.0),
                               child: Text(
-                                'Or continue with',
+                                TextConstants.orContinueWith,
                                 style: TextStyle(color: Colors.grey[700]),
                               ),
                             ),
@@ -228,7 +228,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Not a member?',
+                              TextConstants.notMemberLogin,
                               style: TextStyle(color: Colors.grey[700]),
                             ),
                             const SizedBox(width: 4),
