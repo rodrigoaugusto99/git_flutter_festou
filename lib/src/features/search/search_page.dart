@@ -183,7 +183,7 @@ class _SearchPageState extends State<SearchPage> {
     return InkWell(
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
-      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+      onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => BottomNavBarPage(previousRoute: '/home/search_page'),
       )),
       child: Text(
