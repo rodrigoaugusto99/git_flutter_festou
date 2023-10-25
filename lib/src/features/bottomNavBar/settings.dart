@@ -13,6 +13,7 @@ class _SettingsState extends State<Settings> {
     return Scaffold(
       backgroundColor: Colors.orange,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('SETTINGS'),
       ),
       body: const SingleChildScrollView(),

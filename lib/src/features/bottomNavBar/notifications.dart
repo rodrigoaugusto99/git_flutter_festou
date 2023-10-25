@@ -13,6 +13,7 @@ class _NotificationsState extends State<Notifications> {
     return Scaffold(
       backgroundColor: Colors.purple,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Notificatins'),
       ),
       body: Container(),
