@@ -51,11 +51,27 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
         'availableDays': spaceData.availableDays,
       };
 
-      // Insira o espaço na coleção 'spaces'
-      await spacesCollection.add(newSpace);
+      // Consulte a coleção 'spaces' para verificar se um espaço com as mesmas informações já existe.
+      final existingSpace = await spacesCollection
+          .where('email_do_espaço', isEqualTo: spaceData.email)
+          .where('nome_do_espaço', isEqualTo: spaceData.name)
+          .where('cep', isEqualTo: spaceData.cep)
+          .where('logradouro', isEqualTo: spaceData.logradouro)
+          .where('numero', isEqualTo: spaceData.numero)
+          .where('bairro', isEqualTo: spaceData.bairro)
+          .where('cidade', isEqualTo: spaceData.cidade)
+          .get();
 
-      log('Informações de espaço adicionadas com sucesso!');
-      return Success(Nil());
+      // Se não houver documentos correspondentes, insira o novo espaço.
+      if (existingSpace.docs.isEmpty) {
+        await spacesCollection.add(newSpace);
+        log('Informações de espaço adicionadas com sucesso!');
+        return Success(Nil());
+      } else {
+        log('Espaço já existe no Firestore');
+        return Failure(
+            RepositoryException(message: 'Espaço já existe no Firestore'));
+      }
     } catch (e) {
       log('Erro ao adicionar informações de espaço: $e');
       return Failure(RepositoryException(message: 'Erro ao cadastrar espaço'));
