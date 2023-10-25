@@ -4,6 +4,7 @@ enum LoginStateStatus {
   initial,
   error,
   userLogin,
+  invalidForm,
 }
 
 class LoginState {

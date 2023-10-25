@@ -10,7 +10,7 @@ class ServicesPanel extends StatelessWidget {
     required this.text,
   });
 
-  List<String> availableServices = [
+  final List<String> availableServices = [
     'Cozinha',
     'Garçons',
     'Decoração',
@@ -69,6 +69,7 @@ class _ButtonTypeState extends State<ButtonType> {
   var selected = false;
   @override
   Widget build(BuildContext context) {
+    final ButtonType(:onServicePressed, :label) = widget;
     //1 - variaveis esteticas que mudam com o clique
     final textColor = selected ? Colors.white : Colors.brown;
     var buttonColor = selected ? Colors.brown : Colors.white;
@@ -81,7 +82,7 @@ class _ButtonTypeState extends State<ButtonType> {
         onTap: () {
           //no onTap do botao que inverte o estado dele
           setState(() {
-            widget.onServicePressed(widget.label);
+            onServicePressed(label);
             selected = !selected;
           });
         },
@@ -95,7 +96,7 @@ class _ButtonTypeState extends State<ButtonType> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Text(
-              widget.label,
+              label,
               style: TextStyle(
                 //1- variavel estetica
                 color: textColor,

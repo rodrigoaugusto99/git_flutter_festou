@@ -10,7 +10,7 @@ class TypePanel extends StatelessWidget {
     super.key,
   });
 
-  List<String> availableServices = [
+  final List<String> availableServices = [
     'Casa',
     'Apartmaentio',
     'Salao',
@@ -64,6 +64,7 @@ class _ButtonTypeState extends State<ButtonType> {
   var selected = false;
   @override
   Widget build(BuildContext context) {
+    final ButtonType(:onTypePressed, :label) = widget;
     //1 - variaveis esteticas que mudam com o clique
     final textColor = selected ? Colors.white : Colors.brown;
     var buttonColor = selected ? Colors.brown : Colors.white;
@@ -74,7 +75,7 @@ class _ButtonTypeState extends State<ButtonType> {
         borderRadius: BorderRadius.circular(8),
         onTap: () {
           setState(() {
-            widget.onTypePressed(widget.label);
+            onTypePressed(label);
             selected = !selected;
           });
         },
@@ -88,7 +89,7 @@ class _ButtonTypeState extends State<ButtonType> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Text(
-              widget.label,
+              label,
               style: TextStyle(
                 //1- variavel estetica
                 color: textColor,

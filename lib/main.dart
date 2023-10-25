@@ -5,12 +5,12 @@ import 'package:git_flutter_festou/firebase_options.dart';
 import 'package:git_flutter_festou/src/core/ui/festou_nav_global_key.dart';
 import 'package:git_flutter_festou/src/features/auth/auth_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/dados/dados_page.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/favorites/favorites_spaces.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/help/help_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/locador/quero_ser_locador.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/all_spaces.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/my_spaces.dart';
+import 'package:git_flutter_festou/src/features/home/all%20space%20mvvm/all_spaces_page.dart';
+import 'package:git_flutter_festou/src/features/home/my%20favorite%20spaces%20mvvm/my_favorite_spaces_page.dart';
+import 'package:git_flutter_festou/src/features/home/my%20space%20mvvm/my_spaces_page.dart';
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
 import 'package:git_flutter_festou/src/features/register/user%20infos/user_register_infos_page.dart';
@@ -44,9 +44,9 @@ class MyApp extends StatelessWidget {
         '/account/help': (_) => const HelpPage(),
         '/account/dados': (_) => const DadosPage(),
         '/account/locador': (_) => QueroSerLocadorPage(),
-        '/account/favorites': (_) => const FavoriteSpacesPage(),
-        '/home/my_spaces': (_) => const MySpaces(),
-        '/home/all_spaces': (_) => const AllSpaces(),
+        '/account/favorites': (_) => const MyFavoriteSpacePage(),
+        '/home/my_spaces': (_) => const MySpacesPage(),
+        '/home/all_spaces': (_) => const AllSpacesPage(),
         '/home/search_page': (_) => const SearchPage(),
       },
       theme: ThemeData(

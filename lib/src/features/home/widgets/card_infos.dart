@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/home/space%20feedbacks%20mvvm/space_feedbacks_page.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/more_details.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/rating_view.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/show_map.dart';
+import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 
 class CardInfos extends StatefulWidget {
   final SpaceModel space;
-  final UserModel user;
+
   const CardInfos({
     super.key,
     required this.space,
-    required this.user,
   });
 
   @override
@@ -18,29 +19,22 @@ class CardInfos extends StatefulWidget {
 }
 
 class _CardInfosState extends State<CardInfos> {
-  void showRatingDialog() {
+  void showRatingDialog(SpaceModel space) {
     showDialog(
       context: context,
       builder: (context) {
-        return const Dialog(
-          child: RatingView(),
+        return Dialog(
+          child: FeedbackPage(space: widget.space),
         );
       },
     );
   }
 
-//TODO: colocar SpaceModel no arquivo card_commments
   void showAvaliacoes(SpaceModel space) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const AlertDialog(
-          scrollable: true,
-          title: Text('Comentários'),
-          content:
-              Center(child: Text('A implementar "avaliar" e "avaliações".')),
-          //content: CardComments(space: space),
-        );
+        return SpaceFeedbacksPage(space: space);
       },
     );
   }
@@ -54,14 +48,12 @@ class _CardInfosState extends State<CardInfos> {
     );
   }
 
-//TODO: colocar SpaceModel no arquivo show_map
   void showMap(SpaceModel space) {
     showDialog(
       context: context,
       builder: (context) {
         return Dialog(
-          child: Container(),
-          //ShowMap(space: space),
+          child: ShowMap(space: space),
         );
       },
     );
@@ -108,7 +100,7 @@ class _CardInfosState extends State<CardInfos> {
           child: Column(
             children: [
               ElevatedButton(
-                onPressed: showRatingDialog,
+                onPressed: () => showRatingDialog(widget.space),
                 child: const Text('Avalie'),
               ),
               ElevatedButton(
@@ -123,10 +115,11 @@ class _CardInfosState extends State<CardInfos> {
                 onPressed: () => showMap(widget.space),
                 child: const Text('Ver Localização'),
               ),
-              ElevatedButton(
+              //implementar logica pra pegar os dados do usuario que criou o espaço
+              /*ElevatedButton(
                 onPressed: () => userInfos(widget.user),
                 child: const Text('USER INFOS'),
-              ),
+              ),*/
               ElevatedButton(
                 onPressed: () {},
                 child: const Text('Ver Fotos'),

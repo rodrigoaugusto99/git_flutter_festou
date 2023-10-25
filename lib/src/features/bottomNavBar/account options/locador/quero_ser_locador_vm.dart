@@ -21,7 +21,7 @@ class QueroSerLocadorVm extends _$QueroSerLocadorVm {
     required String cnpj,
     required String emailComercial,
   }) async {
-    final userRepository = ref.watch(userRepositoryProvider);
+    final userFirestoreRepository = ref.watch(userFirestoreRepositoryProvider);
 
     final userData = (
       user: user,
@@ -29,7 +29,7 @@ class QueroSerLocadorVm extends _$QueroSerLocadorVm {
       emailComercial: emailComercial,
     );
 
-    final update = await userRepository.updateToLocador(userData);
+    final update = await userFirestoreRepository.updateToLocador(userData);
     switch (update) {
       case Success():
         state = QueroSerLocadorStateStatus.success;

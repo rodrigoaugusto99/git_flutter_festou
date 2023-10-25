@@ -1,92 +1,28 @@
-import 'dart:developer';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/card_infos.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
-import 'package:git_flutter_festou/src/models/user_model.dart';
 
-class SpaceCard extends StatefulWidget {
-  bool isFavorited;
-  final String spaceId;
-  final String userEmail;
-  final String userName;
-  final String userTelefone;
-  final String userCep;
-  final String userLogradouro;
-  final String userBairro;
-  final String userCidade;
-  final String spaceEmail;
-  final String spaceName;
-  final String spaceCep;
-  final String spaceLogradouro;
-  final String spaceNumero;
-  final String spaceBairro;
-  final String spaceCidade;
-  final List<dynamic> selectedTypes;
-  final List<dynamic> selectedServices;
-  final List<dynamic> availableDays;
-  SpaceCard({
+class SpaceCard2 extends ConsumerStatefulWidget {
+  final SpaceModel space;
+  const SpaceCard2({
     super.key,
-    required this.userEmail,
-    required this.userName,
-    required this.userTelefone,
-    required this.userCep,
-    required this.userLogradouro,
-    required this.userBairro,
-    required this.userCidade,
-    required this.spaceEmail,
-    required this.spaceName,
-    required this.spaceCep,
-    required this.spaceLogradouro,
-    required this.spaceNumero,
-    required this.spaceBairro,
-    required this.spaceCidade,
-    required this.selectedTypes,
-    required this.selectedServices,
-    required this.availableDays,
-    required this.spaceId,
-    required this.isFavorited,
+    required this.space,
   });
 
   @override
-  State<SpaceCard> createState() => _SpaceCardState();
+  ConsumerState<SpaceCard2> createState() => _SpaceCard2State();
 }
 
 final user = FirebaseAuth.instance.currentUser!;
 
-class _SpaceCardState extends State<SpaceCard> {
-  Future<void> toggleFavoriteSpace(String spaceId) async {
-    final CollectionReference users =
-        FirebaseFirestore.instance.collection('users');
-
-    QuerySnapshot querySnapshot =
-        await users.where("uid", isEqualTo: user.uid).get();
-
-    if (querySnapshot.docs.length == 1) {
-      final userDocument = querySnapshot.docs.first;
-      String x;
-      if (widget.isFavorited) {
-        userDocument.reference.update({
-          'spaces_favorite': FieldValue.arrayUnion([spaceId]),
-        });
-        x = 'add';
-      } else {
-        userDocument.reference.update({
-          'spaces_favorite': FieldValue.arrayRemove([spaceId]),
-        });
-        x = 'removed';
-      }
-
-      log('sucesso! - $x -  $spaceId');
-    } else {
-      log('Documento do usuário não encontrado');
-    }
-  }
-
+class _SpaceCard2State extends ConsumerState<SpaceCard2> {
   @override
   Widget build(BuildContext context) {
+    final spaceRepository = ref.watch(spaceFirestoreRepositoryProvider);
     final x = MediaQuery.of(context).size.width;
     final y = MediaQuery.of(context).size.height;
     return Padding(
@@ -132,15 +68,18 @@ class _SpaceCardState extends State<SpaceCard> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(widget.spaceEmail),
+                              Text(widget.space.email),
                               InkWell(
                                 onTap: () {
                                   setState(() {
-                                    widget.isFavorited = !widget.isFavorited;
+                                    widget.space.isFavorited =
+                                        !widget.space.isFavorited;
                                   });
-                                  toggleFavoriteSpace(widget.spaceId);
+                                  spaceRepository.toggleFavoriteSpace(
+                                      widget.space.spaceId,
+                                      widget.space.isFavorited);
                                 },
-                                child: widget.isFavorited
+                                child: widget.space.isFavorited
                                     ? const Icon(
                                         Icons.favorite,
                                         color: Colors.red,
@@ -156,7 +95,7 @@ class _SpaceCardState extends State<SpaceCard> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                widget.spaceName,
+                                widget.space.name,
                               ),
                               Row(
                                 children: [
@@ -165,29 +104,7 @@ class _SpaceCardState extends State<SpaceCard> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => CardInfos(
-                                          space: SpaceModel(
-                                            widget.isFavorited,
-                                            '',
-                                            widget.spaceEmail,
-                                            widget.spaceName,
-                                            widget.spaceCep,
-                                            widget.spaceLogradouro,
-                                            widget.spaceNumero,
-                                            widget.spaceBairro,
-                                            widget.spaceCidade,
-                                            widget.selectedTypes,
-                                            widget.selectedServices,
-                                            widget.availableDays,
-                                          ),
-                                          user: UserModel(
-                                            widget.userEmail,
-                                            widget.userName,
-                                            widget.userTelefone,
-                                            widget.userCep,
-                                            widget.userLogradouro,
-                                            widget.userBairro,
-                                            widget.userCidade,
-                                          ),
+                                          space: widget.space,
                                         ),
                                       ),
                                     ),
@@ -201,11 +118,11 @@ class _SpaceCardState extends State<SpaceCard> {
                               ),
                             ],
                           ),
-                          Text(widget.spaceCep),
-                          Text(widget.spaceLogradouro),
-                          Text(widget.spaceNumero),
-                          Text(widget.spaceBairro),
-                          Text(widget.spaceCidade),
+                          Text(widget.space.cep),
+                          Text(widget.space.logradouro),
+                          Text(widget.space.numero),
+                          Text(widget.space.bairro),
+                          Text(widget.space.cidade),
                         ],
                       ),
                     ),

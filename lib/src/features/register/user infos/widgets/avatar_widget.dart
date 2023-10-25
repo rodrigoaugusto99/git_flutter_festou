@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 
 class AvatarWidget extends StatelessWidget {
-  bool hideUploadButton;
-  AvatarWidget({super.key, this.hideUploadButton = false});
+  final bool hideUploadButton;
+  const AvatarWidget({super.key, this.hideUploadButton = false});
 
   @override
   Widget build(BuildContext context) {

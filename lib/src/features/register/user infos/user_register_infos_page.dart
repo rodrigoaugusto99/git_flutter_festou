@@ -1,11 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/user%20infos/user_register_infos_vm.dart';
 import 'package:git_flutter_festou/src/features/register/user%20infos/widgets/avatar_widget.dart';
-import 'package:git_flutter_festou/src/features/register/user/user_register_vm.dart';
 import 'package:validatorless/validatorless.dart';
 
 class UserRegisterInfosPage extends ConsumerStatefulWidget {
@@ -17,9 +15,6 @@ class UserRegisterInfosPage extends ConsumerStatefulWidget {
 }
 
 class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
-  final user = FirebaseAuth.instance.currentUser!;
-  //text editing controllers
-
   final fullNameEC = TextEditingController();
   final telefoneEC = TextEditingController();
   final cepEC = TextEditingController();
@@ -130,7 +125,6 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
                         onPressed: () async {
                           // Chama a função addUserInfos com os dados desejados
                           await userRegisterInfosVM.register(
-                              user: user,
                               name: fullNameEC.text,
                               telefone: telefoneEC.text,
                               cep: cepEC.text,

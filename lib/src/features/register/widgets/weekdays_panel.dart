@@ -83,6 +83,7 @@ class _ButtonDayState extends State<ButtonDay> {
   var selected = false;
   @override
   Widget build(BuildContext context) {
+    final ButtonDay(:onDayPressed, :label) = widget;
     //1 - variaveis esteticas que mudam com o clique
     final textColor = selected ? Colors.white : Colors.brown;
     var buttonColor = selected ? Colors.brown : Colors.white;
@@ -95,7 +96,7 @@ class _ButtonDayState extends State<ButtonDay> {
         onTap: () {
           //no onTap do botao que inverte o estado dele
           setState(() {
-            widget.onDayPressed(widget.label);
+            onDayPressed(label);
             selected = !selected;
           });
         },
@@ -109,7 +110,7 @@ class _ButtonDayState extends State<ButtonDay> {
           ),
           child: Center(
             child: Text(
-              widget.label,
+              label,
               style: TextStyle(
                 //1- variavel estetica
                 color: textColor,

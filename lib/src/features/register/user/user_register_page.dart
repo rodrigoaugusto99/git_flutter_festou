@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/user/user_register_vm.dart';
-import 'package:validatorless/validatorless.dart';
 import '../../../core/ui/widgets/my_squaretile.dart';
 import '../../../services/auth_services.dart';
 
@@ -41,8 +40,10 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
           break;
         case UserRegisterStateStatus.success:
           Navigator.of(context).pushNamed('/register/user/infos');
-        case UserRegisterStateStatus.error:
-          Messages.showError('Erro ao registrar usuario', context);
+        case UserRegisterStateStatus.registrationError:
+          Messages.showError('Erro ao registrar usuário', context);
+        case UserRegisterStateStatus.formInvalid:
+          Messages.showError('Formulário inválido', context);
       }
     });
 
@@ -83,10 +84,7 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                     child: Column(
                       children: [
                         TextFormField(
-                          validator: Validatorless.multiple([
-                            Validatorless.required('Email obrigatorio'),
-                            Validatorless.email('Email invalido')
-                          ]),
+                          validator: userRegisterVM.validateEmail(),
                           decoration: const InputDecoration(
                             hintText: 'Email',
                           ),
@@ -98,11 +96,7 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
 
                         //password textfield
                         TextFormField(
-                          validator: Validatorless.multiple([
-                            Validatorless.required('Senha obrigatoria'),
-                            Validatorless.min(
-                                6, 'Senha deve ter no minimo 6 caracteres'),
-                          ]),
+                          validator: userRegisterVM.validatePassword(),
                           decoration: const InputDecoration(
                             hintText: 'Password',
                           ),
@@ -114,13 +108,7 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
 
                         //confirm password textfield
                         TextFormField(
-                          validator: Validatorless.multiple([
-                            Validatorless.required('Confirme sua senha'),
-                            Validatorless.min(
-                                6, 'Senha deve ter no minimo 6 caracteres'),
-                            Validatorless.compare(
-                                passwordEC, 'Senha precisam ser iguais')
-                          ]),
+                          validator: userRegisterVM.confirmEmail(passwordEC),
                           decoration: const InputDecoration(
                             hintText: 'Confirm password',
                           ),
@@ -132,16 +120,8 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
 
                         ElevatedButton(
                           onPressed: () {
-                            switch (formKey.currentState?.validate()) {
-                              case null || false:
-                                Messages.showError(
-                                    'Formulario invalido', context);
-                              case true:
-                                userRegisterVM.register(
-                                  email: emailEC.text,
-                                  password: passwordEC.text,
-                                );
-                            }
+                            userRegisterVM.validateForm(
+                                context, formKey, emailEC, passwordEC);
                           },
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size.fromHeight(56),

@@ -6,7 +6,7 @@ part of 'quero_ser_locador_vm.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$queroSerLocadorVmHash() => r'ac089b98042d8782f0032a860fcd5dc3c50f0e0a';
+String _$queroSerLocadorVmHash() => r'eb55c1cfe0196cae5361ff107482c20d9c497bcd';
 
 /// See also [QueroSerLocadorVm].
 @ProviderFor(QueroSerLocadorVm)

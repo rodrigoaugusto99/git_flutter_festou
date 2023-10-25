@@ -1,6 +1,7 @@
 class SpaceModel {
-  final bool isFavorited;
+  bool isFavorited;
   final String spaceId;
+  final String userId;
   final String email;
   final String name;
   final String cep;
@@ -15,6 +16,7 @@ class SpaceModel {
   SpaceModel(
     this.isFavorited,
     this.spaceId,
+    this.userId,
     this.email,
     this.name,
     this.cep,

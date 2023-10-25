@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
@@ -14,6 +13,7 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
   SpaceRegisterState build() => SpaceRegisterState.initial();
 
   final uuid = const Uuid();
+  final user = FirebaseAuth.instance.currentUser!;
 
   void addOrRemoveAvailableDay(String weekDay) {
     final availableDays = state.availableDays;
@@ -52,7 +52,6 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
   }
 
   Future<void> register(
-    User user,
     String name,
     String email,
     String cep,
@@ -67,10 +66,12 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
       :selectedServices,
     ) = state;
 
-    final newSpaceId = uuid.v4();
+    final spaceId = uuid.v4();
+    final userId = user.uid;
 
     final spaceData = (
-      spaceId: newSpaceId,
+      spaceId: spaceId,
+      userId: userId,
       name: name,
       email: email,
       cep: cep,
@@ -78,17 +79,17 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
       numero: numero,
       bairro: bairro,
       cidade: cidade,
-      user: user,
       selectedTypes: selectedTypes,
       availableDays: availableDays,
       selectedServices: selectedServices,
     );
 
-    final spaceRepository = ref.watch(spaceRepositoryProvider);
-    log('Registrando espaço: $spaceData');
-    final registerResult = spaceRepository.save(spaceData);
+    final spaceFirestoreRepository =
+        ref.watch(spaceFirestoreRepositoryProvider);
 
-    switch (registerResult) {
+    final registerResultSpace = spaceFirestoreRepository.saveSpace(spaceData);
+
+    switch (registerResultSpace) {
       case Success():
         break;
       case Failure():

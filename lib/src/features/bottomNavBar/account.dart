@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/help/help_page.dart';
 
 class Account extends StatelessWidget {
   const Account({super.key});
