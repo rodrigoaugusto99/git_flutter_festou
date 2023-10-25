@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/app_bar_menu_space_types.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/app_bar_home.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/menu_space_types.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/search_button.dart';

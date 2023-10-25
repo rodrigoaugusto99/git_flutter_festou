@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/user%20infos/user_register_infos_vm.dart';
 import 'package:git_flutter_festou/src/features/register/user%20infos/widgets/avatar_widget.dart';
+import 'package:search_cep/search_cep.dart';
 import 'package:validatorless/validatorless.dart';
 
 class UserRegisterInfosPage extends ConsumerStatefulWidget {
@@ -19,11 +22,9 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
   final telefoneEC = TextEditingController();
   final cepEC = TextEditingController();
   final logradouroEC = TextEditingController();
-  /*necessarios apenas quando o cliente de fato alugar um espaço  
-  final numeroEC = TextEditingController();
-  final complementoEC = TextEditingController();*/
   final bairroEC = TextEditingController();
   final cidadeEC = TextEditingController();
+  bool isCepAutoCompleted = false;
 
   final formKey = GlobalKey<FormState>();
 
@@ -67,7 +68,7 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
                   child: Column(
                     children: [
                       const SizedBox(height: 24),
-                      AvatarWidget(),
+                      const AvatarWidget(),
                       const SizedBox(height: 24),
                       TextFormField(
                         validator: Validatorless.required('Campo obrigatório'),
@@ -89,14 +90,40 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
                       ),
                       const SizedBox(height: 24),
                       TextFormField(
-                        validator: Validatorless.required('Campo obrigatório'),
-                        decoration: const InputDecoration(
-                          hintText: 'cep',
-                        ),
                         controller: cepEC,
+                        validator: Validatorless.required('cep obrigatorio'),
+                        decoration: const InputDecoration(
+                          hintText: 'CEP',
+                        ),
+                        onChanged: (cep) async {
+                          if (cep.isEmpty) {
+                            setState(() {
+                              isCepAutoCompleted = false;
+                            });
+                          } else if (cep.length == 8) {
+                            final viaCepSearchCep = ViaCepSearchCep();
+                            final infoCepJSON =
+                                await viaCepSearchCep.searchInfoByCep(cep: cep);
+                            infoCepJSON.fold(
+                              (error) {
+                                log('Erro ao buscar informações do CEP: $error');
+                              },
+                              (infoCepJSON) {
+                                setState(() {
+                                  logradouroEC.text =
+                                      infoCepJSON.logradouro ?? '';
+                                  bairroEC.text = infoCepJSON.bairro ?? '';
+                                  cidadeEC.text = infoCepJSON.localidade ?? '';
+                                  isCepAutoCompleted = true;
+                                });
+                              },
+                            );
+                          }
+                        },
                       ),
                       const SizedBox(height: 10),
                       TextFormField(
+                        enabled: !isCepAutoCompleted,
                         validator: Validatorless.required('Campo obrigatório'),
                         decoration: const InputDecoration(
                           hintText: 'logradouro',
@@ -105,6 +132,7 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
                       ),
                       const SizedBox(height: 10),
                       TextFormField(
+                        enabled: !isCepAutoCompleted,
                         validator: Validatorless.required('Campo obrigatório'),
                         decoration: const InputDecoration(
                           hintText: 'bairro',
@@ -113,6 +141,7 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
                       ),
                       const SizedBox(height: 10),
                       TextFormField(
+                        enabled: !isCepAutoCompleted,
                         validator: Validatorless.required('Campo obrigatório'),
                         decoration: const InputDecoration(
                           hintText: 'cidade',
