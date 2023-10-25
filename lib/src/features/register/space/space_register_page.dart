@@ -26,9 +26,10 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
   final numeroEC = TextEditingController();
   final emailEC = TextEditingController();
   final cepEC = TextEditingController();
-  final enderecoEC = TextEditingController();
+  final logradouroEC = TextEditingController();
   final bairroEC = TextEditingController();
   final cidadeEC = TextEditingController();
+  bool isCepAutoCompleted = false;
 
   @override
   void dispose() {
@@ -37,7 +38,7 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
     emailEC.dispose();
     numeroEC.dispose();
     cepEC.dispose();
-    enderecoEC.dispose();
+    logradouroEC.dispose();
     bairroEC.dispose();
     cidadeEC.dispose();
   }
@@ -90,7 +91,11 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                     hintText: 'CEP',
                   ),
                   onChanged: (cep) async {
-                    if (cep.length == 8) {
+                    if (cep.isEmpty) {
+                      setState(() {
+                        isCepAutoCompleted = false;
+                      });
+                    } else if (cep.length == 8) {
                       final viaCepSearchCep = ViaCepSearchCep();
                       final infoCepJSON =
                           await viaCepSearchCep.searchInfoByCep(cep: cep);
@@ -100,9 +105,10 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                         },
                         (infoCepJSON) {
                           setState(() {
-                            enderecoEC.text = infoCepJSON.logradouro ?? '';
+                            logradouroEC.text = infoCepJSON.logradouro ?? '';
                             bairroEC.text = infoCepJSON.bairro ?? '';
                             cidadeEC.text = infoCepJSON.localidade ?? '';
+                            isCepAutoCompleted = true;
                           });
                         },
                       );
@@ -110,7 +116,8 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                   },
                 ),
                 TextFormField(
-                  controller: enderecoEC,
+                  enabled: !isCepAutoCompleted,
+                  controller: logradouroEC,
                   validator: Validatorless.required('logradouro obrigatorio'),
                   decoration: const InputDecoration(
                     hintText: 'Logradouro',
@@ -124,6 +131,7 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                   ),
                 ),
                 TextFormField(
+                  enabled: !isCepAutoCompleted,
                   controller: bairroEC,
                   validator: Validatorless.required('bairro obrigatorio'),
                   decoration: const InputDecoration(
@@ -131,6 +139,7 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                   ),
                 ),
                 TextFormField(
+                  enabled: !isCepAutoCompleted,
                   controller: cidadeEC,
                   validator: Validatorless.required('cidade obrigatorio'),
                   decoration: const InputDecoration(
@@ -180,7 +189,7 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                           nomeEC.text,
                           emailEC.text,
                           cepEC.text,
-                          enderecoEC.text,
+                          logradouroEC.text,
                           numeroEC.text,
                           bairroEC.text,
                           cidadeEC.text,
