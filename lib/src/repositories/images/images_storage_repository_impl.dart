@@ -31,10 +31,37 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
       log('Imagens do espaço $spaceId enviadas com sucesso para o Firebase Storage');
 
       // todo: return?
-      return Success(Nil());
+      return Success(nil);
     } catch (e) {
       log('Erro ao enviar imagens para o Firebase Storage: $e');
       return Failure(RepositoryException(message: 'Erro ao enviar imagens'));
+    }
+  }
+
+  @override
+  Future<Either<RepositoryException, List<String>>> getSpaceImages(
+      String spaceId) async {
+    try {
+      // Crie um prefixo para as imagens com base no spaceId
+      final prefix = 'espaços/$spaceId';
+
+      // Recupere a lista de itens no Firebase Storage com o prefixo
+      final ListResult result = await storage.ref().child(prefix).listAll();
+
+      // Extraia as URLs das imagens da lista de itens
+      final List<String> imageUrls = result.items
+          .map((item) {
+            return item.getDownloadURL();
+          })
+          .cast<String>()
+          .toList();
+
+      log('Imagens do espaço $spaceId recuperadas com sucesso do Firebase Storage');
+
+      return Success(imageUrls);
+    } catch (e) {
+      log('Erro ao recuperar imagens do Firebase Storage: $e');
+      return Failure(RepositoryException(message: 'Erro ao recuperar imagens'));
     }
   }
 }

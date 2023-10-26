@@ -6,4 +6,7 @@ import 'package:git_flutter_festou/src/core/fp/nil.dart';
 abstract interface class ImagesStorageRepository {
   Future<Either<RepositoryException, Nil>> uploadSpaceImages(
       {required List<File> imageFiles, required String spaceId});
+
+  Future<Either<RepositoryException, List<String>>> getSpaceImages(
+      String spaceId);
 }

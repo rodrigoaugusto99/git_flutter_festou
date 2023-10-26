@@ -1,13 +1,18 @@
+import 'dart:developer';
+
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
-import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/card_infos.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/space_card_state.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/space_card_vm.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class SpaceCard2 extends ConsumerStatefulWidget {
   final SpaceModel space;
+
   const SpaceCard2({
     super.key,
     required this.space,
@@ -20,11 +25,29 @@ class SpaceCard2 extends ConsumerStatefulWidget {
 final user = FirebaseAuth.instance.currentUser!;
 
 class _SpaceCard2State extends ConsumerState<SpaceCard2> {
+  final CarouselController _carouselController = CarouselController();
+
   @override
   Widget build(BuildContext context) {
+    final spaceCardVm = ref.watch(spaceCardVmProvider(widget.space));
+
+    return spaceCardVm.when(
+      loading: () {
+        return const CircularProgressIndicator(); // Ou qualquer widget de carregamento que você deseja mostrar.
+      },
+      data: (SpaceCardState data) {
+        return buildCard(data.imageUrls.cast<String>());
+      },
+      error: (error, stackTrace) {
+        log('Erro ao carregar as imagens: $error');
+        return buildCard(null);
+      },
+    );
+  }
+
+  Widget buildCard(List<String>? imageUrls) {
     final spaceRepository = ref.watch(spaceFirestoreRepositoryProvider);
     final x = MediaQuery.of(context).size.width;
-    final y = MediaQuery.of(context).size.height;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Card(
@@ -39,21 +62,20 @@ class _SpaceCard2State extends ConsumerState<SpaceCard2> {
               height: 240,
               child: Stack(
                 children: [
-                  ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                    child: Container(
-                      height: 220,
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(ImageConstants.gliterBlackground),
-                          fit: BoxFit.cover,
+                  imageUrls != null && imageUrls.isNotEmpty
+                      ? CarouselSlider(
+                          items: imageUrls.map((url) {
+                            return Image.network(url, fit: BoxFit.cover);
+                          }).toList(),
+                          carouselController: _carouselController,
+                          options: CarouselOptions(
+                            height: 220,
+                            autoPlay: true,
+                          ),
+                        )
+                      : const Center(
+                          child: Text('Não tem foto'),
                         ),
-                      ),
-                    ),
-                  ),
                   Positioned(
                     left: 0,
                     right: 0,
