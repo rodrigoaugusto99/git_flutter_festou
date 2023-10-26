@@ -54,6 +54,40 @@ final userLoginServiceProvider = Provider<UserLoginService>.internal(
 );
 
 typedef UserLoginServiceRef = ProviderRef<UserLoginService>;
+String _$spaceFirestoreRepositoryHash() =>
+    r'cdf12ac5969e5b5ad29cc3a608b62bda6bd46183';
+
+/// See also [spaceFirestoreRepository].
+@ProviderFor(spaceFirestoreRepository)
+final spaceFirestoreRepositoryProvider =
+    Provider<SpaceFirestoreRepository>.internal(
+  spaceFirestoreRepository,
+  name: r'spaceFirestoreRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$spaceFirestoreRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef SpaceFirestoreRepositoryRef = ProviderRef<SpaceFirestoreRepository>;
+String _$imagesStorageRepositoryHash() =>
+    r'9f88e88181fc847f55e8368a6387a7ce4328397e';
+
+/// See also [imagesStorageRepository].
+@ProviderFor(imagesStorageRepository)
+final imagesStorageRepositoryProvider =
+    Provider<ImagesStorageRepository>.internal(
+  imagesStorageRepository,
+  name: r'imagesStorageRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$imagesStorageRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef ImagesStorageRepositoryRef = ProviderRef<ImagesStorageRepository>;
 String _$userRegisterServiceHash() =>
     r'c322f1a7303dbac31f6754f7fbc6ad83b4a23797';
 
@@ -70,23 +104,6 @@ final userRegisterServiceProvider = Provider<UserRegisterService>.internal(
 );
 
 typedef UserRegisterServiceRef = ProviderRef<UserRegisterService>;
-String _$spaceFirestoreRepositoryHash() =>
-    r'675ddba674e078685a05ad64044a5fbc51b25096';
-
-/// See also [spaceFirestoreRepository].
-@ProviderFor(spaceFirestoreRepository)
-final spaceFirestoreRepositoryProvider =
-    Provider<SpaceFirestoreRepository>.internal(
-  spaceFirestoreRepository,
-  name: r'spaceFirestoreRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$spaceFirestoreRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef SpaceFirestoreRepositoryRef = ProviderRef<SpaceFirestoreRepository>;
 String _$feedbackFirestoreRepositoryHash() =>
     r'9199c446e03e046fa0dcb78dcc3422e270291746';
 

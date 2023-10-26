@@ -149,6 +149,10 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                 const SizedBox(
                   height: 10,
                 ),
+                ElevatedButton(
+                  onPressed: () => spaceRegister.pickImage(),
+                  child: const Text('upload photo'),
+                ),
                 WeekDaysPanel(
                   text: 'Selecione os DIAS da semana',
                   onDayPressed: (value) {
