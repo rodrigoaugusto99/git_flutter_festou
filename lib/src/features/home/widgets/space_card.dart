@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
@@ -25,106 +26,129 @@ class _SpaceCard2State extends ConsumerState<SpaceCard2> {
     final spaceRepository = ref.watch(spaceFirestoreRepositoryProvider);
 
     final x = MediaQuery.of(context).size.width;
+    final y = MediaQuery.of(context).size.height;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Card(
+        color: Colors.grey,
         margin: EdgeInsets.symmetric(horizontal: x * 0.03),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
         elevation: 4,
-        child: Column(
-          children: [
-            SizedBox(
-              height: 240,
-              child: Stack(
-                children: [
-                  widget.space.imageUrls.isNotEmpty
-                      ? ListView(
-                          children: widget.space.imageUrls
-                              .map((imageUrl) => Image.network(imageUrl))
+        //TODO: sizedbox e positioned com y(responsiveo)(levando em conta que )
+        child: SizedBox(
+          height: 300,
+          child: Stack(
+            children: [
+              Positioned(
+                child: SizedBox(
+                  height: 220,
+                  child: widget.space.imageUrls.isNotEmpty
+                      ? CarouselSlider(
+                          items: widget.space.imageUrls
+                              .map((imageUrl) => Image.network(
+                                    imageUrl,
+                                    fit: BoxFit.cover,
+                                  ))
                               .toList(),
+                          options: CarouselOptions(
+                            height: 240, // Set the height here
+                            autoPlay: true,
+                            aspectRatio:
+                                16 / 9, // You can adjust this as needed
+                            viewportFraction:
+                                1.0, // Set to 1.0 to show one image at a time
+                            enableInfiniteScroll:
+                                true, // Enable infinite scrolling
+                          ),
                         )
-                      : const Center(
-                          child: Text('Não tem foto'),
-                        ),
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: Container(
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                          color: Colors.white),
-                      child: Column(
+                      : Container(),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 100,
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      color: Colors.blueGrey),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(widget.space.space.email),
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    widget.space.space.isFavorited =
-                                        !widget.space.space.isFavorited;
-                                  });
-                                  spaceRepository.toggleFavoriteSpace(
-                                      widget.space.space.spaceId,
-                                      widget.space.space.isFavorited);
-                                },
-                                child: widget.space.space.isFavorited
-                                    ? const Icon(
-                                        Icons.favorite,
-                                        color: Colors.red,
-                                      )
-                                    : const Icon(
-                                        Icons.favorite_outline,
-                                      ),
-                              ),
-                            ],
+                          Text(
+                            widget.space.space.name,
+                            style: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
                           ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                widget.space.space.name,
-                              ),
-                              Row(
-                                children: [
-                                  InkWell(
-                                    onTap: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => CardInfos(
-                                          space: widget.space.space,
-                                        ),
-                                      ),
-                                    ),
-                                    child: const Icon(Icons.info),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                widget.space.space.isFavorited =
+                                    !widget.space.space.isFavorited;
+                              });
+                              spaceRepository.toggleFavoriteSpace(
+                                  widget.space.space.spaceId,
+                                  widget.space.space.isFavorited);
+                            },
+                            child: widget.space.space.isFavorited
+                                ? const Icon(
+                                    Icons.favorite,
+                                    color: Colors.red,
+                                  )
+                                : const Icon(
+                                    Icons.favorite_outline,
                                   ),
-                                  InkWell(
-                                    onTap: () {},
-                                    child: const Icon(Icons.edit),
-                                  ),
-                                ],
-                              ),
-                            ],
                           ),
-                          Text(widget.space.space.cep),
-                          Text(widget.space.space.logradouro),
-                          Text(widget.space.space.numero),
-                          Text(widget.space.space.bairro),
-                          Text(widget.space.space.cidade),
                         ],
                       ),
-                    ),
+
+                      /*Text(widget.space.space.cep),
+                      Text(widget.space.space.logradouro),
+                      Text(widget.space.space.numero),*/
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(widget.space.space.bairro),
+                              Text(widget.space.space.cidade),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              InkWell(
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CardInfos(
+                                      space: widget.space.space,
+                                    ),
+                                  ),
+                                ),
+                                child: const Icon(Icons.info),
+                              ),
+                              InkWell(
+                                onTap: () {},
+                                child: const Icon(Icons.edit),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-          ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
