@@ -34,7 +34,7 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
       return Success(nil);
     } catch (e) {
       log('Erro ao enviar imagens para o Firebase Storage: $e');
-      return Failure(RepositoryException(message: 'Erro ao enviar imagens'));
+      return Failure(RepositoryException(message: 'Erro ao salvar imagens'));
     }
   }
 

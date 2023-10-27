@@ -1,3 +1,4 @@
+import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/home/my%20space%20mvvm/my_spaces_state.dart';
@@ -8,22 +9,30 @@ part 'my_spaces_vm.g.dart';
 
 @riverpod
 class MySpacesVm extends _$MySpacesVm {
+  String errorMessage = '';
   @override
   Future<MySpacesState> build() async {
     final spaceRepository = ref.read(spaceFirestoreRepositoryProvider);
     //final BarbershopModel(id: barbershopId) =
     //await ref.read(getMyBarbershopProvider.future);
-    final spacesResult = await spaceRepository.getMySpaces();
+    try {
+      final spacesResult = await spaceRepository.getMySpaces();
 
-    switch (spacesResult) {
-      case Success(value: final spacesData):
-        final spaces = <SpaceWithImages>[];
-        spaces.addAll(spacesData);
-        return MySpacesState(
-            status: MySpacesStateStatus.loaded, spaces: spaces);
+      switch (spacesResult) {
+        case Success(value: final spacesData):
+          final spaces = <SpaceWithImages>[];
+          spaces.addAll(spacesData);
+          return MySpacesState(
+              status: MySpacesStateStatus.loaded, spaces: spaces);
 
-      case Failure():
-        return MySpacesState(status: MySpacesStateStatus.error, spaces: []);
+        case Failure(exception: RepositoryException(:final message)):
+          errorMessage = message;
+          return MySpacesState(status: MySpacesStateStatus.error, spaces: []);
+      }
+    } on Exception {
+      errorMessage = 'Erro desconhecido'; // Atualize a mensagem de erro
+
+      return MySpacesState(status: MySpacesStateStatus.loaded, spaces: []);
     }
   }
 }

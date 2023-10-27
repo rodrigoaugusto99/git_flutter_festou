@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/home/all%20space%20mvvm/all_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/home/all%20space%20mvvm/all_spaces_vm.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/space_card.dart';
@@ -16,6 +17,15 @@ class _AllSpacesPageState extends ConsumerState<AllSpacesPage> {
   @override
   Widget build(BuildContext context) {
     final spaces = ref.watch(allSpacesVmProvider);
+    final errorMessager = ref.watch(allSpacesVmProvider.notifier).errorMessage;
+
+/*como nao pode chamar esse Messages durante o build, o future.delayed
+chama quando termina o build */
+    Future.delayed(Duration.zero, () {
+      if (errorMessager.toString() != '') {
+        Messages.showError(errorMessager, context);
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -49,9 +59,7 @@ class _AllSpacesPageState extends ConsumerState<AllSpacesPage> {
           );
         },
         error: (Object error, StackTrace stackTrace) {
-          return const Center(
-            child: Text('Erro'),
-          );
+          return Container();
         },
         loading: () {
           return const Center(

@@ -6,7 +6,7 @@ part of 'all_spaces_vm.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$allSpacesVmHash() => r'07281cb6435a16ec41b671d9623860521fb15fe0';
+String _$allSpacesVmHash() => r'df8cba798c2e4be0ada3c9c85bb7b5aa0c56c075';
 
 /// See also [AllSpacesVm].
 @ProviderFor(AllSpacesVm)

@@ -6,7 +6,7 @@ import 'package:git_flutter_festou/src/core/fp/nil.dart';
 abstract interface class UserAuthRepository {
   Future<Either<AuthException, Nil>> login(String email, String password);
 
-  Future<Either<RepositoryException, Nil>> registerUser(
+  Future<Either<AuthException, Nil>> registerUser(
     ({String email, String password}) userData,
   );
 }
