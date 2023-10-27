@@ -1,7 +1,6 @@
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/home/my%20space%20mvvm/my_spaces_state.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

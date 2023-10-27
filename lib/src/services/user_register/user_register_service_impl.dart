@@ -38,8 +38,8 @@ class UserRegisterServiceImpl implements UserRegisterService {
           email: userData.email,
         );
         //só salvar no firestore se salvar no auth
-        final registerFirestoreResult =
-            await userFirestoreRepository.saveUser(userDataFirestore);
+
+        await userFirestoreRepository.saveUser(userDataFirestore);
         final result =
             userLoginService.execute(userData.email, userData.password);
         return result;

@@ -1,14 +1,8 @@
-import 'dart:developer';
-
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/card_infos.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/space_card_state.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/space_card_vm.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 
 class SpaceCard2 extends ConsumerStatefulWidget {
