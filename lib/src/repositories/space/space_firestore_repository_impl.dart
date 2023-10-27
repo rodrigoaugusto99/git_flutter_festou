@@ -84,11 +84,10 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
         return Success(Nil());
       } else {
         log('Espaço já existe no Firestore');
-        return Failure(
-            RepositoryException(message: 'Espaço já existe no Firestore'));
+        return Failure(RepositoryException(message: 'Esse espaço já existe'));
       }
     } catch (e) {
-      log('Erro ao adicionar informações de espaço: $e');
+      log('Erro ao adicionar informações de espaço no firestore: $e');
       return Failure(RepositoryException(message: 'Erro ao cadastrar espaço'));
     }
   }
@@ -111,7 +110,7 @@ p decidir o isFavorited*/
       List<SpaceModel> spaceModels =
           allSpaceDocuments.docs.map((spaceDocument) {
         final isFavorited =
-            userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
+            userSpacesFavorite?.contains(spaceDocument['spce_id']) ?? false;
         return mapSpaceDocumentToModel(spaceDocument, isFavorited);
       }).toList();
 
@@ -132,8 +131,7 @@ p decidir o isFavorited*/
       return Success(spaceWithImagesList);
     } catch (e) {
       log('Erro ao recuperar todos os espaços: $e');
-      return Failure(
-          RepositoryException(message: 'Erro ao carregar todos os espaços'));
+      return Failure(RepositoryException(message: 'Erro ao carregar espaços'));
     }
   }
 
@@ -141,7 +139,7 @@ p decidir o isFavorited*/
   Future<Either<RepositoryException, List<SpaceWithImages>>>
       getMySpaces() async {
     try {
-      //espaços a serem buildados
+      //espaços a serem buildado
       final mySpaceDocuments =
           await spacesCollection.where('user_id', isEqualTo: user.uid).get();
 
@@ -250,9 +248,9 @@ p decidir o isFavorited*/
       log('sucesso! - $x -  $spaceId');
       return Success(nil);
     } else {
-      log('Documento do usuário não encontrado');
-      return Failure(
-          RepositoryException(message: 'Documento do usuário não encontrado'));
+      log('nenhum documento desse espaço foi encontrado, ou mais de 1 foram encontrados.');
+      return Failure(RepositoryException(
+          message: 'Espaço não encontrado no banco de dados'));
     }
   }
 

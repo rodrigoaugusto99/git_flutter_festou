@@ -25,7 +25,7 @@ class UserAuthRepositoryImpl implements UserAuthRepository {
   }
 
   @override
-  Future<Either<RepositoryException, Nil>> registerUser(
+  Future<Either<AuthException, Nil>> registerUser(
       ({
         String email,
         String password,
@@ -38,7 +38,7 @@ class UserAuthRepositoryImpl implements UserAuthRepository {
       return Success(nil);
     } on Exception catch (e, s) {
       log('Erro ao cadastrar usuario', error: e, stackTrace: s);
-      return Failure(RepositoryException(message: 'Erro ao cadastrar usuario'));
+      return Failure(AuthError(message: 'Erro ao cadastrar usuario'));
     }
   }
 }

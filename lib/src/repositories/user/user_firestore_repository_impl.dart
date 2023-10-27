@@ -38,8 +38,9 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
 
       return Success(nil);
     } catch (e) {
-      log('Erro ao adicionar informações de usuário: $e');
-      return Failure(RepositoryException(message: 'Erro ao cadastrar usuario'));
+      log('Erro ao adicionar informações de usuário no Firestore: $e');
+      return Failure(RepositoryException(
+          message: 'Erro ao cadastrar usuario no banco de dados'));
     }
   }
 
@@ -79,15 +80,17 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         return Success(nil);
       } else if (querySnapshot.docs.isEmpty) {
         // Nenhum documento com o userId especificado foi encontrado
+        log('Usuário não encontrado no firestore.');
         return Failure(RepositoryException(
-            message: 'Usuário não encontrado no Firestore.'));
+            message: 'Usuário não encontrado no banco de dados.'));
       } else {
         // Mais de um documento com o mesmo userId foi encontrado (situação incomum)
-        return Failure(
-            RepositoryException(message: 'Conflito de dados no Firestore.'));
+        log('Mais de um documento com o mesmo userId foi encontrado no firestore.');
+        return Failure(RepositoryException(
+            message: 'Conflito de dados no bando de dados.'));
       }
     } catch (e) {
-      log('Erro ao adicionar informações de usuário: $e');
+      log('Erro ao adicionar informações de usuário no firestore: $e');
       return Failure(RepositoryException(
           message: 'Erro ao atualizar informações de usuário.'));
     }
@@ -118,8 +121,9 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       }
       return Success(nil);
     } catch (e) {
-      log('Erro ao adicionar informações de usuário: $e');
-      return Failure(RepositoryException(message: 'Erro ao cadastrar usuario'));
+      log('Erro ao atualizar userType locatario para locador: $e');
+      return Failure(RepositoryException(
+          message: 'Erro ao atualizar o usuário como Locador'));
     }
   }
 }

@@ -56,9 +56,9 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
       }).toList();
       return Success(feedbackModels);
     } catch (e) {
-      log('Erro ao recuperar meus espaços favoritos: $e');
-      return Failure(RepositoryException(
-          message: 'Erro ao carregar meus espaços favoritos'));
+      log('Erro ao recuperar os feeedbacks do firestore: $e');
+      return Failure(
+          RepositoryException(message: 'Erro ao carregar os feedbacks'));
     }
   }
 
