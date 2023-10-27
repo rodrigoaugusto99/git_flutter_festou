@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/ui/festou_nav_global_key.dart';
 import 'package:git_flutter_festou/src/repositories/feedback/feedback_firestore_repository.dart';
 import 'package:git_flutter_festou/src/repositories/feedback/feedback_firestore_repository_impl.dart';
+import 'package:git_flutter_festou/src/repositories/images/images_storage_repository.dart';
+import 'package:git_flutter_festou/src/repositories/images/images_storage_repository_impl.dart';
 import 'package:git_flutter_festou/src/repositories/space/space_firestore_repository.dart';
 import 'package:git_flutter_festou/src/repositories/space/space_firestore_repository_impl.dart';
 import 'package:git_flutter_festou/src/repositories/user/user_auth_repository.dart';
@@ -33,17 +35,23 @@ UserLoginService userLoginService(UserLoginServiceRef ref) =>
         userAuthRepository: ref.read(userAuthRepositoryProvider));
 
 @Riverpod(keepAlive: true)
+SpaceFirestoreRepository spaceFirestoreRepository(
+        SpaceFirestoreRepositoryRef ref) =>
+    SpaceFirestoreRepositoryImpl(
+      imagesStorageRepository: ref.watch(imagesStorageRepositoryProvider),
+    );
+
+@Riverpod(keepAlive: true)
+ImagesStorageRepository imagesStorageRepository(
+        ImagesStorageRepositoryRef ref) =>
+    ImagesStorageRepositoryImpl();
+
+@Riverpod(keepAlive: true)
 UserRegisterService userRegisterService(UserRegisterServiceRef ref) =>
     UserRegisterServiceImpl(
         userAuthRepository: ref.watch(userAuthRepositoryProvider),
         userLoginService: ref.watch(userLoginServiceProvider),
         userFirestoreRepository: ref.watch(userFirestoreRepositoryProvider));
-
-//firestore
-@Riverpod(keepAlive: true)
-SpaceFirestoreRepository spaceFirestoreRepository(
-        SpaceFirestoreRepositoryRef ref) =>
-    SpaceFirestoreRepositoryImpl();
 
 @Riverpod(keepAlive: true)
 FeedbackFirestoreRepository feedbackFirestoreRepository(

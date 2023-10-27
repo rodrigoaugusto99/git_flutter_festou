@@ -1,8 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({super.key});
+  const ForgotPasswordPage({Key? key}) : super(key: key);
 
   @override
   State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
@@ -11,24 +11,28 @@ class ForgotPasswordPage extends StatefulWidget {
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final emailEC = TextEditingController();
 
-  //send password method
-  Future passwordReset() async {
+  // Método para enviar o link de redefinição de senha para o email digitado
+  Future<void> passwordReset() async {
     try {
-      //metodo do firebase p/ enviar link no email
+      // Método do Firebase para enviar o link no email
       await FirebaseAuth.instance.sendPasswordResetEmail(email: emailEC.text);
-      //mensagem de feedback
-      return const AlertDialog(
-        content: Text('Password reset link sent! Check your email'),
+
+      // Mostrar um diálogo de sucesso
+      showDialog(
+        context: context,
+        builder: (context) {
+          return const AlertDialog(
+            content: Text('Password reset link sent! Check your email'),
+          );
+        },
       );
-    } on FirebaseAuthException catch (e) {
-      //erro no console
-      print(e);
-      //feedback to user
+    } catch (e) {
+      // Tratar erros
       showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            content: Text(e.message.toString()),
+            content: Text(e.toString()),
           );
         },
       );
@@ -54,12 +58,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           TextFormField(
             controller: emailEC,
             decoration: const InputDecoration(
-              hintText: 'Username',
+              hintText: 'Email', // Alterado para "Email" para maior clareza
             ),
           ),
           const SizedBox(height: 10),
           MaterialButton(
-            onPressed: passwordReset,
+            onPressed: passwordReset, // Chama o método passwordReset
             color: Colors.blueGrey,
             child: const Text('Reset password'),
           )

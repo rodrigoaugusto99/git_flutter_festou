@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/home/space%20feedbacks%20mvvm/space_feedbacks_page.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/more_details.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/show_map.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/ver_fotos.dart';
 import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
@@ -54,6 +55,17 @@ class _CardInfosState extends State<CardInfos> {
       builder: (context) {
         return Dialog(
           child: ShowMap(space: space),
+        );
+      },
+    );
+  }
+
+  void verFotos(SpaceModel space) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: VerFotos(space: space),
         );
       },
     );
@@ -121,7 +133,7 @@ class _CardInfosState extends State<CardInfos> {
                 child: const Text('USER INFOS'),
               ),*/
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () => verFotos(widget.space),
                 child: const Text('Ver Fotos'),
               ),
               ElevatedButton(

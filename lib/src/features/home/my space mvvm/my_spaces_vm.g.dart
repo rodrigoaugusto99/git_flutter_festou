@@ -6,7 +6,7 @@ part of 'my_spaces_vm.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$mySpacesVmHash() => r'387bd0bcdd48ef8ce57c6068f539031c149b6739';
+String _$mySpacesVmHash() => r'7a40768f6fbf0ebfdbafe1639f4eb1abbb9dc65a';
 
 /// See also [MySpacesVm].
 @ProviderFor(MySpacesVm)
