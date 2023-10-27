@@ -38,9 +38,7 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                     (context, index) => Column(
-                          children: [
-                            SpaceCard2(space: data.spaces[index]),
-                          ],
+                          children: [SpaceCard2(space: data.spaces[index])],
                         ),
                     childCount: data.spaces.length),
               ),

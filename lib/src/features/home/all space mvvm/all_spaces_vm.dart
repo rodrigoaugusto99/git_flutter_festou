@@ -5,6 +5,7 @@ import 'package:git_flutter_festou/src/core/providers/application_providers.dart
 import 'package:git_flutter_festou/src/features/home/all%20space%20mvvm/all_spaces_state.dart';
 
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'all_spaces_vm.g.dart';
@@ -22,7 +23,7 @@ class AllSpacesVm extends _$AllSpacesVm {
       case Success(value: final spacesData):
         log('$spacesData');
 
-        final spaces = <SpaceModel>[];
+        final spaces = <SpaceWithImages>[];
         spaces.addAll(spacesData);
         return AllSpaceState(
             status: AllSpaceStateStatus.loaded, spaces: spaces);

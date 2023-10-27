@@ -9,6 +9,7 @@ import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 import 'package:git_flutter_festou/src/repositories/images/images_storage_repository.dart';
 import 'package:git_flutter_festou/src/repositories/space/space_firestore_repository.dart';
 
@@ -93,7 +94,8 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
   }
 
   @override
-  Future<Either<RepositoryException, List<SpaceModel>>> getAllSpaces() async {
+  Future<Either<RepositoryException, List<SpaceWithImages>>>
+      getAllSpaces() async {
     try {
       //pega todos os documentos dos espaços
       final allSpaceDocuments = await spacesCollection.get();
@@ -113,7 +115,21 @@ p decidir o isFavorited*/
         return mapSpaceDocumentToModel(spaceDocument, isFavorited);
       }).toList();
 
-      return Success(spaceModels);
+      final spaceWithImagesList = <SpaceWithImages>[];
+
+      for (var space in spaceModels) {
+        final imageResult =
+            await imagesStorageRepository.getSpaceImages(space.spaceId);
+
+        switch (imageResult) {
+          case Success(value: final imagesData):
+            spaceWithImagesList.add(SpaceWithImages(space, imagesData));
+          case Failure():
+            log('Erro ao recuperar imagens: $imageResult');
+        }
+      }
+
+      return Success(spaceWithImagesList);
     } catch (e) {
       log('Erro ao recuperar todos os espaços: $e');
       return Failure(
@@ -122,7 +138,8 @@ p decidir o isFavorited*/
   }
 
   @override
-  Future<Either<RepositoryException, List<SpaceModel>>> getMySpaces() async {
+  Future<Either<RepositoryException, List<SpaceWithImages>>>
+      getMySpaces() async {
     try {
       //espaços a serem buildados
       final mySpaceDocuments =
@@ -138,8 +155,21 @@ p decidir o isFavorited*/
             userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
         return mapSpaceDocumentToModel(spaceDocument, isFavorited);
       }).toList();
+      final spaceWithImagesList = <SpaceWithImages>[];
 
-      return Success(spaceModels);
+      for (var space in spaceModels) {
+        final imageResult =
+            await imagesStorageRepository.getSpaceImages(space.spaceId);
+
+        switch (imageResult) {
+          case Success(value: final imagesData):
+            spaceWithImagesList.add(SpaceWithImages(space, imagesData));
+          case Failure():
+            log('Erro ao recuperar imagens: $imageResult');
+        }
+      }
+
+      return Success(spaceWithImagesList);
     } catch (e) {
       log('Erro ao recuperar meus espaços: $e');
       return Failure(
@@ -148,7 +178,7 @@ p decidir o isFavorited*/
   }
 
   @override
-  Future<Either<RepositoryException, List<SpaceModel>>>
+  Future<Either<RepositoryException, List<SpaceWithImages>>>
       getMyFavoriteSpaces() async {
     try {
       //lista de espaços favoritados pelo usuario
@@ -174,8 +204,21 @@ p decidir o isFavorited*/
             userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
         return mapSpaceDocumentToModel(spaceDocument, isFavorited);
       }).toList();
+      final spaceWithImagesList = <SpaceWithImages>[];
 
-      return Success(spaceModels);
+      for (var space in spaceModels) {
+        final imageResult =
+            await imagesStorageRepository.getSpaceImages(space.spaceId);
+
+        switch (imageResult) {
+          case Success(value: final imagesData):
+            spaceWithImagesList.add(SpaceWithImages(space, imagesData));
+          case Failure():
+            log('Erro ao recuperar imagens: $imageResult');
+        }
+      }
+
+      return Success(spaceWithImagesList);
     } catch (e) {
       log('Erro ao recuperar meus espaços favoritos: $e');
       return Failure(RepositoryException(

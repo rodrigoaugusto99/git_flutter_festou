@@ -6,7 +6,7 @@ part of 'space_card_vm.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$spaceCardVmHash() => r'cc66994845ef8487b6708493bad334368eedbb9b';
+String _$spaceCardVmHash() => r'c75d89829c4cad4088b2f0db2aed4736a1b42e62';
 
 /// Copied from Dart SDK
 class _SystemHash {

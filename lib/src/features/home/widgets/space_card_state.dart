@@ -1,11 +1,8 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:io';
-
 enum SpaceCardVmStateStatus { loaded, error }
 
 class SpaceCardState {
   final SpaceCardVmStateStatus status;
-  final List<File> imageUrls;
+  final List<String> imageUrls;
 
   SpaceCardState({
     required this.status,
@@ -14,7 +11,7 @@ class SpaceCardState {
 
   SpaceCardState copyWith({
     SpaceCardVmStateStatus? status,
-    List<File>? imageUrls,
+    List<String>? imageUrls,
   }) {
     return SpaceCardState(
       status: status ?? this.status,

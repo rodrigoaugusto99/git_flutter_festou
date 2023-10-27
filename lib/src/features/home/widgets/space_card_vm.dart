@@ -12,17 +12,16 @@ part 'space_card_vm.g.dart';
 class SpaceCardVm extends _$SpaceCardVm {
   @override
   Future<SpaceCardState> build(SpaceModel space) async {
-    final imagesStorageRepository = ref.watch(imagesStorageRepositoryProvider);
+    final imagesStorageRepository = ref.read(imagesStorageRepositoryProvider);
     final imageUrlsResult =
-        imagesStorageRepository.getSpaceImages(space.spaceId);
+        await imagesStorageRepository.getSpaceImages(space.spaceId);
 
     switch (imageUrlsResult) {
       case Success(value: final imagesData):
         log('$imagesData');
-        final images = <File>[];
-        images.addAll(imagesData);
+
         return SpaceCardState(
-            status: SpaceCardVmStateStatus.loaded, imageUrls: images);
+            status: SpaceCardVmStateStatus.loaded, imageUrls: imagesData);
 
       default:
         return SpaceCardState(

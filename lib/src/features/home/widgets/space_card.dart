@@ -9,9 +9,10 @@ import 'package:git_flutter_festou/src/features/home/widgets/card_infos.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/space_card_state.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/space_card_vm.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 
 class SpaceCard2 extends ConsumerStatefulWidget {
-  final SpaceModel space;
+  final SpaceWithImages space;
 
   const SpaceCard2({
     super.key,
@@ -25,28 +26,10 @@ class SpaceCard2 extends ConsumerStatefulWidget {
 final user = FirebaseAuth.instance.currentUser!;
 
 class _SpaceCard2State extends ConsumerState<SpaceCard2> {
-  final CarouselController _carouselController = CarouselController();
-
   @override
   Widget build(BuildContext context) {
-    final spaceCardVm = ref.watch(spaceCardVmProvider(widget.space));
-
-    return spaceCardVm.when(
-      loading: () {
-        return const CircularProgressIndicator(); // Ou qualquer widget de carregamento que você deseja mostrar.
-      },
-      data: (SpaceCardState data) {
-        return buildCard(data.imageUrls.cast<String>());
-      },
-      error: (error, stackTrace) {
-        log('Erro ao carregar as imagens: $error');
-        return buildCard(null);
-      },
-    );
-  }
-
-  Widget buildCard(List<String>? imageUrls) {
     final spaceRepository = ref.watch(spaceFirestoreRepositoryProvider);
+
     final x = MediaQuery.of(context).size.width;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
@@ -62,16 +45,11 @@ class _SpaceCard2State extends ConsumerState<SpaceCard2> {
               height: 240,
               child: Stack(
                 children: [
-                  imageUrls != null && imageUrls.isNotEmpty
-                      ? CarouselSlider(
-                          items: imageUrls.map((url) {
-                            return Image.network(url, fit: BoxFit.cover);
-                          }).toList(),
-                          carouselController: _carouselController,
-                          options: CarouselOptions(
-                            height: 220,
-                            autoPlay: true,
-                          ),
+                  widget.space.imageUrls.isNotEmpty
+                      ? ListView(
+                          children: widget.space.imageUrls
+                              .map((imageUrl) => Image.network(imageUrl))
+                              .toList(),
                         )
                       : const Center(
                           child: Text('Não tem foto'),
@@ -90,18 +68,18 @@ class _SpaceCard2State extends ConsumerState<SpaceCard2> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(widget.space.email),
+                              Text(widget.space.space.email),
                               InkWell(
                                 onTap: () {
                                   setState(() {
-                                    widget.space.isFavorited =
-                                        !widget.space.isFavorited;
+                                    widget.space.space.isFavorited =
+                                        !widget.space.space.isFavorited;
                                   });
                                   spaceRepository.toggleFavoriteSpace(
-                                      widget.space.spaceId,
-                                      widget.space.isFavorited);
+                                      widget.space.space.spaceId,
+                                      widget.space.space.isFavorited);
                                 },
-                                child: widget.space.isFavorited
+                                child: widget.space.space.isFavorited
                                     ? const Icon(
                                         Icons.favorite,
                                         color: Colors.red,
@@ -117,7 +95,7 @@ class _SpaceCard2State extends ConsumerState<SpaceCard2> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                widget.space.name,
+                                widget.space.space.name,
                               ),
                               Row(
                                 children: [
@@ -126,7 +104,7 @@ class _SpaceCard2State extends ConsumerState<SpaceCard2> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => CardInfos(
-                                          space: widget.space,
+                                          space: widget.space.space,
                                         ),
                                       ),
                                     ),
@@ -140,11 +118,11 @@ class _SpaceCard2State extends ConsumerState<SpaceCard2> {
                               ),
                             ],
                           ),
-                          Text(widget.space.cep),
-                          Text(widget.space.logradouro),
-                          Text(widget.space.numero),
-                          Text(widget.space.bairro),
-                          Text(widget.space.cidade),
+                          Text(widget.space.space.cep),
+                          Text(widget.space.space.logradouro),
+                          Text(widget.space.space.numero),
+                          Text(widget.space.space.bairro),
+                          Text(widget.space.space.cidade),
                         ],
                       ),
                     ),

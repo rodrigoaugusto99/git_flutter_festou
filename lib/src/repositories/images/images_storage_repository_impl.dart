@@ -47,14 +47,13 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
 
       // Recupere a lista de itens no Firebase Storage com o prefixo
       final ListResult result = await storage.ref().child(prefix).listAll();
+      final imageUrls = <String>[];
 
       // Extraia as URLs das imagens da lista de itens
-      final List<String> imageUrls = result.items
-          .map((item) {
-            return item.getDownloadURL();
-          })
-          .cast<String>()
-          .toList();
+      for (var item in result.items) {
+        final downloadURL = await item.getDownloadURL();
+        imageUrls.add(downloadURL);
+      }
 
       log('Imagens do espaço $spaceId recuperadas com sucesso do Firebase Storage');
 
