@@ -25,8 +25,27 @@ class _SpaceCard2State extends ConsumerState<SpaceCard2> {
   Widget build(BuildContext context) {
     final spaceRepository = ref.watch(spaceFirestoreRepositoryProvider);
 
+    void toggle() {
+      setState(() {
+        widget.space.space.isFavorited = !widget.space.space.isFavorited;
+      });
+      spaceRepository.toggleFavoriteSpace(
+          widget.space.space.spaceId, widget.space.space.isFavorited);
+    }
+
+    void navigateToInfo() {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CardInfos(
+            space: widget.space.space,
+          ),
+        ),
+      );
+    }
+
     final x = MediaQuery.of(context).size.width;
-    final y = MediaQuery.of(context).size.height;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Card(
@@ -88,15 +107,7 @@ class _SpaceCard2State extends ConsumerState<SpaceCard2> {
                                 fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                           InkWell(
-                            onTap: () {
-                              setState(() {
-                                widget.space.space.isFavorited =
-                                    !widget.space.space.isFavorited;
-                              });
-                              spaceRepository.toggleFavoriteSpace(
-                                  widget.space.space.spaceId,
-                                  widget.space.space.isFavorited);
-                            },
+                            onTap: toggle,
                             child: widget.space.space.isFavorited
                                 ? const Icon(
                                     Icons.favorite,
@@ -125,14 +136,7 @@ class _SpaceCard2State extends ConsumerState<SpaceCard2> {
                           Row(
                             children: [
                               InkWell(
-                                onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => CardInfos(
-                                      space: widget.space.space,
-                                    ),
-                                  ),
-                                ),
+                                onTap: navigateToInfo,
                                 child: const Icon(Icons.info),
                               ),
                               InkWell(

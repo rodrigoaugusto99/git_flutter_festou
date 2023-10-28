@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/feed.dart';
 import 'package:git_flutter_festou/src/features/register/user/user_register_vm.dart';
-import '../../../core/ui/widgets/my_squaretile.dart';
+import '../../home/widgets/my_squaretile.dart';
 import '../../../services/auth_services.dart';
 
 class UserRegisterPage extends ConsumerStatefulWidget {
@@ -134,72 +135,12 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                           child: const Text('SIGN UP'),
                         ),
                         const SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Divider(
-                                thickness: 0.5,
-                                color: Colors.grey[400],
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: Text(
-                                TextConstants.orContinueWith,
-                                style: TextStyle(color: Colors.grey[700]),
-                              ),
-                            ),
-                            Expanded(
-                              child: Divider(
-                                thickness: 0.5,
-                                color: Colors.grey[400],
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
 
-                        //google + apple sign in buttons
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            //google button
-                            SquareTile(
-                              onTap: () => AuthService().signInWithGoogle(),
-                              imagePath: 'lib/assets/images/google.png',
-                            ),
-                            const SizedBox(width: 25),
-                            //apple button
-                            SquareTile(
-                              onTap: () {},
-                              imagePath: 'lib/assets/images/apple.png',
-                            )
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-
-                        //not a member? register now
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              TextConstants.alreadyHaveAccount,
-                              style: TextStyle(color: Colors.grey[700]),
-                            ),
-                            const SizedBox(width: 4),
-                            InkWell(
-                              onTap: () =>
-                                  Navigator.of(context).pushNamed('/login'),
-                              child: const Text(
-                                'Login now',
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
+                        Feed(
+                          text: TextConstants.alreadyHaveAccount,
+                          text2: 'Login now',
+                          onTap: () =>
+                              Navigator.of(context).pushNamed('/login'),
                         ),
                       ],
                     ),

@@ -8,14 +8,14 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/d
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/help/help_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/locador/quero_ser_locador.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
-import 'package:git_flutter_festou/src/features/home/all%20space%20mvvm/all_spaces_page.dart';
-import 'package:git_flutter_festou/src/features/home/my%20favorite%20spaces%20mvvm/my_favorite_spaces_page.dart';
-import 'package:git_flutter_festou/src/features/home/my%20space%20mvvm/my_spaces_page.dart';
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
 import 'package:git_flutter_festou/src/features/register/user%20infos/user_register_infos_page.dart';
 import 'package:git_flutter_festou/src/features/register/user/user_register_page.dart';
 import 'package:git_flutter_festou/src/features/search/search_page.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_page.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/my%20favorite%20spaces%20mvvm/my_favorite_spaces_page.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_page.dart';
 import 'package:git_flutter_festou/src/features/splash/splash_page.dart';
 
 Future<void> main() async {

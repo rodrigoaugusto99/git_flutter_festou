@@ -2,9 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/home/my%20space%20mvvm/my_spaces_state.dart';
-import 'package:git_flutter_festou/src/features/home/my%20space%20mvvm/my_spaces_vm.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/space_card.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_list.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_to_box_adapter.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_state.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_vm.dart';
 
 class MySpacesPage extends ConsumerStatefulWidget {
   const MySpacesPage({super.key});
@@ -16,7 +17,7 @@ class MySpacesPage extends ConsumerStatefulWidget {
 class _MySpacesPageState extends ConsumerState<MySpacesPage> {
   @override
   Widget build(BuildContext context) {
-    final spaces = ref.watch(mySpacesVmProvider);
+    final mySpaces = ref.watch(mySpacesVmProvider);
 
     final errorMessager = ref.watch(mySpacesVmProvider.notifier).errorMessage;
 
@@ -30,28 +31,14 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
       appBar: AppBar(
           title: Text(
               'Logged in as: ${FirebaseAuth.instance.currentUser!.email}')),
-      body: spaces.when(
+      body: mySpaces.when(
         data: (MySpacesState data) {
           return CustomScrollView(
             slivers: [
-              //paras colocar widgets nao rolaveis.
-              const SliverToBoxAdapter(
-                child: Center(
-                    child: Text(
-                  'MY SPACES',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
-                )),
+              const MySliverToBoxAdapter(
+                text: 'MY SPACES',
               ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                    (context, index) => Column(
-                          children: [SpaceCard2(space: data.spaces[index])],
-                        ),
-                    childCount: data.spaces.length),
-              ),
+              MySliverList(data: data, spaces: mySpaces),
             ],
           );
         },
