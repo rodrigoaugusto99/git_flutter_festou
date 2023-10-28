@@ -1,6 +1,9 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_state.dart';
@@ -27,7 +30,8 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
       availableDays.add(weekDay);
     }
 
-    state = state.copyWith(availableDays: availableDays);
+    state = state.copyWith(
+        availableDays: availableDays, status: SpaceRegisterStateStatus.initial);
   }
 
   void addOrRemoveType(String type) {
@@ -39,8 +43,28 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
       selectedTypes.add(type);
     }
 
+    state = state.copyWith(
+        selectedTypes: selectedTypes, status: SpaceRegisterStateStatus.initial);
+  }
+  /*outra abordagem para evitar a att do estado
+  
+  void addOrRemoveType(String type) {
+  final selectedTypes = List<String>.from(state.selectedTypes);
+
+  if (selectedTypes.contains(type)) {
+    selectedTypes.remove(type);
+  } else {
+    selectedTypes.add(type);
+  }
+
+  if (selectedTypes != state.selectedTypes) {
     state = state.copyWith(selectedTypes: selectedTypes);
   }
+}
+ criando cópias das listas antes de fazer qualquer alteração e, 
+ em seguida, verificando se a lista atualizada é diferente da 
+ lista no estado. Somente quando houver uma diferença, 
+ atualizamos o estado */
 
   void addOrRemoveService(String service) {
     final selectedServices = state.selectedServices;
@@ -51,7 +75,27 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
       selectedServices.add(service);
     }
 
-    state = state.copyWith(selectedServices: selectedServices);
+    state = state.copyWith(
+        selectedServices: selectedServices,
+        status: SpaceRegisterStateStatus.initial);
+  }
+
+  Future<void> validateForm(BuildContext context, formKey, nomeEC, emailEC,
+      cepEC, logradouroEC, numeroEC, bairroEC, cidadeEC) async {
+    if (formKey.currentState?.validate() == true) {
+      await register(
+        nomeEC.text,
+        emailEC.text,
+        cepEC.text,
+        logradouroEC.text,
+        numeroEC.text,
+        bairroEC.text,
+        cidadeEC.text,
+      );
+      //se nao tiver esse else, o compilador passa nesse copyWith sempre
+    } else {
+      state = state.copyWith(status: SpaceRegisterStateStatus.invalidForm);
+    }
   }
 
   void pickImage() async {
@@ -62,7 +106,10 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
       final imageFile = File(image.path);
       imageFiles.add(imageFile);
     }
-    state = state.copyWith(imageFiles: imageFiles);
+    state = state.copyWith(
+      imageFiles: imageFiles,
+      status: SpaceRegisterStateStatus.error,
+    );
   }
 
   Future<void> register(
@@ -100,16 +147,21 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
       imageFiles: imageFiles,
     );
 
-    final spaceFirestoreRepository =
-        ref.watch(spaceFirestoreRepositoryProvider);
+    final spaceFirestoreRepository = ref.read(spaceFirestoreRepositoryProvider);
 
-    final registerResultSpace = spaceFirestoreRepository.saveSpace(spaceData);
+    final registerResultSpace =
+        await spaceFirestoreRepository.saveSpace(spaceData);
 
     switch (registerResultSpace) {
       case Success():
+        state = state.copyWith(status: SpaceRegisterStateStatus.success);
+        log('state: $state');
         break;
-      case Failure():
-        break;
+      case Failure(exception: RepositoryException(:final message)):
+        state = state.copyWith(
+          status: SpaceRegisterStateStatus.error,
+          errorMessage: () => message,
+        );
     }
   }
 }

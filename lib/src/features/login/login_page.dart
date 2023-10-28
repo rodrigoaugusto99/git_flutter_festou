@@ -150,7 +150,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               ElevatedButton(
                                 onPressed: () {
                                   loginVM.validateForm(
-                                      context, formKey, emailEC, passwordEC);
+                                    context,
+                                    formKey,
+                                    emailEC,
+                                    passwordEC,
+                                  );
                                 },
                                 style: ElevatedButton.styleFrom(
                                   minimumSize: const Size.fromHeight(56),

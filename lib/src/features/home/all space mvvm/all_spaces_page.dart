@@ -17,13 +17,14 @@ class _AllSpacesPageState extends ConsumerState<AllSpacesPage> {
   @override
   Widget build(BuildContext context) {
     final spaces = ref.watch(allSpacesVmProvider);
-    final errorMessager = ref.watch(allSpacesVmProvider.notifier).errorMessage;
+
+    final message = ref.watch(allSpacesVmProvider.notifier).errorMessage;
 
 /*como nao pode chamar esse Messages durante o build, o future.delayed
 chama quando termina o build */
     Future.delayed(Duration.zero, () {
-      if (errorMessager.toString() != '') {
-        Messages.showError(errorMessager, context);
+      if (message.toString() != '') {
+        Messages.showError(message, context);
       }
     });
 
@@ -59,12 +60,16 @@ chama quando termina o build */
           );
         },
         error: (Object error, StackTrace stackTrace) {
-          return Container();
+          return const Stack(children: [
+            Center(child: Text('Inserir imagem melhor papai')),
+            Center(child: Icon(Icons.error)),
+          ]);
         },
         loading: () {
-          return const Center(
-            child: Text('Loading'),
-          );
+          return const Stack(children: [
+            Center(child: Text('Inserir carregamento Personalizado papai')),
+            Center(child: CircularProgressIndicator()),
+          ]);
         },
       ),
     );

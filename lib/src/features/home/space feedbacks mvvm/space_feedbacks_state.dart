@@ -1,6 +1,6 @@
 import 'package:git_flutter_festou/src/models/feedback_model.dart';
 
-enum SpaceFeedbacksStateStatus { loaded, error }
+enum SpaceFeedbacksStateStatus { success, error }
 
 class SpaceFeedbacksState {
   final SpaceFeedbacksStateStatus status;

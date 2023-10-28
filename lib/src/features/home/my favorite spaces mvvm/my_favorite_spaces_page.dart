@@ -19,12 +19,11 @@ class _MyFavoriteSpacePageState extends ConsumerState<MyFavoriteSpacePage> {
   Widget build(BuildContext context) {
     final favSpaces = ref.watch(myFavoriteSpacesVmProvider);
 
-    final errorMessager =
-        ref.watch(myFavoriteSpacesVmProvider.notifier).errorMessage;
+    final message = ref.watch(myFavoriteSpacesVmProvider.notifier).errorMessage;
 
     Future.delayed(Duration.zero, () {
-      if (errorMessager.toString() != '') {
-        Messages.showError(errorMessager, context);
+      if (message.toString() != '') {
+        Messages.showError(message, context);
       }
     });
 
@@ -58,14 +57,16 @@ class _MyFavoriteSpacePageState extends ConsumerState<MyFavoriteSpacePage> {
           );
         },
         error: (Object error, StackTrace stackTrace) {
-          return const Center(
-            child: Text('Erro'),
-          );
+          return const Stack(children: [
+            Center(child: Text('Inserir imagem melhor papai')),
+            Center(child: Icon(Icons.error)),
+          ]);
         },
         loading: () {
-          return const Center(
-            child: Text('Loading'),
-          );
+          return const Stack(children: [
+            Center(child: Text('Inserir carregamento Personalizado papai')),
+            Center(child: CircularProgressIndicator()),
+          ]);
         },
       ),
     );

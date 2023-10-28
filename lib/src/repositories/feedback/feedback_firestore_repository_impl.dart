@@ -36,7 +36,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
 
       await feedbacksCollection.add(newFeedback);
       log('Avaliação adicionado com sucesso!');
-      return Success(Nil());
+      return Success(nil);
     } catch (e) {
       log('Erro ao avaliar espaço: $e');
       return Failure(RepositoryException(message: 'Erro ao avaliar espaço'));

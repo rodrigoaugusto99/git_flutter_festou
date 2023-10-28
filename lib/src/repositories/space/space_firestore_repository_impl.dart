@@ -81,7 +81,7 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
           spaceId: spaceData.spaceId,
         );
         log('Informações de espaço adicionadas com sucesso!');
-        return Success(Nil());
+        return Success(nil);
       } else {
         log('Espaço já existe no Firestore');
         return Failure(RepositoryException(message: 'Esse espaço já existe'));
@@ -110,7 +110,7 @@ p decidir o isFavorited*/
       List<SpaceModel> spaceModels =
           allSpaceDocuments.docs.map((spaceDocument) {
         final isFavorited =
-            userSpacesFavorite?.contains(spaceDocument['spce_id']) ?? false;
+            userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
         return mapSpaceDocumentToModel(spaceDocument, isFavorited);
       }).toList();
 
@@ -189,34 +189,39 @@ p decidir o isFavorited*/
     isFavorited na hora de exibir os espaços
     
     */
-      final favoriteSpaceDocuments = await spacesCollection
-          .where('space_id', whereIn: userSpacesFavorite)
-          .get();
+      if (userSpacesFavorite != null && userSpacesFavorite.isNotEmpty) {
+        final favoriteSpaceDocuments = await spacesCollection
+            .where('space_id', whereIn: userSpacesFavorite)
+            .get();
 
 //pra percorrer tudo, precisamos ter a lista de favoritados pelo usuario
 //e a lista de documentos dos espaços que devem ser buildados
 //todo: mapSpaceDocumentToModel ajustado
-      List<SpaceModel> spaceModels =
-          favoriteSpaceDocuments.docs.map((spaceDocument) {
-        final isFavorited =
-            userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
-        return mapSpaceDocumentToModel(spaceDocument, isFavorited);
-      }).toList();
-      final spaceWithImagesList = <SpaceWithImages>[];
+        List<SpaceModel> spaceModels =
+            favoriteSpaceDocuments.docs.map((spaceDocument) {
+          final isFavorited =
+              userSpacesFavorite.contains(spaceDocument['space_id']) ?? false;
+          return mapSpaceDocumentToModel(spaceDocument, isFavorited);
+        }).toList();
+        final spaceWithImagesList = <SpaceWithImages>[];
 
-      for (var space in spaceModels) {
-        final imageResult =
-            await imagesStorageRepository.getSpaceImages(space.spaceId);
+        for (var space in spaceModels) {
+          final imageResult =
+              await imagesStorageRepository.getSpaceImages(space.spaceId);
 
-        switch (imageResult) {
-          case Success(value: final imagesData):
-            spaceWithImagesList.add(SpaceWithImages(space, imagesData));
-          case Failure():
-            log('Erro ao recuperar imagens: $imageResult');
+          switch (imageResult) {
+            case Success(value: final imagesData):
+              spaceWithImagesList.add(SpaceWithImages(space, imagesData));
+            case Failure():
+              log('Erro ao recuperar imagens: $imageResult');
+          }
         }
-      }
 
-      return Success(spaceWithImagesList);
+        return Success(spaceWithImagesList);
+      } //tratando caso emm que nao há espaços favoritados pelo usario
+      else {
+        return Success([]);
+      }
     } catch (e) {
       log('Erro ao recuperar meus espaços favoritos: $e');
       return Failure(RepositoryException(

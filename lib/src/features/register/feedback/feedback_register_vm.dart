@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -13,6 +14,8 @@ enum FeedbackRegisterStateStatus {
 
 @riverpod
 class FeedbackRegisterVm extends _$FeedbackRegisterVm {
+  String errorMessage = '';
+
   final user = FirebaseAuth.instance.currentUser!;
   @override
   FeedbackRegisterStateStatus build() => FeedbackRegisterStateStatus.initial;
@@ -33,13 +36,19 @@ class FeedbackRegisterVm extends _$FeedbackRegisterVm {
       content: content,
     );
 
-    final registerResult =
-        await feedbackFirestoreRepository.saveFeedback(feedbackData);
-    switch (registerResult) {
-      case Success():
-        state = FeedbackRegisterStateStatus.success;
-      case Failure():
-        state = FeedbackRegisterStateStatus.error;
+    try {
+      final registerResult =
+          await feedbackFirestoreRepository.saveFeedback(feedbackData);
+      switch (registerResult) {
+        case Success():
+          state = FeedbackRegisterStateStatus.success;
+        case Failure(exception: RepositoryException(:final message)):
+          errorMessage = message;
+          state = FeedbackRegisterStateStatus.error;
+      }
+    } on Exception {
+      errorMessage = 'Erro desconhecido'; // Atualize a mensagem de erro
+      state = FeedbackRegisterStateStatus.error;
     }
   }
 }
