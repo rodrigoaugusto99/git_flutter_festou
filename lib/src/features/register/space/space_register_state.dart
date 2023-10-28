@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
 import 'dart:io';
 
-enum SpaceRegisterStateStatus { initial, success, error }
+enum SpaceRegisterStateStatus { initial, success, error, invalidForm }
 
 class SpaceRegisterState {
   final SpaceRegisterStateStatus status;
@@ -9,6 +10,7 @@ class SpaceRegisterState {
   final List<String> availableDays;
   final Map<String, List<int>> availableHours;
   final List<File> imageFiles;
+  final String? errorMessage;
 
   SpaceRegisterState.initial()
       : this(
@@ -26,7 +28,8 @@ class SpaceRegisterState {
       required this.selectedServices,
       required this.availableDays,
       required this.availableHours,
-      required this.imageFiles});
+      required this.imageFiles,
+      this.errorMessage});
 
   SpaceRegisterState copyWith(
       {SpaceRegisterStateStatus? status,
@@ -34,13 +37,16 @@ class SpaceRegisterState {
       List<String>? selectedServices,
       List<String>? availableDays,
       Map<String, List<int>>? availableHours,
-      List<File>? imageFiles}) {
+      List<File>? imageFiles,
+      ValueGetter<String?>? errorMessage}) {
     return SpaceRegisterState(
         status: status ?? this.status,
         selectedTypes: selectedTypes ?? this.selectedTypes,
         selectedServices: selectedServices ?? this.selectedServices,
         availableDays: availableDays ?? this.availableDays,
         availableHours: availableHours ?? this.availableHours,
-        imageFiles: imageFiles ?? this.imageFiles);
+        imageFiles: imageFiles ?? this.imageFiles,
+        errorMessage:
+            errorMessage != null ? errorMessage() : this.errorMessage);
   }
 }

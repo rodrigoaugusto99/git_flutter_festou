@@ -7,7 +7,7 @@ part of 'feedback_register_vm.dart';
 // **************************************************************************
 
 String _$feedbackRegisterVmHash() =>
-    r'a1d65cd77728afcd72e3dfbaa431fade6160877c';
+    r'4c0e2ef71beae2bfcf388f28c0b8d0c8066c4400';
 
 /// See also [FeedbackRegisterVm].
 @ProviderFor(FeedbackRegisterVm)

@@ -2,6 +2,8 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
+import 'package:git_flutter_festou/src/features/register/space/space_register_state.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/widgets/weekdays_panel.dart';
 import 'package:git_flutter_festou/src/features/register/widgets/services_panel.dart';
@@ -45,7 +47,26 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    final spaceRegister = ref.watch(spaceRegisterVmProvider.notifier);
+    final spaceRegister = ref.read(spaceRegisterVmProvider.notifier);
+
+    ref.listen(spaceRegisterVmProvider, (_, state) {
+      switch (state) {
+        case SpaceRegisterState(status: SpaceRegisterStateStatus.initial):
+          break;
+        case SpaceRegisterState(status: SpaceRegisterStateStatus.invalidForm):
+          Messages.showError('Formulario invalido', context);
+          break;
+        case SpaceRegisterState(status: SpaceRegisterStateStatus.success):
+          Navigator.of(context).pop();
+          Messages.showSuccess('parabens', context);
+
+        case SpaceRegisterState(
+            status: SpaceRegisterStateStatus.error,
+            :final errorMessage?
+          ):
+          Messages.showError(errorMessage, context);
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -188,15 +209,16 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
-                        spaceRegister.register(
-                          nomeEC.text,
-                          emailEC.text,
-                          cepEC.text,
-                          logradouroEC.text,
-                          numeroEC.text,
-                          bairroEC.text,
-                          cidadeEC.text,
+                        spaceRegister.validateForm(
+                          context,
+                          formKey,
+                          nomeEC,
+                          emailEC,
+                          cepEC,
+                          logradouroEC,
+                          numeroEC,
+                          bairroEC,
+                          cidadeEC,
                         );
                       },
                       child: const Text('cadastrar espaco'),

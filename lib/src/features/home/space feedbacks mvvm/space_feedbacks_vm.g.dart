@@ -6,7 +6,7 @@ part of 'space_feedbacks_vm.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$spaceFeedbacksVmHash() => r'ee4828df599289058a788486dcd521b877b5d544';
+String _$spaceFeedbacksVmHash() => r'fb86cd816627cfaf3f8cdc0c5a315ef879f87014';
 
 /// Copied from Dart SDK
 class _SystemHash {

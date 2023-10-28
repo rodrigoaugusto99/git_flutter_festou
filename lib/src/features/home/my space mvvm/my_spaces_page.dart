@@ -56,14 +56,16 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
           );
         },
         error: (Object error, StackTrace stackTrace) {
-          return const Center(
-            child: Text('Erro'),
-          );
+          return const Stack(children: [
+            Center(child: Text('Inserir imagem melhor papai')),
+            Center(child: Icon(Icons.error)),
+          ]);
         },
         loading: () {
-          return const Center(
-            child: Text('Loading'),
-          );
+          return const Stack(children: [
+            Center(child: Text('Inserir carregamento Personalizado papai')),
+            Center(child: CircularProgressIndicator()),
+          ]);
         },
       ),
     );
