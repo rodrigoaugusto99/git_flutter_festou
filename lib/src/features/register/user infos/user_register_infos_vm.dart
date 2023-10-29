@@ -1,13 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:validatorless/validatorless.dart';
 
 part 'user_register_infos_vm.g.dart';
 
 enum UserRegisterInfosStateStatus {
   initial,
   success,
+  invalidForm,
   error,
 }
 
@@ -17,14 +20,58 @@ class UserRegisterInfosVm extends _$UserRegisterInfosVm {
   @override
   UserRegisterInfosStateStatus build() => UserRegisterInfosStateStatus.initial;
 
-  Future<void> register({
-    required String name,
-    required String telefone,
-    required String cep,
-    required String logradouro,
-    required String bairro,
-    required String cidade,
-  }) async {
+  FormFieldValidator<String> validateNome() {
+    return Validatorless.required('Nome obrigatorio');
+  }
+
+  FormFieldValidator<String> validateCEP() {
+    return Validatorless.required('CEP obrigatorio');
+  }
+
+  FormFieldValidator<String> validateLogradouro() {
+    return Validatorless.required('Logradouro obrigatorio');
+  }
+
+  FormFieldValidator<String> validateBairro() {
+    return Validatorless.required('Bairro obrigatorio');
+  }
+
+  FormFieldValidator<String> validateCidade() {
+    return Validatorless.required('Cidade obrigatorio');
+  }
+
+  Future<void> validateForm(
+    BuildContext context,
+    formKey,
+    fullNameEC,
+    telefoneEC,
+    cepEC,
+    logradouroEC,
+    bairroEC,
+    cidadeEC,
+  ) async {
+    if (formKey.currentState?.validate() == true) {
+      await register(
+        fullNameEC.text,
+        telefoneEC.text,
+        cepEC.text,
+        logradouroEC.text,
+        bairroEC.text,
+        cidadeEC.text,
+      );
+    } else {
+      state = UserRegisterInfosStateStatus.invalidForm;
+    }
+  }
+
+  Future<void> register(
+    String name,
+    String telefone,
+    String cep,
+    String logradouro,
+    String bairro,
+    String cidade,
+  ) async {
     final userFirestoreRepository = ref.watch(userFirestoreRepositoryProvider);
 
     final userId = user.uid;

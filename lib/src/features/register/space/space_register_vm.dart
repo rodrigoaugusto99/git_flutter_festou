@@ -10,6 +10,7 @@ import 'package:git_flutter_festou/src/features/register/space/space_register_st
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
+import 'package:validatorless/validatorless.dart';
 
 part 'space_register_vm.g.dart';
 
@@ -78,6 +79,37 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
     state = state.copyWith(
         selectedServices: selectedServices,
         status: SpaceRegisterStateStatus.initial);
+  }
+
+  FormFieldValidator<String> validateNome() {
+    return Validatorless.required('Nome obrigatorio');
+  }
+
+  FormFieldValidator<String> validateEmail() {
+    return Validatorless.multiple([
+      Validatorless.required('Email obrigatorio'),
+      Validatorless.email('Email invalido')
+    ]);
+  }
+
+  FormFieldValidator<String> validateCEP() {
+    return Validatorless.required('CEP obrigatorio');
+  }
+
+  FormFieldValidator<String> validateLogradouro() {
+    return Validatorless.required('Logradouro obrigatorio');
+  }
+
+  FormFieldValidator<String> validateNumero() {
+    return Validatorless.required('Número obigatorio');
+  }
+
+  FormFieldValidator<String> validateBairro() {
+    return Validatorless.required('Bairro obrigatorio');
+  }
+
+  FormFieldValidator<String> validateCidade() {
+    return Validatorless.required('Cidade obrigatorio');
   }
 
   Future<void> validateForm(BuildContext context, formKey, nomeEC, emailEC,

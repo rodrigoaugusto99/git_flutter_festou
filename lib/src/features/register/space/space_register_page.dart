@@ -5,11 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_state.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_vm.dart';
-import 'package:git_flutter_festou/src/features/register/widgets/weekdays_panel.dart';
-import 'package:git_flutter_festou/src/features/register/widgets/services_panel.dart';
-import 'package:git_flutter_festou/src/features/register/widgets/type_panel.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/services_panel.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/type_panel.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/weekdays_panel.dart';
 import 'package:search_cep/search_cep.dart';
-import 'package:validatorless/validatorless.dart';
 
 class EspacoRegisterPage extends ConsumerStatefulWidget {
   const EspacoRegisterPage({super.key});
@@ -43,6 +42,30 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
     logradouroEC.dispose();
     bairroEC.dispose();
     cidadeEC.dispose();
+  }
+
+  void onChangedCep(cep) async {
+    if (cep.isEmpty) {
+      setState(() {
+        isCepAutoCompleted = false;
+      });
+    } else if (cep.length == 8) {
+      final viaCepSearchCep = ViaCepSearchCep();
+      final infoCepJSON = await viaCepSearchCep.searchInfoByCep(cep: cep);
+      infoCepJSON.fold(
+        (error) {
+          log('Erro ao buscar informações do CEP: $error');
+        },
+        (infoCepJSON) {
+          setState(() {
+            logradouroEC.text = infoCepJSON.logradouro ?? '';
+            bairroEC.text = infoCepJSON.bairro ?? '';
+            cidadeEC.text = infoCepJSON.localidade ?? '';
+            isCepAutoCompleted = true;
+          });
+        },
+      );
+    }
   }
 
   @override
@@ -90,63 +113,37 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                 ),
                 TextFormField(
                   controller: nomeEC,
-                  validator: Validatorless.required('Nome obrigatorio'),
+                  validator: spaceRegister.validateNome(),
                   decoration: const InputDecoration(
                     hintText: 'nome',
                   ),
                 ),
                 TextFormField(
                   controller: emailEC,
-                  validator: Validatorless.multiple([
-                    Validatorless.required('Email obrigatorio'),
-                    Validatorless.email('Email inválido')
-                  ]),
+                  validator: spaceRegister.validateEmail(),
                   decoration: const InputDecoration(
                     hintText: 'email',
                   ),
                 ),
                 TextFormField(
                   controller: cepEC,
-                  validator: Validatorless.required('cep obrigatorio'),
+                  validator: spaceRegister.validateCEP(),
                   decoration: const InputDecoration(
                     hintText: 'CEP',
                   ),
-                  onChanged: (cep) async {
-                    if (cep.isEmpty) {
-                      setState(() {
-                        isCepAutoCompleted = false;
-                      });
-                    } else if (cep.length == 8) {
-                      final viaCepSearchCep = ViaCepSearchCep();
-                      final infoCepJSON =
-                          await viaCepSearchCep.searchInfoByCep(cep: cep);
-                      infoCepJSON.fold(
-                        (error) {
-                          log('Erro ao buscar informações do CEP: $error');
-                        },
-                        (infoCepJSON) {
-                          setState(() {
-                            logradouroEC.text = infoCepJSON.logradouro ?? '';
-                            bairroEC.text = infoCepJSON.bairro ?? '';
-                            cidadeEC.text = infoCepJSON.localidade ?? '';
-                            isCepAutoCompleted = true;
-                          });
-                        },
-                      );
-                    }
-                  },
+                  onChanged: onChangedCep,
                 ),
                 TextFormField(
                   enabled: !isCepAutoCompleted,
                   controller: logradouroEC,
-                  validator: Validatorless.required('logradouro obrigatorio'),
+                  validator: spaceRegister.validateLogradouro(),
                   decoration: const InputDecoration(
                     hintText: 'Logradouro',
                   ),
                 ),
                 TextFormField(
                   controller: numeroEC,
-                  validator: Validatorless.required('numero obrigatorio'),
+                  validator: spaceRegister.validateNumero(),
                   decoration: const InputDecoration(
                     hintText: 'Número',
                   ),
@@ -154,7 +151,7 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                 TextFormField(
                   enabled: !isCepAutoCompleted,
                   controller: bairroEC,
-                  validator: Validatorless.required('bairro obrigatorio'),
+                  validator: spaceRegister.validateBairro(),
                   decoration: const InputDecoration(
                     hintText: 'Bairro',
                   ),
@@ -162,7 +159,7 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                 TextFormField(
                   enabled: !isCepAutoCompleted,
                   controller: cidadeEC,
-                  validator: Validatorless.required('cidade obrigatorio'),
+                  validator: spaceRegister.validateCidade(),
                   decoration: const InputDecoration(
                     hintText: 'Cidade',
                   ),
@@ -208,8 +205,8 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                       width: 10,
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        spaceRegister.validateForm(
+                      onPressed: () async {
+                        await spaceRegister.validateForm(
                           context,
                           formKey,
                           nomeEC,

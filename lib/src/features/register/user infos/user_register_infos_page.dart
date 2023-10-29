@@ -40,6 +40,30 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
     super.dispose();
   }
 
+  void onChangedCep(cep) async {
+    if (cep.isEmpty) {
+      setState(() {
+        isCepAutoCompleted = false;
+      });
+    } else if (cep.length == 8) {
+      final viaCepSearchCep = ViaCepSearchCep();
+      final infoCepJSON = await viaCepSearchCep.searchInfoByCep(cep: cep);
+      infoCepJSON.fold(
+        (error) {
+          log('Erro ao buscar informações do CEP: $error');
+        },
+        (infoCepJSON) {
+          setState(() {
+            logradouroEC.text = infoCepJSON.logradouro ?? '';
+            bairroEC.text = infoCepJSON.bairro ?? '';
+            cidadeEC.text = infoCepJSON.localidade ?? '';
+            isCepAutoCompleted = true;
+          });
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final userRegisterInfosVM = ref.watch(userRegisterInfosVmProvider.notifier);
@@ -47,11 +71,15 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
     ref.listen(userRegisterInfosVmProvider, (_, state) {
       switch (state) {
         case UserRegisterInfosStateStatus.initial:
+          break;
         case UserRegisterInfosStateStatus.success:
           Navigator.of(context).pushReplacementNamed('/home');
         case UserRegisterInfosStateStatus.error:
           Messages.showError(
               'Erro ao registrar informações do usuario', context);
+        case UserRegisterInfosStateStatus.invalidForm:
+          Messages.showError('Formulario invalido', context);
+          break;
       }
     });
 
@@ -71,7 +99,7 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
                       const AvatarWidget(),
                       const SizedBox(height: 24),
                       TextFormField(
-                        validator: Validatorless.required('Campo obrigatório'),
+                        validator: userRegisterInfosVM.validateNome(),
                         decoration: const InputDecoration(
                           hintText: 'Nome completo',
                         ),
@@ -91,40 +119,16 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
                       const SizedBox(height: 24),
                       TextFormField(
                         controller: cepEC,
-                        validator: Validatorless.required('cep obrigatorio'),
+                        validator: userRegisterInfosVM.validateCEP(),
                         decoration: const InputDecoration(
                           hintText: 'CEP',
                         ),
-                        onChanged: (cep) async {
-                          if (cep.isEmpty) {
-                            setState(() {
-                              isCepAutoCompleted = false;
-                            });
-                          } else if (cep.length == 8) {
-                            final viaCepSearchCep = ViaCepSearchCep();
-                            final infoCepJSON =
-                                await viaCepSearchCep.searchInfoByCep(cep: cep);
-                            infoCepJSON.fold(
-                              (error) {
-                                log('Erro ao buscar informações do CEP: $error');
-                              },
-                              (infoCepJSON) {
-                                setState(() {
-                                  logradouroEC.text =
-                                      infoCepJSON.logradouro ?? '';
-                                  bairroEC.text = infoCepJSON.bairro ?? '';
-                                  cidadeEC.text = infoCepJSON.localidade ?? '';
-                                  isCepAutoCompleted = true;
-                                });
-                              },
-                            );
-                          }
-                        },
+                        onChanged: onChangedCep,
                       ),
                       const SizedBox(height: 10),
                       TextFormField(
                         enabled: !isCepAutoCompleted,
-                        validator: Validatorless.required('Campo obrigatório'),
+                        validator: userRegisterInfosVM.validateLogradouro(),
                         decoration: const InputDecoration(
                           hintText: 'logradouro',
                         ),
@@ -133,7 +137,7 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
                       const SizedBox(height: 10),
                       TextFormField(
                         enabled: !isCepAutoCompleted,
-                        validator: Validatorless.required('Campo obrigatório'),
+                        validator: userRegisterInfosVM.validateBairro(),
                         decoration: const InputDecoration(
                           hintText: 'bairro',
                         ),
@@ -142,7 +146,7 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
                       const SizedBox(height: 10),
                       TextFormField(
                         enabled: !isCepAutoCompleted,
-                        validator: Validatorless.required('Campo obrigatório'),
+                        validator: userRegisterInfosVM.validateCidade(),
                         decoration: const InputDecoration(
                           hintText: 'cidade',
                         ),
@@ -153,13 +157,15 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
                       ElevatedButton(
                         onPressed: () async {
                           // Chama a função addUserInfos com os dados desejados
-                          await userRegisterInfosVM.register(
-                              name: fullNameEC.text,
-                              telefone: telefoneEC.text,
-                              cep: cepEC.text,
-                              logradouro: logradouroEC.text,
-                              bairro: bairroEC.text,
-                              cidade: cidadeEC.text);
+                          await userRegisterInfosVM.validateForm(
+                              context,
+                              formKey,
+                              fullNameEC.text,
+                              telefoneEC.text,
+                              cepEC.text,
+                              logradouroEC.text,
+                              bairroEC.text,
+                              cidadeEC.text);
                         },
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(56),

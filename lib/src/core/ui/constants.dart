@@ -25,3 +25,26 @@ sealed class TextConstants {
   static const letsCreateAccount = 'Lts create your account!';
   static const alreadyHaveAccount = 'Already have an account?';
 }
+
+sealed class ListConstants {
+  static const availableServices = [
+    'Cozinha',
+    'Garçons',
+    'Decoração',
+    'Som e Iluminação',
+    'Estacionamento',
+    'Banheiros',
+    'Segurança',
+    'Ar-condicionado',
+    'Limpeza ',
+    'Bar',
+  ];
+
+  static const availableTypes = [
+    'Casa',
+    'Apartmaentio',
+    'Salao',
+    'chacara',
+    'playground baby',
+  ];
+}

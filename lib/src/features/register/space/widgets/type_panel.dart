@@ -1,22 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/core/ui/constants.dart';
 
 class TypePanel extends StatelessWidget {
   final ValueChanged<String> onTypePressed;
   final String text;
-  TypePanel({
+  const TypePanel({
     required this.onTypePressed,
     required this.text,
     super.key,
   });
-
-  final List<String> availableServices = [
-    'Casa',
-    'Apartmaentio',
-    'Salao',
-    'chacara',
-    'playground baby',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +25,10 @@ class TypePanel extends StatelessWidget {
             runSpacing: 16,
             alignment: WrapAlignment.center,
             children: List.generate(
-              availableServices.length,
+              ListConstants.availableTypes.length,
               (index) => ButtonType(
                 onTypePressed: onTypePressed,
-                label: availableServices[index],
+                label: ListConstants.availableTypes[index],
               ),
             ),
           ),
