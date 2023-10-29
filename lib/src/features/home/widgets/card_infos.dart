@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/home/space%20feedbacks%20mvvm/space_feedbacks_page.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/more_details.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/show_map.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/ver_fotos.dart';
 import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 
@@ -25,7 +25,7 @@ class _CardInfosState extends State<CardInfos> {
       context: context,
       builder: (context) {
         return Dialog(
-          child: FeedbackPage(space: widget.space),
+          child: FeedbackPage(space: space),
         );
       },
     );

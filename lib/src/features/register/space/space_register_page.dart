@@ -5,11 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_state.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_vm.dart';
-import 'package:git_flutter_festou/src/features/register/widgets/weekdays_panel.dart';
-import 'package:git_flutter_festou/src/features/register/widgets/services_panel.dart';
-import 'package:git_flutter_festou/src/features/register/widgets/type_panel.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/services_panel.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/type_panel.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/weekdays_panel.dart';
 import 'package:search_cep/search_cep.dart';
-import 'package:validatorless/validatorless.dart';
 
 class EspacoRegisterPage extends ConsumerStatefulWidget {
   const EspacoRegisterPage({super.key});

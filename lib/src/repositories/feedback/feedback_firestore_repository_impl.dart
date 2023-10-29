@@ -5,6 +5,7 @@ import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
 import 'package:git_flutter_festou/src/models/feedback_model.dart';
+import 'package:intl/intl.dart';
 import './feedback_firestore_repository.dart';
 
 class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
@@ -26,14 +27,21 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
     }) feedbackData,
   ) async {
     // Crie um mapa com os dados passados como parâmetros
+    log('entrou');
+    String userName = await getUserName();
+    final currentDateTime = DateTime.now();
+    final dateFormat = DateFormat('dd/MM/yyyy - HH');
+    final formattedDateTime = dateFormat.format(currentDateTime);
     try {
       Map<String, dynamic> newFeedback = {
         'space_id': feedbackData.spaceId,
         'user_id': feedbackData.userId,
         'rating': feedbackData.rating,
         'content': feedbackData.content,
+        'user_name': userName,
+        'date': formattedDateTime,
       };
-
+      log('ntrou');
       await feedbacksCollection.add(newFeedback);
       log('Avaliação adicionado com sucesso!');
       return Success(nil);
@@ -69,10 +77,24 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
       userId: feedbackDocument['user_id'] ?? '',
       rating: feedbackDocument['rating'] ?? 0,
       content: feedbackDocument['content'] ?? '',
+      userName: feedbackDocument['user_name'] ?? '',
+      date: feedbackDocument['date'] ?? '',
     );
   }
 
-  Future<DocumentSnapshot> getUserId() async {
+  Future<String> getUserName() async {
+    final userDocument = await getUserDocument();
+    if (userDocument.exists) {
+      final userData = userDocument.data() as Map<String, dynamic>;
+      final name = userData['nome'];
+
+      return name.toString();
+    }
+    // Trate o caso em que o documento não contém o campo "name" ou não existe.
+    throw Exception("Nome do usuário não encontrado");
+  }
+
+  Future<DocumentSnapshot> getUserDocument() async {
     final userDocument =
         await usersCollection.where('uid', isEqualTo: user.uid).get();
 

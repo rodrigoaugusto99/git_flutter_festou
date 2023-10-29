@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/features/home/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
 
 class FeedbackWidget extends StatelessWidget {
   // ignore: prefer_typing_uninitialized_variables
@@ -46,19 +46,19 @@ class FeedbackWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'userName',
-                    style: TextStyle(
+                    feedback.userName,
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16.0,
                     ),
                   ),
                   Text(
-                    'date',
-                    style: TextStyle(
+                    feedback.date,
+                    style: const TextStyle(
                       color: Colors.grey,
                       fontSize: 12.0,
                     ),
