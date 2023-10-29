@@ -1,27 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/core/ui/constants.dart';
 
 class ServicesPanel extends StatelessWidget {
   final ValueChanged<String> onServicePressed;
   final String text;
-  ServicesPanel({
+  const ServicesPanel({
     super.key,
     required this.onServicePressed,
     required this.text,
   });
-
-  final List<String> availableServices = [
-    'Cozinha',
-    'Garçons',
-    'Decoração',
-    'Som e Iluminação',
-    'Estacionamento',
-    'Banheiros',
-    'Segurança',
-    'Ar-condicionado',
-    'Limpeza ',
-    'Bar',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +25,10 @@ class ServicesPanel extends StatelessWidget {
             runSpacing: 16,
             alignment: WrapAlignment.center,
             children: List.generate(
-              availableServices.length,
+              ListConstants.availableServices.length,
               (index) => ButtonType(
                 onServicePressed: onServicePressed,
-                label: availableServices[index],
+                label: ListConstants.availableServices[index],
               ),
             ),
           ),
