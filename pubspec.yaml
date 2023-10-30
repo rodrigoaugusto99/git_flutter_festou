@@ -59,6 +59,8 @@ dependencies:
   firebase_storage: ^11.4.0
   carousel_slider: ^4.2.1
   intl: ^0.18.1
+  glassmorphism: ^3.0.0
+  glassmorphism_ui: ^0.3.0
 
 dev_dependencies:
   flutter_test:

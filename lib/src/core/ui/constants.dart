@@ -12,12 +12,15 @@ sealed class ColorsConstants {
 }*/
 
 sealed class ImageConstants {
-  static const blueBackground = 'lib/assets/images/blueparty2.jpeg';
+  static const loginBackground = 'lib/assets/images/background_login.png';
   static const gliterBlackground = 'lib/assets/images/gliter.jpeg';
   static const ballsBackground = 'lib/assets/images/balls.jpeg';
   static const avatar = 'lib/assets/images/avatar.png';
   static const serpentinad = 'lib/assets/images/serpentina-direita.png';
   static const serpentinae = 'lib/assets/images/serpentina-esquerda.png';
+  static const festouLogo = 'lib/assets/images/logo_festou.png';
+  static const festouLogo2 = 'lib/assets/images/festou-logo.png';
+  static const googleLogo = 'lib/assets/images/google.png';
 }
 
 sealed class TextConstants {
