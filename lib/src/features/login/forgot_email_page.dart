@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
-import 'package:git_flutter_festou/src/features/login/forgot_email_page.dart';
 
-class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({Key? key}) : super(key: key);
+class ForgotEmailPage extends StatefulWidget {
+  const ForgotEmailPage({Key? key}) : super(key: key);
 
   @override
-  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
+  State<ForgotEmailPage> createState() => _ForgotEmailPageState();
 }
 
-class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+class _ForgotEmailPageState extends State<ForgotEmailPage> {
   final emailEC = TextEditingController();
 
   // Método para enviar o link de redefinição de senha para o email digitado
@@ -48,8 +47,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     final double firstContainer = (179 / 732) * screenHeight;
     final double voltarButtonWidth = (202 / 412) * screenWidth;
     final double voltarButtonHeight = (37 / 732) * screenHeight;
-    final double enviarButtonWidth = (74 / 412) * screenWidth;
-    final double enviarButtonHeight = (30 / 732) * screenHeight;
+    final double consultarButtonWidth = (74 / 412) * screenWidth;
+    final double consultarButtonHeight = (30 / 732) * screenHeight;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -66,7 +65,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       Image.asset(
                         ImageConstants.serpentinae,
                       ),
-                      const Text('festou\ncadastro'),
+                      const Text('recuperar\nconta'),
                       Image.asset(
                         ImageConstants.serpentinad,
                       ),
@@ -79,39 +78,17 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     children: [
                       TextFormField(
                         decoration: const InputDecoration(
-                          hintText: 'Email',
+                          hintText: 'CPF/CNPJ',
                         ),
                         controller: emailEC,
                         obscureText: false,
-                      ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return const ForgotEmailPage();
-                                },
-                              ),
-                            );
-                          },
-                          child: const Text(
-                            'Esqueci meu e-mail',
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
                       ),
                       InkWell(
                         onTap: passwordReset,
                         child: Container(
                           alignment: Alignment.center,
-                          width: enviarButtonWidth,
-                          height: enviarButtonHeight,
+                          width: consultarButtonWidth,
+                          height: consultarButtonHeight,
                           decoration: BoxDecoration(
                             color: const Color.fromARGB(255, 13, 46, 89),
                             borderRadius:
@@ -120,7 +97,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           child: const Align(
                             alignment: Alignment.center,
                             child: Text(
-                              'enviar código',
+                              'Consultar',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 10,
@@ -129,6 +106,19 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             ),
                           ),
                         ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const Text('Seu e-mail é:'),
+                          Container(
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.all(7),
+                              decoration: BoxDecoration(
+                                  border:
+                                      Border.all(width: 2, color: Colors.red)),
+                              child: const Text('teste@festou.com.br')),
+                        ],
                       ),
                       InkWell(
                         onTap: () => Navigator.of(context).pop(),

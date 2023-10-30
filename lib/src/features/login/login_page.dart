@@ -197,6 +197,32 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                   decoration: InputDecoration(
                                     hintText: 'Password',
 
+
+                      const SizedBox(height: 24),
+                      Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: Column(
+                          children: [
+                            // email textfield
+                            TextFormField(
+                              controller: emailEC,
+                              decoration: const InputDecoration(
+                                hintText: 'Email',
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 24,
+                            ),
+                            TextFormField(
+                              obscureText: isVisible ? false : true,
+                              controller: passwordEC,
+                              decoration: InputDecoration(
+                                hintText: 'Password',
+                                suffixIcon: GestureDetector(
+                                  //troca valor do bool dentro do setState
+                                  onTap: () => setState(
+                                    () {
+                                      isVisible = !isVisible;
                                     border: InputBorder
                                         .none, // Remove a borda padrão
                                     prefixIcon: const Icon(
