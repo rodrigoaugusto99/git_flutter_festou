@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/surrounding%20spaces/surrounding_spaces_state.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/surrounding%20spaces/surrounding_spaces_vm.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_list.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_to_box_adapter.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
 
-class AllSpacesPage extends ConsumerStatefulWidget {
-  const AllSpacesPage({super.key});
+class SurroundingSpacesPage extends ConsumerStatefulWidget {
+  const SurroundingSpacesPage({super.key});
 
   @override
-  ConsumerState<AllSpacesPage> createState() => _AllSpacesPageState();
+  ConsumerState<SurroundingSpacesPage> createState() =>
+      _SurroundingSpacesPageState();
 }
 
-//TODO: spacs by type
+//TODO: spaces by surrounding area
 
-class _AllSpacesPageState extends ConsumerState<AllSpacesPage> {
+class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
   @override
   Widget build(BuildContext context) {
-    final allSpaces = ref.watch(allSpacesVmProvider);
+    final allSpaces = ref.watch(surroundingSpacesVmProvider);
 
     final message = ref.watch(allSpacesVmProvider.notifier).errorMessage;
 
@@ -30,7 +33,7 @@ class _AllSpacesPageState extends ConsumerState<AllSpacesPage> {
 
     return Scaffold(
       body: allSpaces.when(
-        data: (AllSpaceState data) {
+        data: (SurroundingSpacesState data) {
           return CustomScrollView(
             slivers: [
               const MySliverToBoxAdapter(

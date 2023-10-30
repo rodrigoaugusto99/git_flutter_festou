@@ -16,8 +16,10 @@ class LoginVM extends _$LoginVM {
 
   //validação email
   FormFieldValidator<String> validateEmail() {
-    return Validatorless.multiple(
-        [Validatorless.required(''), Validatorless.email('')]);
+    return Validatorless.multiple([
+      Validatorless.required('Email obrigatorio'),
+      Validatorless.email('mail invalido')
+    ]);
   }
 
 //validação senha

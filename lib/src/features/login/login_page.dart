@@ -144,7 +144,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         borderGradient: const LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
-                          colors: [],
+                          colors: [
+                            Color.fromRGBO(0, 0, 0, 0.35),
+                            Color.fromRGBO(0, 0, 0, 0),
+                          ],
                         ),
                         child: Align(
                           child: Column(
@@ -197,32 +200,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                   decoration: InputDecoration(
                                     hintText: 'Password',
 
-
-                      const SizedBox(height: 24),
-                      Padding(
-                        padding: const EdgeInsets.all(18.0),
-                        child: Column(
-                          children: [
-                            // email textfield
-                            TextFormField(
-                              controller: emailEC,
-                              decoration: const InputDecoration(
-                                hintText: 'Email',
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 24,
-                            ),
-                            TextFormField(
-                              obscureText: isVisible ? false : true,
-                              controller: passwordEC,
-                              decoration: InputDecoration(
-                                hintText: 'Password',
-                                suffixIcon: GestureDetector(
-                                  //troca valor do bool dentro do setState
-                                  onTap: () => setState(
-                                    () {
-                                      isVisible = !isVisible;
                                     border: InputBorder
                                         .none, // Remove a borda padrão
                                     prefixIcon: const Icon(
@@ -319,10 +296,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               SizedBox(
                                 height: screenHeight * 0.02,
                               ),
-                              const Row(
+                              Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
+                                  const Text(
                                     'Não tem conta?',
                                     style: TextStyle(
                                       fontSize: 11,
@@ -330,12 +307,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                       color: Colors.white,
                                     ),
                                   ),
-                                  Text(
-                                    ' Cadastre-se',
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w400,
-                                      color: Color.fromARGB(255, 250, 0, 255),
+                                  InkWell(
+                                    onTap: () => Navigator.of(context)
+                                        .pushNamed('/register/user'),
+                                    child: const Text(
+                                      ' Cadastre-se',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w400,
+                                        color: Color.fromARGB(255, 250, 0, 255),
+                                      ),
                                     ),
                                   ),
                                 ],
