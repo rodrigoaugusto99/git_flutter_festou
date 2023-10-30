@@ -1,28 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user_register_infos_vm.dart';
+part of 'spaces_by_type_vm.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$userRegisterInfosVmHash() =>
-    r'e7179169801480934699663e5f9f960b2b97efea';
+String _$spacesByTypeVmHash() => r'd8823eb77f89014ab49bea389b158577926e9d87';
 
-/// See also [UserRegisterInfosVm].
-@ProviderFor(UserRegisterInfosVm)
-final userRegisterInfosVmProvider = AutoDisposeNotifierProvider<
-    UserRegisterInfosVm, UserRegisterInfosStateStatus>.internal(
-  UserRegisterInfosVm.new,
-  name: r'userRegisterInfosVmProvider',
+/// See also [SpacesByTypeVm].
+@ProviderFor(SpacesByTypeVm)
+final spacesByTypeVmProvider = AutoDisposeAsyncNotifierProvider<SpacesByTypeVm,
+    SpacesByTypeState>.internal(
+  SpacesByTypeVm.new,
+  name: r'spacesByTypeVmProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$userRegisterInfosVmHash,
+      : _$spacesByTypeVmHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$UserRegisterInfosVm
-    = AutoDisposeNotifier<UserRegisterInfosStateStatus>;
+typedef _$SpacesByTypeVm = AutoDisposeAsyncNotifier<SpacesByTypeState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter

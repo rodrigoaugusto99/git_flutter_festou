@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/new_space_card.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/space_card.dart';
 
 class MySliverList extends StatelessWidget {
@@ -18,7 +19,7 @@ class MySliverList extends StatelessWidget {
       delegate: SliverChildBuilderDelegate(
           (context, index) => Column(
                 children: [
-                  SpaceCard2(space: data.spaces[index]),
+                  NewSpaceCard(space: data.spaces[index]),
                 ],
               ),
           childCount: data.spaces.length),

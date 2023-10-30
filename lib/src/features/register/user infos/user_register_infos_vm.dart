@@ -52,12 +52,12 @@ class UserRegisterInfosVm extends _$UserRegisterInfosVm {
   ) async {
     if (formKey.currentState?.validate() == true) {
       await register(
-        fullNameEC.text,
-        telefoneEC.text,
-        cepEC.text,
-        logradouroEC.text,
-        bairroEC.text,
-        cidadeEC.text,
+        fullNameEC,
+        telefoneEC,
+        cepEC,
+        logradouroEC,
+        bairroEC,
+        cidadeEC,
       );
     } else {
       state = UserRegisterInfosStateStatus.invalidForm;
