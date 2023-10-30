@@ -48,40 +48,43 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
       }
     });
 
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
+
+    final double loginButtonWidth = (115 / 412) * screenWidth;
+    final double loginButtonHeight = (31 / 732) * screenHeight;
+
+    final double googleLoginButtonWidth = (202 / 412) * screenWidth;
+    final double googleLoginButtonHeight = (37 / 732) * screenHeight;
+
+    final double firstContainer = (179 / 732) * screenHeight;
+
     return Scaffold(
-      backgroundColor: Colors.grey,
+      backgroundColor: Colors.white,
       body: Form(
         key: formKey,
         child: SingleChildScrollView(
           child: Stack(
             children: [
               Column(
-                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  const SizedBox(height: 10),
-
-                  //logo
-                  const Icon(
-                    Icons.lock,
-                    size: 150,
-                    color: Colors.blue,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  //lets create your account!
-                  Text(
-                    TextConstants.letsCreateAccount,
-                    style: TextStyle(
-                      color: Colors.grey[700],
-                      fontSize: 16,
+                  SizedBox(
+                    height: firstContainer,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Image.asset(
+                          ImageConstants.serpentinae,
+                        ),
+                        const Text('festou\ncadastro'),
+                        Image.asset(
+                          ImageConstants.serpentinad,
+                        ),
+                      ],
                     ),
                   ),
-
-                  const SizedBox(height: 20),
-
                   Padding(
-                    padding: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Column(
                       children: [
                         TextFormField(
@@ -92,9 +95,6 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                           controller: emailEC,
                           obscureText: false,
                         ),
-
-                        const SizedBox(height: 10),
-
                         //password textfield
                         TextFormField(
                           validator: userRegisterVM.validatePassword(),
@@ -104,9 +104,6 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                           controller: passwordEC,
                           obscureText: false,
                         ),
-
-                        const SizedBox(height: 10),
-
                         //confirm password textfield
                         TextFormField(
                           validator: userRegisterVM.confirmEmail(passwordEC),
@@ -119,28 +116,51 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
 
                         const SizedBox(height: 10),
 
-                        ElevatedButton(
-                          onPressed: () {
+                        InkWell(
+                          onTap: () {
                             userRegisterVM.validateForm(
                                 context, formKey, emailEC, passwordEC);
                           },
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(56),
-                            foregroundColor: Colors.white,
-                            backgroundColor: ColorsConstants.blue,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(40),
+                          child: Container(
+                            alignment: Alignment.center,
+                            width: googleLoginButtonWidth,
+                            height: googleLoginButtonHeight,
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 13, 46, 89),
+                              borderRadius: BorderRadius.circular(
+                                  10), // Borda arredondada
+                            ),
+                            child: const Text(
+                              'CADASTRAR',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                           ),
-                          child: const Text('SIGN UP'),
                         ),
-                        const SizedBox(height: 20),
-
-                        Feed(
-                          text: TextConstants.alreadyHaveAccount,
-                          text2: 'Login now',
+                        InkWell(
                           onTap: () =>
                               Navigator.of(context).pushNamed('/login'),
+                          child: Container(
+                            alignment: Alignment.center,
+                            width: googleLoginButtonWidth,
+                            height: googleLoginButtonHeight,
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 13, 46, 89),
+                              borderRadius: BorderRadius.circular(
+                                  10), // Borda arredondada
+                            ),
+                            child: const Text(
+                              'VOLTAR',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),

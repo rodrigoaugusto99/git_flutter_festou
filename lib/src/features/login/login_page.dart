@@ -90,7 +90,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           children: [
                             // email textfield
                             TextFormField(
-                              validator: loginVM.validateEmail(),
                               controller: emailEC,
                               decoration: const InputDecoration(
                                 hintText: 'Email',
@@ -100,7 +99,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               height: 24,
                             ),
                             TextFormField(
-                              validator: loginVM.validatePassword(),
                               obscureText: isVisible ? false : true,
                               controller: passwordEC,
                               decoration: InputDecoration(

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +9,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/d
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/help/help_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/locador/quero_ser_locador.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
+import 'package:git_flutter_festou/src/features/login/forgot_email_page.dart';
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
 import 'package:git_flutter_festou/src/features/register/user%20infos/user_register_infos_page.dart';
@@ -59,7 +61,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const SplashPage(),
+      home: const UserRegisterPage(),
     );
   }
 }
