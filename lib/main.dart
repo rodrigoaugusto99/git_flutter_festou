@@ -9,6 +9,8 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/d
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/help/help_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/locador/quero_ser_locador.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20by%20type/spaces_by_type_page.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20with%20sugestion/spaces_with_sugestion_page.dart';
 import 'package:git_flutter_festou/src/features/login/forgot_email_page.dart';
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
@@ -48,8 +50,21 @@ class MyApp extends StatelessWidget {
         '/account/locador': (_) => QueroSerLocadorPage(),
         '/account/favorites': (_) => const MyFavoriteSpacePage(),
         '/home/my_spaces': (_) => const MySpacesPage(),
-        '/home/all_spaces': (_) => const AllSpacesPage(),
+        //'/home/all_spaces': (_) => const AllSpacesPage(),
         '/home/search_page': (_) => const SearchPage(),
+        '/spaces/spaces_with_sugestion': (_) => const SpacesWithSugestionPage(),
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == '/spaces/spaces_by_types') {
+          // Verifica se há argumentos na rota.
+          final type = settings.arguments as List<String>;
+
+          // Crie a página `SpacesByTypePage` e passe os argumentos, se houver, para ela.
+          return MaterialPageRoute(
+            builder: (context) => SpacesByTypePage(type: type),
+          );
+        }
+        return null;
       },
       theme: ThemeData(
         fontFamily: 'inter',

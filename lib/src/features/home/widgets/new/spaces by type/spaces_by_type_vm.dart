@@ -11,12 +11,12 @@ part 'spaces_by_type_vm.g.dart';
 class SpacesByTypeVm extends _$SpacesByTypeVm {
   String errorMessage = '';
   @override
-  Future<SpacesByTypeState> build() async {
+  Future<SpacesByTypeState> build(List<String> type) async {
     final spaceRepository = ref.read(spaceFirestoreRepositoryProvider);
 
     try {
       //todo: get by type
-      final spacesResult = await spaceRepository.getAllSpaces();
+      final spacesResult = await spaceRepository.getSpacesByType(type);
 
       switch (spacesResult) {
         case Success(value: final spacesData):

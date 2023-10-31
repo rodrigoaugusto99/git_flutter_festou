@@ -1,21 +1,25 @@
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20by%20type/spaces_by_type_state.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20with%20sugestion/spaces_with_sugestion_state.dart';
+import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-part 'spaces_by_type_vm.g.dart';
+
+part 'spaces_with_sugestion_vm.g.dart';
 
 @riverpod
 class SpacesWithSugestionVm extends _$SpacesWithSugestionVm {
   String errorMessage = '';
+
   @override
-  Future<SpacesWithSugestionState> build() async {
-    final spaceRepository = ref.read(spaceFirestoreRepositoryProvider);
+  Future<SpacesWithSugestionState> build(
+      SpaceWithImages spaceWithImages) async {
+    final spaceRepository = ref.watch(spaceFirestoreRepositoryProvider);
 
     try {
       //todo: get spaces with sugestion
-      final spacesResult = await spaceRepository.getAllSpaces();
+      final spacesResult =
+          await spaceRepository.getSpacesWithSugestion(spaceWithImages);
 
       switch (spacesResult) {
         case Success(value: final spacesData):

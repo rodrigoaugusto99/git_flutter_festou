@@ -8,9 +8,11 @@ import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20with%2
 import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_list.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_to_box_adapter.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
+import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 
 class SpacesWithSugestionPage extends ConsumerStatefulWidget {
-  const SpacesWithSugestionPage({super.key});
+  final SpaceWithImages? space;
+  const SpacesWithSugestionPage({super.key, this.space});
 
   @override
   ConsumerState<SpacesWithSugestionPage> createState() =>
@@ -23,7 +25,8 @@ class _SpacesWithSugestionPageState
     extends ConsumerState<SpacesWithSugestionPage> {
   @override
   Widget build(BuildContext context) {
-    final typeSpaces = ref.watch(spacesWithSugestionVmProvider);
+    final spaceAndSugestions =
+        ref.watch(spacesWithSugestionVmProvider(widget.space!));
 
     final message = ref.watch(allSpacesVmProvider.notifier).errorMessage;
 
@@ -34,14 +37,14 @@ class _SpacesWithSugestionPageState
     });
 
     return Scaffold(
-      body: typeSpaces.when(
+      body: spaceAndSugestions.when(
         data: (SpacesWithSugestionState data) {
           return CustomScrollView(
             slivers: [
               const MySliverToBoxAdapter(
-                text: 'ALL SPACES',
+                text: 'Space with sugestions',
               ),
-              MySliverList(data: data, spaces: typeSpaces),
+              MySliverList(data: data, spaces: spaceAndSugestions),
             ],
           );
         },

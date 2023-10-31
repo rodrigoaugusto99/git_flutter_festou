@@ -46,10 +46,10 @@ sealed class ListConstants {
   ];
 
   static const availableTypes = [
-    'Casa',
-    'Apartmaentio',
-    'Salao',
-    'chacara',
-    'playground baby',
+    'Kids',
+    'Casamento',
+    'Debutante',
+    'Religioso',
+    'Cha',
   ];
 }

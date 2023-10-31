@@ -30,7 +30,9 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                 child: SizedBox(
                   width: x * 0.43,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () => Navigator.of(context).pushNamed(
+                        '/spaces/spaces_by_types',
+                        arguments: ['Kids']),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[100],
                         shape: RoundedRectangleBorder(
@@ -60,7 +62,9 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                 child: SizedBox(
                   width: x * 0.43,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () => Navigator.of(context).pushNamed(
+                        '/spaces/spaces_by_types',
+                        arguments: ['Casamento']),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[100],
                         shape: RoundedRectangleBorder(
@@ -90,7 +94,9 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                 child: SizedBox(
                   width: x * 0.43,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () => Navigator.of(context).pushNamed(
+                        '/spaces/spaces_by_types',
+                        arguments: 'Debutante'),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[100],
                         shape: RoundedRectangleBorder(
@@ -120,7 +126,9 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                 child: SizedBox(
                   width: x * 0.43,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () => Navigator.of(context).pushNamed(
+                        '/spaces/spaces_by_types',
+                        arguments: 'Religioso'),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[100],
                         shape: RoundedRectangleBorder(
@@ -150,7 +158,8 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                 child: SizedBox(
                   width: x * 0.43,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () => Navigator.of(context)
+                        .pushNamed('/spaces/spaces_by_types', arguments: 'Cha'),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[100],
                         shape: RoundedRectangleBorder(
@@ -180,7 +189,9 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                 child: SizedBox(
                   width: x * 0.43,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () => Navigator.of(context).pushNamed(
+                        '/spaces/spaces_by_types',
+                        arguments: 'Reuniao'),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[100],
                         shape: RoundedRectangleBorder(
@@ -210,7 +221,9 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                 child: SizedBox(
                   width: x * 0.43,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () => Navigator.of(context).pushNamed(
+                        '/spaces/spaces_by_types',
+                        arguments: 'Outros'),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[100],
                         shape: RoundedRectangleBorder(

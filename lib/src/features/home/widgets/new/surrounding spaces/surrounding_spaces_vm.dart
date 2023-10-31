@@ -16,7 +16,7 @@ class SurroundingSpacesVm extends _$SurroundingSpacesVm {
 
     try {
       //todo: get surrounding spaces
-      final spacesResult = await spaceRepository.getAllSpaces();
+      final spacesResult = await spaceRepository.getSurroundingSpaces();
 
       switch (spacesResult) {
         case Success(value: final spacesData):
