@@ -18,8 +18,7 @@ class SpacesWithSugestionVm extends _$SpacesWithSugestionVm {
 
     try {
       //todo: get spaces with sugestion
-      final spacesResult =
-          await spaceRepository.getSpacesWithSugestion(spaceWithImages);
+      final spacesResult = await spaceRepository.getSugestions(spaceWithImages);
 
       switch (spacesResult) {
         case Success(value: final spacesData):

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/card_infos.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20with%20sugestion/spaces_with_sugestion_page.dart';
 import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 
 class NewSpaceCard extends ConsumerStatefulWidget {
@@ -120,6 +121,17 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                     ),
                     Row(
                       children: [
+                        InkWell(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SpacesWithSugestionPage(
+                                space: widget.space,
+                              ),
+                            ),
+                          ),
+                          child: const Icon(Icons.abc),
+                        ),
                         InkWell(
                           onTap: navigateToInfo,
                           child: const Icon(Icons.info),

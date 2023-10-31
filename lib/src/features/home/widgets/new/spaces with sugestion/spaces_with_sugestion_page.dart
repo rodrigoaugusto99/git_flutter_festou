@@ -1,8 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20by%20type/spaces_by_type_state.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20by%20type/spaces_by_type_vm.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/new_space_card.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20with%20sugestion/spaces_with_sugestion_state.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20with%20sugestion/spaces_with_sugestion_vm.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_list.dart';
@@ -11,8 +12,8 @@ import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm
 import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 
 class SpacesWithSugestionPage extends ConsumerStatefulWidget {
-  final SpaceWithImages? space;
-  const SpacesWithSugestionPage({super.key, this.space});
+  final SpaceWithImages space;
+  const SpacesWithSugestionPage({super.key, required this.space});
 
   @override
   ConsumerState<SpacesWithSugestionPage> createState() =>
@@ -25,26 +26,25 @@ class _SpacesWithSugestionPageState
     extends ConsumerState<SpacesWithSugestionPage> {
   @override
   Widget build(BuildContext context) {
-    final spaceAndSugestions =
-        ref.watch(spacesWithSugestionVmProvider(widget.space!));
+    final sugestions = ref.watch(spacesWithSugestionVmProvider(widget.space));
 
     final message = ref.watch(allSpacesVmProvider.notifier).errorMessage;
 
     Future.delayed(Duration.zero, () {
       if (message.toString() != '') {
+        log('message');
         Messages.showError(message, context);
       }
     });
 
     return Scaffold(
-      body: spaceAndSugestions.when(
+      body: sugestions.when(
         data: (SpacesWithSugestionState data) {
           return CustomScrollView(
             slivers: [
-              const MySliverToBoxAdapter(
-                text: 'Space with sugestions',
-              ),
-              MySliverList(data: data, spaces: spaceAndSugestions),
+              SliverToBoxAdapter(child: NewSpaceCard(space: widget.space)),
+              const SliverToBoxAdapter(child: Text('Sugestoes')),
+              MySliverList(data: data, spaces: sugestions),
             ],
           );
         },

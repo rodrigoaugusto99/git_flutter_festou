@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
+import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 import 'package:git_flutter_festou/src/repositories/images/images_storage_repository.dart';
@@ -361,10 +362,65 @@ p decidir o isFavorited*/
   }
 
   @override
+  Future<Either<RepositoryException, List<SpaceWithImages>>> getSugestions(
+      SpaceWithImages spaceWithImages) async {
+    try {
+      // Obtém os tipos do espaço fornecido.
+      final selectedTypes = spaceWithImages.space.selectedTypes;
+
+      // Consulta espaços que possuam pelo menos um dos tipos encontrados.
+      final spacesResult = await getSpacesWithSameTypes(selectedTypes);
+
+      switch (spacesResult) {
+        case Success(value: final spacesData):
+          return Success(spacesData);
+        case Failure(exception: RepositoryException(:final message)):
+          return Failure(RepositoryException(message: message));
+      }
+    } catch (e) {
+      return Failure(
+          RepositoryException(message: 'Erro ao buscar sugestões de espaços'));
+    }
+  }
+
   Future<Either<RepositoryException, List<SpaceWithImages>>>
-      getSpacesWithSugestion(SpaceWithImages spaceWithImages) {
-    // TODO: implement getSpacesWithSugestion
-    throw UnimplementedError();
+      getSpacesWithSameTypes(List<dynamic> types) async {
+    try {
+      final userSpacesFavorite = await getUserFavoriteSpaces();
+
+      // Consulta espaços onde o campo "selectedTypes" contenha pelo menos um dos tipos da lista.
+      final spaceDocuments = await spacesCollection
+          .where('selectedTypes', arrayContainsAny: types)
+          .get();
+
+      // Mapeia os documentos de espaço para objetos SpaceModel.
+      List<SpaceModel> spaceModels = spaceDocuments.docs.map((spaceDocument) {
+        final isFavorited =
+            userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
+        return mapSpaceDocumentToModel(spaceDocument, isFavorited);
+      }).toList();
+
+      final spaceWithImagesList = <SpaceWithImages>[];
+
+      for (var space in spaceModels) {
+        final imageResult =
+            await imagesStorageRepository.getSpaceImages(space.spaceId);
+
+        switch (imageResult) {
+          case Success(value: final imagesData):
+            spaceWithImagesList.add(SpaceWithImages(space, imagesData));
+            break;
+          case Failure():
+            log('Erro ao recuperar imagens: $imageResult');
+        }
+      }
+
+      return Success(spaceWithImagesList);
+    } catch (e) {
+      log('Erro ao recuperar espaços por tipo: $e');
+      return Failure(
+          RepositoryException(message: 'Erro ao carregar espaços por tipo'));
+    }
   }
 
   @override

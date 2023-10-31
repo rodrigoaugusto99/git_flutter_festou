@@ -7,7 +7,7 @@ part of 'spaces_with_sugestion_vm.dart';
 // **************************************************************************
 
 String _$spacesWithSugestionVmHash() =>
-    r'62074ddba282eb0b8ab6e3c7c792bf3d68ff369f';
+    r'f1e739df289442e1e76e0bac68120d1bfa0e352e';
 
 /// Copied from Dart SDK
 class _SystemHash {

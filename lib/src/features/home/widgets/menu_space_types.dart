@@ -96,7 +96,7 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                   child: ElevatedButton(
                     onPressed: () => Navigator.of(context).pushNamed(
                         '/spaces/spaces_by_types',
-                        arguments: 'Debutante'),
+                        arguments: ['Debutante']),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[100],
                         shape: RoundedRectangleBorder(
@@ -128,7 +128,7 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                   child: ElevatedButton(
                     onPressed: () => Navigator.of(context).pushNamed(
                         '/spaces/spaces_by_types',
-                        arguments: 'Religioso'),
+                        arguments: ['Religioso']),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[100],
                         shape: RoundedRectangleBorder(
@@ -158,8 +158,9 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                 child: SizedBox(
                   width: x * 0.43,
                   child: ElevatedButton(
-                    onPressed: () => Navigator.of(context)
-                        .pushNamed('/spaces/spaces_by_types', arguments: 'Cha'),
+                    onPressed: () => Navigator.of(context).pushNamed(
+                        '/spaces/spaces_by_types',
+                        arguments: ['Cha']),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[100],
                         shape: RoundedRectangleBorder(
@@ -191,7 +192,7 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                   child: ElevatedButton(
                     onPressed: () => Navigator.of(context).pushNamed(
                         '/spaces/spaces_by_types',
-                        arguments: 'Reuniao'),
+                        arguments: ['Reuniao']),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[100],
                         shape: RoundedRectangleBorder(
@@ -223,7 +224,7 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                   child: ElevatedButton(
                     onPressed: () => Navigator.of(context).pushNamed(
                         '/spaces/spaces_by_types',
-                        arguments: 'Outros'),
+                        arguments: ['Outros']),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[100],
                         shape: RoundedRectangleBorder(
