@@ -5,10 +5,11 @@ import 'package:git_flutter_festou/src/features/home/widgets/ver_fotos.dart';
 import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 
 class CardInfos extends StatefulWidget {
-  final SpaceModel space;
+  final SpaceWithImages space;
 
   const CardInfos({
     super.key,
@@ -112,19 +113,19 @@ class _CardInfosState extends State<CardInfos> {
           child: Column(
             children: [
               ElevatedButton(
-                onPressed: () => showRatingDialog(widget.space),
+                onPressed: () => showRatingDialog(widget.space.space),
                 child: const Text('Avalie'),
               ),
               ElevatedButton(
-                onPressed: () => showAvaliacoes(widget.space),
+                onPressed: () => showAvaliacoes(widget.space.space),
                 child: const Text('Avaliações'),
               ),
               ElevatedButton(
-                onPressed: () => showMoreDetails(widget.space),
+                onPressed: () => showMoreDetails(widget.space.space),
                 child: const Text('Mais Detalhes'),
               ),
               ElevatedButton(
-                onPressed: () => showMap(widget.space),
+                onPressed: () => showMap(widget.space.space),
                 child: const Text('Ver Localização'),
               ),
               //implementar logica pra pegar os dados do usuario que criou o espaço
@@ -133,7 +134,7 @@ class _CardInfosState extends State<CardInfos> {
                 child: const Text('USER INFOS'),
               ),*/
               ElevatedButton(
-                onPressed: () => verFotos(widget.space),
+                onPressed: () => verFotos(widget.space.space),
                 child: const Text('Ver Fotos'),
               ),
               ElevatedButton(

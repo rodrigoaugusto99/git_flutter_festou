@@ -30,17 +30,6 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
           widget.space.space.spaceId, widget.space.space.isFavorited);
     }
 
-    void navigateToInfo() {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CardInfos(
-            space: widget.space.space,
-          ),
-        ),
-      );
-    }
-
     final x = MediaQuery.of(context).size.width;
     final y = MediaQuery.of(context).size.height;
 
@@ -119,21 +108,6 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                     ),
                     Row(
                       children: [
-                        InkWell(
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SpacesWithSugestionPage(
-                                space: widget.space,
-                              ),
-                            ),
-                          ),
-                          child: const Icon(Icons.abc),
-                        ),
-                        InkWell(
-                          onTap: navigateToInfo,
-                          child: const Icon(Icons.info),
-                        ),
                         InkWell(
                           onTap: () {},
                           child: const Icon(Icons.edit),
