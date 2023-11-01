@@ -16,243 +16,236 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
   Widget build(BuildContext context) {
     final x = MediaQuery.of(context).size.width;
     final y = MediaQuery.of(context).size.height;
-    return Column(
-      children: [
-        // Lista horizontal de botões
-        SizedBox(
-          height: y * 0.12,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: [
-              SizedBox(width: x * 0.03),
-              Padding(
-                padding: EdgeInsets.only(bottom: y * 0.01),
-                child: SizedBox(
-                  width: x * 0.43,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.of(context).pushNamed(
-                        '/spaces/spaces_by_types',
-                        arguments: ['Kids']),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[100],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        elevation: 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'lib/assets/images/iconKids.png',
-                          width: x * 0.12,
-                        ),
-                        SizedBox(width: x * 0.02),
-                        const Text(
-                          'Kids',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ],
+    return SizedBox(
+      height: y * 0.12,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: [
+          SizedBox(width: x * 0.03),
+          Padding(
+            padding: EdgeInsets.only(bottom: y * 0.01),
+            child: SizedBox(
+              width: x * 0.43,
+              child: ElevatedButton(
+                onPressed: () => Navigator.of(context)
+                    .pushNamed('/spaces/spaces_by_types', arguments: ['Kids']),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[100],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                  ),
+                    elevation: 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'lib/assets/images/iconKids.png',
+                      width: x * 0.12,
+                    ),
+                    SizedBox(width: x * 0.02),
+                    const Text(
+                      'Kids',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(width: x * 0.025),
-              Padding(
-                padding: EdgeInsets.only(bottom: y * 0.01),
-                child: SizedBox(
-                  width: x * 0.43,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.of(context).pushNamed(
-                        '/spaces/spaces_by_types',
-                        arguments: ['Casamento']),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[100],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        elevation: 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'lib/assets/images/iconBuque.png',
-                          width: x * 0.12,
-                        ),
-                        SizedBox(width: x * 0.02),
-                        const Text(
-                          'Casamento',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: x * 0.025),
-              Padding(
-                padding: EdgeInsets.only(bottom: y * 0.01),
-                child: SizedBox(
-                  width: x * 0.43,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.of(context).pushNamed(
-                        '/spaces/spaces_by_types',
-                        arguments: ['Debutante']),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[100],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        elevation: 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'lib/assets/images/iconQuinze.png',
-                          width: x * 0.12,
-                        ),
-                        SizedBox(width: x * 0.02),
-                        const Text(
-                          'Debutante',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: x * 0.025),
-              Padding(
-                padding: EdgeInsets.only(bottom: y * 0.01),
-                child: SizedBox(
-                  width: x * 0.43,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.of(context).pushNamed(
-                        '/spaces/spaces_by_types',
-                        arguments: ['Religioso']),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[100],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        elevation: 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'lib/assets/images/iconReligioso.png',
-                          width: x * 0.12,
-                        ),
-                        SizedBox(width: x * 0.02),
-                        const Text(
-                          'Religioso',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: x * 0.025),
-              Padding(
-                padding: EdgeInsets.only(bottom: y * 0.01),
-                child: SizedBox(
-                  width: x * 0.43,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.of(context).pushNamed(
-                        '/spaces/spaces_by_types',
-                        arguments: ['Cha']),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[100],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        elevation: 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'lib/assets/images/iconCha.png',
-                          width: x * 0.12,
-                        ),
-                        SizedBox(width: x * 0.02),
-                        const Text(
-                          'Chá',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: x * 0.025),
-              Padding(
-                padding: EdgeInsets.only(bottom: y * 0.01),
-                child: SizedBox(
-                  width: x * 0.43,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.of(context).pushNamed(
-                        '/spaces/spaces_by_types',
-                        arguments: ['Reuniao']),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[100],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        elevation: 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'lib/assets/images/iconReuniao.png',
-                          width: x * 0.12,
-                        ),
-                        SizedBox(width: x * 0.02),
-                        const Text(
-                          'Reunião',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: x * 0.025),
-              Padding(
-                padding: EdgeInsets.only(bottom: y * 0.01),
-                child: SizedBox(
-                  width: x * 0.43,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.of(context).pushNamed(
-                        '/spaces/spaces_by_types',
-                        arguments: ['Outros']),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[100],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        elevation: 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'lib/assets/images/iconOutros.png',
-                          width: x * 0.12,
-                        ),
-                        SizedBox(width: x * 0.02),
-                        const Text(
-                          'Outros',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: x * 0.025),
-            ],
+            ),
           ),
-        ),
-      ],
+          SizedBox(width: x * 0.025),
+          Padding(
+            padding: EdgeInsets.only(bottom: y * 0.01),
+            child: SizedBox(
+              width: x * 0.43,
+              child: ElevatedButton(
+                onPressed: () => Navigator.of(context).pushNamed(
+                    '/spaces/spaces_by_types',
+                    arguments: ['Casamento']),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[100],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'lib/assets/images/iconBuque.png',
+                      width: x * 0.12,
+                    ),
+                    SizedBox(width: x * 0.02),
+                    const Text(
+                      'Casamento',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: x * 0.025),
+          Padding(
+            padding: EdgeInsets.only(bottom: y * 0.01),
+            child: SizedBox(
+              width: x * 0.43,
+              child: ElevatedButton(
+                onPressed: () => Navigator.of(context).pushNamed(
+                    '/spaces/spaces_by_types',
+                    arguments: ['Debutante']),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[100],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'lib/assets/images/iconQuinze.png',
+                      width: x * 0.12,
+                    ),
+                    SizedBox(width: x * 0.02),
+                    const Text(
+                      'Debutante',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: x * 0.025),
+          Padding(
+            padding: EdgeInsets.only(bottom: y * 0.01),
+            child: SizedBox(
+              width: x * 0.43,
+              child: ElevatedButton(
+                onPressed: () => Navigator.of(context).pushNamed(
+                    '/spaces/spaces_by_types',
+                    arguments: ['Religioso']),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[100],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'lib/assets/images/iconReligioso.png',
+                      width: x * 0.12,
+                    ),
+                    SizedBox(width: x * 0.02),
+                    const Text(
+                      'Religioso',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: x * 0.025),
+          Padding(
+            padding: EdgeInsets.only(bottom: y * 0.01),
+            child: SizedBox(
+              width: x * 0.43,
+              child: ElevatedButton(
+                onPressed: () => Navigator.of(context)
+                    .pushNamed('/spaces/spaces_by_types', arguments: ['Cha']),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[100],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'lib/assets/images/iconCha.png',
+                      width: x * 0.12,
+                    ),
+                    SizedBox(width: x * 0.02),
+                    const Text(
+                      'Chá',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: x * 0.025),
+          Padding(
+            padding: EdgeInsets.only(bottom: y * 0.01),
+            child: SizedBox(
+              width: x * 0.43,
+              child: ElevatedButton(
+                onPressed: () => Navigator.of(context).pushNamed(
+                    '/spaces/spaces_by_types',
+                    arguments: ['Reuniao']),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[100],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'lib/assets/images/iconReuniao.png',
+                      width: x * 0.12,
+                    ),
+                    SizedBox(width: x * 0.02),
+                    const Text(
+                      'Reunião',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: x * 0.025),
+          Padding(
+            padding: EdgeInsets.only(bottom: y * 0.01),
+            child: SizedBox(
+              width: x * 0.43,
+              child: ElevatedButton(
+                onPressed: () => Navigator.of(context).pushNamed(
+                    '/spaces/spaces_by_types',
+                    arguments: ['Outros']),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[100],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'lib/assets/images/iconOutros.png',
+                      width: x * 0.12,
+                    ),
+                    SizedBox(width: x * 0.02),
+                    const Text(
+                      'Outros',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: x * 0.025),
+        ],
+      ),
     );
   }
 }

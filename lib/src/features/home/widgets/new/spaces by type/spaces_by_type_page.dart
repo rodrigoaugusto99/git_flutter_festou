@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20by%20type/spaces_by_type_state.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20by%20type/spaces_by_type_vm.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_list.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_list_normal.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_to_box_adapter.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
 
@@ -39,7 +39,7 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
               const MySliverToBoxAdapter(
                 text: 'SPACES BY TYPE',
               ),
-              MySliverList(data: data, spaces: typeSpaces),
+              MySliverListNormal(data: data, spaces: typeSpaces),
             ],
           );
         },

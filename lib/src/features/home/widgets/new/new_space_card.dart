@@ -42,10 +42,12 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
     }
 
     final x = MediaQuery.of(context).size.width;
+    final y = MediaQuery.of(context).size.height;
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 20),
-      width: 360,
+      padding: const EdgeInsets.all(6),
+      color: Colors.white,
+      width: 370,
       child: Column(
         children: [
           widget.space.imageUrls.isNotEmpty
@@ -62,7 +64,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                             .toList(),
                         options: CarouselOptions(
                           autoPlay: true,
-                          aspectRatio: 16 / 16,
+                          aspectRatio: 16 / 12,
                           viewportFraction: 1.0,
                           enableInfiniteScroll: true,
                         ),
@@ -105,10 +107,6 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                     const Text('_avaliaçao_'),
                   ],
                 ),
-
-                /*Text(widget.space.space.cep),
-                Text(widget.space.space.logradouro),
-                Text(widget.space.space.numero),*/
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

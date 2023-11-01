@@ -6,7 +6,7 @@ import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/new_space_card.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20with%20sugestion/spaces_with_sugestion_state.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20with%20sugestion/spaces_with_sugestion_vm.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_list.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_list_normal.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_to_box_adapter.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
 import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
@@ -42,9 +42,11 @@ class _SpacesWithSugestionPageState
         data: (SpacesWithSugestionState data) {
           return CustomScrollView(
             slivers: [
+              //aqui, o space, ao ser clicao, vai retornar o card_info.
               SliverToBoxAdapter(child: NewSpaceCard(space: widget.space)),
               const SliverToBoxAdapter(child: Text('Sugestoes')),
-              MySliverList(data: data, spaces: sugestions),
+
+              MySliverListNormal(data: data, spaces: sugestions),
             ],
           );
         },

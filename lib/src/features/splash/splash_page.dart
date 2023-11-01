@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/features/auth/auth_page.dart';
 
 class SplashPage extends StatefulWidget {
@@ -32,9 +33,7 @@ class _SplashPageState extends State<SplashPage> {
       body: DecoratedBox(
         decoration: const BoxDecoration(
           image: DecorationImage(
-              image: AssetImage(
-                'lib/assets/images/blueparty2.jpeg',
-              ),
+              image: AssetImage(ImageConstants.loginBackground),
               fit: BoxFit.cover),
         ),
         child: Center(

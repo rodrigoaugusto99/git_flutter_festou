@@ -3,13 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/app_bar_home.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/menu_space_types.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/new_space_card.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/small_space_card.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20with%20sugestion/spaces_with_sugestion_page.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/search_button.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/space_buttons.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_list.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_last_seen_spaces.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_list_normal.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_to_box_adapter.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -34,6 +37,9 @@ class _HomePageState extends ConsumerState<HomePage> {
       }
     });
 
+    final x = MediaQuery.of(context).size.width;
+    final y = MediaQuery.of(context).size.height;
+
     final fadeInDuration = (widget.previousRoute == '/home/search_page')
         ? const Duration(milliseconds: 400)
         : Duration.zero;
@@ -56,40 +62,22 @@ class _HomePageState extends ConsumerState<HomePage> {
                   child: MenuSpaceTypes(),
                 ),
                 SliverToBoxAdapter(
-                  child: SearchButton(fadeInDuration: fadeInDuration),
-                ),
-                SliverToBoxAdapter(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Vistos recentemente'),
-                      SizedBox(
-                        height: 140,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 5,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                color: Colors.grey,
-                                width: 200,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
+                  child: SearchButton(
+                    fadeInDuration: fadeInDuration,
                   ),
                 ),
+                SliverToBoxAdapter(
+                    child: MyLastSeenSpaces(
+                  data: data,
+                  spaces: allSpaces,
+                )),
                 SliverToBoxAdapter(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text('Espaços perto de você'),
                       SizedBox(
-                        height: 140,
+                        height: y * 0.21,
                         child: ListView.builder(
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
@@ -108,10 +96,31 @@ class _HomePageState extends ConsumerState<HomePage> {
                     ],
                   ),
                 ),
-                const MySliverToBoxAdapter(
-                  text: 'ALL SPACES',
+                SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('GIFS'),
+                      SizedBox(
+                        height: y * 0.31,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 5,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                color: Colors.grey,
+                                width: 300,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                MySliverList(data: data, spaces: allSpaces),
               ],
             );
           },

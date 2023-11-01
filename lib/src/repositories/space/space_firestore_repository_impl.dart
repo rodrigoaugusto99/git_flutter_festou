@@ -373,7 +373,11 @@ p decidir o isFavorited*/
 
       switch (spacesResult) {
         case Success(value: final spacesData):
-          return Success(spacesData);
+          final filteredSpaces = spacesData
+              .where((space) =>
+                  space.space.spaceId != spaceWithImages.space.spaceId)
+              .toList();
+          return Success(filteredSpaces);
         case Failure(exception: RepositoryException(:final message)):
           return Failure(RepositoryException(message: message));
       }
