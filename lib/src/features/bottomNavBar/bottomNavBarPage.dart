@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/notifications.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/settings.dart';
 import 'package:git_flutter_festou/src/features/home/home_page.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/my%20favorite%20spaces%20mvvm/my_favorite_spaces_page.dart';
 
 class BottomNavBarPage extends StatefulWidget {
   final ValueNotifier<String?> previousRouteNotifier;
@@ -33,7 +33,7 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
           return HomePage(previousRoute: value);
         },
       ),
-      const Settings(),
+      const MyFavoriteSpacePage(),
       const Notifications(),
       const Account(),
     ];
@@ -80,8 +80,8 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
+            icon: Icon(Icons.favorite),
+            label: 'Favorites',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),

@@ -114,20 +114,20 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
 
   Future<void> validateForm(BuildContext context, formKey, nomeEC, emailEC,
       cepEC, logradouroEC, numeroEC, bairroEC, cidadeEC) async {
-    if (formKey.currentState?.validate() == true) {
-      await register(
-        nomeEC.text,
-        emailEC.text,
-        cepEC.text,
-        logradouroEC.text,
-        numeroEC.text,
-        bairroEC.text,
-        cidadeEC.text,
-      );
-      //se nao tiver esse else, o compilador passa nesse copyWith sempre
-    } else {
-      state = state.copyWith(status: SpaceRegisterStateStatus.invalidForm);
-    }
+    //if (formKey.currentState?.validate() == true) {
+    await register(
+      nomeEC.text,
+      emailEC.text,
+      cepEC.text,
+      logradouroEC.text,
+      numeroEC.text,
+      bairroEC.text,
+      cidadeEC.text,
+    );
+    //se nao tiver esse else, o compilador passa nesse copyWith sempre
+    //} else {
+    //state = state.copyWith(status: SpaceRegisterStateStatus.invalidForm);
+    //}
   }
 
   void pickImage() async {

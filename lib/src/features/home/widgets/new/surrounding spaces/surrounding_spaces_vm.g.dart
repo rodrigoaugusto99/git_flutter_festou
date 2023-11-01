@@ -7,7 +7,7 @@ part of 'surrounding_spaces_vm.dart';
 // **************************************************************************
 
 String _$surroundingSpacesVmHash() =>
-    r'9ea6e3ac8e634b6126191232b8d99ad00f91b966';
+    r'8459076d1ffc38b36130e46cac1caba6d940be98';
 
 /// See also [SurroundingSpacesVm].
 @ProviderFor(SurroundingSpacesVm)

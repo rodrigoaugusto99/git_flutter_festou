@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/card_infos.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20with%20sugestion/spaces_with_sugestion_page.dart';
 import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 
 class NewSpaceCard extends ConsumerStatefulWidget {
@@ -29,22 +30,13 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
           widget.space.space.spaceId, widget.space.space.isFavorited);
     }
 
-    void navigateToInfo() {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CardInfos(
-            space: widget.space.space,
-          ),
-        ),
-      );
-    }
-
     final x = MediaQuery.of(context).size.width;
+    final y = MediaQuery.of(context).size.height;
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 20),
-      width: 360,
+      padding: const EdgeInsets.all(6),
+      color: Colors.white,
+      width: 370,
       child: Column(
         children: [
           widget.space.imageUrls.isNotEmpty
@@ -61,7 +53,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                             .toList(),
                         options: CarouselOptions(
                           autoPlay: true,
-                          aspectRatio: 16 / 16,
+                          aspectRatio: 16 / 12,
                           viewportFraction: 1.0,
                           enableInfiniteScroll: true,
                         ),
@@ -104,10 +96,6 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                     const Text('_avaliaçao_'),
                   ],
                 ),
-
-                /*Text(widget.space.space.cep),
-                Text(widget.space.space.logradouro),
-                Text(widget.space.space.numero),*/
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -120,10 +108,6 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                     ),
                     Row(
                       children: [
-                        InkWell(
-                          onTap: navigateToInfo,
-                          child: const Icon(Icons.info),
-                        ),
                         InkWell(
                           onTap: () {},
                           child: const Icon(Icons.edit),

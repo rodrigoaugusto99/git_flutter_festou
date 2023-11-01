@@ -38,7 +38,7 @@ class _SpaceCard2State extends ConsumerState<SpaceCard2> {
         context,
         MaterialPageRoute(
           builder: (context) => CardInfos(
-            space: widget.space.space,
+            space: widget.space,
           ),
         ),
       );

@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_list.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_list_normal.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_to_box_adapter.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_vm.dart';
@@ -38,7 +38,7 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
               const MySliverToBoxAdapter(
                 text: 'MY SPACES',
               ),
-              MySliverList(data: data, spaces: mySpaces),
+              MySliverListNormal(data: data, spaces: mySpaces),
             ],
           );
         },

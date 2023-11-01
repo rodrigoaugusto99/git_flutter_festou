@@ -9,8 +9,6 @@ class SpaceButtons extends StatefulWidget {
 }
 
 class _SpaceButtonsState extends State<SpaceButtons> {
-  final user = FirebaseAuth.instance.currentUser!;
-
   @override
   Widget build(BuildContext context) {
     final x = MediaQuery.of(context).size.width;
@@ -22,12 +20,9 @@ class _SpaceButtonsState extends State<SpaceButtons> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           InkWell(
-            onTap: () =>
-                Navigator.of(context)
-                    .pushNamed('/home/all_spaces', arguments: user),
+            onTap: () {},
             child: Container(
-              padding: EdgeInsets.all(
-                  x * 0.03),
+              padding: EdgeInsets.all(x * 0.03),
               decoration: BoxDecoration(
                 color: Colors.grey[100],
                 borderRadius: const BorderRadius.all(Radius.circular(8.0)),
@@ -39,12 +34,9 @@ class _SpaceButtonsState extends State<SpaceButtons> {
             ),
           ),
           InkWell(
-            onTap: () =>
-                Navigator.of(context)
-                    .pushNamed('/home/my_spaces', arguments: user),
+            onTap: () {},
             child: Container(
-              padding: EdgeInsets.all(
-                  x * 0.03),
+              padding: EdgeInsets.all(x * 0.03),
               decoration: BoxDecoration(
                 color: Colors.grey[100],
                 borderRadius: const BorderRadius.all(Radius.circular(8.0)),

@@ -9,6 +9,8 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/d
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/help/help_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/locador/quero_ser_locador.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20by%20type/spaces_by_type_page.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20with%20sugestion/spaces_with_sugestion_page.dart';
 import 'package:git_flutter_festou/src/features/login/forgot_email_page.dart';
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
@@ -19,6 +21,7 @@ import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20favorite%20spaces%20mvvm/my_favorite_spaces_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_page.dart';
 import 'package:git_flutter_festou/src/features/splash/splash_page.dart';
+import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,6 +53,27 @@ class MyApp extends StatelessWidget {
         '/home/my_spaces': (_) => const MySpacesPage(),
         '/home/all_spaces': (_) => const AllSpacesPage(),
         '/home/search_page': (_) => const SearchPage(),
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == '/spaces/spaces_by_types') {
+          // Verifica se há argumentos na rota.
+          final type = settings.arguments as List<String>;
+
+          // Crie a página `SpacesByTypePage` e passe os argumentos, se houver, para ela.
+          return MaterialPageRoute(
+            builder: (context) => SpacesByTypePage(type: type),
+          );
+        }
+        if (settings.name == '/spaces/spaces_with_sugestion') {
+          // Verifica se há argumentos na rota.
+          final space = settings.arguments as SpaceWithImages;
+
+          // Crie a página `SpacesByTypePage` e passe os argumentos, se houver, para ela.
+          return MaterialPageRoute(
+            builder: (context) => SpacesWithSugestionPage(space: space),
+          );
+        }
+        return null;
       },
       theme: ThemeData(
         fontFamily: 'inter',

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/surrounding%20spaces/surrounding_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/surrounding%20spaces/surrounding_spaces_vm.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_list.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_list_normal.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/widgets/my_sliver_to_box_adapter.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
@@ -39,7 +39,7 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
               const MySliverToBoxAdapter(
                 text: 'ALL SPACES',
               ),
-              MySliverList(data: data, spaces: allSpaces),
+              MySliverListNormal(data: data, spaces: allSpaces),
             ],
           );
         },
