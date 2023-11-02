@@ -8,7 +8,7 @@ class SpaceRegisterState {
   final List<String> selectedTypes;
   final List<String> selectedServices;
   final List<String> availableDays;
-  final Map<String, List<int>> availableHours;
+  //final Map<String, List<int>> availableHours;
   final List<File> imageFiles;
   final String? errorMessage;
 
@@ -18,7 +18,7 @@ class SpaceRegisterState {
           selectedTypes: <String>[],
           selectedServices: <String>[],
           availableDays: <String>[],
-          availableHours: <String, List<int>>{},
+          //availableHours: <String, List<int>>{},
           imageFiles: <File>[],
         );
 
@@ -27,7 +27,7 @@ class SpaceRegisterState {
       required this.selectedTypes,
       required this.selectedServices,
       required this.availableDays,
-      required this.availableHours,
+      //required this.availableHours,
       required this.imageFiles,
       this.errorMessage});
 
@@ -36,7 +36,7 @@ class SpaceRegisterState {
       List<String>? selectedTypes,
       List<String>? selectedServices,
       List<String>? availableDays,
-      Map<String, List<int>>? availableHours,
+      //Map<String, List<int>>? availableHours,
       List<File>? imageFiles,
       ValueGetter<String?>? errorMessage}) {
     return SpaceRegisterState(
@@ -44,7 +44,7 @@ class SpaceRegisterState {
         selectedTypes: selectedTypes ?? this.selectedTypes,
         selectedServices: selectedServices ?? this.selectedServices,
         availableDays: availableDays ?? this.availableDays,
-        availableHours: availableHours ?? this.availableHours,
+        //availableHours: availableHours ?? this.availableHours,
         imageFiles: imageFiles ?? this.imageFiles,
         errorMessage:
             errorMessage != null ? errorMessage() : this.errorMessage);

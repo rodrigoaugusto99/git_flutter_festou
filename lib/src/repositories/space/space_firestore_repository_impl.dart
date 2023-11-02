@@ -433,4 +433,52 @@ p decidir o isFavorited*/
     // TODO: implement getSurroundingSpaces
     throw UnimplementedError();
   }
+
+  @override
+  Future<Either<RepositoryException, List<SpaceWithImages>>> getFilteredSpaces(
+      ({
+        List<String> availableDays,
+        List<String> selectedServices,
+        List<String> selectedTypes
+      }) filterData) async {
+    try {
+      final userSpacesFavorite = await getUserFavoriteSpaces();
+
+      // Consulta espaços que atendam a todos os critérios de filtro
+      final spaceDocuments = await spacesCollection
+          .where('availableDays', arrayContainsAny: filterData.availableDays)
+          .where('selectedServices',
+              arrayContainsAny: filterData.selectedServices)
+          .where('selectedTypes', arrayContainsAny: filterData.selectedTypes)
+          .get();
+
+      // Mapeia os documentos de espaço para objetos SpaceModel.
+      List<SpaceModel> spaceModels = spaceDocuments.docs.map((spaceDocument) {
+        final isFavorited =
+            userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
+        return mapSpaceDocumentToModel(spaceDocument, isFavorited);
+      }).toList();
+
+      final spaceWithImagesList = <SpaceWithImages>[];
+
+      for (var space in spaceModels) {
+        final imageResult =
+            await imagesStorageRepository.getSpaceImages(space.spaceId);
+
+        switch (imageResult) {
+          case Success(value: final imagesData):
+            spaceWithImagesList.add(SpaceWithImages(space, imagesData));
+            break;
+          case Failure():
+            log('Erro ao recuperar imagens: $imageResult');
+        }
+      }
+
+      return Success(spaceWithImagesList);
+    } catch (e) {
+      log('Erro ao recuperar espaços filtrados: $e');
+      return Failure(
+          RepositoryException(message: 'Erro ao carregar espaços filtrados'));
+    }
+  }
 }
