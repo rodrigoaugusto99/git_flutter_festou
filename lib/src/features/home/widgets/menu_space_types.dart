@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20by%20type/spaces_by_type_page.dart';
+import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
 
 class MenuSpaceTypes extends StatefulWidget {
   const MenuSpaceTypes({super.key});
@@ -27,8 +29,17 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
             child: SizedBox(
               width: x * 0.43,
               child: ElevatedButton(
-                onPressed: () => Navigator.of(context)
-                    .pushNamed('/spaces/spaces_by_types', arguments: ['Kids']),
+                /*onPressed: () => Navigator.of(context)
+                    .pushNamed('/spaces/spaces_by_types', arguments: ['Kids']),*/
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const SpacesByTypePage(
+                        type: ['Kids'],
+                      ); // Substitua NovaPagina com o widget da sua nova tela
+                    },
+                  ),
+                ),
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.grey[100],
                     shape: RoundedRectangleBorder(

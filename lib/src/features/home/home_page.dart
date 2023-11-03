@@ -8,6 +8,7 @@ import 'package:git_flutter_festou/src/features/home/widgets/new/small_space_car
 import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20with%20sugestion/spaces_with_sugestion_page.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/search_button.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/space_buttons.dart';
+import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
@@ -49,7 +50,13 @@ class _HomePageState extends ConsumerState<HomePage> {
           shape: const CircleBorder(),
           backgroundColor: Colors.brown,
           onPressed: () {
-            Navigator.of(context).pushNamed('/register/space');
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return const EspacoRegisterPage(); // Substitua NovaPagina com o widget da sua nova tela
+                },
+              ),
+            );
           },
           child: const Icon(Icons.add),
         ),

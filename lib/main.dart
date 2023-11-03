@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
         '/auth': (_) => const AuthPage(),
         '/login': (_) => const LoginPage(),
         '/register/user': (_) => const UserRegisterPage(),
-        '/register/space': (_) => const EspacoRegisterPage(),
+        //'/register/space': (_) => const EspacoRegisterPage(),
         '/register/user/infos': (_) => const UserRegisterInfosPage(),
         '/account/help': (_) => const HelpPage(),
         '/account/dados': (_) => const DadosPage(),
@@ -71,6 +71,11 @@ class MyApp extends StatelessWidget {
           // Crie a página `SpacesByTypePage` e passe os argumentos, se houver, para ela.
           return MaterialPageRoute(
             builder: (context) => SpacesWithSugestionPage(space: space),
+          );
+        }
+        if (settings.name == '/register/space') {
+          return MaterialPageRoute(
+            builder: (context) => const EspacoRegisterPage(),
           );
         }
         return null;

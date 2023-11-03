@@ -6,12 +6,16 @@ import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/filter/filter_and_order_state.dart';
+import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'filter_and_order_vm.g.dart';
 
 @riverpod
 class FilterAndOrderVm extends _$FilterAndOrderVm {
+  List<SpaceWithImages> spacesFilterType = [];
+  List<SpaceWithImages> spacesFilterService = [];
+  List<SpaceWithImages> spacesFilterDays = [];
   String errorMessage = '';
 
   void addOrRemoveAvailableDay(String weekDay) {
@@ -75,18 +79,60 @@ class FilterAndOrderVm extends _$FilterAndOrderVm {
       :selectedServices,
     ) = state;
 
-    final filterData = (
-      selectedTypes: selectedTypes,
-      availableDays: availableDays,
+    final spaceFirestoreRepository = ref.read(spaceFirestoreRepositoryProvider);
+
+    final filterResultSpaceByType = await spaceFirestoreRepository
+        .getSpacesBySelectedTypes(selectedTypes: selectedTypes);
+
+    switch (filterResultSpaceByType) {
+      case Success(value: final filteredSpacesData):
+        spacesFilterType = filteredSpacesData;
+        break;
+      case Failure(exception: RepositoryException(:final message)):
+        state = state.copyWith(
+          status: FilterAndOrderStateStatus.error,
+          filteredSpaces: [],
+          errorMessage: () => message,
+        );
+    }
+
+    final filterResultSpaceByService =
+        await spaceFirestoreRepository.getSpacesBySelectedServices(
       selectedServices: selectedServices,
     );
 
-    final spaceFirestoreRepository = ref.read(spaceFirestoreRepositoryProvider);
+    switch (filterResultSpaceByService) {
+      case Success(value: final filteredSpacesData):
+        spacesFilterService = filteredSpacesData;
+        break;
+      case Failure(exception: RepositoryException(:final message)):
+        state = state.copyWith(
+          status: FilterAndOrderStateStatus.error,
+          filteredSpaces: [],
+          errorMessage: () => message,
+        );
+    }
+    final filterResultSpaceByDay =
+        await spaceFirestoreRepository.getSpacesByAvailableDays(
+      availableDays: availableDays,
+    );
 
-    final filterResultSpace =
-        await spaceFirestoreRepository.getFilteredSpaces(filterData);
+    switch (filterResultSpaceByDay) {
+      case Success(value: final filteredSpacesData):
+        spacesFilterDays = filteredSpacesData;
+        break;
+      case Failure(exception: RepositoryException(:final message)):
+        state = state.copyWith(
+          status: FilterAndOrderStateStatus.error,
+          filteredSpaces: [],
+          errorMessage: () => message,
+        );
+    }
 
-    switch (filterResultSpace) {
+    final spaces = await spaceFirestoreRepository.filterSpaces(
+        spacesFilterType, spacesFilterService, spacesFilterDays);
+
+    switch (spaces) {
       case Success(value: final filteredSpacesData):
         state = state.copyWith(
           status: FilterAndOrderStateStatus.success,
