@@ -52,4 +52,14 @@ sealed class ListConstants {
     'Religioso',
     'Cha',
   ];
+
+  static const availableDays = [
+    'Seg',
+    'Ter',
+    'Qua',
+    'Qui',
+    'Sex',
+    'Sab',
+    'Dom',
+  ];
 }

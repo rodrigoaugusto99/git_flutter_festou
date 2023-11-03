@@ -19,6 +19,7 @@ class SpacesByTypePage extends ConsumerStatefulWidget {
 }
 
 class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
+  bool onSpaceByTypePage = true; // Variável de controle
   @override
   Widget build(BuildContext context) {
     //recebendo os espaços por tipo

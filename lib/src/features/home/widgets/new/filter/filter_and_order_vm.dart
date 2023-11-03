@@ -13,8 +13,6 @@ part 'filter_and_order_vm.g.dart';
 @riverpod
 class FilterAndOrderVm extends _$FilterAndOrderVm {
   String errorMessage = '';
-  @override
-  FilterAndOrderState build() => FilterAndOrderState.initial();
 
   void addOrRemoveAvailableDay(String weekDay) {
     final availableDays = state.availableDays;
@@ -58,6 +56,18 @@ class FilterAndOrderVm extends _$FilterAndOrderVm {
         status: FilterAndOrderStateStatus.initial);
   }
 
+  void redefinir() {
+    state = state.copyWith(
+      status: FilterAndOrderStateStatus.initial,
+      selectedServices: [],
+      selectedTypes: [],
+      availableDays: [],
+    );
+  }
+
+  @override
+  FilterAndOrderState build() => FilterAndOrderState.initial();
+
   Future<void> filter() async {
     final FilterAndOrderState(
       :selectedTypes,
@@ -77,12 +87,17 @@ class FilterAndOrderVm extends _$FilterAndOrderVm {
         await spaceFirestoreRepository.getFilteredSpaces(filterData);
 
     switch (filterResultSpace) {
-      case Success():
-        state = state.copyWith(status: FilterAndOrderStateStatus.success);
+      case Success(value: final filteredSpacesData):
+        state = state.copyWith(
+          status: FilterAndOrderStateStatus.success,
+          filteredSpaces: filteredSpacesData,
+        );
         break;
-      case Failure(exception: RepositoryException()):
+      case Failure(exception: RepositoryException(:final message)):
         state = state.copyWith(
           status: FilterAndOrderStateStatus.error,
+          filteredSpaces: [],
+          errorMessage: () => message,
         );
     }
   }

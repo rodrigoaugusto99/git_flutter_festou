@@ -177,6 +177,7 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                     log('onDayPressed: $value');
                     spaceRegister.addOrRemoveAvailableDay(value);
                   },
+                  availableDays: const [],
                 ),
                 TypePanel(
                   text: 'Selecione o TIPO de espaço',
@@ -184,6 +185,7 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                     log('onTypePressed: $value');
                     spaceRegister.addOrRemoveType(value);
                   },
+                  selectedTypes: const [],
                 ),
                 ServicesPanel(
                   text: 'Selecione os SERVIÇOS do espaço',
@@ -191,6 +193,7 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                     log('onServicePressed: $value');
                     spaceRegister.addOrRemoveService(value);
                   },
+                  selectedServices: const [],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,

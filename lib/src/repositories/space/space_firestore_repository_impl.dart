@@ -437,20 +437,34 @@ p decidir o isFavorited*/
   @override
   Future<Either<RepositoryException, List<SpaceWithImages>>> getFilteredSpaces(
       ({
-        List<String> availableDays,
-        List<String> selectedServices,
-        List<String> selectedTypes
+        List<String>? availableDays,
+        List<String>? selectedServices,
+        List<String>? selectedTypes
       }) filterData) async {
     try {
       final userSpacesFavorite = await getUserFavoriteSpaces();
 
-      // Consulta espaços que atendam a todos os critérios de filtro
-      final spaceDocuments = await spacesCollection
-          .where('availableDays', arrayContainsAny: filterData.availableDays)
-          .where('selectedServices',
-              arrayContainsAny: filterData.selectedServices)
-          .where('selectedTypes', arrayContainsAny: filterData.selectedTypes)
-          .get();
+      Query query = spacesCollection;
+
+      if (filterData.availableDays != null &&
+          filterData.availableDays!.isNotEmpty) {
+        query = query.where('availableDays',
+            arrayContainsAny: filterData.availableDays);
+      }
+
+      if (filterData.selectedServices != null &&
+          filterData.selectedServices!.isNotEmpty) {
+        query = query.where('selectedServices',
+            arrayContainsAny: filterData.selectedServices);
+      }
+
+      if (filterData.selectedTypes != null &&
+          filterData.selectedTypes!.isNotEmpty) {
+        query = query.where('selectedTypes',
+            arrayContainsAny: filterData.selectedTypes);
+      }
+
+      final spaceDocuments = await query.get();
 
       // Mapeia os documentos de espaço para objetos SpaceModel.
       List<SpaceModel> spaceModels = spaceDocuments.docs.map((spaceDocument) {

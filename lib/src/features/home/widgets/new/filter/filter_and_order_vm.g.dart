@@ -6,7 +6,7 @@ part of 'filter_and_order_vm.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$filterAndOrderVmHash() => r'5eb08c44f898e56da758a85928902572310d2193';
+String _$filterAndOrderVmHash() => r'ef1545560e560469bea26d129bdb36be3bdcb9cb';
 
 /// See also [FilterAndOrderVm].
 @ProviderFor(FilterAndOrderVm)

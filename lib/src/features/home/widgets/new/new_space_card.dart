@@ -89,7 +89,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${widget.space.space.bairro}, ${widget.space.space.cidade}',
+                      '${widget.space.space.bairro}, ${widget.space.space.cidade} TIPO(p teste):${widget.space.space.selectedTypes}',
                       style: const TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold),
                     ),
