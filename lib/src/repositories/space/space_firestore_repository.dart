@@ -31,6 +31,14 @@ abstract interface class SpaceFirestoreRepository {
   Future<Either<RepositoryException, List<SpaceWithImages>>>
       getSurroundingSpaces();
   Future<Either<RepositoryException, List<SpaceWithImages>>> getMySpaces();
+
+  Future<Either<RepositoryException, List<SpaceWithImages>>> getFilteredSpaces(
+      ({
+        List<String> selectedTypes,
+        List<String> selectedServices,
+        List<String> availableDays,
+      }) filterData);
+
   Future<Either<RepositoryException, List<SpaceWithImages>>>
       getMyFavoriteSpaces();
   Future<Either<RepositoryException, Nil>> toggleFavoriteSpace(

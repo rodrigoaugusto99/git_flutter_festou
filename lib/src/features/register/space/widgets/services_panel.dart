@@ -5,10 +5,13 @@ import 'package:git_flutter_festou/src/core/ui/constants.dart';
 class ServicesPanel extends StatelessWidget {
   final ValueChanged<String> onServicePressed;
   final String text;
+  final List<String> selectedServices; // Adicione as seleções atuais aqui
+
   const ServicesPanel({
-    super.key,
     required this.onServicePressed,
     required this.text,
+    required this.selectedServices, // Passe as seleções atuais como argumento
+    super.key,
   });
 
   @override
@@ -26,10 +29,18 @@ class ServicesPanel extends StatelessWidget {
             alignment: WrapAlignment.center,
             children: List.generate(
               ListConstants.availableServices.length,
-              (index) => ButtonType(
-                onServicePressed: onServicePressed,
-                label: ListConstants.availableServices[index],
-              ),
+              (index) {
+                final service = ListConstants.availableServices[index];
+                final isSelected = selectedServices.contains(
+                    service); // Verifique se o serviço está selecionado
+
+                return ButtonType(
+                  onServicePressed: onServicePressed,
+                  label: service,
+                  isSelected:
+                      isSelected, // Passe o valor isSelected para o botão
+                );
+              },
             ),
           ),
         ],
@@ -41,11 +52,13 @@ class ServicesPanel extends StatelessWidget {
 class ButtonType extends StatefulWidget {
   final String label;
   final ValueChanged<String> onServicePressed;
+  bool isSelected; // Adicione a propriedade isSelected
 
-  const ButtonType({
+  ButtonType({
     super.key,
     required this.label,
     required this.onServicePressed,
+    required this.isSelected, // Passe isSelected como argumento
   });
 
   @override
@@ -54,13 +67,13 @@ class ButtonType extends StatefulWidget {
 
 class _ButtonTypeState extends State<ButtonType> {
   //1 - variavel de estado
-  var selected = false;
+
   @override
   Widget build(BuildContext context) {
     final ButtonType(:onServicePressed, :label) = widget;
     //1 - variaveis esteticas que mudam com o clique
-    final textColor = selected ? Colors.white : Colors.brown;
-    var buttonColor = selected ? Colors.brown : Colors.white;
+    final textColor = widget.isSelected ? Colors.white : Colors.brown;
+    var buttonColor = widget.isSelected ? Colors.brown : Colors.white;
 
     return Padding(
       padding: const EdgeInsets.all(5.0),
@@ -71,7 +84,7 @@ class _ButtonTypeState extends State<ButtonType> {
           //no onTap do botao que inverte o estado dele
           setState(() {
             onServicePressed(label);
-            selected = !selected;
+            widget.isSelected = !widget.isSelected;
           });
         },
         child: Container(

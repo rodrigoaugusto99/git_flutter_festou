@@ -1,12 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/core/ui/constants.dart';
 
 class WeekDaysPanel extends StatelessWidget {
   final ValueChanged<String> onDayPressed;
   final String text;
+  final List<String> availableDays;
   const WeekDaysPanel({
     required this.onDayPressed,
     required this.text,
+    required this.availableDays,
     super.key,
   });
 
@@ -26,10 +29,24 @@ class WeekDaysPanel extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ButtonDay(
+              children: List.generate(
+                ListConstants.availableDays.length,
+                (index) {
+                  final day = ListConstants.availableDays[index];
+                  final isSelected = availableDays
+                      .contains(day); // Verifique se o serviço está selecionado
+
+                  return ButtonDay(
+                    onDayPressed: onDayPressed,
+                    label: day,
+                    isSelected: isSelected,
+                  );
+                },
+              ),
+              /*ButtonDay(
                   label: 'Seg',
                   onDayPressed: onDayPressed,
+                  
                 ),
                 ButtonDay(
                   label: 'Ter',
@@ -54,8 +71,7 @@ class WeekDaysPanel extends StatelessWidget {
                 ButtonDay(
                   label: 'Dom',
                   onDayPressed: onDayPressed,
-                ),
-              ],
+                ),*/
             ),
           )
         ],
@@ -67,11 +83,12 @@ class WeekDaysPanel extends StatelessWidget {
 class ButtonDay extends StatefulWidget {
   final String label;
   final ValueChanged<String> onDayPressed;
-
-  const ButtonDay({
+  bool isSelected;
+  ButtonDay({
     super.key,
     required this.label,
     required this.onDayPressed,
+    required this.isSelected,
   });
 
   @override
@@ -85,8 +102,8 @@ class _ButtonDayState extends State<ButtonDay> {
   Widget build(BuildContext context) {
     final ButtonDay(:onDayPressed, :label) = widget;
     //1 - variaveis esteticas que mudam com o clique
-    final textColor = selected ? Colors.white : Colors.brown;
-    var buttonColor = selected ? Colors.brown : Colors.white;
+    final textColor = widget.isSelected ? Colors.white : Colors.brown;
+    var buttonColor = widget.isSelected ? Colors.brown : Colors.white;
 
     return Padding(
       padding: const EdgeInsets.all(5.0),
@@ -97,7 +114,7 @@ class _ButtonDayState extends State<ButtonDay> {
           //no onTap do botao que inverte o estado dele
           setState(() {
             onDayPressed(label);
-            selected = !selected;
+            widget.isSelected = !widget.isSelected;
           });
         },
         child: Container(
