@@ -31,7 +31,7 @@ class _FilterAndOrderPageState extends ConsumerState<FilterAndOrderPage> {
               MaterialPageRoute(builder: (context) => const NewPageFiltered()));
           Messages.showSuccess('Filtrado com sucesso!', context);
         case FilterAndOrderState(status: FilterAndOrderStateStatus.error):
-          Messages.showInfo('Erro ao filtrar espaços', context);
+          Messages.showError('Erro ao filtrar espaços', context);
       }
     });
     final y = MediaQuery.of(context).size.height;

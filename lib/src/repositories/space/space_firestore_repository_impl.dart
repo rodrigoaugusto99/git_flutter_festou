@@ -435,39 +435,25 @@ p decidir o isFavorited*/
   }
 
   @override
-  Future<Either<RepositoryException, List<SpaceWithImages>>> getFilteredSpaces(
-      ({
-        List<String>? availableDays,
-        List<String>? selectedServices,
-        List<String>? selectedTypes
-      }) filterData) async {
+  Future<Either<RepositoryException, List<SpaceWithImages>>>
+      getSpacesBySelectedTypes({
+    List<String>? selectedTypes,
+  }) async {
     try {
       final userSpacesFavorite = await getUserFavoriteSpaces();
-
       Query query = spacesCollection;
 
-      if (filterData.availableDays != null &&
-          filterData.availableDays!.isNotEmpty) {
-        query = query.where('availableDays',
-            arrayContainsAny: filterData.availableDays);
-      }
-
-      if (filterData.selectedServices != null &&
-          filterData.selectedServices!.isNotEmpty) {
-        query = query.where('selectedServices',
-            arrayContainsAny: filterData.selectedServices);
-      }
-
-      if (filterData.selectedTypes != null &&
-          filterData.selectedTypes!.isNotEmpty) {
-        query = query.where('selectedTypes',
-            arrayContainsAny: filterData.selectedTypes);
+      if (selectedTypes != null && selectedTypes.isNotEmpty) {
+        query = query.where('selectedTypes', arrayContainsAny: selectedTypes);
+      } else {
+        // Se a lista  estiver vazia, retorne uma lista vazia diretamente.
+        return Success([]);
       }
 
       final spaceDocuments = await query.get();
 
       // Mapeia os documentos de espaço para objetos SpaceModel.
-      List<SpaceModel> spaceModels = spaceDocuments.docs.map((spaceDocument) {
+      final spaceModels = spaceDocuments.docs.map((spaceDocument) {
         final isFavorited =
             userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
         return mapSpaceDocumentToModel(spaceDocument, isFavorited);
@@ -491,6 +477,156 @@ p decidir o isFavorited*/
       return Success(spaceWithImagesList);
     } catch (e) {
       log('Erro ao recuperar espaços filtrados: $e');
+      return Failure(
+          RepositoryException(message: 'Erro ao carregar espaços filtrados'));
+    }
+  }
+
+  @override
+  Future<Either<RepositoryException, List<SpaceWithImages>>>
+      getSpacesByAvailableDays({
+    List<String>? availableDays,
+  }) async {
+    try {
+      final userSpacesFavorite = await getUserFavoriteSpaces();
+      Query query = spacesCollection;
+
+      if (availableDays != null && availableDays.isNotEmpty) {
+        query = query.where('availableDays', arrayContainsAny: availableDays);
+      } else {
+        // Se a lista  estiver vazia, retorne uma lista vazia diretamente.
+        return Success([]);
+      }
+
+      final spaceDocuments = await query.get();
+
+      // Mapeia os documentos de espaço para objetos SpaceModel.
+      final spaceModels = spaceDocuments.docs.map((spaceDocument) {
+        final isFavorited =
+            userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
+        return mapSpaceDocumentToModel(spaceDocument, isFavorited);
+      }).toList();
+
+      final spaceWithImagesList = <SpaceWithImages>[];
+
+      for (var space in spaceModels) {
+        final imageResult =
+            await imagesStorageRepository.getSpaceImages(space.spaceId);
+
+        switch (imageResult) {
+          case Success(value: final imagesData):
+            spaceWithImagesList.add(SpaceWithImages(space, imagesData));
+            break;
+          case Failure():
+            log('Erro ao recuperar imagens: $imageResult');
+        }
+      }
+
+      return Success(spaceWithImagesList);
+    } catch (e) {
+      log('Erro ao recuperar espaços filtrados: $e');
+      return Failure(
+          RepositoryException(message: 'Erro ao carregar espaços filtrados'));
+    }
+  }
+
+  @override
+  Future<Either<RepositoryException, List<SpaceWithImages>>>
+      getSpacesBySelectedServices({
+    List<String>? selectedServices,
+  }) async {
+    try {
+      final userSpacesFavorite = await getUserFavoriteSpaces();
+      Query query = spacesCollection;
+
+      if (selectedServices != null && selectedServices.isNotEmpty) {
+        // Filtra espaços que contenham pelo menos um dos serviços selecionados
+        query =
+            query.where('selectedServices', arrayContainsAny: selectedServices);
+      } else {
+        // Se a lista selectedServices estiver vazia, retorne uma lista vazia diretamente.
+        return Success([]);
+      }
+
+      final spaceDocuments = await query.get();
+
+      // Mapeia os documentos de espaço para objetos SpaceModel.
+      final spaceModels = spaceDocuments.docs.map((spaceDocument) {
+        final isFavorited =
+            userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
+        return mapSpaceDocumentToModel(spaceDocument, isFavorited);
+      }).toList();
+
+      final spaceWithImagesList = <SpaceWithImages>[];
+
+      for (var space in spaceModels) {
+        final imageResult =
+            await imagesStorageRepository.getSpaceImages(space.spaceId);
+
+        switch (imageResult) {
+          case Success(value: final imagesData):
+            spaceWithImagesList.add(SpaceWithImages(space, imagesData));
+            break;
+          case Failure():
+            log('Erro ao recuperar imagens: $imageResult');
+        }
+      }
+      log('$spaceWithImagesList');
+      return Success(spaceWithImagesList);
+    } catch (e) {
+      log('Erro ao recuperar espaços filtrados: $e');
+      return Failure(
+          RepositoryException(message: 'Erro ao carregar espaços filtrados'));
+    }
+  }
+
+  @override
+  Future<Either<RepositoryException, List<SpaceWithImages>>> filterSpaces(
+      List<SpaceWithImages> spaces1,
+      List<SpaceWithImages> spaces2,
+      List<SpaceWithImages> spaces3) async {
+    try {
+      if (spaces1.isNotEmpty && spaces2.isEmpty && spaces3.isEmpty) {
+        return Success(spaces1);
+      } else if (spaces1.isEmpty && spaces2.isNotEmpty && spaces3.isEmpty) {
+        return Success(spaces2);
+      } else if (spaces1.isEmpty && spaces2.isEmpty && spaces3.isNotEmpty) {
+        return Success(spaces3);
+      } else if (spaces1.isNotEmpty && spaces2.isNotEmpty && spaces3.isEmpty) {
+        final intersection = spaces1
+            .where((space1) => spaces2
+                .any((space2) => space1.space.spaceId == space2.space.spaceId))
+            .toList();
+        return Success(intersection);
+      } else if (spaces1.isNotEmpty && spaces2.isEmpty && spaces3.isNotEmpty) {
+        final intersection = spaces1
+            .where((space1) => spaces3
+                .any((space3) => space1.space.spaceId == space3.space.spaceId))
+            .toList();
+        return Success(intersection);
+      } else if (spaces1.isEmpty && spaces2.isNotEmpty && spaces3.isNotEmpty) {
+        final intersection = spaces2
+            .where((space2) => spaces3
+                .any((space3) => space2.space.spaceId == space3.space.spaceId))
+            .toList();
+        return Success(intersection);
+      } else if (spaces1.isNotEmpty &&
+          spaces2.isNotEmpty &&
+          spaces3.isNotEmpty) {
+        final intersection1 = spaces1
+            .where((space1) => spaces2
+                .any((space2) => space1.space.spaceId == space2.space.spaceId))
+            .toList();
+        final finalIntersection = intersection1
+            .where((space1) => spaces3
+                .any((space3) => space1.space.spaceId == space3.space.spaceId))
+            .toList();
+        return Success(finalIntersection);
+      } else {
+        return Success([]); // Todas as listas estão vazias
+      }
+    } catch (e) {
+      log('Erro ao recuperar espaços filtrados no filterSpaces: $e');
       return Failure(
           RepositoryException(message: 'Erro ao carregar espaços filtrados'));
     }

@@ -32,12 +32,24 @@ abstract interface class SpaceFirestoreRepository {
       getSurroundingSpaces();
   Future<Either<RepositoryException, List<SpaceWithImages>>> getMySpaces();
 
-  Future<Either<RepositoryException, List<SpaceWithImages>>> getFilteredSpaces(
-      ({
-        List<String> selectedTypes,
-        List<String> selectedServices,
-        List<String> availableDays,
-      }) filterData);
+  Future<Either<RepositoryException, List<SpaceWithImages>>>
+      getSpacesBySelectedTypes({
+    List<String> selectedTypes,
+  });
+  Future<Either<RepositoryException, List<SpaceWithImages>>>
+      getSpacesBySelectedServices({
+    List<String> selectedServices,
+  });
+  Future<Either<RepositoryException, List<SpaceWithImages>>>
+      getSpacesByAvailableDays({
+    List<String> availableDays,
+  });
+
+  Future<Either<RepositoryException, List<SpaceWithImages>>> filterSpaces(
+    List<SpaceWithImages> spaces1,
+    List<SpaceWithImages> spaces2,
+    List<SpaceWithImages> spaces3,
+  );
 
   Future<Either<RepositoryException, List<SpaceWithImages>>>
       getMyFavoriteSpaces();

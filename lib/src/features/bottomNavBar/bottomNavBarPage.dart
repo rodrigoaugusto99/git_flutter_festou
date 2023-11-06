@@ -30,7 +30,14 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
         valueListenable: widget.previousRouteNotifier,
         builder: (context, value, child) {
           widget.previousRouteNotifier.value = null;
-          return HomePage(previousRoute: value);
+          return Navigator(
+            // Envolver HomePage com Navigator
+            onGenerateRoute: (routeSettings) {
+              return MaterialPageRoute(
+                builder: (context) => const HomePage(),
+              );
+            },
+          );
         },
       ),
       const MyFavoriteSpacePage(),
