@@ -76,7 +76,20 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                         Image.asset(
                           ImageConstants.serpentinae,
                         ),
-                        const Text('festou\ncadastro'),
+                        const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Festou',
+                              style: TextStyle(
+                                  fontFamily: 'NerkoOne', fontSize: 60),
+                            ),
+                            Text(
+                              'Cadastro',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ],
+                        ),
                         Image.asset(
                           ImageConstants.serpentinad,
                         ),

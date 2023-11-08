@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/more_details.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/new_card_info.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/show_map.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/ver_fotos.dart';
 import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
@@ -46,6 +47,15 @@ class _CardInfosState extends State<CardInfos> {
       context,
       MaterialPageRoute(
         builder: (context) => MoreDetails(space: space),
+      ),
+    );
+  }
+
+  void showNewCardInfo(SpaceModel space) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NewCardInfo(space: widget.space),
       ),
     );
   }
@@ -127,6 +137,10 @@ class _CardInfosState extends State<CardInfos> {
               ElevatedButton(
                 onPressed: () => showMap(widget.space.space),
                 child: const Text('Ver Localização'),
+              ),
+              ElevatedButton(
+                onPressed: () => showNewCardInfo(widget.space.space),
+                child: const Text('card infoooo'),
               ),
               //implementar logica pra pegar os dados do usuario que criou o espaço
               /*ElevatedButton(

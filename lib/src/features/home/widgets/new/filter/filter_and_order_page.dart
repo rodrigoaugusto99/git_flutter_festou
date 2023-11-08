@@ -45,7 +45,7 @@ class _FilterAndOrderPageState extends ConsumerState<FilterAndOrderPage> {
         context: context,
         builder: (BuildContext context) {
           return Container(
-            height: y * 0.9,
+            height: y * 0.8,
             padding: const EdgeInsets.all(16),
             child: SingleChildScrollView(
               child: Column(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/new_feedback_widget.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_vm.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/widgets/feedback_widget.dart';
@@ -21,15 +22,14 @@ class _SpaceFeedbacksPageState extends ConsumerState<SpaceFeedbacksPage> {
   Widget build(BuildContext context) {
     final spaceFeedbacks = ref.watch(spaceFeedbacksVmProvider(widget.space));
 
-    return Scaffold(
-        body: spaceFeedbacks.when(
+    return spaceFeedbacks.when(
       data: (SpaceFeedbacksState data) {
         if (data.feedbacks.isEmpty) {
           return const Center(
-            child: Text('Nao tem comentarios'),
+            child: Text('Sem avaliações(ainda)'),
           );
         }
-        return FeedbackWidget(
+        return NewFeedbackWidget(
           data: data,
           spaces: spaceFeedbacks,
         );
@@ -44,6 +44,6 @@ class _SpaceFeedbacksPageState extends ConsumerState<SpaceFeedbacksPage> {
           child: Text('Loading'),
         );
       },
-    ));
+    );
   }
 }
