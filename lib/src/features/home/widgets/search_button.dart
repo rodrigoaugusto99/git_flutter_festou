@@ -28,7 +28,8 @@ class _SearchButtonState extends State<SearchButton> {
             duration: widget.fadeInDuration,
             from: y * 0.1,
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: x * 0.02, vertical: y * 0.01),
+              padding: EdgeInsets.symmetric(
+                  horizontal: x * 0.02, vertical: y * 0.01),
               decoration: BoxDecoration(
                 color: Colors.grey[100],
                 borderRadius: BorderRadius.circular(8.0),
@@ -42,7 +43,9 @@ class _SearchButtonState extends State<SearchButton> {
                       style: TextStyle(color: Colors.blueGrey[500]),
                       children: const <TextSpan>[
                         TextSpan(text: 'Buscar no '),
-                        TextSpan(text: 'Festou', style: TextStyle(fontWeight: FontWeight.bold)),
+                        TextSpan(
+                            text: 'Festou',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),

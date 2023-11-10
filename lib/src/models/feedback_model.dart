@@ -4,7 +4,6 @@ class FeedbackModel {
   final String userId;
   final String spaceId;
   final String userName;
-
   final String date;
 
   FeedbackModel({

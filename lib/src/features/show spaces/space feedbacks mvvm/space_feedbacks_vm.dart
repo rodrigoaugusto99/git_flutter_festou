@@ -17,11 +17,15 @@ class SpaceFeedbacksVm extends _$SpaceFeedbacksVm {
     switch (feedbackResult) {
       case Success(value: final feedbackData):
         return SpaceFeedbacksState(
-            status: SpaceFeedbacksStateStatus.success, feedbacks: feedbackData);
+          status: SpaceFeedbacksStateStatus.success,
+          feedbacks: feedbackData,
+        );
 
       case Failure():
         return SpaceFeedbacksState(
-            status: SpaceFeedbacksStateStatus.error, feedbacks: []);
+          status: SpaceFeedbacksStateStatus.error,
+          feedbacks: [],
+        );
     }
   }
 }

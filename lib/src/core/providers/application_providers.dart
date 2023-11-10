@@ -39,6 +39,8 @@ SpaceFirestoreRepository spaceFirestoreRepository(
         SpaceFirestoreRepositoryRef ref) =>
     SpaceFirestoreRepositoryImpl(
       imagesStorageRepository: ref.watch(imagesStorageRepositoryProvider),
+      feedbackFirestoreRepository:
+          ref.watch(feedbackFirestoreRepositoryProvider),
     );
 
 @Riverpod(keepAlive: true)

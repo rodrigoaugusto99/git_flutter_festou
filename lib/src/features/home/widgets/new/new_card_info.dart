@@ -86,6 +86,16 @@ class _NewCardInfoState extends State<NewCardInfo> {
                   const Divider(thickness: 0.4, color: Colors.grey),
                   const SizedBox(height: 10),
                   const Text(
+                    'Aproveite nosso pedacinho do paraiso durante suas ferias em Espaco Doido! Quer oce estteja explorando a floresta tropical ao redor e o ulcao Arenal a longo prazo ou apenas de passagem, esta casa ofrec uma experiencia confrtavel e luxuosa para',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  const Divider(thickness: 0.4, color: Colors.grey),
+                  const SizedBox(height: 10),
+                  const Text(
                     'O que o lugar oferece',
                     style: TextStyle(
                       fontSize: 16,

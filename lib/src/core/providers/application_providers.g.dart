@@ -55,7 +55,7 @@ final userLoginServiceProvider = Provider<UserLoginService>.internal(
 
 typedef UserLoginServiceRef = ProviderRef<UserLoginService>;
 String _$spaceFirestoreRepositoryHash() =>
-    r'cdf12ac5969e5b5ad29cc3a608b62bda6bd46183';
+    r'2fb5492c61293dd41a8fde7380834f1eb4c762b2';
 
 /// See also [spaceFirestoreRepository].
 @ProviderFor(spaceFirestoreRepository)

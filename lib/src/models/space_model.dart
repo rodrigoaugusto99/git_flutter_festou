@@ -12,7 +12,7 @@ class SpaceModel {
   final List<dynamic> selectedTypes;
   final List<dynamic> selectedServices;
   final List<dynamic> availableDays;
-
+  final String averageRating;
   SpaceModel(
     this.isFavorited,
     this.spaceId,
@@ -27,5 +27,6 @@ class SpaceModel {
     this.selectedTypes,
     this.selectedServices,
     this.availableDays,
+    this.averageRating,
   );
 }

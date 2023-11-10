@@ -101,9 +101,15 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
             child: SizedBox(
               width: x * 0.43,
               child: ElevatedButton(
-                onPressed: () => Navigator.of(context).pushNamed(
-                    '/spaces/spaces_by_types',
-                    arguments: ['Debutante']),
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const SpacesByTypePage(
+                        type: ['Debutante'],
+                      ); // Substitua NovaPagina com o widget da sua nova tela
+                    },
+                  ),
+                ),
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.grey[100],
                     shape: RoundedRectangleBorder(
