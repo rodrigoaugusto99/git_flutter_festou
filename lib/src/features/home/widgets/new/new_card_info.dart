@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/denunciar_anuncio.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/mostrar_disponibilidade.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/mostrar_politica_de_cancelamento.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/mostrar_regras.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/mostrar_todas_comodidades.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/seguran%C3%A7a_propriedade.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page.dart';
 import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 
@@ -47,11 +52,22 @@ class _NewCardInfoState extends State<NewCardInfo> {
                   ),
                   Row(
                     children: [
-                      Text(
-                        widget.space.space.averageRating,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w400,
+                      Container(
+                        decoration: BoxDecoration(
+                          color: _getColor(
+                              double.parse(widget.space.space.averageRating)),
+                        ),
+                        height: 35, // Ajuste conforme necessário
+                        width: 25, // Ajuste conforme necessário
+                        child: Center(
+                          child: Text(
+                            double.parse(widget.space.space.averageRating)
+                                .toStringAsFixed(1),
+                            style: const TextStyle(
+                              color: Colors.white, // Cor do texto
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(
@@ -194,9 +210,14 @@ class _NewCardInfoState extends State<NewCardInfo> {
                   const SizedBox(height: 10),
                   Row(
                     children: [
-                      const Icon(Icons.star),
+                      Icon(
+                        Icons.star,
+                        color: _getColor(
+                            double.parse(widget.space.space.averageRating)),
+                      ),
                       Text(
-                          '${widget.space.space.averageRating}, \u2022 ${widget.space.space.numComments} comments'),
+                        '${widget.space.space.averageRating}, \u2022 ${widget.space.space.numComments} comments',
+                      ),
                     ],
                   ),
                 ],
@@ -236,15 +257,15 @@ class _NewCardInfoState extends State<NewCardInfo> {
                 );
               },
             ),
-            const Padding(
-              padding: EdgeInsets.all(18.0),
+            Padding(
+              padding: const EdgeInsets.all(18.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
+                      const Column(
                         children: [
                           Text(
                             'Disponibilidade',
@@ -256,16 +277,26 @@ class _NewCardInfoState extends State<NewCardInfo> {
                           Text('Disponibilidade'),
                         ],
                       ),
-                      Icon(Icons.arrow_circle_right_outlined),
+                      InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    MostrarDisponibilidade(space: widget.space),
+                              ),
+                            );
+                          },
+                          child: const Icon(Icons.arrow_circle_right_outlined)),
                     ],
                   ),
-                  SizedBox(height: 10),
-                  Divider(thickness: 0.4, color: Colors.grey),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
+                  const Divider(thickness: 0.4, color: Colors.grey),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
+                      const Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
@@ -288,73 +319,118 @@ class _NewCardInfoState extends State<NewCardInfo> {
                           ),
                         ],
                       ),
-                      Icon(
-                        Icons.arrow_forward, // Substitua pelo ícone desejado
-                        size: 24,
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  MostrarPoliticaDeCancelamento(
+                                      space: widget.space),
+                            ),
+                          );
+                        },
+                        child: const Icon(
+                          Icons.arrow_forward, // Substitua pelo ícone desejado
+                          size: 24,
+                        ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
-                  Divider(thickness: 0.4, color: Colors.grey),
-                  SizedBox(height: 10),
-                  Text(
+                  const SizedBox(height: 10),
+                  const Divider(thickness: 0.4, color: Colors.grey),
+                  const SizedBox(height: 10),
+                  const Text(
                     'Regras do espaço',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Text('Não é permitido animais de estimação'),
-                  Text('Horário de silêncio'),
-                  SizedBox(height: 10),
-                  Text(
-                    'Mostrar mais',
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      fontWeight: FontWeight.bold,
+                  const SizedBox(height: 10),
+                  const Text('Não é permitido animais de estimação'),
+                  const Text('Horário de silêncio'),
+                  const SizedBox(height: 10),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              MostrarRegras(space: widget.space),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Mostrar mais',
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Divider(thickness: 0.4, color: Colors.grey),
-                  SizedBox(height: 10),
-                  Text(
+                  const SizedBox(height: 10),
+                  const Divider(thickness: 0.4, color: Colors.grey),
+                  const SizedBox(height: 10),
+                  const Text(
                     'Segurança e propriedade',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Text(
+                  const SizedBox(height: 10),
+                  const Text(
                     'Câmera de segurança/dispositivo de gravação',
                   ),
-                  Text(
+                  const Text(
                       'O Festou proíbe câmeras e dispositivos sem o conhecimento do locatário.'),
-                  SizedBox(height: 10),
-                  Text(
-                    'Mostrar mais',
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      fontWeight: FontWeight.bold,
+                  const SizedBox(height: 10),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              SeguranAPropriedade(space: widget.space),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Mostrar mais',
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Divider(thickness: 0.4, color: Colors.grey),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
+                  const Divider(thickness: 0.4, color: Colors.grey),
+                  const SizedBox(height: 10),
                   Row(
                     children: [
-                      Icon(Icons.flag),
-                      SizedBox(width: 10),
-                      Text(
-                        'Denunciar este anúncio',
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
+                      const Icon(Icons.flag),
+                      const SizedBox(width: 10),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  DenunciarAnuncio(space: widget.space),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          'Denunciar este anúncio',
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                 ],
               ),
             ),
@@ -362,5 +438,15 @@ class _NewCardInfoState extends State<NewCardInfo> {
         ),
       ),
     );
+  }
+}
+
+Color _getColor(double averageRating) {
+  if (averageRating >= 4) {
+    return Colors.green; // Ícone verde para rating maior ou igual a 4
+  } else if (averageRating >= 2 && averageRating < 4) {
+    return Colors.orange; // Ícone laranja para rating entre 2 e 4 (exclusive)
+  } else {
+    return Colors.red; // Ícone vermelho para rating abaixo de 2
   }
 }
