@@ -13,6 +13,9 @@ class SpaceModel {
   final List<dynamic> selectedServices;
   final List<dynamic> availableDays;
   final String averageRating;
+  final String numComments;
+  final String locadorName;
+
   SpaceModel(
     this.isFavorited,
     this.spaceId,
@@ -28,5 +31,7 @@ class SpaceModel {
     this.selectedServices,
     this.availableDays,
     this.averageRating,
+    this.numComments,
+    this.locadorName,
   );
 }

@@ -50,6 +50,7 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
         List<File> imageFiles,
       }) spaceData) async {
     try {
+      final locadorName = await getLocadorName(spaceData.userId);
       // Crie um novo espaço com os dados fornecidos
       Map<String, dynamic> newSpace = {
         'space_id': spaceData.spaceId,
@@ -65,6 +66,8 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
         'selectedServices': spaceData.selectedServices,
         'availableDays': spaceData.availableDays,
         'average_rating': '',
+        'num_comments': '',
+        'locador_name': locadorName,
       };
 
       // Consulte a coleção 'spaces' para verificar se um espaço com as mesmas informações já existe.
@@ -273,6 +276,7 @@ p decidir o isFavorited*/
     QueryDocumentSnapshot spaceDocument,
     bool isFavorited,
   ) async {
+    //pegando os dados necssarios antes de crior o card
     List<String> selectedTypes =
         List<String>.from(spaceDocument['selectedTypes'] ?? []);
     List<String> selectedServices =
@@ -280,7 +284,10 @@ p decidir o isFavorited*/
     List<String> availableDays =
         List<String>.from(spaceDocument['availableDays'] ?? []);
     String spaceId = spaceDocument.get('space_id');
+    //String userId = spaceDocument.get('user_id');
     final averageRating = await getAverageRating(spaceId);
+    final numComments = await getNumComments(spaceId);
+    //final locadorName = await getLocadorName(userId);
     return SpaceModel(
       isFavorited,
       spaceDocument['space_id'] ?? '',
@@ -296,7 +303,22 @@ p decidir o isFavorited*/
       selectedServices,
       availableDays,
       averageRating,
+      numComments,
+      spaceDocument['locador_name'] ?? '',
     );
+  }
+
+  Future<String> getLocadorName(String userId) async {
+    final userDocument =
+        await usersCollection.where('uid', isEqualTo: userId).get();
+
+    if (userDocument.docs.isNotEmpty) {
+      String locadorName = userDocument.docs.first['nome'];
+      return locadorName;
+    }
+
+    // Trate o caso em que nenhum espaço foi encontrado.
+    throw Exception("Espaço não encontrado");
   }
 
   Future<String> getAverageRating(String spaceId) async {
@@ -306,6 +328,19 @@ p decidir o isFavorited*/
     if (spaceDocument.docs.isNotEmpty) {
       String averageRatingValue = spaceDocument.docs.first['average_rating'];
       return averageRatingValue;
+    }
+
+    // Trate o caso em que nenhum espaço foi encontrado.
+    throw Exception("Espaço não encontrado");
+  }
+
+  Future<String> getNumComments(String spaceId) async {
+    final spaceDocument =
+        await spacesCollection.where('space_id', isEqualTo: spaceId).get();
+
+    if (spaceDocument.docs.isNotEmpty) {
+      String numComments = spaceDocument.docs.first['num_comments'];
+      return numComments;
     }
 
     // Trate o caso em que nenhum espaço foi encontrado.

@@ -45,18 +45,21 @@ class _NewCardInfoState extends State<NewCardInfo> {
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  const Row(
+                  Row(
                     children: [
                       Text(
-                        '{averageRating}',
-                        style: TextStyle(
+                        widget.space.space.averageRating,
+                        style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
+                      const SizedBox(
+                        width: 10,
+                      ),
                       Text(
-                        '{numComments}',
-                        style: TextStyle(
+                        widget.space.space.numComments,
+                        style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
                         ),
@@ -66,17 +69,17 @@ class _NewCardInfoState extends State<NewCardInfo> {
                   const SizedBox(height: 10),
                   const Divider(thickness: 0.4, color: Colors.grey),
                   const SizedBox(height: 10),
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Espaço alocado por {nome_do_locador}',
-                        style: TextStyle(
+                        'Espaço alocado por ${widget.space.space.locadorName}',
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Icon(
+                      const Icon(
                         Icons.account_circle, // Substitua pelo ícone desejado
                         size: 24,
                       ),
@@ -189,17 +192,49 @@ class _NewCardInfoState extends State<NewCardInfo> {
                   const SizedBox(height: 10),
                   const Divider(thickness: 0.4, color: Colors.grey),
                   const SizedBox(height: 10),
-                  const Row(
+                  Row(
                     children: [
-                      Icon(Icons.star),
-                      Text('5,0 \u2022 108 Comentários'),
+                      const Icon(Icons.star),
+                      Text(
+                          '${widget.space.space.averageRating}, \u2022 ${widget.space.space.numComments} comments'),
                     ],
                   ),
                 ],
               ),
             ),
             SpaceFeedbacksPage(
+              x: 3,
               space: widget.space.space,
+            ),
+            InkWell(
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black),
+                  borderRadius: const BorderRadius.horizontal(
+                      left: Radius.circular(10), right: Radius.circular(10)),
+                ),
+                child: const Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Mostrar todaos os comentarios',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        SpaceFeedbacksPage(space: widget.space.space),
+                  ),
+                );
+              },
             ),
             const Padding(
               padding: EdgeInsets.all(18.0),

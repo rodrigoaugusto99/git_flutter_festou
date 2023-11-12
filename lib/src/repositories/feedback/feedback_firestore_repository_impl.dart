@@ -48,10 +48,45 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
       log('Avaliação adicionado com sucesso!');
       // Após adicionar o feedback, atualize a média no espaço correspondente
       await updateAverageRating(feedbackData.spaceId);
+      await updateNumComments(feedbackData.spaceId);
       return Success(nil);
     } catch (e) {
       log('Erro ao avaliar espaço: $e');
       return Failure(RepositoryException(message: 'Erro ao avaliar espaço'));
+    }
+  }
+
+// Função para calcular a numero de comntarioss e atualizar o campo average_rating no Firestore
+  Future<void> updateNumComments(String spaceId) async {
+    try {
+      final allFeedbacksDocuments =
+          await feedbacksCollection.where('space_id', isEqualTo: spaceId).get();
+
+      // Verifica se há documentos reais na coleção
+      if (allFeedbacksDocuments.size == 0) {
+        // Não há feedbacks para o espaço fornecido
+        log('Nenhum documento encontrado para o espaço com spaceId: $spaceId');
+        return;
+      }
+      log('allFeedbacksDocuments: $allFeedbacksDocuments');
+      log('spaceId: $spaceId');
+
+      int totalDocuments = allFeedbacksDocuments.docs.length;
+
+      await spacesCollection
+          .where('space_id', isEqualTo: spaceId)
+          .get()
+          .then((querySnapshot) {
+        if (querySnapshot.docs.isNotEmpty) {
+          querySnapshot.docs.first.reference
+              .update({'num_comments': totalDocuments.toString()});
+          log('Numero de comntarios atualizado com sucesso!');
+        } else {
+          log('Nenhum documento encontrado para o espaço com space_id: $spaceId');
+        }
+      });
+    } catch (e) {
+      log('Erro ao atualizar numero de comntarios: $e');
     }
   }
 

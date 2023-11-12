@@ -11,9 +11,11 @@ import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class SpaceFeedbacksPage extends ConsumerStatefulWidget {
   final SpaceModel space;
+  final int? x;
   const SpaceFeedbacksPage({
     super.key,
     required this.space,
+    this.x,
   });
 
   @override
@@ -36,6 +38,7 @@ class _SpaceFeedbacksPageState extends ConsumerState<SpaceFeedbacksPage> {
         return Column(
           children: [
             NewFeedbackWidget(
+              x: widget.x,
               data: data,
               spaces: spaceFeedbacks,
             ),

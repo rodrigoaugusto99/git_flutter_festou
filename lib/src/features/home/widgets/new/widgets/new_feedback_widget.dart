@@ -6,10 +6,13 @@ import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%
 class NewFeedbackWidget extends StatefulWidget {
   final SpaceFeedbacksState data;
   final AsyncValue spaces;
+  final int? x;
+
   const NewFeedbackWidget({
     super.key,
     required this.data,
     required this.spaces,
+    this.x,
   });
 
   @override
@@ -24,7 +27,7 @@ class _NewFeedbackWidgetState extends State<NewFeedbackWidget> {
       height: 230,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: widget.data.feedbacks.length,
+        itemCount: widget.x ?? widget.data.feedbacks.length,
         itemBuilder: (BuildContext context, int index) {
           final feedback = widget.data.feedbacks[index];
           return Container(
