@@ -60,17 +60,6 @@ class _CardInfosState extends State<CardInfos> {
     );
   }
 
-  void showMap(SpaceModel space) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          child: ShowMap(space: space),
-        );
-      },
-    );
-  }
-
   void verFotos(SpaceModel space) {
     showDialog(
       context: context,
@@ -134,10 +123,7 @@ class _CardInfosState extends State<CardInfos> {
                 onPressed: () => showMoreDetails(widget.space.space),
                 child: const Text('Mais Detalhes'),
               ),
-              ElevatedButton(
-                onPressed: () => showMap(widget.space.space),
-                child: const Text('Ver Localização'),
-              ),
+
               ElevatedButton(
                 onPressed: () => showNewCardInfo(widget.space.space),
                 child: const Text('card infoooo'),

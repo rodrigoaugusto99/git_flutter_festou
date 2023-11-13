@@ -1,12 +1,30 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:git_flutter_festou/src/core/ui/constants.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/dialog_map.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/show_new_map.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ShowMap extends StatefulWidget {
+  final bool zoomControlsEnabled;
+  final bool scrollGesturesEnabled;
+  final bool zoomGesturesEnabled;
+  final double height;
+  final double width;
   final SpaceModel space;
-  const ShowMap({super.key, required this.space});
+  final bool x;
+  const ShowMap({
+    super.key,
+    required this.space,
+    required this.scrollGesturesEnabled,
+    required this.zoomControlsEnabled,
+    required this.zoomGesturesEnabled,
+    required this.height,
+    required this.width,
+    required this.x,
+  });
 
   @override
   State<ShowMap> createState() => _ShowMapState();
@@ -86,51 +104,64 @@ class _ShowMapState extends State<ShowMap> {
 
   @override
   Widget build(BuildContext context) {
-    Marker marker = Marker(
-      markerId: const MarkerId('location'),
-      position: selectedLocation ?? const LatLng(0, 0),
-    );
-
-    Set<Marker> markers = {marker};
-
-    return Padding(
-      padding: const EdgeInsets.all(30.0),
-      child: Column(
-        children: [
-          const Text(
-            'Localização',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 2,
-                    blurRadius: 4,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: GoogleMap(
-                onMapCreated: (controller) {
-                  mapController = controller;
-                },
-                initialCameraPosition: CameraPosition(
-                  target: selectedLocation ?? const LatLng(0, 0),
-                  zoom: 15.0,
-                ),
-                markers: selectedLocation != null ? markers : <Marker>{},
-              ),
-            ),
+    return Container(
+      height: widget.height,
+      width: widget.width,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18.0),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 4,
+            offset: const Offset(0, 3),
           ),
         ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8.0), // Arredonda o Container
+        child: Stack(
+          children: [
+            GoogleMap(
+              onMapCreated: (controller) {
+                mapController = controller;
+              },
+              initialCameraPosition: CameraPosition(
+                target: selectedLocation ?? const LatLng(0, 0),
+                zoom: 13.5,
+              ),
+              onCameraMove: (CameraPosition position) {
+                // Imprime o valor do zoom no terminal sempre que ele mudar
+              },
+              circles: selectedLocation != null
+                  ? {
+                      Circle(
+                        circleId: const CircleId('locationCircle'),
+                        center: selectedLocation!,
+                        radius: 1000, // Raio em metros
+                        strokeWidth: 0,
+                        fillColor: Colors.red.withOpacity(
+                            0.3), // Cor de preenchimento vermelho claro
+                        strokeColor: Colors.red,
+                      ),
+                    }
+                  : <Circle>{},
+              zoomControlsEnabled: false,
+              scrollGesturesEnabled: false,
+              zoomGesturesEnabled: false,
+            ),
+            Visibility(
+              visible: widget.x,
+              child: const Positioned(
+                left: 25,
+                right: 25,
+                top: 20,
+                child: DialogMap(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
