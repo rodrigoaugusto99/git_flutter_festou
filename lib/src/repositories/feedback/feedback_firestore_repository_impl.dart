@@ -14,6 +14,8 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
 
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
+  final CollectionReference spacesCollection =
+      FirebaseFirestore.instance.collection('spaces');
 
   final user = FirebaseAuth.instance.currentUser!;
 
@@ -44,10 +46,94 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
       log('ntrou');
       await feedbacksCollection.add(newFeedback);
       log('Avaliação adicionado com sucesso!');
+      // Após adicionar o feedback, atualize a média no espaço correspondente
+      await updateAverageRating(feedbackData.spaceId);
+      await updateNumComments(feedbackData.spaceId);
       return Success(nil);
     } catch (e) {
       log('Erro ao avaliar espaço: $e');
       return Failure(RepositoryException(message: 'Erro ao avaliar espaço'));
+    }
+  }
+
+// Função para calcular a numero de comntarioss e atualizar o campo average_rating no Firestore
+  Future<void> updateNumComments(String spaceId) async {
+    try {
+      final allFeedbacksDocuments =
+          await feedbacksCollection.where('space_id', isEqualTo: spaceId).get();
+
+      // Verifica se há documentos reais na coleção
+      if (allFeedbacksDocuments.size == 0) {
+        // Não há feedbacks para o espaço fornecido
+        log('Nenhum documento encontrado para o espaço com spaceId: $spaceId');
+        return;
+      }
+      log('allFeedbacksDocuments: $allFeedbacksDocuments');
+      log('spaceId: $spaceId');
+
+      int totalDocuments = allFeedbacksDocuments.docs.length;
+
+      await spacesCollection
+          .where('space_id', isEqualTo: spaceId)
+          .get()
+          .then((querySnapshot) {
+        if (querySnapshot.docs.isNotEmpty) {
+          querySnapshot.docs.first.reference
+              .update({'num_comments': totalDocuments.toString()});
+          log('Numero de comntarios atualizado com sucesso!');
+        } else {
+          log('Nenhum documento encontrado para o espaço com space_id: $spaceId');
+        }
+      });
+    } catch (e) {
+      log('Erro ao atualizar numero de comntarios: $e');
+    }
+  }
+
+  // Função para calcular a média dos ratings e atualizar o campo average_rating no Firestore
+  Future<void> updateAverageRating(String spaceId) async {
+    try {
+      final allFeedbacksDocuments =
+          await feedbacksCollection.where('space_id', isEqualTo: spaceId).get();
+
+      // Verifica se há documentos reais na coleção
+      if (allFeedbacksDocuments.size == 0) {
+        // Não há feedbacks para o espaço fornecido
+        log('Nenhum documento encontrado para o espaço com spaceId: $spaceId');
+        return;
+      }
+      log('allFeedbacksDocuments: $allFeedbacksDocuments');
+      log('spaceId: $spaceId');
+
+      int totalRating = 0;
+      int totalDocuments = allFeedbacksDocuments.docs.length;
+
+      for (QueryDocumentSnapshot document in allFeedbacksDocuments.docs) {
+        // Obtém o valor de 'rating' do documento
+        int rating = document['rating'];
+
+        // Soma os ratings
+        totalRating += rating;
+      }
+
+      // Calcula a média dos ratings
+      double averageRating = totalRating / totalDocuments;
+
+      // Atualiza o campo average_rating no documento do espaço com base no campo space_id
+      await spacesCollection
+          .where('space_id', isEqualTo: spaceId)
+          .get()
+          .then((querySnapshot) {
+        if (querySnapshot.docs.isNotEmpty) {
+          querySnapshot.docs.first.reference
+              .update({'average_rating': averageRating.toString()});
+          log('Average rating atualizado com sucesso!');
+        } else {
+          log('Nenhum documento encontrado para o espaço com space_id: $spaceId');
+        }
+      });
+    } catch (e) {
+      log('Erro ao atualizar average rating: $e');
     }
   }
 
@@ -57,6 +143,27 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
     try {
       final allFeedbacksDocuments =
           await feedbacksCollection.where('space_id', isEqualTo: spaceId).get();
+
+      List<FeedbackModel> feedbackModels =
+          allFeedbacksDocuments.docs.map((feedbackDocument) {
+        return mapFeedbackDocumentToModel(feedbackDocument);
+      }).toList();
+      return Success(feedbackModels);
+    } catch (e) {
+      log('Erro ao recuperar os feeedbacks do firestore: $e');
+      return Failure(
+          RepositoryException(message: 'Erro ao carregar os feedbacks'));
+    }
+  }
+
+  @override
+  Future<Either<RepositoryException, List<FeedbackModel>>> getFeedbacksOrdered(
+      String spaceId, String orderBy) async {
+    try {
+      QuerySnapshot allFeedbacksDocuments = await feedbacksCollection
+          .where('space_id', isEqualTo: spaceId)
+          .orderBy(orderBy, descending: true)
+          .get();
 
       List<FeedbackModel> feedbackModels =
           allFeedbacksDocuments.docs.map((feedbackDocument) {

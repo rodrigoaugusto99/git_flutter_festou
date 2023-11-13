@@ -6,7 +6,7 @@ part of 'space_feedbacks_vm.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$spaceFeedbacksVmHash() => r'fb86cd816627cfaf3f8cdc0c5a315ef879f87014';
+String _$spaceFeedbacksVmHash() => r'6087ae0861e0f6aed5b940cbb0aa33f3647bb25d';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -32,9 +32,11 @@ class _SystemHash {
 abstract class _$SpaceFeedbacksVm
     extends BuildlessAutoDisposeAsyncNotifier<SpaceFeedbacksState> {
   late final SpaceModel space;
+  late final String filter;
 
   Future<SpaceFeedbacksState> build(
     SpaceModel space,
+    String filter,
   );
 }
 
@@ -50,9 +52,11 @@ class SpaceFeedbacksVmFamily extends Family<AsyncValue<SpaceFeedbacksState>> {
   /// See also [SpaceFeedbacksVm].
   SpaceFeedbacksVmProvider call(
     SpaceModel space,
+    String filter,
   ) {
     return SpaceFeedbacksVmProvider(
       space,
+      filter,
     );
   }
 
@@ -62,6 +66,7 @@ class SpaceFeedbacksVmFamily extends Family<AsyncValue<SpaceFeedbacksState>> {
   ) {
     return call(
       provider.space,
+      provider.filter,
     );
   }
 
@@ -86,8 +91,11 @@ class SpaceFeedbacksVmProvider extends AutoDisposeAsyncNotifierProviderImpl<
   /// See also [SpaceFeedbacksVm].
   SpaceFeedbacksVmProvider(
     SpaceModel space,
+    String filter,
   ) : this._internal(
-          () => SpaceFeedbacksVm()..space = space,
+          () => SpaceFeedbacksVm()
+            ..space = space
+            ..filter = filter,
           from: spaceFeedbacksVmProvider,
           name: r'spaceFeedbacksVmProvider',
           debugGetCreateSourceHash:
@@ -98,6 +106,7 @@ class SpaceFeedbacksVmProvider extends AutoDisposeAsyncNotifierProviderImpl<
           allTransitiveDependencies:
               SpaceFeedbacksVmFamily._allTransitiveDependencies,
           space: space,
+          filter: filter,
         );
 
   SpaceFeedbacksVmProvider._internal(
@@ -108,9 +117,11 @@ class SpaceFeedbacksVmProvider extends AutoDisposeAsyncNotifierProviderImpl<
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.space,
+    required this.filter,
   }) : super.internal();
 
   final SpaceModel space;
+  final String filter;
 
   @override
   Future<SpaceFeedbacksState> runNotifierBuild(
@@ -118,6 +129,7 @@ class SpaceFeedbacksVmProvider extends AutoDisposeAsyncNotifierProviderImpl<
   ) {
     return notifier.build(
       space,
+      filter,
     );
   }
 
@@ -126,13 +138,16 @@ class SpaceFeedbacksVmProvider extends AutoDisposeAsyncNotifierProviderImpl<
     return ProviderOverride(
       origin: this,
       override: SpaceFeedbacksVmProvider._internal(
-        () => create()..space = space,
+        () => create()
+          ..space = space
+          ..filter = filter,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         space: space,
+        filter: filter,
       ),
     );
   }
@@ -145,13 +160,16 @@ class SpaceFeedbacksVmProvider extends AutoDisposeAsyncNotifierProviderImpl<
 
   @override
   bool operator ==(Object other) {
-    return other is SpaceFeedbacksVmProvider && other.space == space;
+    return other is SpaceFeedbacksVmProvider &&
+        other.space == space &&
+        other.filter == filter;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, space.hashCode);
+    hash = _SystemHash.combine(hash, filter.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -161,6 +179,9 @@ mixin SpaceFeedbacksVmRef
     on AutoDisposeAsyncNotifierProviderRef<SpaceFeedbacksState> {
   /// The parameter `space` of this provider.
   SpaceModel get space;
+
+  /// The parameter `filter` of this provider.
+  String get filter;
 }
 
 class _SpaceFeedbacksVmProviderElement
@@ -170,6 +191,8 @@ class _SpaceFeedbacksVmProviderElement
 
   @override
   SpaceModel get space => (origin as SpaceFeedbacksVmProvider).space;
+  @override
+  String get filter => (origin as SpaceFeedbacksVmProvider).filter;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter

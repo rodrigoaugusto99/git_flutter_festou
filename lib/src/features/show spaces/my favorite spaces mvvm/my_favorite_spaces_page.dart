@@ -2,8 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/my_sliver_list_normal.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/my_sliver_to_box_adapter.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/my_sliver_list_to_card_info.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20favorite%20spaces%20mvvm/my_favorite_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20favorite%20spaces%20mvvm/my_favorite_spaces_vm.dart';
 
@@ -36,10 +35,10 @@ class _MyFavoriteSpacePageState extends ConsumerState<MyFavoriteSpacePage> {
         data: (MyFavoriteSpacesState data) {
           return CustomScrollView(
             slivers: [
-              const MySliverToBoxAdapter(
-                text: 'MY FAVORITE SPACES',
+              const SliverToBoxAdapter(
+                child: Text('MY FAVORITE SPACES'),
               ),
-              MySliverListNormal(data: data, spaces: favSpaces),
+              MySliverListToCardInfo(data: data, spaces: favSpaces),
             ],
           );
         },

@@ -1,23 +1,23 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
-import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
+import 'package:git_flutter_festou/src/repositories/feedback/feedback_firestore_repository.dart';
 import 'package:git_flutter_festou/src/repositories/images/images_storage_repository.dart';
 import 'package:git_flutter_festou/src/repositories/space/space_firestore_repository.dart';
 
 class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
   final ImagesStorageRepository imagesStorageRepository;
+  final FeedbackFirestoreRepository feedbackFirestoreRepository;
   SpaceFirestoreRepositoryImpl({
     required this.imagesStorageRepository,
+    required this.feedbackFirestoreRepository,
   });
   //final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -47,6 +47,7 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
         List<File> imageFiles,
       }) spaceData) async {
     try {
+      final locadorName = await getLocadorName(spaceData.userId);
       // Crie um novo espaço com os dados fornecidos
       Map<String, dynamic> newSpace = {
         'space_id': spaceData.spaceId,
@@ -61,6 +62,9 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
         'selectedTypes': spaceData.selectedTypes,
         'selectedServices': spaceData.selectedServices,
         'availableDays': spaceData.availableDays,
+        'average_rating': '',
+        'num_comments': '',
+        'locador_name': locadorName,
       };
 
       // Consulte a coleção 'spaces' para verificar se um espaço com as mesmas informações já existe.
@@ -109,11 +113,11 @@ p decidir o isFavorited*/
 
 //todo: mapSpaceDocumentToModel ajustado
       List<SpaceModel> spaceModels =
-          allSpaceDocuments.docs.map((spaceDocument) {
+          await Future.wait(allSpaceDocuments.docs.map((spaceDocument) {
         final isFavorited =
             userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
         return mapSpaceDocumentToModel(spaceDocument, isFavorited);
-      }).toList();
+      }).toList());
 
       final spaceWithImagesList = <SpaceWithImages>[];
 
@@ -149,11 +153,12 @@ p decidir o isFavorited*/
 
 //percorre tudo.
 //todo: mapSpaceDocumentToModel ajustado
-      List<SpaceModel> spaceModels = mySpaceDocuments.docs.map((spaceDocument) {
+      List<SpaceModel> spaceModels =
+          await Future.wait(mySpaceDocuments.docs.map((spaceDocument) {
         final isFavorited =
             userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
         return mapSpaceDocumentToModel(spaceDocument, isFavorited);
-      }).toList();
+      }).toList());
       final spaceWithImagesList = <SpaceWithImages>[];
 
       for (var space in spaceModels) {
@@ -198,12 +203,14 @@ p decidir o isFavorited*/
 //pra percorrer tudo, precisamos ter a lista de favoritados pelo usuario
 //e a lista de documentos dos espaços que devem ser buildados
 //todo: mapSpaceDocumentToModel ajustado
-        List<SpaceModel> spaceModels =
-            favoriteSpaceDocuments.docs.map((spaceDocument) {
-          final isFavorited =
-              userSpacesFavorite.contains(spaceDocument['space_id']) ?? false;
-          return mapSpaceDocumentToModel(spaceDocument, isFavorited);
-        }).toList();
+        List<SpaceModel> spaceModels = await Future.wait(
+          favoriteSpaceDocuments.docs.map((spaceDocument) async {
+            final isFavorited =
+                userSpacesFavorite.contains(spaceDocument['space_id']) ?? false;
+            return await mapSpaceDocumentToModel(spaceDocument, isFavorited);
+          }),
+        );
+
         final spaceWithImagesList = <SpaceWithImages>[];
 
         for (var space in spaceModels) {
@@ -262,17 +269,22 @@ p decidir o isFavorited*/
 
 //build dos espaços
 //todo: buildar levando em conta espaços e lista de favoritos
-  SpaceModel mapSpaceDocumentToModel(
+  Future<SpaceModel> mapSpaceDocumentToModel(
     QueryDocumentSnapshot spaceDocument,
     bool isFavorited,
-  ) {
+  ) async {
+    //pegando os dados necssarios antes de crior o card
     List<String> selectedTypes =
         List<String>.from(spaceDocument['selectedTypes'] ?? []);
     List<String> selectedServices =
         List<String>.from(spaceDocument['selectedServices'] ?? []);
     List<String> availableDays =
         List<String>.from(spaceDocument['availableDays'] ?? []);
-
+    String spaceId = spaceDocument.get('space_id');
+    //String userId = spaceDocument.get('user_id');
+    final averageRating = await getAverageRating(spaceId);
+    final numComments = await getNumComments(spaceId);
+    //final locadorName = await getLocadorName(userId);
     return SpaceModel(
       isFavorited,
       spaceDocument['space_id'] ?? '',
@@ -287,7 +299,49 @@ p decidir o isFavorited*/
       selectedTypes,
       selectedServices,
       availableDays,
+      averageRating,
+      numComments,
+      spaceDocument['locador_name'] ?? '',
     );
+  }
+
+  Future<String> getLocadorName(String userId) async {
+    final userDocument =
+        await usersCollection.where('uid', isEqualTo: userId).get();
+
+    if (userDocument.docs.isNotEmpty) {
+      String locadorName = userDocument.docs.first['nome'];
+      return locadorName;
+    }
+
+    // Trate o caso em que nenhum espaço foi encontrado.
+    throw Exception("Espaço não encontrado");
+  }
+
+  Future<String> getAverageRating(String spaceId) async {
+    final spaceDocument =
+        await spacesCollection.where('space_id', isEqualTo: spaceId).get();
+
+    if (spaceDocument.docs.isNotEmpty) {
+      String averageRatingValue = spaceDocument.docs.first['average_rating'];
+      return averageRatingValue;
+    }
+
+    // Trate o caso em que nenhum espaço foi encontrado.
+    throw Exception("Espaço não encontrado");
+  }
+
+  Future<String> getNumComments(String spaceId) async {
+    final spaceDocument =
+        await spacesCollection.where('space_id', isEqualTo: spaceId).get();
+
+    if (spaceDocument.docs.isNotEmpty) {
+      String numComments = spaceDocument.docs.first['num_comments'];
+      return numComments;
+    }
+
+    // Trate o caso em que nenhum espaço foi encontrado.
+    throw Exception("Espaço não encontrado");
   }
 
 //retorna o documento do usuario atual
@@ -328,7 +382,8 @@ p decidir o isFavorited*/
       final userSpacesFavorite = await getUserFavoriteSpaces();
 
       // Mapeia os documentos de espaço para objetos SpaceModel.
-      List<SpaceModel> spaceModels = spaceDocuments.docs.map((spaceDocument) {
+      List<SpaceModel> spaceModels =
+          await Future.wait(spaceDocuments.docs.map((spaceDocument) {
         final isFavorited =
             userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
 
@@ -336,7 +391,7 @@ p decidir o isFavorited*/
           spaceDocument,
           isFavorited,
         );
-      }).toList();
+      }).toList());
 
       final spaceWithImagesList = <SpaceWithImages>[];
 
@@ -398,11 +453,12 @@ p decidir o isFavorited*/
           .get();
 
       // Mapeia os documentos de espaço para objetos SpaceModel.
-      List<SpaceModel> spaceModels = spaceDocuments.docs.map((spaceDocument) {
+      List<SpaceModel> spaceModels =
+          await Future.wait(spaceDocuments.docs.map((spaceDocument) {
         final isFavorited =
             userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
         return mapSpaceDocumentToModel(spaceDocument, isFavorited);
-      }).toList();
+      }).toList());
 
       final spaceWithImagesList = <SpaceWithImages>[];
 
@@ -453,11 +509,12 @@ p decidir o isFavorited*/
       final spaceDocuments = await query.get();
 
       // Mapeia os documentos de espaço para objetos SpaceModel.
-      final spaceModels = spaceDocuments.docs.map((spaceDocument) {
+      final spaceModels =
+          await Future.wait(spaceDocuments.docs.map((spaceDocument) {
         final isFavorited =
             userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
         return mapSpaceDocumentToModel(spaceDocument, isFavorited);
-      }).toList();
+      }).toList());
 
       final spaceWithImagesList = <SpaceWithImages>[];
 
@@ -501,11 +558,12 @@ p decidir o isFavorited*/
       final spaceDocuments = await query.get();
 
       // Mapeia os documentos de espaço para objetos SpaceModel.
-      final spaceModels = spaceDocuments.docs.map((spaceDocument) {
+      final spaceModels =
+          await Future.wait(spaceDocuments.docs.map((spaceDocument) {
         final isFavorited =
             userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
         return mapSpaceDocumentToModel(spaceDocument, isFavorited);
-      }).toList();
+      }).toList());
 
       final spaceWithImagesList = <SpaceWithImages>[];
 
@@ -551,11 +609,12 @@ p decidir o isFavorited*/
       final spaceDocuments = await query.get();
 
       // Mapeia os documentos de espaço para objetos SpaceModel.
-      final spaceModels = spaceDocuments.docs.map((spaceDocument) {
+      final spaceModels =
+          await Future.wait(spaceDocuments.docs.map((spaceDocument) {
         final isFavorited =
             userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
         return mapSpaceDocumentToModel(spaceDocument, isFavorited);
-      }).toList();
+      }).toList());
 
       final spaceWithImagesList = <SpaceWithImages>[];
 

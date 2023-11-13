@@ -21,6 +21,7 @@ sealed class ImageConstants {
   static const festouLogo = 'lib/assets/images/logo_festou.png';
   static const festouLogo2 = 'lib/assets/images/festou-logo.png';
   static const googleLogo = 'lib/assets/images/google.png';
+  static const dialog = 'lib/assets/images/dialog.png';
 }
 
 sealed class TextConstants {

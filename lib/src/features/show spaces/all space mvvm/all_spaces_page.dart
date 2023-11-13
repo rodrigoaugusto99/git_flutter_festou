@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/my_sliver_list_normal.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/my_sliver_to_box_adapter.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/my_sliver_list_normal.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
 
@@ -33,8 +32,8 @@ class _AllSpacesPageState extends ConsumerState<AllSpacesPage> {
         data: (AllSpaceState data) {
           return CustomScrollView(
             slivers: [
-              const MySliverToBoxAdapter(
-                text: 'ALL SPACES',
+              const SliverToBoxAdapter(
+                child: Text('ALL SPACES'),
               ),
               MySliverListNormal(data: data, spaces: allSpaces),
             ],

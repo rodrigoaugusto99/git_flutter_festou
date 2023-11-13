@@ -61,6 +61,8 @@ dependencies:
   intl: ^0.18.1
   glassmorphism: ^3.0.0
   glassmorphism_ui: ^0.3.0
+  card_swiper: ^3.0.1
+  
 
 dev_dependencies:
   flutter_test:
@@ -104,11 +106,15 @@ flutter:
   fonts:
     - family: Valentine
       fonts:
-      - asset: lib/assets/fonts/valentine.ttf
+      - asset: lib/assets/fonts/Valentine.ttf
 
-    - family: inter
+    - family: Inter
       fonts:
-      - asset: lib/assets/fonts/inter.ttf
+      - asset: lib/assets/fonts/Inter.ttf
+
+    - family: NerkoOne
+      fonts:
+      - asset: lib/assets/fonts/NerkoOne.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

@@ -49,6 +49,7 @@ class ServicesPanel extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class ButtonType extends StatefulWidget {
   final String label;
   final ValueChanged<String> onServicePressed;

@@ -48,6 +48,7 @@ class TypePanel extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class ButtonType extends StatefulWidget {
   final ValueChanged<String> onTypePressed;
   final String label;
