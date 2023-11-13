@@ -8,7 +8,6 @@ import 'package:git_flutter_festou/src/features/home/widgets/feed.dart';
 import 'package:git_flutter_festou/src/features/login/login_state.dart';
 import 'package:git_flutter_festou/src/features/login/login_vm.dart';
 import 'package:glassmorphism/glassmorphism.dart';
-import '../home/widgets/my_squaretile.dart';
 import '../../services/auth_services.dart';
 import 'forgot_password_page.dart';
 

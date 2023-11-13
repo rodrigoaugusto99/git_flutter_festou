@@ -4,7 +4,6 @@ import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/feed.dart';
 import 'package:git_flutter_festou/src/features/register/user/user_register_vm.dart';
-import '../../home/widgets/my_squaretile.dart';
 import '../../../services/auth_services.dart';
 
 class UserRegisterPage extends ConsumerStatefulWidget {

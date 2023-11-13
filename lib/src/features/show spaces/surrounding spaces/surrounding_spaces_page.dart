@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/surrounding%20spaces/surrounding_spaces_state.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/surrounding%20spaces/surrounding_spaces_vm.dart';
+
 import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/my_sliver_list_normal.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/my_sliver_to_box_adapter.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_state.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_vm.dart';
 
 class SurroundingSpacesPage extends ConsumerStatefulWidget {
   const SurroundingSpacesPage({super.key});
@@ -36,8 +36,8 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
         data: (SurroundingSpacesState data) {
           return CustomScrollView(
             slivers: [
-              const MySliverToBoxAdapter(
-                text: 'ALL SPACES',
+              const SliverToBoxAdapter(
+                child: Text('surronding spaces'),
               ),
               MySliverListNormal(data: data, spaces: allSpaces),
             ],

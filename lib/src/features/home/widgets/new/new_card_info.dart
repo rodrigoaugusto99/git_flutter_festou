@@ -1,16 +1,20 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/denunciar_anuncio.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/mostrar_descricao.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/mostrar_disponibilidade.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/mostrar_onde_voce_estara.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/mostrar_politica_de_cancelamento.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/mostrar_regras.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/mostrar_todas_comodidades.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/seguran%C3%A7a_propriedade.dart';
+import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_denunciar_anuncio.dart';
+import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_descricao.dart';
+
 import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/show_new_map.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/show_map.dart';
+import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_2.dart';
+import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_disponibilidade.dart';
+import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_onde_voce_estara.dart';
+import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_politica_de_cancelamento.dart';
+import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_regras.dart';
+import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_seguranca_propriedade.dart';
+import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_todas_comodidades.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 
 class NewCardInfo extends StatefulWidget {
@@ -24,7 +28,20 @@ class NewCardInfo extends StatefulWidget {
   State<NewCardInfo> createState() => _NewCardInfoState();
 }
 
+int _currentSlide = 0;
+
 class _NewCardInfoState extends State<NewCardInfo> {
+  void showRatingDialog(SpaceModel space) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: FeedbackPage(space: space),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,17 +64,49 @@ class _NewCardInfoState extends State<NewCardInfo> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                color: Colors.red,
-                height: 100,
+              Stack(
+                children: [
+                  CarouselSlider(
+                    items: widget.space.imageUrls
+                        .map((imageUrl) => Image.network(
+                              imageUrl,
+                              fit: BoxFit.cover,
+                            ))
+                        .toList(),
+                    options: CarouselOptions(
+                      aspectRatio: 16 / 12,
+                      viewportFraction: 1.0,
+                      enableInfiniteScroll: false,
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          _currentSlide = index;
+                        });
+                      },
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 20.0,
+                    right: 20.0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.7),
+                          borderRadius: BorderRadius.circular(10)),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 3, horizontal: 10),
+                      child: Text(
+                        '${_currentSlide + 1}/${widget.space.imageUrls.length}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.0,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               ),
-              Container(
-                color: Colors.white,
-                height: 100,
-              ),
-              Container(
-                color: Colors.green,
-                height: 100,
+              ElevatedButton(
+                onPressed: () => showRatingDialog(widget.space.space),
+                child: const Text('Avalie'),
               ),
               Padding(
                 padding: const EdgeInsets.all(18.0),
@@ -617,7 +666,8 @@ class _NewCardInfoState extends State<NewCardInfo> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    SeguranAPropriedade(space: widget.space),
+                                    MostrarSegurancaPropriedade(
+                                        space: widget.space),
                               ),
                             );
                           },
@@ -642,7 +692,8 @@ class _NewCardInfoState extends State<NewCardInfo> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        DenunciarAnuncio(space: widget.space),
+                                        MostrarDenunciarAnuncio(
+                                            space: widget.space),
                                   ),
                                 );
                               },

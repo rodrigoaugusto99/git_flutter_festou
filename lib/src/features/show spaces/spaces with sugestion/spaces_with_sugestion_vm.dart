@@ -1,7 +1,7 @@
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20with%20sugestion/spaces_with_sugestion_state.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/spaces%20with%20sugestion/spaces_with_sugestion_state.dart';
 import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

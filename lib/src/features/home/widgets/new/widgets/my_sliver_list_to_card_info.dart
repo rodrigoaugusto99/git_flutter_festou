@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/card_infos.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/new_card_info.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/new_space_card.dart';
 
 class MySliverListToCardInfo extends StatelessWidget {
@@ -20,7 +20,8 @@ class MySliverListToCardInfo extends StatelessWidget {
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CardInfos(space: data.spaces[index]),
+                    builder: (context) =>
+                        NewCardInfo(space: data.spaces[index]),
                   ),
                 ),
                 child: NewSpaceCard(space: data.spaces[index]),

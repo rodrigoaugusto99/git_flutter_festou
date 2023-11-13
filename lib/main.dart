@@ -9,8 +9,6 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/d
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/help/help_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/locador/quero_ser_locador.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20by%20type/spaces_by_type_page.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/spaces%20with%20sugestion/spaces_with_sugestion_page.dart';
 import 'package:git_flutter_festou/src/features/login/forgot_email_page.dart';
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
@@ -20,6 +18,8 @@ import 'package:git_flutter_festou/src/features/search/search_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20favorite%20spaces%20mvvm/my_favorite_spaces_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_page.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/spaces%20by%20type/spaces_by_type_page.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/spaces%20with%20sugestion/spaces_with_sugestion_page.dart';
 import 'package:git_flutter_festou/src/features/splash/splash_page.dart';
 import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 import 'package:intl/date_symbol_data_local.dart';
