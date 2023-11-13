@@ -12,6 +12,7 @@ import 'package:git_flutter_festou/src/models/space_model.dart';
 class SpaceFeedbacksPage extends ConsumerStatefulWidget {
   final SpaceModel space;
   final int? x;
+
   const SpaceFeedbacksPage({
     super.key,
     required this.space,
@@ -25,7 +26,8 @@ class SpaceFeedbacksPage extends ConsumerStatefulWidget {
 class _SpaceFeedbacksPageState extends ConsumerState<SpaceFeedbacksPage> {
   @override
   Widget build(BuildContext context) {
-    final spaceFeedbacks = ref.watch(spaceFeedbacksVmProvider(widget.space));
+    final spaceFeedbacks =
+        ref.watch(spaceFeedbacksVmProvider(widget.space, 'date'));
 
     return spaceFeedbacks.when(
       data: (SpaceFeedbacksState data) {
@@ -35,15 +37,10 @@ class _SpaceFeedbacksPageState extends ConsumerState<SpaceFeedbacksPage> {
           );
         }
         log('Average Rating: ${widget.space.averageRating}');
-        return Column(
-          children: [
-            NewFeedbackWidget(
-              x: widget.x,
-              data: data,
-              spaces: spaceFeedbacks,
-            ),
-            Text('Average Rating: ${widget.space.averageRating}'),
-          ],
+        return NewFeedbackWidget(
+          x: widget.x,
+          data: data,
+          spaces: spaceFeedbacks,
         );
       },
       error: (Object error, StackTrace stackTrace) {

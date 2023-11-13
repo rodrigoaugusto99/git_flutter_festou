@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 
-class MostrarTodasComodidades extends StatefulWidget {
+class MostrarOndeVoceEstara extends StatefulWidget {
   final SpaceWithImages space;
-  const MostrarTodasComodidades({
+  const MostrarOndeVoceEstara({
     super.key,
     required this.space,
   });
 
   @override
-  State<MostrarTodasComodidades> createState() =>
-      _MostrarTodasComodidadesState();
+  State<MostrarOndeVoceEstara> createState() => _MostrarOndeVoceEstaraState();
 }
 
-class _MostrarTodasComodidadesState extends State<MostrarTodasComodidades> {
+class _MostrarOndeVoceEstaraState extends State<MostrarOndeVoceEstara> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +27,7 @@ class _MostrarTodasComodidadesState extends State<MostrarTodasComodidades> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'O que esse lugar oferece',
+              'Onde voce estará',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -37,19 +36,15 @@ class _MostrarTodasComodidadesState extends State<MostrarTodasComodidades> {
             const SizedBox(
               height: 20,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: widget.space.space.selectedServices
-                  .map((service) => Column(
-                        children: [
-                          Text(service),
-                          const SizedBox(height: 10),
-                          const Divider(thickness: 0.4, color: Colors.grey),
-                          const SizedBox(height: 10),
-                        ],
-                      ))
-                  .toList(),
+            Text(
+              '${widget.space.space.bairro}, ${widget.space.space.cidade}',
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
+            const SizedBox(
+              height: 20,
+            ),
+            const Text(
+                'O Bairro dos Mellos é um bairro rural e familiar. Não possui mercados, mas fica bem próximo do centro da cidade Piranguçu. Estamos a 1h40min de Campos de Jordão'),
           ],
         ),
       ),

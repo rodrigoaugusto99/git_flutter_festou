@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/denunciar_anuncio.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/mostrar_disponibilidade.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/mostrar_onde_voce_estara.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/mostrar_politica_de_cancelamento.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/mostrar_regras.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/mostrar_todas_comodidades.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/seguran%C3%A7a_propriedade.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_2.dart';
 import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 
 class NewCardInfo extends StatefulWidget {
@@ -74,7 +76,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                         width: 10,
                       ),
                       Text(
-                        widget.space.space.numComments,
+                        '${widget.space.space.numComments} comments',
                         style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
@@ -86,18 +88,18 @@ class _NewCardInfoState extends State<NewCardInfo> {
                   const Divider(thickness: 0.4, color: Colors.grey),
                   const SizedBox(height: 10),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      const Icon(
+                        Icons.account_circle, // Substitua pelo ícone desejado
+                        size: 24,
+                      ),
+                      const SizedBox(width: 10),
                       Text(
-                        'Espaço alocado por ${widget.space.space.locadorName}',
+                        'Locador: ${widget.space.space.locadorName}',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
-                      ),
-                      const Icon(
-                        Icons.account_circle, // Substitua pelo ícone desejado
-                        size: 24,
                       ),
                     ],
                   ),
@@ -172,13 +174,19 @@ class _NewCardInfoState extends State<NewCardInfo> {
                     ),
                   ),
                   const SizedBox(height: 10),
+                  const SizedBox(height: 10),
+                  const Text('((O local exato é fornecido depois da reserva))'),
+                  const SizedBox(height: 200, child: Placeholder()),
+                  const SizedBox(height: 15),
                   Text(
                     '${widget.space.space.bairro}, ${widget.space.space.cidade}',
                   ),
-                  const SizedBox(height: 10),
-                  const SizedBox(height: 200, child: Placeholder()),
                   const SizedBox(height: 15),
-                  const Text('O local exato é fornecido depois da reserva'),
+                  const Text(
+                    'O Bairro dos Mellos é um bairro rural e familiar. \nNão possui mercados, mas fica bem próximo do centro da cidade Piranguçu. Estamos a 1h40min de Campos de Jordão',
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   InkWell(
                     child: const Row(
                       children: [
@@ -192,34 +200,48 @@ class _NewCardInfoState extends State<NewCardInfo> {
                       ],
                     ),
                     onTap: () {
-                      // Ação quando o botão for clicado
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              MostrarOndeVoceEstara(space: widget.space),
+                        ),
+                      );
                     },
                   ),
                   const SizedBox(height: 10),
                   const Divider(thickness: 0.4, color: Colors.grey),
-                  const Text('Opinião dos clientes'),
-                  const Row(
-                    children: [
-                      Text('Avaliação: averageRating'),
-                      Text('Excelente'),
-                    ],
+                  const Text(
+                    'Opinião dos clientes',
+                    style: TextStyle(fontSize: 24),
                   ),
-                  const Text('Opiniões'),
-                  const SizedBox(height: 10),
-                  const Divider(thickness: 0.4, color: Colors.grey),
-                  const SizedBox(height: 10),
+                  const Text('Avaliação'),
                   Row(
                     children: [
-                      Icon(
-                        Icons.star,
-                        color: _getColor(
-                            double.parse(widget.space.space.averageRating)),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: _getColor(
+                              double.parse(widget.space.space.averageRating)),
+                        ),
+                        height: 35, // Ajuste conforme necessário
+                        width: 25, // Ajuste conforme necessário
+                        child: Center(
+                          child: Text(
+                            double.parse(widget.space.space.averageRating)
+                                .toStringAsFixed(1),
+                            style: const TextStyle(
+                              color: Colors.white, // Cor do texto
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
                       Text(
                         '${widget.space.space.averageRating}, \u2022 ${widget.space.space.numComments} comments',
                       ),
                     ],
                   ),
+                  const Text('Opiniões'),
                 ],
               ),
             ),
@@ -227,41 +249,45 @@ class _NewCardInfoState extends State<NewCardInfo> {
               x: 3,
               space: widget.space.space,
             ),
-            InkWell(
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black),
-                  borderRadius: const BorderRadius.horizontal(
-                      left: Radius.circular(10), right: Radius.circular(10)),
-                ),
-                child: const Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Mostrar todaos os comentarios',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        SpaceFeedbacksPage(space: widget.space.space),
-                  ),
-                );
-              },
-            ),
             Padding(
               padding: const EdgeInsets.all(18.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  InkWell(
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                        borderRadius: const BorderRadius.horizontal(
+                            left: Radius.circular(10),
+                            right: Radius.circular(10)),
+                      ),
+                      child: const Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Mostrar todaos os comentarios',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              SpaceFeedbacksPage2(space: widget.space.space),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  const Divider(thickness: 0.4, color: Colors.grey),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

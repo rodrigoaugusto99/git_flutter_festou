@@ -156,6 +156,27 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
     }
   }
 
+  @override
+  Future<Either<RepositoryException, List<FeedbackModel>>> getFeedbacksOrdered(
+      String spaceId, String orderBy) async {
+    try {
+      QuerySnapshot allFeedbacksDocuments = await feedbacksCollection
+          .where('space_id', isEqualTo: spaceId)
+          .orderBy(orderBy, descending: true)
+          .get();
+
+      List<FeedbackModel> feedbackModels =
+          allFeedbacksDocuments.docs.map((feedbackDocument) {
+        return mapFeedbackDocumentToModel(feedbackDocument);
+      }).toList();
+      return Success(feedbackModels);
+    } catch (e) {
+      log('Erro ao recuperar os feeedbacks do firestore: $e');
+      return Failure(
+          RepositoryException(message: 'Erro ao carregar os feedbacks'));
+    }
+  }
+
   FeedbackModel mapFeedbackDocumentToModel(
       QueryDocumentSnapshot feedbackDocument) {
     return FeedbackModel(

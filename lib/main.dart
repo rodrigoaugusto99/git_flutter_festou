@@ -22,12 +22,14 @@ import 'package:git_flutter_festou/src/features/show%20spaces/my%20favorite%20sp
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_page.dart';
 import 'package:git_flutter_festou/src/features/splash/splash_page.dart';
 import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await initializeDateFormatting('pt_BR', null);
   runApp(const ProviderScope(child: MyApp()));
 }
 

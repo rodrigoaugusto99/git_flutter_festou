@@ -9,10 +9,11 @@ part 'space_feedbacks_vm.g.dart';
 @riverpod
 class SpaceFeedbacksVm extends _$SpaceFeedbacksVm {
   @override
-  Future<SpaceFeedbacksState> build(SpaceModel space) async {
+  Future<SpaceFeedbacksState> build(SpaceModel space, String filter) async {
     final feedbackRepository = ref.read(feedbackFirestoreRepositoryProvider);
 
-    final feedbackResult = await feedbackRepository.getFeedbacks(space.spaceId);
+    final feedbackResult =
+        await feedbackRepository.getFeedbacksOrdered(space.spaceId, filter);
 
     switch (feedbackResult) {
       case Success(value: final feedbackData):
