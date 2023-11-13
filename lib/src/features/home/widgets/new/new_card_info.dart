@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/denunciar_anuncio.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/mostrar_descricao.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/mostrar_disponibilidade.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/mostrar_onde_voce_estara.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/mostrar_politica_de_cancelamento.dart';
@@ -56,6 +57,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                     children: [
                       Container(
                         decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
                           color: _getColor(
                               double.parse(widget.space.space.averageRating)),
                         ),
@@ -107,11 +109,52 @@ class _NewCardInfoState extends State<NewCardInfo> {
                   const Divider(thickness: 0.4, color: Colors.grey),
                   const SizedBox(height: 10),
                   const Text(
-                    'Aproveite nosso pedacinho do paraiso durante suas ferias em Espaco Doido! Quer oce estteja explorando a floresta tropical ao redor e o ulcao Arenal a longo prazo ou apenas de passagem, esta casa ofrec uma experiencia confrtavel e luxuosa para',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                    'Bem-vindo ao nosso espaço, um verdadeiro oásis de aconchego e estilo. Situado em um local encantador,'
+                    'nosso espaço foi cuidadosamente projetado para oferecer uma experiência única, onde o conforto se encontra'
+                    'com a elegância. Ao adentrar este refúgio, você será recebido por uma atmosfera calorosa e acolhedora, '
+                    'proporcionando um ambiente perfeito para relaxar e descontrair.A decoração, meticulosamente escolhida, '
+                    'reflete a essência do aconchego, combinando elementos modernos com toques de charme tradicional. '
+                    'Cada detalhe foi pensado para criar uma atmosfera que faz você se sentir em casa desde o primeiro '
+                    'momento. Os tons suaves das paredes, os móveis confortáveis e os acessórios cuidadosamente '
+                    'selecionados se unem para criar um espaço que é simultaneamente elegante e acolhedor.Nosso espaço'
+                    'oferece uma variedade de amenidades para garantir uma estadia relaxante e agradável.'
+                    'A sala de estar é um convite ao descanso, com sofás macios e uma decoração que transmite tranquilidade.'
+                    'A área de refeições é perfeita para desfrutar de refeições deliciosas em um ambiente agradável '
+                    'e íntimo.O quarto principal é um santuário de serenidade, com uma cama luxuosa que proporciona '
+                    'noites de sono repousantes. A iluminação suave e a decoração cuidadosamente escolhida criam um '
+                    'ambiente propício para relaxar após um dia agitado.Além disso, nosso espaço possui uma cozinha'
+                    'totalmente equipada, ideal para preparar refeições deliciosas. Se preferir, você pode desfrutar '
+                    'e momentos de tranquilidade no nosso espaço ao ar livre, seja em uma varanda encantadora ou em'
+                    'um jardim bem cuidado.A localização estratégica do nosso espaço permite fácil acesso a diversas '
+                    'atrações locais, garantindo que você possa explorar a área com facilidade. Seja para uma escapada '
+                    'romântica, uma viagem de negócios ou simplesmente para recarregar as energias, nosso espaço oferece '
+                    'o ambiente perfeito.Em resumo, nosso espaço é mais do que um local para ficar; é uma experiência '
+                    'de aconchego, um refúgio que convida você a relaxar e desfrutar do melhor que a vida tem a oferecer.'
+                    'Estamos ansiosos para recebê-lo em nosso espaço aconchegante e tornar a sua estadia memorável e inesquecível.',
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  InkWell(
+                    child: const Row(
+                      children: [
+                        Text(
+                          'Mostrar mais',
+                          style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Icon(Icons.arrow_forward),
+                      ],
                     ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              MostrarDescricao(space: widget.space),
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 10),
                   const Divider(thickness: 0.4, color: Colors.grey),
@@ -193,8 +236,8 @@ class _NewCardInfoState extends State<NewCardInfo> {
                         Text(
                           'Mostrar mais',
                           style: TextStyle(
-                            decoration: TextDecoration.underline,
-                          ),
+                              decoration: TextDecoration.underline,
+                              fontWeight: FontWeight.bold),
                         ),
                         Icon(Icons.arrow_forward),
                       ],
@@ -211,37 +254,38 @@ class _NewCardInfoState extends State<NewCardInfo> {
                   ),
                   const SizedBox(height: 10),
                   const Divider(thickness: 0.4, color: Colors.grey),
-                  const Text(
-                    'Opinião dos clientes',
-                    style: TextStyle(fontSize: 24),
-                  ),
-                  const Text('Avaliação'),
                   Row(
                     children: [
+                      const Text(
+                        'Avaliações',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                      const SizedBox(width: 10),
                       Container(
                         decoration: BoxDecoration(
-                          color: _getColor(
-                              double.parse(widget.space.space.averageRating)),
-                        ),
-                        height: 35, // Ajuste conforme necessário
-                        width: 25, // Ajuste conforme necessário
+                            color: _getColor(
+                                double.parse(widget.space.space.averageRating)),
+                            borderRadius: BorderRadius.circular(5)),
+                        height: 35,
+                        width: 25,
                         child: Center(
                           child: Text(
                             double.parse(widget.space.space.averageRating)
                                 .toStringAsFixed(1),
                             style: const TextStyle(
-                              color: Colors.white, // Cor do texto
+                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
+                      const SizedBox(width: 10),
                       Text(
-                        '${widget.space.space.averageRating}, \u2022 ${widget.space.space.numComments} comments',
+                        '\u2022 ${widget.space.space.numComments} comments',
+                        style: const TextStyle(fontSize: 24),
                       ),
                     ],
                   ),
-                  const Text('Opiniões'),
                 ],
               ),
             ),
@@ -267,7 +311,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                       child: const Align(
                         alignment: Alignment.center,
                         child: Text(
-                          'Mostrar todaos os comentarios',
+                          'Mostrar todos os comentarios',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
@@ -288,175 +332,285 @@ class _NewCardInfoState extends State<NewCardInfo> {
                   const SizedBox(height: 10),
                   const Divider(thickness: 0.4, color: Colors.grey),
                   const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Column(
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'Disponibilidade',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Alocado por ${widget.space.space.locadorName}',
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 5),
+                              const Text('Membro desde novembro de 2015'),
+                            ],
                           ),
-                          Text('Disponibilidade'),
+                          const SizedBox(width: 10),
+                          const Icon(
+                            Icons
+                                .account_circle, // Substitua pelo ícone desejado
+                            size: 50,
+                          ),
                         ],
                       ),
-                      InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    MostrarDisponibilidade(space: widget.space),
-                              ),
-                            );
-                          },
-                          child: const Icon(Icons.arrow_circle_right_outlined)),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  const Divider(thickness: 0.4, color: Colors.grey),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      const SizedBox(height: 10),
+                      const Row(
                         children: [
-                          Text(
-                            'Política de cancelamento',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Icon(Icons.star),
+                          SizedBox(width: 10),
+                          Text('772 avaliações'),
+                        ],
+                      ),
+                      const Row(
+                        children: [
+                          Icon(Icons.verified),
+                          SizedBox(width: 10),
+                          Text('Identidade verificada'),
+                        ],
+                      ),
+                      const Row(
+                        children: [
+                          Icon(Icons.supervisor_account),
+                          SizedBox(width: 10),
+                          Text('Superhost'),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        '${widget.space.space.locadorName} é Superhost',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      const Text(
+                          'Superhosts são locadores experientes, com ótimas avaliações e que se empenham em oferecer estadias incríveis para os locatários.\n'),
+                      const SizedBox(height: 10),
+                      const Text(
+                          'Taxa de resposta: 100%\nTempo de resposta: em até uma hora'),
+                      const SizedBox(height: 15),
+                      InkWell(
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black),
+                            borderRadius: const BorderRadius.horizontal(
+                                left: Radius.circular(10),
+                                right: Radius.circular(10)),
                           ),
-                          SizedBox(height: 10),
-                          SizedBox(
-                            width: 300, // Defina a largura desejada aqui
+                          child: const Align(
+                            alignment: Alignment.center,
                             child: Text(
-                              'Cancelamento gratuito antes de xx/yy. Consulte a política de cancelamento completa do locador, que se aplica mesmo se você cancelar por doenças ou interrupções causadas pela COVID-19',
+                              'Fale com o locador',
                               style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w400,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
                               ),
+                            ),
+                          ),
+                        ),
+                        onTap: () {},
+                      ),
+                      const SizedBox(height: 10),
+                      const Row(
+                        children: [
+                          Icon(Icons.security),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              'Para proteger seu pagamento, nunca transfira dinheiro ou se comunique fora do site ou aplicativo Festou.',
+                              style: TextStyle(fontSize: 11),
                             ),
                           ),
                         ],
                       ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  MostrarPoliticaDeCancelamento(
-                                      space: widget.space),
+                      const SizedBox(height: 10),
+                      const Divider(thickness: 0.4, color: Colors.grey),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Disponibilidade',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Text('23 - 28 de jul. de 9999'),
+                            ],
+                          ),
+                          InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        MostrarDisponibilidade(
+                                            space: widget.space),
+                                  ),
+                                );
+                              },
+                              child: const Icon(
+                                  Icons.arrow_circle_right_outlined)),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      const Divider(thickness: 0.4, color: Colors.grey),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Política de cancelamento',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              SizedBox(
+                                width: 300, // Defina a largura desejada aqui
+                                child: Text(
+                                  'Cancelamento gratuito antes de xx/yy. Consulte a política de cancelamento completa do locador, que se aplica mesmo se você cancelar por doenças ou interrupções causadas pela COVID-19',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      MostrarPoliticaDeCancelamento(
+                                          space: widget.space),
+                                ),
+                              );
+                            },
+                            child: const Icon(
+                              Icons
+                                  .arrow_forward, // Substitua pelo ícone desejado
+                              size: 24,
                             ),
-                          );
-                        },
-                        child: const Icon(
-                          Icons.arrow_forward, // Substitua pelo ícone desejado
-                          size: 24,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      const Divider(thickness: 0.4, color: Colors.grey),
+                      const SizedBox(height: 10),
+                      const Text(
+                        'Regras do espaço',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  const Divider(thickness: 0.4, color: Colors.grey),
-                  const SizedBox(height: 10),
-                  const Text(
-                    'Regras do espaço',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text('Não é permitido animais de estimação'),
-                  const Text('Horário de silêncio'),
-                  const SizedBox(height: 10),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              MostrarRegras(space: widget.space),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      'Mostrar mais',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  const Divider(thickness: 0.4, color: Colors.grey),
-                  const SizedBox(height: 10),
-                  const Text(
-                    'Segurança e propriedade',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    'Câmera de segurança/dispositivo de gravação',
-                  ),
-                  const Text(
-                      'O Festou proíbe câmeras e dispositivos sem o conhecimento do locatário.'),
-                  const SizedBox(height: 10),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              SeguranAPropriedade(space: widget.space),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      'Mostrar mais',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  const Divider(thickness: 0.4, color: Colors.grey),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      const Icon(Icons.flag),
-                      const SizedBox(width: 10),
+                      const SizedBox(height: 10),
+                      const Text('Não é permitido animais de estimação'),
+                      const Text('Horário de silêncio'),
+                      const SizedBox(height: 10),
                       InkWell(
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  DenunciarAnuncio(space: widget.space),
+                                  MostrarRegras(space: widget.space),
                             ),
                           );
                         },
                         child: const Text(
-                          'Denunciar este anúncio',
+                          'Mostrar mais',
                           style: TextStyle(
                             decoration: TextDecoration.underline,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
+                      const SizedBox(height: 10),
+                      const Divider(thickness: 0.4, color: Colors.grey),
+                      const SizedBox(height: 10),
+                      const Text(
+                        'Segurança e propriedade',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      const Text(
+                        'Câmera de segurança/dispositivo de gravação',
+                      ),
+                      const Text(
+                          'O Festou proíbe câmeras e dispositivos sem o conhecimento do locatário.'),
+                      const SizedBox(height: 10),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  SeguranAPropriedade(space: widget.space),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          'Mostrar mais',
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      const Divider(thickness: 0.4, color: Colors.grey),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          const Icon(Icons.flag),
+                          const SizedBox(width: 10),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      DenunciarAnuncio(space: widget.space),
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              'Denunciar este anúncio',
+                              style: TextStyle(
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
                     ],
                   ),
-                  const SizedBox(height: 10),
                 ],
               ),
             ),

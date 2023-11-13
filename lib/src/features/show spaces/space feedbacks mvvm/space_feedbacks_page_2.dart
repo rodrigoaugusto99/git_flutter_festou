@@ -137,7 +137,7 @@ class _SpaceFeedbacksPage2State extends ConsumerState<SpaceFeedbacksPage2> {
                           child: Text('Mais recentes'),
                         ),
                         Radio(
-                          value: 'rating',
+                          value: 'date',
                           groupValue: tempSelectedOption,
                           onChanged: (value) {
                             thisSetState(() {
@@ -155,7 +155,7 @@ class _SpaceFeedbacksPage2State extends ConsumerState<SpaceFeedbacksPage2> {
                           child: Text('Avaliações mais altas'),
                         ),
                         Radio(
-                          value: 'date',
+                          value: 'rating',
                           groupValue: tempSelectedOption,
                           onChanged: (value) {
                             thisSetState(() {
