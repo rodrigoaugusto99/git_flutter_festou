@@ -80,6 +80,7 @@ class WeekDaysPanel extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class ButtonDay extends StatefulWidget {
   final String label;
   final ValueChanged<String> onDayPressed;

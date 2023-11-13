@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/show_map.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/show_map.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class ShowNewMap extends StatefulWidget {

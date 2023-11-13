@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/spaces%20by%20type/spaces_by_type_page.dart';
 
 class MenuSpaceTypes extends StatefulWidget {

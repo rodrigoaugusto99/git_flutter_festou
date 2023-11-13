@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-
-import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/my_sliver_list_normal.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/my_sliver_list_to_card_info.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/my_sliver_list_to_card_info.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/filter/filter_and_order_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/spaces%20by%20type/spaces_by_type_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/spaces%20by%20type/spaces_by_type_vm.dart';
-import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 
 class SpacesByTypePage extends ConsumerStatefulWidget {
   final List<String> type;

@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_denunciar_anuncio.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_descricao.dart';
 
-import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/show_new_map.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/show_map.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/show_new_map.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/show_map.dart';
 import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_2.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_limited.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_all.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_disponibilidade.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_onde_voce_estara.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_politica_de_cancelamento.dart';
@@ -385,7 +385,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                   ],
                 ),
               ),
-              SpaceFeedbacksPage(
+              SpaceFeedbacksPageLimited(
                 x: 3,
                 space: widget.space.space,
               ),
@@ -419,8 +419,8 @@ class _NewCardInfoState extends State<NewCardInfo> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                SpaceFeedbacksPage2(space: widget.space.space),
+                            builder: (context) => SpaceFeedbacksPageAll(
+                                space: widget.space.space),
                           ),
                         );
                       },

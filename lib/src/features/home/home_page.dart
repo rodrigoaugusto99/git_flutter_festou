@@ -3,15 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/app_bar_home.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/menu_space_types.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/new_space_card.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/small_space_card.dart';
 import 'package:git_flutter_festou/src/features/home/widgets/search_button.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/my_last_seen_spaces.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/my_sliver_list_normal.dart';
+import 'package:git_flutter_festou/src/features/home/widgets/my_last_seen_spaces.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   final String? previousRoute;
@@ -35,7 +31,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       }
     });
 
-    final x = MediaQuery.of(context).size.width;
+    //final x = MediaQuery.of(context).size.width;
     final y = MediaQuery.of(context).size.height;
 
     final fadeInDuration = (widget.previousRoute == '/home/search_page')

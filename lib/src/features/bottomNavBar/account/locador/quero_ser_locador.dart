@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account%20options/locador/quero_ser_locador_vm.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/account/locador/quero_ser_locador_vm.dart';
 
 class QueroSerLocadorPage extends ConsumerWidget {
   QueroSerLocadorPage({super.key});

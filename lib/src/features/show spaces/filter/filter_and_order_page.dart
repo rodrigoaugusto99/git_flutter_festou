@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-
 import 'package:git_flutter_festou/src/features/show%20spaces/filter/filter_and_order_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/filter/filter_and_order_vm.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/filter/new_page_filtered.dart';
@@ -9,7 +8,6 @@ import 'package:git_flutter_festou/src/features/show%20spaces/filter/widgets/fee
 import 'package:git_flutter_festou/src/features/register/space/widgets/services_panel.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/type_panel.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/weekdays_panel.dart';
-import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 
 class FilterAndOrderPage extends ConsumerStatefulWidget {
   const FilterAndOrderPage({

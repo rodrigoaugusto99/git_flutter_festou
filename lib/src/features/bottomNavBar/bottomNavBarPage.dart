@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/account/account.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/notifications.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/search/search_page.dart';
 import 'package:git_flutter_festou/src/features/home/home_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20favorite%20spaces%20mvvm/my_favorite_spaces_page.dart';
 
@@ -40,8 +41,8 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
           );
         },
       ),
+      const SearchPage(),
       const MyFavoriteSpacePage(),
-      const Notifications(),
       const Account(),
     ];
   }
@@ -87,12 +88,12 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favorites',
+            icon: Icon(Icons.search),
+            label: 'Search',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Notifications',
+            icon: Icon(Icons.favorite),
+            label: 'Favorites',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

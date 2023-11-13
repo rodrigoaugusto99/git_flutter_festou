@@ -1,29 +1,28 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/new_feedback_widget.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/new_feedback_widget_limited.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_vm.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/widgets/feedback_widget.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 
-class SpaceFeedbacksPage extends ConsumerStatefulWidget {
+class SpaceFeedbacksPageLimited extends ConsumerStatefulWidget {
   final SpaceModel space;
   final int? x;
 
-  const SpaceFeedbacksPage({
+  const SpaceFeedbacksPageLimited({
     super.key,
     required this.space,
     this.x,
   });
 
   @override
-  ConsumerState<SpaceFeedbacksPage> createState() => _SpaceFeedbacksPageState();
+  ConsumerState<SpaceFeedbacksPageLimited> createState() =>
+      _SpaceFeedbacksPageLimitedState();
 }
 
-class _SpaceFeedbacksPageState extends ConsumerState<SpaceFeedbacksPage> {
+class _SpaceFeedbacksPageLimitedState
+    extends ConsumerState<SpaceFeedbacksPageLimited> {
   @override
   Widget build(BuildContext context) {
     final spaceFeedbacks =
@@ -37,7 +36,7 @@ class _SpaceFeedbacksPageState extends ConsumerState<SpaceFeedbacksPage> {
           );
         }
         log('Average Rating: ${widget.space.averageRating}');
-        return NewFeedbackWidget(
+        return NewFeedbackWidgetLimited(
           x: widget.x,
           data: data,
           spaces: spaceFeedbacks,

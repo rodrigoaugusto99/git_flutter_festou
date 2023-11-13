@@ -1,14 +1,13 @@
-import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
 
-class NewFeedbackWidget extends StatefulWidget {
+class NewFeedbackWidgetLimited extends StatefulWidget {
   final SpaceFeedbacksState data;
   final AsyncValue spaces;
   final int? x;
 
-  const NewFeedbackWidget({
+  const NewFeedbackWidgetLimited({
     super.key,
     required this.data,
     required this.spaces,
@@ -16,10 +15,11 @@ class NewFeedbackWidget extends StatefulWidget {
   });
 
   @override
-  State<NewFeedbackWidget> createState() => _NewFeedbackWidgetState();
+  State<NewFeedbackWidgetLimited> createState() =>
+      _NewFeedbackWidgetLimitedState();
 }
 
-class _NewFeedbackWidgetState extends State<NewFeedbackWidget> {
+class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
   @override
   Widget build(BuildContext context) {
     return Container(

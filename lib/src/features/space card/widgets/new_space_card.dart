@@ -28,8 +28,8 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
           widget.space.space.spaceId, widget.space.space.isFavorited);
     }
 
-    final x = MediaQuery.of(context).size.width;
-    final y = MediaQuery.of(context).size.height;
+    //final x = MediaQuery.of(context).size.width;
+    //final y = MediaQuery.of(context).size.height;
 
     return Container(
       padding: const EdgeInsets.all(6),

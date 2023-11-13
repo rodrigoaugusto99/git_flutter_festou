@@ -30,7 +30,7 @@ class _SmallSpaceCardState extends ConsumerState<SmallSpaceCard> {
     }
 
     final x = MediaQuery.of(context).size.width;
-    final y = MediaQuery.of(context).size.height;
+    //final y = MediaQuery.of(context).size.height;
 
     return Container(
       padding: const EdgeInsets.all(3),

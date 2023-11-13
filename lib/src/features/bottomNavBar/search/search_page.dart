@@ -1,6 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import '../bottomNavBar/bottomNavBarPage.dart';
+import '../bottomNavBarPage.dart';
 import 'package:lottie/lottie.dart';
 
 class SearchPage extends StatefulWidget {
@@ -59,9 +59,11 @@ class _SearchPageState extends State<SearchPage> {
                 ? SingleChildScrollView(
                     child: Container(
                       margin: EdgeInsets.symmetric(horizontal: x * 0.03),
-                      padding: EdgeInsets.symmetric(horizontal: x * 0.0, vertical: y * 0.0),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: x * 0.0, vertical: y * 0.0),
                       child: ConstrainedBox(
-                        constraints: BoxConstraints(minHeight: y * 0.1, maxHeight: y * 0.9),
+                        constraints: BoxConstraints(
+                            minHeight: y * 0.1, maxHeight: y * 0.9),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -80,19 +82,21 @@ class _SearchPageState extends State<SearchPage> {
                   )
                 : Expanded(
                     child: Center(
-                      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                        const Spacer(flex: 5),
-                        Lottie.asset(
-                          'lib/assets/animations/searchAnimation.json',
-                          height: y * 0.3,
-                        ),
-                        const Spacer(flex: 2),
-                        const Text(
-                          'Busque pelos melhores espaços disponíveis para o seu Festou!',
-                          textAlign: TextAlign.center,
-                        ),
-                        const Spacer (flex: 13),
-                      ]),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Spacer(flex: 5),
+                            Lottie.asset(
+                              'lib/assets/animations/searchAnimation.json',
+                              height: y * 0.3,
+                            ),
+                            const Spacer(flex: 2),
+                            const Text(
+                              'Busque pelos melhores espaços disponíveis para o seu Festou!',
+                              textAlign: TextAlign.center,
+                            ),
+                            const Spacer(flex: 13),
+                          ]),
                     ),
                   ),
           ],
@@ -107,7 +111,8 @@ class _SearchPageState extends State<SearchPage> {
         children: [
           Container(
             margin: EdgeInsets.symmetric(horizontal: x * 0.03, vertical: 0.03),
-            padding: EdgeInsets.symmetric(horizontal: x * 0.02, vertical: y * 0.01),
+            padding:
+                EdgeInsets.symmetric(horizontal: x * 0.02, vertical: y * 0.01),
             decoration: BoxDecoration(
               color: Colors.grey[100],
               borderRadius: BorderRadius.circular(8.0),
@@ -125,7 +130,10 @@ class _SearchPageState extends State<SearchPage> {
                                 style: TextStyle(color: Colors.blueGrey[500]),
                                 children: const <TextSpan>[
                                   TextSpan(text: 'Buscar no '),
-                                  TextSpan(text: 'Festou', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  TextSpan(
+                                      text: 'Festou',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
                                 ],
                               ),
                             )
@@ -149,9 +157,11 @@ class _SearchPageState extends State<SearchPage> {
                                 hintStyle: TextStyle(color: Colors.transparent),
                                 border: InputBorder.none,
                                 isDense: true,
-                                contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 0),
                               ),
-                              style: TextStyle(color: Colors.blueGrey[900], fontSize: 12),
+                              style: TextStyle(
+                                  color: Colors.blueGrey[900], fontSize: 12),
                               cursorColor: Colors.blueGrey[900],
                             ),
                           ),
@@ -184,7 +194,8 @@ class _SearchPageState extends State<SearchPage> {
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => BottomNavBarPage(previousRoute: '/home/search_page'),
+        builder: (context) =>
+            BottomNavBarPage(previousRoute: '/home/search_page'),
       )),
       child: Text(
         'Cancelar',

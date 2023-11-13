@@ -1,28 +1,27 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/new/widgets/new_feedback_widget_2.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/new_feedback_widget_all.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_vm.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 
-class SpaceFeedbacksPage2 extends ConsumerStatefulWidget {
+class SpaceFeedbacksPageAll extends ConsumerStatefulWidget {
   final SpaceModel space;
 
-  const SpaceFeedbacksPage2({
+  const SpaceFeedbacksPageAll({
     super.key,
     required this.space,
   });
 
   @override
-  ConsumerState<SpaceFeedbacksPage2> createState() =>
-      _SpaceFeedbacksPage2State();
+  ConsumerState<SpaceFeedbacksPageAll> createState() =>
+      _SpaceFeedbacksPageAllState();
 }
 
 var selectedOption = 'date';
 var selectedOptionName = 'Mais recentes';
 
-class _SpaceFeedbacksPage2State extends ConsumerState<SpaceFeedbacksPage2> {
+class _SpaceFeedbacksPageAllState extends ConsumerState<SpaceFeedbacksPageAll> {
   @override
   Widget build(BuildContext context) {
     final spaceFeedbacks =
@@ -84,7 +83,7 @@ class _SpaceFeedbacksPage2State extends ConsumerState<SpaceFeedbacksPage2> {
                 ),
               ),
               Expanded(
-                child: NewFeedbackWidget2(
+                child: NewFeedbackWidgetAll(
                   data: data,
                   spaces: spaceFeedbacks,
                 ),

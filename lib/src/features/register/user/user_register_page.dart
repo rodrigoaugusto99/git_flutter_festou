@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/feed.dart';
 import 'package:git_flutter_festou/src/features/register/user/user_register_vm.dart';
-import '../../../services/auth_services.dart';
 
 class UserRegisterPage extends ConsumerStatefulWidget {
   const UserRegisterPage({super.key});
@@ -50,8 +48,8 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
 
-    final double loginButtonWidth = (115 / 412) * screenWidth;
-    final double loginButtonHeight = (31 / 732) * screenHeight;
+    //final double loginButtonWidth = (115 / 412) * screenWidth;
+    //final double loginButtonHeight = (31 / 732) * screenHeight;
 
     final double googleLoginButtonWidth = (202 / 412) * screenWidth;
     final double googleLoginButtonHeight = (37 / 732) * screenHeight;

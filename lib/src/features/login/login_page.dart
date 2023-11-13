@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/home/widgets/feed.dart';
 import 'package:git_flutter_festou/src/features/login/login_state.dart';
 import 'package:git_flutter_festou/src/features/login/login_vm.dart';
 import 'package:glassmorphism/glassmorphism.dart';
