@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account/account.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/notifications.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/search/search_page.dart';
 import 'package:git_flutter_festou/src/features/home/home_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20favorite%20spaces%20mvvm/my_favorite_spaces_page.dart';
 
 class BottomNavBarPage extends StatefulWidget {
-  final ValueNotifier<String?> previousRouteNotifier;
-  BottomNavBarPage({Key? key, String? previousRoute})
-      : previousRouteNotifier = ValueNotifier<String?>(previousRoute),
-        super(key: key);
+  const BottomNavBarPage({super.key});
 
   @override
   _BottomNavBarPageState createState() => _BottomNavBarPageState();
@@ -19,32 +15,10 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
   late PageController _pageController;
   int _currentIndex = 0;
 
-  late List<Widget> _pages;
-
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: _currentIndex);
-
-    _pages = [
-      ValueListenableBuilder<String?>(
-        valueListenable: widget.previousRouteNotifier,
-        builder: (context, value, child) {
-          widget.previousRouteNotifier.value = null;
-          return Navigator(
-            // Envolver HomePage com Navigator
-            onGenerateRoute: (routeSettings) {
-              return MaterialPageRoute(
-                builder: (context) => const HomePage(),
-              );
-            },
-          );
-        },
-      ),
-      const SearchPage(),
-      const MyFavoriteSpacePage(),
-      const Account(),
-    ];
   }
 
   @override
@@ -60,21 +34,32 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
   }
 
   void _onTabTapped(int index) {
-    _pageController.animateToPage(
+    _pageController.jumpToPage(
       index,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.ease,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
+      body: PageView.builder(
         physics: const NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: _onPageChanged,
-        children: _pages,
+        itemBuilder: (context, index) {
+          switch (index) {
+            case 0:
+              return const HomePage();
+            case 1:
+              return const SearchPage();
+            case 2:
+              return const MyFavoriteSpacePage();
+            case 3:
+              return const Account();
+            default:
+              return Container(); // Lida com índices fora do alcance, se aplicável
+          }
+        },
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

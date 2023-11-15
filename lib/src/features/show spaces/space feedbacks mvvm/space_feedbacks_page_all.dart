@@ -98,9 +98,10 @@ class _SpaceFeedbacksPageAllState extends ConsumerState<SpaceFeedbacksPageAll> {
         );
       },
       loading: () {
-        return const Center(
-          child: Text('Loading'),
-        );
+        return const Stack(children: [
+          Center(child: Text('Inserir carregamento Personalizado papai')),
+          Center(child: CircularProgressIndicator()),
+        ]);
       },
     );
   }

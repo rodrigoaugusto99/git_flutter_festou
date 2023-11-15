@@ -194,8 +194,7 @@ class _SearchPageState extends State<SearchPage> {
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) =>
-            BottomNavBarPage(previousRoute: '/home/search_page'),
+        builder: (context) => const BottomNavBarPage(),
       )),
       child: Text(
         'Cancelar',

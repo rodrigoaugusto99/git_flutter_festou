@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       navigatorKey: FestouNavGlobalKey.instance.navKey,
       routes: {
-        '/home': (_) => BottomNavBarPage(),
+        '/home': (_) => const BottomNavBarPage(),
         '/auth': (_) => const AuthPage(),
         '/login': (_) => const LoginPage(),
         '/register/user': (_) => const UserRegisterPage(),
@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
         '/account/favorites': (_) => const MyFavoriteSpacePage(),
         '/home/my_spaces': (_) => const MySpacesPage(),
         '/home/all_spaces': (_) => const AllSpacesPage(),
-        '/home/search_page': (_) => const SearchPage(),
+        //'/home/search_page': (_) => const SearchPage(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/spaces/spaces_by_types') {
