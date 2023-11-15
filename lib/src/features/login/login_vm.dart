@@ -16,18 +16,27 @@ class LoginVM extends _$LoginVM {
 
   //validação email
   FormFieldValidator<String> validateEmail() {
-    return Validatorless.multiple([
-      Validatorless.required('Email obrigatorio'),
-      Validatorless.email('mail invalido')
-    ]);
+    return Validatorless.multiple([]);
   }
 
 //validação senha
   FormFieldValidator<String> validatePassword() {
-    return Validatorless.multiple([
-      Validatorless.required('Senha obrigatoria'),
-      Validatorless.min(6, 'Senha deve ter no minimo 6 caracteres'),
-    ]);
+    return Validatorless.multiple([]);
+  }
+
+  String validateAll(code, email, password) {
+    String errorMessage;
+
+    if (email.isEmpty || email == '') {
+      errorMessage = 'E-mail inválido!';
+    } else if (password.isEmpty || password == '') {
+      errorMessage = 'Senha não informada!';
+    } else if (code == 'INVALID_LOGIN_CREDENTIALS') {
+      errorMessage = 'E-mail ou senha inválidos.';
+    } else {
+      errorMessage = 'Erro ao realizar login';
+    }
+    return errorMessage;
   }
 
   void validateForm(BuildContext context, formKey, emailEC, passwordEC) {

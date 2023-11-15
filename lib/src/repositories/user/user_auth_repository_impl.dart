@@ -3,11 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/exceptions/auth_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
+import 'package:git_flutter_festou/src/features/login/login_vm.dart';
 import 'user_auth_repository.dart';
 
 class UserAuthRepositoryImpl implements UserAuthRepository {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
+//todo: mensagens de erro especificar p cada erro
   @override
   Future<Either<AuthException, Nil>> login(
       String email, String password) async {
@@ -19,7 +21,10 @@ class UserAuthRepositoryImpl implements UserAuthRepository {
       return Success(nil);
     } on FirebaseAuthException catch (e, s) {
       log('Erro ao realizar login', error: e, stackTrace: s);
-      return Failure(AuthError(message: 'Erro ao realizar login'));
+
+      final errorMessage = LoginVM().validateAll(e.code, email, password);
+
+      return Failure(AuthError(message: errorMessage));
     }
   }
 

@@ -48,7 +48,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         case LoginState(status: LoginStateStatus.userLogin):
           Navigator.of(context)
               .pushNamedAndRemoveUntil('/home', (route) => false);
-          Messages.showSuccess('Logado com sucesso!', context);
       }
     });
 
@@ -131,19 +130,21 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         width: glassWidth,
                         height: glassHeight,
                         borderRadius: 20,
-                        blur: 20,
+                        blur: 1,
                         border: 0,
                         linearGradient: const LinearGradient(
                           colors: [
                             Color.fromRGBO(0, 0, 0, 0.35),
-                            Color.fromRGBO(0, 0, 0, 0),
+                            Colors.transparent,
                           ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
                         ),
                         borderGradient: const LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            Color.fromRGBO(0, 0, 0, 0.35),
+                            Color.fromRGBO(0, 0, 0, 0),
                             Color.fromRGBO(0, 0, 0, 0),
                           ],
                         ),
@@ -159,14 +160,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 height: emailFieldHeight,
                                 decoration: BoxDecoration(
                                   color: Colors.white, // Cor de fundo branca
-                                  borderRadius: BorderRadius.circular(
-                                      50.0), // Borda arredondada
+                                  borderRadius: BorderRadius.circular(50.0),
                                 ),
                                 child: TextFormField(
+                                  style: const TextStyle(fontSize: 14.0),
                                   validator: loginVM.validateEmail(),
                                   controller: emailEC,
                                   decoration: const InputDecoration(
                                     hintText: 'Email',
+                                    hintStyle:
+                                        TextStyle(fontSize: 14, height: 1.4),
                                     border: InputBorder.none,
                                     enabledBorder: InputBorder.none,
                                     focusedBorder: InputBorder.none,
@@ -188,16 +191,17 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 height: passwordFieldHeight,
                                 decoration: BoxDecoration(
                                   color: Colors.white, // Cor de fundo branca
-                                  borderRadius: BorderRadius.circular(
-                                      50.0), // Borda arredondada
+                                  borderRadius: BorderRadius.circular(50.0),
                                 ),
                                 child: TextFormField(
+                                  style: const TextStyle(fontSize: 14.0),
                                   validator: loginVM.validatePassword(),
                                   obscureText: isVisible ? false : true,
                                   controller: passwordEC,
                                   decoration: InputDecoration(
                                     hintText: 'Password',
-
+                                    hintStyle: const TextStyle(
+                                        fontSize: 14, height: 1.4),
                                     border: InputBorder
                                         .none, // Remove a borda padrão
                                     prefixIcon: const Icon(
