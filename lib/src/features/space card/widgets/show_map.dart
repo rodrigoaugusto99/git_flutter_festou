@@ -145,9 +145,9 @@ class _ShowMapState extends State<ShowMap> {
                       ),
                     }
                   : <Circle>{},
-              zoomControlsEnabled: false,
-              scrollGesturesEnabled: false,
-              zoomGesturesEnabled: false,
+              zoomControlsEnabled: widget.zoomControlsEnabled,
+              scrollGesturesEnabled: widget.scrollGesturesEnabled,
+              zoomGesturesEnabled: widget.zoomGesturesEnabled,
             ),
             Visibility(
               visible: widget.x,
