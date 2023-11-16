@@ -63,8 +63,6 @@ dependencies:
   glassmorphism_ui: ^0.3.0
   card_swiper: ^3.0.1
   
-  social_share: ^2.3.1
-  
 
 dev_dependencies:
   flutter_test:
