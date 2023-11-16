@@ -27,7 +27,7 @@ class LoginVM extends _$LoginVM {
   String validateAll(code, email, password) {
     String errorMessage;
 
-    if (email.isEmpty || email == '') {
+    if (email.isEmpty || email == '' || code == 'invalid-email') {
       errorMessage = 'E-mail inválido!';
     } else if (password.isEmpty || password == '') {
       errorMessage = 'Senha não informada!';
