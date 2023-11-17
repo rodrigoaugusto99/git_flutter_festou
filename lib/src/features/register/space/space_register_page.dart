@@ -30,6 +30,8 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
   final logradouroEC = TextEditingController();
   final bairroEC = TextEditingController();
   final cidadeEC = TextEditingController();
+  final descricaoEC = TextEditingController();
+  final cityEC = TextEditingController();
   bool isCepAutoCompleted = false;
 
   @override
@@ -41,6 +43,8 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
     cepEC.dispose();
     logradouroEC.dispose();
     bairroEC.dispose();
+    descricaoEC.dispose();
+    cityEC.dispose();
     cidadeEC.dispose();
   }
 
@@ -219,6 +223,8 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                           numeroEC,
                           bairroEC,
                           cidadeEC,
+                          descricaoEC,
+                          cityEC,
                         );
                       },
                       child: const Text('cadastrar espaco'),

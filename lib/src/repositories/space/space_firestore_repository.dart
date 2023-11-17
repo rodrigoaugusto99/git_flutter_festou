@@ -20,6 +20,8 @@ abstract interface class SpaceFirestoreRepository {
       List<String> selectedServices,
       List<String> availableDays,
       List<File> imageFiles,
+      String descricao,
+      String city,
     }) spaceData,
   );
 

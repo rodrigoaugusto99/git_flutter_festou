@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_denunciar_anuncio.dart';
@@ -60,6 +58,64 @@ class _NewCardInfoState extends State<NewCardInfo> {
     String spaceId = space.space.spaceId.toString();
 
     return '$baseUrl$spaceId';
+  }
+
+  Widget boolComments(String text) {
+    if (widget.space.space.numComments == '0') {
+      return Row(
+        children: [
+          const Icon(
+            Icons.star,
+            size: 16,
+          ),
+          const SizedBox(
+            width: 3,
+          ),
+          Text(
+            text,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
+      );
+    } else {
+      return Row(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: _getColor(
+                double.parse(widget.space.space.averageRating),
+              ),
+            ),
+            height: 35, // Ajuste conforme necessário
+            width: 25, // Ajuste conforme necessário
+            child: Center(
+              child: Text(
+                double.parse(widget.space.space.averageRating)
+                    .toStringAsFixed(1),
+                style: const TextStyle(
+                  color: Colors.white, // Cor do texto
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          Text(
+            '${widget.space.space.numComments} comments',
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
+      );
+    }
   }
 
   @override
@@ -143,52 +199,23 @@ class _NewCardInfoState extends State<NewCardInfo> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      ' ${widget.space.space.name} \u2022 500m do Parque Lage',
+                      widget.space.space.name,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      '${widget.space.space.bairro}, ${widget.space.space.cidade}',
+                      //mostrar bairro(localizacao mais precisa) apenas se o locador permitir
+                      /*${widget.space.space.bairro}*/
+                      '${widget.space.space.cidade}, ${widget.space.space.city}',
+
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    Row(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: _getColor(
-                                double.parse(widget.space.space.averageRating)),
-                          ),
-                          height: 35, // Ajuste conforme necessário
-                          width: 25, // Ajuste conforme necessário
-                          child: Center(
-                            child: Text(
-                              double.parse(widget.space.space.averageRating)
-                                  .toStringAsFixed(1),
-                              style: const TextStyle(
-                                color: Colors.white, // Cor do texto
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          '${widget.space.space.numComments} comments',
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
-                    ),
+                    boolComments('Ainda não tem avaliações.'),
                     const SizedBox(height: 10),
                     const Divider(thickness: 0.4, color: Colors.grey),
                     const SizedBox(height: 10),
@@ -211,32 +238,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                     const SizedBox(height: 10),
                     const Divider(thickness: 0.4, color: Colors.grey),
                     const SizedBox(height: 10),
-                    const Text(
-                      'Bem-vindo ao nosso espaço, um verdadeiro oásis de aconchego e estilo. Situado em um local encantador,'
-                      'nosso espaço foi cuidadosamente projetado para oferecer uma experiência única, onde o conforto se encontra'
-                      'com a elegância. Ao adentrar este refúgio, você será recebido por uma atmosfera calorosa e acolhedora, '
-                      'proporcionando um ambiente perfeito para relaxar e descontrair.A decoração, meticulosamente escolhida, '
-                      'reflete a essência do aconchego, combinando elementos modernos com toques de charme tradicional. '
-                      'Cada detalhe foi pensado para criar uma atmosfera que faz você se sentir em casa desde o primeiro '
-                      'momento. Os tons suaves das paredes, os móveis confortáveis e os acessórios cuidadosamente '
-                      'selecionados se unem para criar um espaço que é simultaneamente elegante e acolhedor.Nosso espaço'
-                      'oferece uma variedade de amenidades para garantir uma estadia relaxante e agradável.'
-                      'A sala de estar é um convite ao descanso, com sofás macios e uma decoração que transmite tranquilidade.'
-                      'A área de refeições é perfeita para desfrutar de refeições deliciosas em um ambiente agradável '
-                      'e íntimo.O quarto principal é um santuário de serenidade, com uma cama luxuosa que proporciona '
-                      'noites de sono repousantes. A iluminação suave e a decoração cuidadosamente escolhida criam um '
-                      'ambiente propício para relaxar após um dia agitado.Além disso, nosso espaço possui uma cozinha'
-                      'totalmente equipada, ideal para preparar refeições deliciosas. Se preferir, você pode desfrutar '
-                      'e momentos de tranquilidade no nosso espaço ao ar livre, seja em uma varanda encantadora ou em'
-                      'um jardim bem cuidado.A localização estratégica do nosso espaço permite fácil acesso a diversas '
-                      'atrações locais, garantindo que você possa explorar a área com facilidade. Seja para uma escapada '
-                      'romântica, uma viagem de negócios ou simplesmente para recarregar as energias, nosso espaço oferece '
-                      'o ambiente perfeito.Em resumo, nosso espaço é mais do que um local para ficar; é uma experiência '
-                      'de aconchego, um refúgio que convida você a relaxar e desfrutar do melhor que a vida tem a oferecer.'
-                      'Estamos ansiosos para recebê-lo em nosso espaço aconchegante e tornar a sua estadia memorável e inesquecível.',
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    Text(widget.space.space.descricao),
                     InkWell(
                       child: const Row(
                         children: [
@@ -346,7 +348,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                       ),
                     ),
                     const SizedBox(height: 15),
-                    Text(
+                    /*Text(
                       '${widget.space.space.bairro}, ${widget.space.space.cidade}',
                     ),
                     const SizedBox(height: 15),
@@ -376,41 +378,9 @@ class _NewCardInfoState extends State<NewCardInfo> {
                           ),
                         );
                       },
-                    ),
+                    ),*/
                     const SizedBox(height: 10),
                     const Divider(thickness: 0.4, color: Colors.grey),
-                    Row(
-                      children: [
-                        const Text(
-                          'Avaliações',
-                          style: TextStyle(fontSize: 24),
-                        ),
-                        const SizedBox(width: 10),
-                        Container(
-                          decoration: BoxDecoration(
-                              color: _getColor(double.parse(
-                                  widget.space.space.averageRating)),
-                              borderRadius: BorderRadius.circular(5)),
-                          height: 35,
-                          width: 25,
-                          child: Center(
-                            child: Text(
-                              double.parse(widget.space.space.averageRating)
-                                  .toStringAsFixed(1),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          '\u2022 ${widget.space.space.numComments} comments',
-                          style: const TextStyle(fontSize: 24),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
               ),
@@ -486,41 +456,6 @@ class _NewCardInfoState extends State<NewCardInfo> {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        const Row(
-                          children: [
-                            Icon(Icons.star),
-                            SizedBox(width: 10),
-                            Text('772 avaliações'),
-                          ],
-                        ),
-                        const Row(
-                          children: [
-                            Icon(Icons.verified),
-                            SizedBox(width: 10),
-                            Text('Identidade verificada'),
-                          ],
-                        ),
-                        const Row(
-                          children: [
-                            Icon(Icons.supervisor_account),
-                            SizedBox(width: 10),
-                            Text('Superhost'),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          '${widget.space.space.locadorName} é Superhost',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        const Text(
-                            'Superhosts são locadores experientes, com ótimas avaliações e que se empenham em oferecer estadias incríveis para os locatários.\n'),
-                        const SizedBox(height: 10),
-                        const Text(
-                            'Taxa de resposta: 100%\nTempo de resposta: em até uma hora'),
-                        const SizedBox(height: 15),
                         InkWell(
                           child: Container(
                             width: double.infinity,
@@ -592,7 +527,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                                     Icons.arrow_circle_right_outlined)),
                           ],
                         ),
-                        const SizedBox(height: 10),
+                        /*const SizedBox(height: 10),
                         const Divider(thickness: 0.4, color: Colors.grey),
                         const SizedBox(height: 10),
                         Row(
@@ -735,7 +670,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 10),*/
                       ],
                     ),
                   ],

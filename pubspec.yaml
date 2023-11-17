@@ -117,6 +117,10 @@ flutter:
     - family: NerkoOne
       fonts:
       - asset: lib/assets/fonts/NerkoOne.ttf
+
+    - family: Marcellus
+      fonts:
+        - asset: lib/assets/fonts/Marcellus.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
