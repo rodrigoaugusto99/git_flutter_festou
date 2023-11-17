@@ -62,6 +62,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
     return '$baseUrl$spaceId';
   }
 
+//teste
   @override
   Widget build(BuildContext context) {
     return Scaffold(
