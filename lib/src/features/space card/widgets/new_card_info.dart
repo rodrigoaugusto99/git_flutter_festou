@@ -1,8 +1,9 @@
+import 'dart:developer';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_denunciar_anuncio.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_descricao.dart';
-
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_new_map.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_map.dart';
 import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
@@ -16,6 +17,7 @@ import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_segur
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_todas_comodidades.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
+import 'package:social_share/social_share.dart';
 
 class NewCardInfo extends StatefulWidget {
   final SpaceWithImages space;
@@ -74,8 +76,17 @@ class _NewCardInfoState extends State<NewCardInfo> {
                 : Colors.transparent, // Cor do appBar quando no topo
             snap: true,
             floating: true,
-            title: const Text('Test'),
+
             pinned: false,
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 18.0),
+                child: InkWell(
+                  onTap: () => share(),
+                  child: const Icon(Icons.share),
+                ),
+              ),
+            ],
           )
         ],
         body: SingleChildScrollView(
