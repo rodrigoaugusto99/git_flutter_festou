@@ -42,6 +42,24 @@ class _NewCardInfoState extends State<NewCardInfo> {
     );
   }
 
+  share() {
+    String spaceLink = generateSpaceLink(widget.space);
+    SocialShare.shareOptions('Confira este espaço: $spaceLink');
+  }
+
+  String generateSpaceLink(SpaceWithImages space) {
+    // Substitua pelo código do projeto do Firebase
+    String projectId = 'flutterfestou';
+
+    // Use o domínio padrão fornecido pelo Firebase para o ambiente de desenvolvimento
+    String baseUrl = 'https://$projectId.web.app/espaco/';
+
+    // Substitua pelo campo correto do seu modelo
+    String spaceId = space.space.spaceId.toString();
+
+    return '$baseUrl$spaceId';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
