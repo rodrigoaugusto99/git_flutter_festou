@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/pages/faca_destacar.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/pages/servicos_acomodacoes.dart';
 
-class Localizacao extends StatefulWidget {
-  const Localizacao({super.key});
+class FacaDestacar extends StatefulWidget {
+  const FacaDestacar({super.key});
 
   @override
-  State<Localizacao> createState() => _LocalizacaoState();
+  State<FacaDestacar> createState() => _FacaDestacarState();
 }
 
-class _LocalizacaoState extends State<Localizacao> {
+class _FacaDestacarState extends State<FacaDestacar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +34,6 @@ class _LocalizacaoState extends State<Localizacao> {
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
                   child: Container(
                     padding: const EdgeInsets.all(7.0),
                     decoration: BoxDecoration(
@@ -50,14 +49,20 @@ class _LocalizacaoState extends State<Localizacao> {
             ),
           ),
           const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Onde fica seu espaço?',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                'Etapa 2',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Text(
-                  'Seu endereço só é compartilhado com os hospedes depois que a reserva é confirmada'),
+                'Faça sua acomodacao se destacar',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              Text(
+                'Nessa etapa, voce adicionara algumas das comodidades que sua acomodacao oferece, alem de 5 fotos ou mais. depois, voce devvera criar um titulo e uma descricao',
+              ),
             ],
           ),
           const SizedBox(
@@ -81,7 +86,7 @@ class _LocalizacaoState extends State<Localizacao> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const FacaDestacar(),
+                      builder: (context) => const ServicosAcomodacoes(),
                     ),
                   ),
                   child: Container(

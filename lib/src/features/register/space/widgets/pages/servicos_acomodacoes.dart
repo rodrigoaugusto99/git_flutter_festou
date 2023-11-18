@@ -1,14 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/pages/faca_destacar.dart';
+import 'dart:developer';
 
-class Localizacao extends StatefulWidget {
-  const Localizacao({super.key});
+import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/pages/adicione_fotos.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/services_panel.dart';
+
+class ServicosAcomodacoes extends StatefulWidget {
+  const ServicosAcomodacoes({super.key});
 
   @override
-  State<Localizacao> createState() => _LocalizacaoState();
+  State<ServicosAcomodacoes> createState() => _ServicosAcomodacoesState();
 }
 
-class _LocalizacaoState extends State<Localizacao> {
+class _ServicosAcomodacoesState extends State<ServicosAcomodacoes> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,15 +52,23 @@ class _LocalizacaoState extends State<Localizacao> {
               ],
             ),
           ),
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Onde fica seu espaço?',
+              const Text(
+                'Informe aos hospedes o que seu espaço tem pra oferecer',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
-              Text(
-                  'Seu endereço só é compartilhado com os hospedes depois que a reserva é confirmada'),
+              const Text(
+                  'voce pode adicionar mais comodidades depois de publicar'),
+              ServicesPanel(
+                text: 'Selecione os SERVIÇOS do espaço',
+                onServicePressed: (value) {
+                  log('onServicePressed: $value');
+                  //spaceRegister.addOrRemoveService(value);
+                },
+                selectedServices: const [],
+              ),
             ],
           ),
           const SizedBox(
@@ -81,7 +92,7 @@ class _LocalizacaoState extends State<Localizacao> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const FacaDestacar(),
+                      builder: (context) => const AdicioneFotos(),
                     ),
                   ),
                   child: Container(

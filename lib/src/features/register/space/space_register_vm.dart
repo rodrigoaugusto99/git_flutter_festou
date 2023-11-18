@@ -46,6 +46,7 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
 
     state = state.copyWith(
         selectedTypes: selectedTypes, status: SpaceRegisterStateStatus.initial);
+    log('state atualizado');
   }
   /*outra abordagem para evitar a att do estado
   
@@ -79,6 +80,7 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
     state = state.copyWith(
         selectedServices: selectedServices,
         status: SpaceRegisterStateStatus.initial);
+    log('state atualizado');
   }
 
   FormFieldValidator<String> validateNome() {

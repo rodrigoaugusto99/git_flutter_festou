@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/pages/faca_destacar.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/pages/preco.dart';
 
-class Localizacao extends StatefulWidget {
-  const Localizacao({super.key});
+class ConcluaPublique extends StatefulWidget {
+  const ConcluaPublique({super.key});
 
   @override
-  State<Localizacao> createState() => _LocalizacaoState();
+  State<ConcluaPublique> createState() => _ConcluaPubliqueState();
 }
 
-class _LocalizacaoState extends State<Localizacao> {
+class _ConcluaPubliqueState extends State<ConcluaPublique> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +34,6 @@ class _LocalizacaoState extends State<Localizacao> {
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
                   child: Container(
                     padding: const EdgeInsets.all(7.0),
                     decoration: BoxDecoration(
@@ -50,14 +49,20 @@ class _LocalizacaoState extends State<Localizacao> {
             ),
           ),
           const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Onde fica seu espaço?',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                'Etapa 3',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Text(
-                  'Seu endereço só é compartilhado com os hospedes depois que a reserva é confirmada'),
+                'Conclua e publique',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              Text(
+                'Por ultimo, voce popdera escolher se prefere comecar com um hospede experiente e, em seguida, difinara seu prelo por noite. Responda algumas perguntas rapidas e publique quando estiver tudo protno',
+              ),
             ],
           ),
           const SizedBox(
@@ -81,7 +86,7 @@ class _LocalizacaoState extends State<Localizacao> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const FacaDestacar(),
+                      builder: (context) => const Preco(),
                     ),
                   ),
                   child: Container(

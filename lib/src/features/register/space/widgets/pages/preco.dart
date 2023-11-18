@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/pages/faca_destacar.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/pages/ultima_etapa.dart';
 
-class Localizacao extends StatefulWidget {
-  const Localizacao({super.key});
+class Preco extends StatefulWidget {
+  const Preco({super.key});
 
   @override
-  State<Localizacao> createState() => _LocalizacaoState();
+  State<Preco> createState() => _PrecoState();
 }
 
-class _LocalizacaoState extends State<Localizacao> {
+class _PrecoState extends State<Preco> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,15 +49,31 @@ class _LocalizacaoState extends State<Localizacao> {
               ],
             ),
           ),
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Onde fica seu espaço?',
+              const Text(
+                'Agora, determine seu preço',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
-              Text(
-                  'Seu endereço só é compartilhado com os hospedes depois que a reserva é confirmada'),
+              const Text('voce podera altera-lo quando quiser.'),
+              Container(
+                child: const Text('RS 199'),
+              ),
+              const Text('Preço para o hospede sem impostos: RS 227'),
+              Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      border: Border.all(),
+                      borderRadius: BorderRadius.circular(10)),
+                  child: const Text(
+                      'Comparar anuncios parecidos de RS 170 a RS 249')),
+              const Text(
+                'Saiba mais sobre preços',
+                style: TextStyle(
+                  decoration: TextDecoration.underline,
+                ),
+              ),
             ],
           ),
           const SizedBox(
@@ -81,7 +97,7 @@ class _LocalizacaoState extends State<Localizacao> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const FacaDestacar(),
+                      builder: (context) => const UltimaEtapa(),
                     ),
                   ),
                   child: Container(

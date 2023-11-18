@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/pages/faca_destacar.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/pages/titulo.dart';
 
-class Localizacao extends StatefulWidget {
-  const Localizacao({super.key});
+class ProntoQuetal extends StatefulWidget {
+  const ProntoQuetal({super.key});
 
   @override
-  State<Localizacao> createState() => _LocalizacaoState();
+  State<ProntoQuetal> createState() => _ProntoQuetalState();
 }
 
-class _LocalizacaoState extends State<Localizacao> {
+class _ProntoQuetalState extends State<ProntoQuetal> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,11 +53,11 @@ class _LocalizacaoState extends State<Localizacao> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Onde fica seu espaço?',
+                'Pronto, que tal?\nArraste para ordenar',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               Text(
-                  'Seu endereço só é compartilhado com os hospedes depois que a reserva é confirmada'),
+                  'mostrar as imagens, possibilitar escolha de foto de capa, ordenar, e adicionar mais fotos'),
             ],
           ),
           const SizedBox(
@@ -81,7 +81,7 @@ class _LocalizacaoState extends State<Localizacao> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const FacaDestacar(),
+                      builder: (context) => const Titulo(),
                     ),
                   ),
                   child: Container(

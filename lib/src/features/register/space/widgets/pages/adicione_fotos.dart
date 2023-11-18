@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/pages/faca_destacar.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/pages/pronto_quetal.dart';
 
-class Localizacao extends StatefulWidget {
-  const Localizacao({super.key});
+class AdicioneFotos extends StatefulWidget {
+  const AdicioneFotos({super.key});
 
   @override
-  State<Localizacao> createState() => _LocalizacaoState();
+  State<AdicioneFotos> createState() => _AdicioneFotosState();
 }
 
-class _LocalizacaoState extends State<Localizacao> {
+class _AdicioneFotosState extends State<AdicioneFotos> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,13 +53,20 @@ class _LocalizacaoState extends State<Localizacao> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Onde fica seu espaço?',
+                'Adicione algumas fotos da sua acomodaçao((tipo de espaço))',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               Text(
-                  'Seu endereço só é compartilhado com os hospedes depois que a reserva é confirmada'),
+                  'voce precisara de cinco fotos para começar. voce pode adicionar outras imagens ou faer alterações mais tarde.'),
             ],
           ),
+          const SizedBox(
+            height: 20,
+          ),
+          ElevatedButton(
+              onPressed: () {}, child: const Text('Adicionar fotos')),
+          ElevatedButton(
+              onPressed: () {}, child: const Text('Tirar novas fotos')),
           const SizedBox(
             height: 20,
           ),
@@ -81,7 +88,7 @@ class _LocalizacaoState extends State<Localizacao> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const FacaDestacar(),
+                      builder: (context) => const ProntoQuetal(),
                     ),
                   ),
                   child: Container(

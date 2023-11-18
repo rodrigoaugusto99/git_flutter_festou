@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/pages/faca_destacar.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/pages/descricao.dart';
 
-class Localizacao extends StatefulWidget {
-  const Localizacao({super.key});
+class Titulo extends StatefulWidget {
+  const Titulo({super.key});
 
   @override
-  State<Localizacao> createState() => _LocalizacaoState();
+  State<Titulo> createState() => _TituloState();
 }
 
-class _LocalizacaoState extends State<Localizacao> {
+class _TituloState extends State<Titulo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,11 +53,17 @@ class _LocalizacaoState extends State<Localizacao> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Onde fica seu espaço?',
+                'Agora vamos dar um titulo ao seu espaço',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               Text(
-                  'Seu endereço só é compartilhado com os hospedes depois que a reserva é confirmada'),
+                  'titulos curtos funcionam melhor. nao se preocupe, voce podra fazer alteracoes depois'),
+              SizedBox(
+                height: 200,
+                width: 400,
+                child: Placeholder(),
+              ),
+              Text('32 caracteres disponiveis'),
             ],
           ),
           const SizedBox(
@@ -81,7 +87,7 @@ class _LocalizacaoState extends State<Localizacao> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const FacaDestacar(),
+                      builder: (context) => const Descricao(),
                     ),
                   ),
                   child: Container(

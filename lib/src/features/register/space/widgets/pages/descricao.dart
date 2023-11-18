@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/pages/faca_destacar.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/pages/conclua_publique.dart';
 
-class Localizacao extends StatefulWidget {
-  const Localizacao({super.key});
+class Descricao extends StatefulWidget {
+  const Descricao({super.key});
 
   @override
-  State<Localizacao> createState() => _LocalizacaoState();
+  State<Descricao> createState() => _DescricaoState();
 }
 
-class _LocalizacaoState extends State<Localizacao> {
+class _DescricaoState extends State<Descricao> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,16 +53,19 @@ class _LocalizacaoState extends State<Localizacao> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Onde fica seu espaço?',
+                'Crie sua descricao',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
-              Text(
-                  'Seu endereço só é compartilhado com os hospedes depois que a reserva é confirmada'),
+              Text('Explique o que sua acomodacao tem de especial'),
+              SizedBox(
+                height: 200,
+                width: 400,
+                child: Placeholder(),
+              ),
+              Text('399 caracteres disponiveis'),
             ],
           ),
-          const SizedBox(
-            height: 20,
-          ),
+          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: Row(
@@ -81,7 +84,7 @@ class _LocalizacaoState extends State<Localizacao> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const FacaDestacar(),
+                      builder: (context) => const ConcluaPublique(),
                     ),
                   ),
                   child: Container(

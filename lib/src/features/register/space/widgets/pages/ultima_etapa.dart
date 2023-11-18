@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/pages/faca_destacar.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/pages/revisao.dart';
 
-class Localizacao extends StatefulWidget {
-  const Localizacao({super.key});
+class UltimaEtapa extends StatefulWidget {
+  const UltimaEtapa({super.key});
 
   @override
-  State<Localizacao> createState() => _LocalizacaoState();
+  State<UltimaEtapa> createState() => _UltimaEtapaState();
 }
 
-class _LocalizacaoState extends State<Localizacao> {
+class _UltimaEtapaState extends State<UltimaEtapa> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +34,6 @@ class _LocalizacaoState extends State<Localizacao> {
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
                   child: Container(
                     padding: const EdgeInsets.all(7.0),
                     decoration: BoxDecoration(
@@ -49,15 +48,35 @@ class _LocalizacaoState extends State<Localizacao> {
               ],
             ),
           ),
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Column(
             children: [
-              Text(
-                'Onde fica seu espaço?',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              const Text(
+                'falta só mais uma etapa!',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              Text(
-                  'Seu endereço só é compartilhado com os hospedes depois que a reserva é confirmada'),
+              const Text(
+                'Sua acomodacao tea algumas dessas opçoes?',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              const Text('camera de segurança'),
+              const Text('armas'),
+              const Text('animais perigosos'),
+              const SizedBox(height: 10),
+              const Divider(thickness: 0.4, color: Colors.grey),
+              const SizedBox(height: 10),
+              const Text('O que é mais importante saber?'),
+              Wrap(
+                children: [
+                  const Text('Confirme se voce cumpre as '),
+                  MyText('leis locais '),
+                  const Text(' e consulte a'),
+                  MyText(' Politica de Não Discriminação do Festou '),
+                  const Text('e as '),
+                  MyText('taxas de hóspedes.'),
+                ],
+              ),
             ],
           ),
           const SizedBox(
@@ -81,7 +100,7 @@ class _LocalizacaoState extends State<Localizacao> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const FacaDestacar(),
+                      builder: (context) => const Revisao(),
                     ),
                   ),
                   child: Container(
@@ -102,6 +121,14 @@ class _LocalizacaoState extends State<Localizacao> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget MyText(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+          decoration: TextDecoration.underline, fontWeight: FontWeight.bold),
     );
   }
 }

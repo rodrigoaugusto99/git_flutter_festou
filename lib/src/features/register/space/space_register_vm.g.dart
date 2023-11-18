@@ -6,7 +6,7 @@ part of 'space_register_vm.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$spaceRegisterVmHash() => r'a0f74f29217398fd52d9358f9271f69ccf7edde4';
+String _$spaceRegisterVmHash() => r'6cfe60afef939a7eeb6fce573a758bf63a6b85b0';
 
 /// See also [SpaceRegisterVm].
 @ProviderFor(SpaceRegisterVm)

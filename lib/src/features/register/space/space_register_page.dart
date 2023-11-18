@@ -10,7 +10,7 @@ import 'package:git_flutter_festou/src/features/register/space/space_register_st
 import 'package:git_flutter_festou/src/features/register/space/space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/pages/new_space_register.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/services_panel.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/test.dart';
+import 'package:git_flutter_festou/src/core/ui/helpers/place%20api/test.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/type_panel.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/weekdays_panel.dart';
 import 'package:search_cep/search_cep.dart';
@@ -74,18 +74,6 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
           });
         },
       );
-    }
-  }
-
-  final TextEditingController _addressController = TextEditingController();
-  //final List<Location> _suggestions = [];
-  Future<List<Location>> getLocationSuggestions(String query) async {
-    try {
-      List<Location> locations = await locationFromAddress(query);
-      return locations;
-    } catch (e) {
-      log("Erro ao obter sugestões de endereço: $e");
-      return [];
     }
   }
 

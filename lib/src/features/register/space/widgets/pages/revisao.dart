@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/pages/faca_destacar.dart';
 
-class Localizacao extends StatefulWidget {
-  const Localizacao({super.key});
+class Revisao extends StatefulWidget {
+  const Revisao({super.key});
 
   @override
-  State<Localizacao> createState() => _LocalizacaoState();
+  State<Revisao> createState() => _RevisaoState();
 }
 
-class _LocalizacaoState extends State<Localizacao> {
+class _RevisaoState extends State<Revisao> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,16 +48,47 @@ class _LocalizacaoState extends State<Localizacao> {
               ],
             ),
           ),
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Onde fica seu espaço?',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-              Text(
-                  'Seu endereço só é compartilhado com os hospedes depois que a reserva é confirmada'),
-            ],
+          Expanded(
+            child: ListView(
+              children: [
+                const Text(
+                  'Revise seu anuncio',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
+                const Text(
+                    'Confira o que mostraremos aos hospedes.\nCertifique-se de que está tudo certo'),
+                Container(
+                  color: Colors.grey,
+                  height: 300,
+                  width: 300,
+                ),
+                const Text(
+                  'Proximo passo?',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const Text(
+                  'Confirme as informacoes e publique o anuncio',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const Text(
+                  'Entraremos em contato se voce precisar verificar sua idenmtidade ou se registrar junto ao governo local',
+                ),
+                const Text(
+                  'Configure o calendario',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const Text(
+                  'Escolha as datas em que sua acomodacao está disponivel. O anuncio fcará visaivel por 24 hortas depois da publicacao',
+                ),
+                const Text(
+                  'Ajuste as configuraçao',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const Text(
+                  'Defina as regras de segurança da casa, selecione uma politica de cancelmaento, esoclha como os hospedes podem reservar e muito mais',
+                ),
+              ],
+            ),
           ),
           const SizedBox(
             height: 20,
@@ -81,7 +111,7 @@ class _LocalizacaoState extends State<Localizacao> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const FacaDestacar(),
+                      builder: (context) => const Revisao(),
                     ),
                   ),
                   child: Container(
