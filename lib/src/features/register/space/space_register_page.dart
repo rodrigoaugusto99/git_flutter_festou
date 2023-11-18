@@ -1,11 +1,16 @@
 import 'dart:developer';
+import 'package:field_suggestion/field_suggestion.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_state.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_vm.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/pages/new_space_register.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/services_panel.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/test.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/type_panel.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/weekdays_panel.dart';
 import 'package:search_cep/search_cep.dart';
@@ -72,6 +77,18 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
     }
   }
 
+  final TextEditingController _addressController = TextEditingController();
+  //final List<Location> _suggestions = [];
+  Future<List<Location>> getLocationSuggestions(String query) async {
+    try {
+      List<Location> locations = await locationFromAddress(query);
+      return locations;
+    } catch (e) {
+      log("Erro ao obter sugestões de endereço: $e");
+      return [];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final spaceRegister = ref.read(spaceRegisterVmProvider.notifier);
@@ -114,6 +131,24 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                     'Insira os dados do seu espaço!',
                     style: TextStyle(fontSize: 20),
                   ),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const QuickSearchScreen(),
+                    ),
+                  ),
+                  child: const Text('oi'),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const NewSpaceRegister(),
+                    ),
+                  ),
+                  child: const Text('NewSpaceRegister()'),
                 ),
                 TextFormField(
                   controller: nomeEC,
