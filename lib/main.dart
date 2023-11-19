@@ -10,6 +10,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/account/locador/que
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
+import 'package:git_flutter_festou/src/features/register/space/space_register_review_page.dart';
 import 'package:git_flutter_festou/src/features/register/user%20infos/user_register_infos_page.dart';
 import 'package:git_flutter_festou/src/features/register/user/user_register_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/search/search_page.dart';
@@ -44,7 +45,8 @@ class MyApp extends StatelessWidget {
         '/auth': (_) => const AuthPage(),
         '/login': (_) => const LoginPage(),
         '/register/user': (_) => const UserRegisterPage(),
-        //'/register/space': (_) => const EspacoRegisterPage(),
+        '/register/space': (_) => const EspacoRegisterPage(),
+        //'/register/space/review': (_) =>  SpaceRegisterReviewPage(),
         '/register/user/infos': (_) => const UserRegisterInfosPage(),
         '/account/help': (_) => const HelpPage(),
         '/account/dados': (_) => const DadosPage(),
@@ -52,9 +54,9 @@ class MyApp extends StatelessWidget {
         '/account/favorites': (_) => const MyFavoriteSpacePage(),
         '/home/my_spaces': (_) => const MySpacesPage(),
         '/home/all_spaces': (_) => const AllSpacesPage(),
-        //'/home/search_page': (_) => const SearchPage(),
+        '/home/search_page': (_) => const SearchPage(),
       },
-      onGenerateRoute: (settings) {
+      /*onGenerateRoute: (settings) {
         if (settings.name == '/spaces/spaces_by_types') {
           // Verifica se há argumentos na rota.
           final type = settings.arguments as List<String>;
@@ -79,7 +81,7 @@ class MyApp extends StatelessWidget {
           );
         }
         return null;
-      },
+      },*/
       theme: ThemeData(
         fontFamily: 'inter',
         primarySwatch: Colors.deepPurple,

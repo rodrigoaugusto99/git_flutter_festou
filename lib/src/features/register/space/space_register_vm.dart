@@ -1,12 +1,13 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_state.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
@@ -48,25 +49,6 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
         selectedTypes: selectedTypes, status: SpaceRegisterStateStatus.initial);
     log('state atualizado');
   }
-  /*outra abordagem para evitar a att do estado
-  
-  void addOrRemoveType(String type) {
-  final selectedTypes = List<String>.from(state.selectedTypes);
-
-  if (selectedTypes.contains(type)) {
-    selectedTypes.remove(type);
-  } else {
-    selectedTypes.add(type);
-  }
-
-  if (selectedTypes != state.selectedTypes) {
-    state = state.copyWith(selectedTypes: selectedTypes);
-  }
-}
- criando cópias das listas antes de fazer qualquer alteração e, 
- em seguida, verificando se a lista atualizada é diferente da 
- lista no estado. Somente quando houver uma diferença, 
- atualizamos o estado */
 
   void addOrRemoveService(String service) {
     final selectedServices = state.selectedServices;
@@ -114,34 +96,53 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
     return Validatorless.required('Cidade obrigatorio');
   }
 
-  Future<void> validateForm(
-      BuildContext context,
-      formKey,
-      nomeEC,
-      emailEC,
-      cepEC,
-      logradouroEC,
-      numeroEC,
-      bairroEC,
-      cidadeEC,
-      descricaoEC,
-      cityEC) async {
-    //if (formKey.currentState?.validate() == true) {
-    await register(
-      nomeEC.text,
-      emailEC.text,
-      cepEC.text,
-      logradouroEC.text,
-      numeroEC.text,
-      bairroEC.text,
-      cidadeEC.text,
-      descricaoEC.text,
-      cityEC.text,
-    );
-    //se nao tiver esse else, o compilador passa nesse copyWith sempre
-    //} else {
-    //state = state.copyWith(status: SpaceRegisterStateStatus.invalidForm);
-    //}
+  Future<void> validateForm(BuildContext context, formKey, tituloEC, cepEC,
+      logradouroEC, numeroEC, bairroEC, cidadeEC, descricaoEC, cityEC) async {
+    if (formKey.currentState?.validate() == true) {
+      //final spaceId = uuid.v4();
+      final userId = user.uid;
+      final SpaceRegisterState(:selectedTypes, :selectedServices, :imageFiles) =
+          state;
+      SpaceModel temporarySpaceModel = SpaceModel(
+        false,
+        'spaceId',
+        userId,
+        tituloEC.text,
+        cepEC.text,
+        logradouroEC.text,
+        numeroEC.text,
+        bairroEC.text,
+        cidadeEC.text,
+        selectedTypes,
+        selectedServices,
+        'averageRating',
+        'numComments',
+        'locadorName',
+        descricaoEC.text,
+        cityEC.text,
+      );
+      // Supondo que `imageFiles` seja uma List<File>
+      List<String> imagePaths = imageFiles.map((file) => file.path).toList();
+      SpaceWithImages temporarySpaceWithImages =
+          SpaceWithImages(temporarySpaceModel, imagePaths);
+      state = state.copyWith(
+        status: SpaceRegisterStateStatus.success,
+        temporarySpace: temporarySpaceWithImages,
+      );
+      /*await register(
+        tituloEC.text,
+        cepEC.text,
+        logradouroEC.text,
+        numeroEC.text,
+        bairroEC.text,
+        cidadeEC.text,
+        descricaoEC.text,
+        cityEC.text,
+      );*/
+      //se nao tiver esse else, o compilador passa nesse copyWith sempre
+    } else {
+      state = state.copyWith(status: SpaceRegisterStateStatus.invalidForm);
+    }
   }
 
   void pickImage() async {
@@ -159,8 +160,7 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
   }
 
   Future<void> register(
-    String name,
-    String email,
+    String titulo,
     String cep,
     String logradouro,
     String numero,
@@ -169,32 +169,25 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
     String descricao,
     String city,
   ) async {
-    final SpaceRegisterState(
-      :selectedTypes,
-      :availableDays,
-      :selectedServices,
-      :imageFiles
-    ) = state;
+    final SpaceRegisterState(:selectedTypes, :selectedServices, :imageFiles) =
+        state;
 
     final spaceId = uuid.v4();
     final userId = user.uid;
-
     final spaceData = (
       spaceId: spaceId,
       userId: userId,
-      name: name,
-      email: email,
+      titulo: titulo,
       cep: cep,
       logradouro: logradouro,
       numero: numero,
       bairro: bairro,
       cidade: cidade,
       selectedTypes: selectedTypes,
-      availableDays: availableDays,
       selectedServices: selectedServices,
       imageFiles: imageFiles,
       descricao: descricao,
-      city: city
+      city: city,
     );
 
     final spaceFirestoreRepository = ref.read(spaceFirestoreRepositoryProvider);

@@ -2,8 +2,8 @@ class SpaceModel {
   bool isFavorited;
   final String spaceId;
   final String userId;
-  final String email;
-  final String name;
+  final String titulo;
+
   final String cep;
   final String logradouro;
   final String numero;
@@ -11,7 +11,7 @@ class SpaceModel {
   final String cidade;
   final List<dynamic> selectedTypes;
   final List<dynamic> selectedServices;
-  final List<dynamic> availableDays;
+
   final String averageRating;
   final String numComments;
   final String locadorName;
@@ -22,8 +22,7 @@ class SpaceModel {
     this.isFavorited,
     this.spaceId,
     this.userId,
-    this.email,
-    this.name,
+    this.titulo,
     this.cep,
     this.logradouro,
     this.numero,
@@ -31,7 +30,6 @@ class SpaceModel {
     this.cidade,
     this.selectedTypes,
     this.selectedServices,
-    this.availableDays,
     this.averageRating,
     this.numComments,
     this.locadorName,

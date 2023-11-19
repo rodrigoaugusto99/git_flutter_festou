@@ -1,19 +1,23 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/pages/adicione_fotos.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/pages/new_space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/services_panel.dart';
 
-class ServicosAcomodacoes extends StatefulWidget {
+class ServicosAcomodacoes extends ConsumerStatefulWidget {
   const ServicosAcomodacoes({super.key});
 
   @override
-  State<ServicosAcomodacoes> createState() => _ServicosAcomodacoesState();
+  ConsumerState<ServicosAcomodacoes> createState() =>
+      _ServicosAcomodacoesState();
 }
 
-class _ServicosAcomodacoesState extends State<ServicosAcomodacoes> {
+class _ServicosAcomodacoesState extends ConsumerState<ServicosAcomodacoes> {
   @override
   Widget build(BuildContext context) {
+    final newSpaceRegister = ref.read(newSpaceRegisterVmProvider.notifier);
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +69,7 @@ class _ServicosAcomodacoesState extends State<ServicosAcomodacoes> {
                 text: 'Selecione os SERVIÇOS do espaço',
                 onServicePressed: (value) {
                   log('onServicePressed: $value');
-                  //spaceRegister.addOrRemoveService(value);
+                  newSpaceRegister.addOrRemoveService(value);
                 },
                 selectedServices: const [],
               ),

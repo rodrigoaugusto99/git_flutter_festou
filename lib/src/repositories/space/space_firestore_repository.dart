@@ -9,8 +9,7 @@ abstract interface class SpaceFirestoreRepository {
     ({
       String spaceId,
       String userId,
-      String email,
-      String name,
+      String titulo,
       String cep,
       String logradouro,
       String numero,
@@ -18,7 +17,6 @@ abstract interface class SpaceFirestoreRepository {
       String cidade,
       List<String> selectedTypes,
       List<String> selectedServices,
-      List<String> availableDays,
       List<File> imageFiles,
       String descricao,
       String city,

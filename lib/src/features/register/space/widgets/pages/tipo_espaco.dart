@@ -1,19 +1,23 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/pages/localizacao.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/pages/new_space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/type_panel.dart';
 
-class TipoEspaco extends StatefulWidget {
+class TipoEspaco extends ConsumerStatefulWidget {
   const TipoEspaco({super.key});
 
   @override
-  State<TipoEspaco> createState() => _TipoEspacoState();
+  ConsumerState<TipoEspaco> createState() => _TipoEspacoState();
 }
 
-class _TipoEspacoState extends State<TipoEspaco> {
+class _TipoEspacoState extends ConsumerState<TipoEspaco> {
   @override
   Widget build(BuildContext context) {
+    final newSpaceRegister = ref.read(newSpaceRegisterVmProvider.notifier);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(''),
@@ -64,7 +68,7 @@ class _TipoEspacoState extends State<TipoEspaco> {
                 text: 'Selecione o TIPO de espaço',
                 onTypePressed: (value) {
                   log('onTypePressed: $value');
-                  //spaceRegister.addOrRemoveType(value);
+                  newSpaceRegister.addOrRemoveType(value);
                 },
                 selectedTypes: const [],
               ),

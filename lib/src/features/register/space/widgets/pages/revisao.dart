@@ -1,15 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
+import 'package:git_flutter_festou/src/features/register/space/space_register_state.dart';
+import 'package:git_flutter_festou/src/features/register/space/space_register_vm.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/pages/new_space_register_state.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/pages/new_space_register_vm.dart';
 
-class Revisao extends StatefulWidget {
+class Revisao extends ConsumerStatefulWidget {
   const Revisao({super.key});
 
   @override
-  State<Revisao> createState() => _RevisaoState();
+  ConsumerState<Revisao> createState() => _RevisaoState();
 }
 
-class _RevisaoState extends State<Revisao> {
+class _RevisaoState extends ConsumerState<Revisao> {
   @override
   Widget build(BuildContext context) {
+    final newSpaceRegister = ref.watch(newSpaceRegisterVmProvider.notifier);
+
+    ref.listen(spaceRegisterVmProvider, (_, state) {
+      switch (state) {
+        case SpaceRegisterState(status: SpaceRegisterStateStatus.initial):
+          break;
+
+        case SpaceRegisterState(status: SpaceRegisterStateStatus.success):
+          Messages.showSuccess('parabens', context);
+
+        case SpaceRegisterState(
+            status: SpaceRegisterStateStatus.error,
+            :final errorMessage?
+          ):
+          Messages.showError(errorMessage, context);
+      }
+    });
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,12 +131,7 @@ class _RevisaoState extends State<Revisao> {
                   ),
                 ),
                 InkWell(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Revisao(),
-                    ),
-                  ),
+                  onTap: () => newSpaceRegister.register(),
                   child: Container(
                     decoration: BoxDecoration(
                         color: Colors.black,

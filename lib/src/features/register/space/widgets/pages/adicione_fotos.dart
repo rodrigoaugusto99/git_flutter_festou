@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/features/register/space/space_register_vm.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/pages/new_space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/pages/pronto_quetal.dart';
 
-class AdicioneFotos extends StatefulWidget {
+class AdicioneFotos extends ConsumerStatefulWidget {
   const AdicioneFotos({super.key});
 
   @override
-  State<AdicioneFotos> createState() => _AdicioneFotosState();
+  ConsumerState<AdicioneFotos> createState() => _AdicioneFotosState();
 }
 
-class _AdicioneFotosState extends State<AdicioneFotos> {
+class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
   @override
   Widget build(BuildContext context) {
+    final spaceRegister = ref.watch(spaceRegisterVmProvider.notifier);
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,7 +68,8 @@ class _AdicioneFotosState extends State<AdicioneFotos> {
             height: 20,
           ),
           ElevatedButton(
-              onPressed: () {}, child: const Text('Adicionar fotos')),
+              onPressed: () => spaceRegister.pickImage(),
+              child: const Text('Adicionar fotos')),
           ElevatedButton(
               onPressed: () {}, child: const Text('Tirar novas fotos')),
           const SizedBox(

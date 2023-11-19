@@ -34,8 +34,7 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
       ({
         String spaceId,
         String userId,
-        String email,
-        String name,
+        String titulo,
         String bairro,
         String cep,
         String cidade,
@@ -43,7 +42,6 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
         String numero,
         List<String> selectedTypes,
         List<String> selectedServices,
-        List<String> availableDays,
         List<File> imageFiles,
         String descricao,
         String city
@@ -54,8 +52,7 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
       Map<String, dynamic> newSpace = {
         'space_id': spaceData.spaceId,
         'user_id': spaceData.userId,
-        'email_do_espaço': spaceData.email,
-        'nome_do_espaço': spaceData.name,
+        'titulo': spaceData.titulo,
         'cep': spaceData.cep,
         'logradouro': spaceData.logradouro,
         'numero': spaceData.numero,
@@ -63,7 +60,6 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
         'cidade': spaceData.cidade,
         'selectedTypes': spaceData.selectedTypes,
         'selectedServices': spaceData.selectedServices,
-        'availableDays': spaceData.availableDays,
         'average_rating': '',
         'num_comments': '',
         'locador_name': locadorName,
@@ -73,8 +69,7 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
 
       // Consulte a coleção 'spaces' para verificar se um espaço com as mesmas informações já existe.
       final existingSpace = await spacesCollection
-          .where('email_do_espaço', isEqualTo: spaceData.email)
-          .where('nome_do_espaço', isEqualTo: spaceData.name)
+          .where('titulo', isEqualTo: spaceData.titulo)
           .where('cep', isEqualTo: spaceData.cep)
           .where('logradouro', isEqualTo: spaceData.logradouro)
           .where('numero', isEqualTo: spaceData.numero)
@@ -282,8 +277,7 @@ p decidir o isFavorited*/
         List<String>.from(spaceDocument['selectedTypes'] ?? []);
     List<String> selectedServices =
         List<String>.from(spaceDocument['selectedServices'] ?? []);
-    List<String> availableDays =
-        List<String>.from(spaceDocument['availableDays'] ?? []);
+
     String spaceId = spaceDocument.get('space_id');
     //String userId = spaceDocument.get('user_id');
     final averageRating = await getAverageRating(spaceId);
@@ -293,8 +287,7 @@ p decidir o isFavorited*/
       isFavorited,
       spaceDocument['space_id'] ?? '',
       spaceDocument['user_id'] ?? '',
-      spaceDocument['email_do_espaço'] ?? '',
-      spaceDocument['nome_do_espaço'] ?? '',
+      spaceDocument['titulo'] ?? '',
       spaceDocument['cep'] ?? '',
       spaceDocument['logradouro'] ?? '',
       spaceDocument['numero'] ?? '',
@@ -302,7 +295,6 @@ p decidir o isFavorited*/
       spaceDocument['cidade'] ?? '',
       selectedTypes,
       selectedServices,
-      availableDays,
       averageRating,
       numComments,
       spaceDocument['locador_name'] ?? '',
