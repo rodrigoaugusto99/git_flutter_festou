@@ -63,6 +63,11 @@ dependencies:
   glassmorphism_ui: ^0.3.0
   card_swiper: ^3.0.1
   
+  social_share: ^2.3.1
+  field_suggestion: ^0.2.5
+  flutter_typeahead: ^4.8.0
+  http: ^1.1.0
+  
 
 dev_dependencies:
   flutter_test:

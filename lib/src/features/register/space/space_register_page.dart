@@ -3,11 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
+import 'package:git_flutter_festou/src/features/register/space/space_register_review_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_state.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_vm.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/pages/new_space_register.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/services_panel.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/type_panel.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/weekdays_panel.dart';
 import 'package:search_cep/search_cep.dart';
 
 class EspacoRegisterPage extends ConsumerStatefulWidget {
@@ -23,24 +24,28 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
   //controllers
   final formKey = GlobalKey<FormState>();
 
-  final nomeEC = TextEditingController();
+  final tituloEC = TextEditingController();
   final numeroEC = TextEditingController();
-  final emailEC = TextEditingController();
+
   final cepEC = TextEditingController();
   final logradouroEC = TextEditingController();
   final bairroEC = TextEditingController();
   final cidadeEC = TextEditingController();
+  final descricaoEC = TextEditingController();
+  final cityEC = TextEditingController();
   bool isCepAutoCompleted = false;
 
   @override
   void dispose() {
     super.dispose();
-    nomeEC.dispose();
-    emailEC.dispose();
+    tituloEC.dispose();
+
     numeroEC.dispose();
     cepEC.dispose();
     logradouroEC.dispose();
     bairroEC.dispose();
+    descricaoEC.dispose();
+    cityEC.dispose();
     cidadeEC.dispose();
   }
 
@@ -68,6 +73,9 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
     }
   }
 
+  final TextEditingController _textController = TextEditingController();
+  final int maxLength = 200;
+
   @override
   Widget build(BuildContext context) {
     final spaceRegister = ref.read(spaceRegisterVmProvider.notifier);
@@ -79,9 +87,17 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
         case SpaceRegisterState(status: SpaceRegisterStateStatus.invalidForm):
           Messages.showError('Formulario invalido', context);
           break;
-        case SpaceRegisterState(status: SpaceRegisterStateStatus.success):
-          Navigator.of(context).pop();
-          Messages.showSuccess('parabens', context);
+        case SpaceRegisterState(
+            status: SpaceRegisterStateStatus.success,
+            temporarySpace: final space,
+          ):
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SpaceRegisterReviewPage(space: space),
+            ),
+          );
+          Messages.showSuccess('revise seu espaço', context);
 
         case SpaceRegisterState(
             status: SpaceRegisterStateStatus.error,
@@ -111,18 +127,29 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                     style: TextStyle(fontSize: 20),
                   ),
                 ),
-                TextFormField(
-                  controller: nomeEC,
-                  validator: spaceRegister.validateNome(),
-                  decoration: const InputDecoration(
-                    hintText: 'nome',
+                /*ElevatedButton(
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const QuickSearchScreen(),
+                    ),
                   ),
+                  child: const Text('oi'),
+                ),*/
+                ElevatedButton(
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const NewSpaceRegister(),
+                    ),
+                  ),
+                  child: const Text('NewSpaceRegister()'),
                 ),
                 TextFormField(
-                  controller: emailEC,
-                  validator: spaceRegister.validateEmail(),
+                  controller: tituloEC,
+                  validator: spaceRegister.validateNome(),
                   decoration: const InputDecoration(
-                    hintText: 'email',
+                    hintText: 'titulo',
                   ),
                 ),
                 TextFormField(
@@ -171,14 +198,32 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                   onPressed: () => spaceRegister.pickImage(),
                   child: const Text('upload photo'),
                 ),
-                WeekDaysPanel(
+                TextField(
+                  controller: descricaoEC,
+                  maxLines: null, // Permite várias linhas
+                  decoration: const InputDecoration(
+                    labelText: 'Descrição do espaço',
+                  ),
+                  onChanged: (text) {
+                    if (text.length > maxLength) {
+                      // Limita o texto ao número máximo de caracteres
+                      _textController.text = text.substring(0, maxLength);
+                    }
+                  },
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Caracteres restantes: ${maxLength - _textController.text.length}',
+                  style: const TextStyle(color: Colors.grey),
+                ),
+                /*WeekDaysPanel(
                   text: 'Selecione os DIAS da semana',
                   onDayPressed: (value) {
                     log('onDayPressed: $value');
                     spaceRegister.addOrRemoveAvailableDay(value);
                   },
                   availableDays: const [],
-                ),
+                ),*/
                 TypePanel(
                   text: 'Selecione o TIPO de espaço',
                   onTypePressed: (value) {
@@ -212,16 +257,17 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                         await spaceRegister.validateForm(
                           context,
                           formKey,
-                          nomeEC,
-                          emailEC,
+                          tituloEC,
                           cepEC,
                           logradouroEC,
                           numeroEC,
                           bairroEC,
                           cidadeEC,
+                          descricaoEC,
+                          cityEC,
                         );
                       },
-                      child: const Text('cadastrar espaco'),
+                      child: const Text('Avançar'),
                     ),
                   ],
                 ),

@@ -51,7 +51,10 @@ class _SpacesWithSugestionPageState
                                   NewCardInfo(space: widget.space),
                             ),
                           ),
-                      child: NewSpaceCard(space: widget.space))),
+                      child: NewSpaceCard(
+                        space: widget.space,
+                        isReview: false,
+                      ))),
               SliverToBoxAdapter(
                 child: Center(
                   child: Container(

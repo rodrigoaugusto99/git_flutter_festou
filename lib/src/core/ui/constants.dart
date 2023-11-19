@@ -11,6 +11,8 @@ sealed class ColorsConstants {
   static const fontFamily = GoogleFonts.roboto;
 }*/
 
+const String apiKey = "AIzaSyBQadIJFUXrUjxIdXp9ecq10UCesRrMDd8";
+
 sealed class ImageConstants {
   static const loginBackground = 'lib/assets/images/background_login.png';
   static const gliterBlackground = 'lib/assets/images/gliter.jpeg';

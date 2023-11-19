@@ -32,7 +32,13 @@ class _SpaceFeedbacksPageLimitedState
       data: (SpaceFeedbacksState data) {
         if (data.feedbacks.isEmpty) {
           return const Center(
-            child: Text('Sem avaliações(ainda)'),
+            child: Text(
+              'Sem avaliações(ainda)',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           );
         }
         log('Average Rating: ${widget.space.averageRating}');

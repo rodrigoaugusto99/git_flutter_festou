@@ -102,7 +102,7 @@ class _SmallSpaceCardState extends ConsumerState<SmallSpaceCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.space.space.name,
+                            widget.space.space.titulo,
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
