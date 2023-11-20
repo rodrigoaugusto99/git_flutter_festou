@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/account/pages/nova_tela.dart';
 
 class Account extends StatelessWidget {
   const Account({super.key});
@@ -56,6 +57,14 @@ class Account extends StatelessWidget {
                 )
               ],
             ),
+            ElevatedButton(
+                onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const NovaTela(),
+                      ),
+                    ),
+                child: const Text('nova tela')),
             AcountButton(
               text: 'Chats',
               text2: 'Minhas conversas',
