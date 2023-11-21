@@ -12,7 +12,7 @@ class _TraducaoState extends State<Traducao> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(''),
+        title: const Text('traducao'),
       ),
       body: Container(),
     );

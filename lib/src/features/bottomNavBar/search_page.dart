@@ -1,6 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import '../bottomNavBarPage.dart';
+import 'bottomNavBarPage.dart';
 import 'package:lottie/lottie.dart';
 
 class SearchPage extends StatefulWidget {

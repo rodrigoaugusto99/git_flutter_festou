@@ -12,7 +12,7 @@ class _NotificacoesState extends State<Notificacoes> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(''),
+        title: const Text('notificacos'),
       ),
       body: Container(),
     );

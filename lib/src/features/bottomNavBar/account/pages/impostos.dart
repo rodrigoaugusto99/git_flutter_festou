@@ -12,7 +12,7 @@ class _ImpostosState extends State<Impostos> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(''),
+        title: const Text('impostos'),
       ),
       body: Container(),
     );

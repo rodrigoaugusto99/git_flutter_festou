@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account/account.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account/pages/nova_tela.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/search_page.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu.dart';
 import 'package:git_flutter_festou/src/features/home/home_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20favorite%20spaces%20mvvm/my_favorite_spaces_page.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_page.dart';
 
-class BottomNavBarPage extends StatefulWidget {
-  const BottomNavBarPage({super.key});
+class BottomNavBarPageLocador extends StatefulWidget {
+  const BottomNavBarPageLocador({super.key});
 
   @override
-  _BottomNavBarPageState createState() => _BottomNavBarPageState();
+  _BottomNavBarPageLocadorState createState() =>
+      _BottomNavBarPageLocadorState();
 }
 
-class _BottomNavBarPageState extends State<BottomNavBarPage> {
+class _BottomNavBarPageLocadorState extends State<BottomNavBarPageLocador> {
   late PageController _pageController;
   int _currentIndex = 0;
 
@@ -50,13 +54,13 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
         itemBuilder: (context, index) {
           switch (index) {
             case 0:
-              return const HomePage();
+              return const MySpacesPage();
             case 1:
-              return const SearchPage();
+              return const Calendario();
             case 2:
-              return const MyFavoriteSpacePage();
+              return const Mensagens();
             case 3:
-              return const NovaTela();
+              return const Menu();
             default:
               return Container(); // Lida com índices fora do alcance, se aplicável
           }
@@ -70,20 +74,20 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
         onTap: _onTabTapped,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: Icon(Icons.home_filled),
+            label: 'Meus espaços',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
+            icon: Icon(Icons.calendar_month),
+            label: 'Calendário',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favorites',
+            icon: Icon(Icons.chat),
+            label: 'Mensagens',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+            icon: Icon(Icons.menu),
+            label: 'Menu',
           ),
         ],
       ),

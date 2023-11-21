@@ -6,6 +6,8 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/account/pages/notif
 import 'package:git_flutter_festou/src/features/bottomNavBar/account/pages/pagamentos.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/account/pages/traducao.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarPageLocador.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu.dart';
+import 'package:git_flutter_festou/src/features/widgets/my_rows_config.dart';
 
 class NovaTela extends StatefulWidget {
   const NovaTela({super.key});
@@ -59,66 +61,7 @@ class _NovaTelaState extends State<NovaTela> {
               const SizedBox(height: 10),
               MyText(text: 'Configurações'),
               const SizedBox(height: 25),
-              MyRow(
-                text: 'Informaçoes pessoais',
-                icon: const Icon(Icons.abc),
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const InformacoesPessoais(),
-                  ),
-                ),
-              ),
-              MyRow(
-                text: 'Login e Segurança',
-                icon: const Icon(Icons.abc),
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LoginSeguranca(),
-                  ),
-                ),
-              ),
-              MyRow(
-                text: 'Pagamentos',
-                icon: const Icon(Icons.abc),
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Pagamentos(),
-                  ),
-                ),
-              ),
-              MyRow(
-                text: 'Impostos',
-                icon: const Icon(Icons.abc),
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Impostos(),
-                  ),
-                ),
-              ),
-              MyRow(
-                text: 'Tradução',
-                icon: const Icon(Icons.abc),
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Traducao(),
-                  ),
-                ),
-              ),
-              MyRow(
-                text: 'Notificações',
-                icon: const Icon(Icons.abc),
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Notificacoes(),
-                  ),
-                ),
-              ),
+              const MyRowsConfig(),
               const SizedBox(height: 10),
               MyText(text: 'Alocar'),
               const SizedBox(height: 25),
@@ -175,30 +118,5 @@ Widget MyText({required String text}) {
   return Text(
     text,
     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-  );
-}
-
-Widget MyRow(
-    {required String text, required Icon icon, required Function()? onTap}) {
-  return InkWell(
-    onTap: onTap,
-    child: Column(
-      children: [
-        const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.icecream),
-                Text(text),
-              ],
-            ),
-            const Icon(Icons.arrow_circle_right_rounded),
-          ],
-        ),
-        const SizedBox(height: 10),
-      ],
-    ),
   );
 }
