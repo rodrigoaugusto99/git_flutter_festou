@@ -1,28 +1,25 @@
+import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 
-enum InformacoesPessoaisStateStatus { loaded, error }
+enum InformacoesPessoaisStateStatus { initial, success, error }
 
 class InformacoesPessoaisState {
   final InformacoesPessoaisStateStatus status;
-  final String nome;
-  final String telefone;
-  final String email;
+  final String? errorMessage;
 
-  InformacoesPessoaisState(
-      {required this.status,
-      required this.nome,
-      required this.telefone,
-      required this.email});
+  InformacoesPessoaisState({required this.status, this.errorMessage});
+
+  InformacoesPessoaisState.initial()
+      : this(
+          status: InformacoesPessoaisStateStatus.initial,
+        );
 
   InformacoesPessoaisState copyWith(
       {InformacoesPessoaisStateStatus? status,
-      String? nome,
-      String? telefone,
-      String? email}) {
+      ValueGetter<String?>? errorMessage}) {
     return InformacoesPessoaisState(
         status: status ?? this.status,
-        nome: nome ?? this.nome,
-        telefone: telefone ?? this.telefone,
-        email: email ?? this.email);
+        errorMessage:
+            errorMessage != null ? errorMessage() : this.errorMessage);
   }
 }

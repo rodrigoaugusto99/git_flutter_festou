@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais_status.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais_vm.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 
@@ -25,9 +27,13 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
   @override
   void initState() {
     super.initState();
+
+    // Inicializar controladores com base nos valores iniciais do userModel
     nameEC = TextEditingController(text: widget.userModel.name);
     telefoneEC = TextEditingController(text: widget.userModel.telefone);
     emailEC = TextEditingController(text: widget.userModel.email);
+
+    // Definir valores iniciais para os bools de edição
     isEditing1 = false;
     isEditing2 = false;
     isEditing3 = false;
@@ -43,9 +49,23 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
 
   @override
   Widget build(BuildContext context) {
-    void update(String text, String newText) {
-      ref.watch(informacoesPessoaisVMProvider(text, newText));
-    }
+    final informacoesPessoaisVm =
+        ref.watch(informacoesPessoaisVMProvider.notifier);
+
+//todo!: sempre retorna status.initial
+//todo: averiguar ref.listen em caso de build do state com parametro(cast n)
+    ref.listen(informacoesPessoaisVMProvider, (_, state) {
+      switch (state) {
+        case InformacoesPessoaisState(
+            status: InformacoesPessoaisStateStatus.success
+          ):
+          Messages.showSuccess('Filtrado com sucesso!', context);
+        case InformacoesPessoaisState(
+            status: InformacoesPessoaisStateStatus.error
+          ):
+          Messages.showError('Erro ao filtrar espaços', context);
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -70,9 +90,13 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 label: 'Nome civil',
                 controller: nameEC,
                 isEditing: isEditing1,
-                onSave: (value) {
-                  log('Salvar 1o widget: $value');
-                  update(value, 'nome');
+                onSave: (value) async {
+                  log('Salvar: $value no campo nome');
+                  await informacoesPessoaisVm.updateInfo('nome', value);
+                  setState(() {
+                    nameEC.text = value;
+                    isEditing1 = !isEditing1;
+                  });
                 },
               ),
             ),
@@ -84,9 +108,13 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 label: 'Telefone',
                 controller: telefoneEC,
                 isEditing: isEditing2,
-                onSave: (value) {
-                  log('Salvar 2o widget: $value');
-                  update(value, 'telefone');
+                onSave: (value) async {
+                  log('Salvar: $value no campo telefone');
+                  await informacoesPessoaisVm.updateInfo('telefone', value);
+                  setState(() {
+                    telefoneEC.text = value;
+                    isEditing2 = !isEditing2;
+                  });
                 },
               ),
             ),
@@ -98,9 +126,13 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 label: 'E-mail',
                 controller: emailEC,
                 isEditing: isEditing3,
-                onSave: (value) {
-                  log('Salvar 3o widget: $value');
-                  update(value, 'email');
+                onSave: (value) async {
+                  log('Salvar: $value no campo email');
+                  await informacoesPessoaisVm.updateInfo('email', value);
+                  setState(() {
+                    emailEC.text = value;
+                    isEditing3 = !isEditing3;
+                  });
                 },
               ),
             ),

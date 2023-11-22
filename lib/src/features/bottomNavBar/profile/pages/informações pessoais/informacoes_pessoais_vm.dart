@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
@@ -8,41 +10,23 @@ part 'informacoes_pessoais_vm.g.dart';
 
 @riverpod
 class InformacoesPessoaisVM extends _$InformacoesPessoaisVM {
-  String errorMessage = '';
   @override
-  Future<InformacoesPessoaisState> build(String text, String newText) async {
+  InformacoesPessoaisState build() => InformacoesPessoaisState.initial();
+
+  Future<InformacoesPessoaisState> updateInfo(
+      String text, String newText) async {
     final usersRepository = ref.watch(userFirestoreRepositoryProvider);
 
-    try {
-      final result = await usersRepository.updatetUser(text, newText);
+    final result = await usersRepository.updatetUser(text, newText);
+    switch (result) {
+      case Success():
+        return InformacoesPessoaisState(
+            status: InformacoesPessoaisStateStatus.success);
 
-      switch (result) {
-        case Success():
-          return InformacoesPessoaisState(
-            status: InformacoesPessoaisStateStatus.loaded,
-            nome: '',
-            telefone: '',
-            email: '',
-          );
-
-        case Failure(exception: RepositoryException(:final message)):
-          errorMessage = message;
-          return InformacoesPessoaisState(
+      case Failure(exception: RepositoryException(:final message)):
+        return InformacoesPessoaisState(
             status: InformacoesPessoaisStateStatus.error,
-            nome: '',
-            telefone: '',
-            email: '',
-          );
-      }
-    } on Exception {
-      errorMessage = 'Erro desconhecido';
-
-      return InformacoesPessoaisState(
-        status: InformacoesPessoaisStateStatus.error,
-        nome: '',
-        telefone: '',
-        email: '',
-      );
+            errorMessage: message);
     }
   }
 }

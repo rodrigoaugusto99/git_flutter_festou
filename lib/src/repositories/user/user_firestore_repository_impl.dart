@@ -191,7 +191,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       }
 
       // Retorna sucesso (Nil) se a atualização for bem-sucedida
-      return Success(Nil());
+      return Success(nil);
     } catch (e) {
       // Trate exceções e retorne um erro personalizado se necessário
       return Failure(
