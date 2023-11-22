@@ -20,9 +20,18 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
   TextEditingController nameEC = TextEditingController();
   TextEditingController telefoneEC = TextEditingController();
   TextEditingController emailEC = TextEditingController();
+  TextEditingController cepEC = TextEditingController();
+  TextEditingController logradourolEC = TextEditingController();
+  TextEditingController bairroEC = TextEditingController();
+  TextEditingController cidadeEC = TextEditingController();
+
   bool isEditingName = false;
   bool isEditingTelefone = false;
   bool isEditinEmail = false;
+  bool isEditingCep = false;
+  bool isEditingLogradouro = false;
+  bool isEditingBairro = false;
+  bool isEditingCidade = false;
 
   @override
   void initState() {
@@ -31,6 +40,10 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
     nameEC = TextEditingController(text: widget.userModel.name);
     telefoneEC = TextEditingController(text: widget.userModel.telefone);
     emailEC = TextEditingController(text: widget.userModel.email);
+    cepEC = TextEditingController(text: widget.userModel.cep);
+    logradourolEC = TextEditingController(text: widget.userModel.logradouro);
+    bairroEC = TextEditingController(text: widget.userModel.bairro);
+    cidadeEC = TextEditingController(text: widget.userModel.cidade);
   }
 
   @override
@@ -38,6 +51,11 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
     nameEC.dispose();
     telefoneEC.dispose();
     emailEC.dispose();
+    cepEC.dispose();
+    logradourolEC.dispose();
+    bairroEC.dispose();
+    cidadeEC.dispose();
+
     super.dispose();
   }
 
@@ -51,11 +69,11 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
         case InformacoesPessoaisState(
             status: InformacoesPessoaisStateStatus.success
           ):
-          Messages.showSuccess('Filtrado com sucesso!', context);
+          Messages.showSuccess('Alterado com sucesso!', context);
         case InformacoesPessoaisState(
             status: InformacoesPessoaisStateStatus.error
           ):
-          Messages.showError('Erro ao filtrar espaços', context);
+          Messages.showError('Erro ao alterar info', context);
       }
     });
 
@@ -146,6 +164,106 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
 
                   setState(() {
                     emailEC.text = value;
+                  });
+                },
+              ),
+            ),
+
+            //endereço
+
+            InkWell(
+              onTap: () => setState(() {
+                isEditingCep = !isEditingCep;
+              }),
+              child: MyRow(
+                label: 'CEP',
+                controller: cepEC,
+                isEditing: isEditingCep,
+                onSave: (value) async {
+                  log('Salvar: $value no campo cep');
+                  if (isEditingName == true) {
+                    await informacoesPessoaisVm.updateInfo('cep', value);
+                    //nameEC.text = await informacoesPessoaisVm.getInfo('nome');
+                    isEditingCep = !isEditingCep;
+                  } else {
+                    isEditingCep = !isEditingCep;
+                  }
+
+                  setState(() {
+                    cepEC.text = value;
+                  });
+                },
+              ),
+            ),
+
+            InkWell(
+              onTap: () => setState(() {
+                isEditingLogradouro = !isEditingLogradouro;
+              }),
+              child: MyRow(
+                label: 'Logradouro',
+                controller: logradourolEC,
+                isEditing: isEditingLogradouro,
+                onSave: (value) async {
+                  log('Salvar: $value no campo Logradouro');
+                  if (isEditingLogradouro == true) {
+                    await informacoesPessoaisVm.updateInfo('logradouro', value);
+                    //nameEC.text = await informacoesPessoaisVm.getInfo('nome');
+                    isEditingLogradouro = !isEditingLogradouro;
+                  } else {
+                    isEditingLogradouro = !isEditingLogradouro;
+                  }
+
+                  setState(() {
+                    logradourolEC.text = value;
+                  });
+                },
+              ),
+            ),
+            InkWell(
+              onTap: () => setState(() {
+                isEditingBairro = !isEditingBairro;
+              }),
+              child: MyRow(
+                label: 'Bairro',
+                controller: bairroEC,
+                isEditing: isEditingBairro,
+                onSave: (value) async {
+                  log('Salvar: $value no campo bairro');
+                  if (isEditingBairro == true) {
+                    await informacoesPessoaisVm.updateInfo('bairro', value);
+                    //nameEC.text = await informacoesPessoaisVm.getInfo('nome');
+                    isEditingBairro = !isEditingBairro;
+                  } else {
+                    isEditingBairro = !isEditingBairro;
+                  }
+
+                  setState(() {
+                    bairroEC.text = value;
+                  });
+                },
+              ),
+            ),
+            InkWell(
+              onTap: () => setState(() {
+                isEditingCidade = !isEditingCidade;
+              }),
+              child: MyRow(
+                label: 'Cidade',
+                controller: cidadeEC,
+                isEditing: isEditingCidade,
+                onSave: (value) async {
+                  log('Salvar: $value no campo nome');
+                  if (isEditingCidade == true) {
+                    await informacoesPessoaisVm.updateInfo('nome', value);
+                    //nameEC.text = await informacoesPessoaisVm.getInfo('nome');
+                    isEditingCidade = !isEditingCidade;
+                  } else {
+                    isEditingCidade = !isEditingCidade;
+                  }
+
+                  setState(() {
+                    cidadeEC.text = value;
                   });
                 },
               ),
