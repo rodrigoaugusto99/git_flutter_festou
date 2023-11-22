@@ -17,26 +17,20 @@ class InformacoesPessoais extends ConsumerStatefulWidget {
 }
 
 class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
-  late TextEditingController nameEC;
-  late TextEditingController telefoneEC;
-  late TextEditingController emailEC;
-  late bool isEditing1;
-  late bool isEditing2;
-  late bool isEditing3;
+  TextEditingController nameEC = TextEditingController();
+  TextEditingController telefoneEC = TextEditingController();
+  TextEditingController emailEC = TextEditingController();
+  bool isEditingName = false;
+  bool isEditingTelefone = false;
+  bool isEditinEmail = false;
 
   @override
   void initState() {
     super.initState();
 
-    // Inicializar controladores com base nos valores iniciais do userModel
     nameEC = TextEditingController(text: widget.userModel.name);
     telefoneEC = TextEditingController(text: widget.userModel.telefone);
     emailEC = TextEditingController(text: widget.userModel.email);
-
-    // Definir valores iniciais para os bools de edição
-    isEditing1 = false;
-    isEditing2 = false;
-    isEditing3 = false;
   }
 
   @override
@@ -50,10 +44,8 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
   @override
   Widget build(BuildContext context) {
     final informacoesPessoaisVm =
-        ref.watch(informacoesPessoaisVMProvider.notifier);
+        ref.read(informacoesPessoaisVMProvider.notifier);
 
-//todo!: sempre retorna status.initial
-//todo: averiguar ref.listen em caso de build do state com parametro(cast n)
     ref.listen(informacoesPessoaisVMProvider, (_, state) {
       switch (state) {
         case InformacoesPessoaisState(
@@ -66,6 +58,12 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
           Messages.showError('Erro ao filtrar espaços', context);
       }
     });
+
+    //todo!: apenas atualiza no app se restartar
+    //todo: vm - build {}, page .when, :loading em cada textfield quando atualizar?
+    nameEC = TextEditingController(text: widget.userModel.name);
+    telefoneEC = TextEditingController(text: widget.userModel.telefone);
+    emailEC = TextEditingController(text: widget.userModel.email);
 
     return Scaffold(
       appBar: AppBar(
@@ -84,54 +82,70 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
             ),
             InkWell(
               onTap: () => setState(() {
-                isEditing1 = !isEditing1;
+                isEditingName = !isEditingName;
               }),
               child: MyRow(
                 label: 'Nome civil',
                 controller: nameEC,
-                isEditing: isEditing1,
+                isEditing: isEditingName,
                 onSave: (value) async {
                   log('Salvar: $value no campo nome');
-                  await informacoesPessoaisVm.updateInfo('nome', value);
+                  if (isEditingName == true) {
+                    await informacoesPessoaisVm.updateInfo('nome', value);
+                    //nameEC.text = await informacoesPessoaisVm.getInfo('nome');
+                    isEditingName = !isEditingName;
+                  } else {
+                    isEditingName = !isEditingName;
+                  }
+
                   setState(() {
                     nameEC.text = value;
-                    isEditing1 = !isEditing1;
                   });
                 },
               ),
             ),
             InkWell(
               onTap: () => setState(() {
-                isEditing2 = !isEditing2;
+                isEditingTelefone = !isEditingTelefone;
               }),
               child: MyRow(
                 label: 'Telefone',
                 controller: telefoneEC,
-                isEditing: isEditing2,
+                isEditing: isEditingTelefone,
                 onSave: (value) async {
                   log('Salvar: $value no campo telefone');
-                  await informacoesPessoaisVm.updateInfo('telefone', value);
+                  if (isEditingTelefone == true) {
+                    await informacoesPessoaisVm.updateInfo('telefone', value);
+                    isEditingTelefone = !isEditingTelefone;
+                  } else {
+                    isEditingTelefone = !isEditingTelefone;
+                  }
+
                   setState(() {
                     telefoneEC.text = value;
-                    isEditing2 = !isEditing2;
                   });
                 },
               ),
             ),
             InkWell(
               onTap: () => setState(() {
-                isEditing3 = !isEditing3;
+                isEditinEmail = !isEditinEmail;
               }),
               child: MyRow(
                 label: 'E-mail',
                 controller: emailEC,
-                isEditing: isEditing3,
+                isEditing: isEditinEmail,
                 onSave: (value) async {
                   log('Salvar: $value no campo email');
-                  await informacoesPessoaisVm.updateInfo('email', value);
+                  if (isEditinEmail == true) {
+                    await informacoesPessoaisVm.updateInfo('email', value);
+                    isEditinEmail = !isEditinEmail;
+                  } else {
+                    isEditinEmail = !isEditinEmail;
+                  }
+
                   setState(() {
                     emailEC.text = value;
-                    isEditing3 = !isEditing3;
                   });
                 },
               ),

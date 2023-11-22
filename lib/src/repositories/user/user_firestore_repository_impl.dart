@@ -155,6 +155,21 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
     }
   }
 
+  Future<String> getInfo(String string) async {
+    try {
+      final userDocument = await getUserDocument();
+
+      final userData = userDocument.data() as Map<String, dynamic>;
+
+      final String x = userData[string] ?? '';
+
+      return x;
+    } catch (e) {
+      log('Erro ao recuperar $string do usuario do firestore: $e');
+      return 'deu erro';
+    }
+  }
+
   Future<DocumentSnapshot> getUserDocument() async {
     final userDocument =
         await usersCollection.where('uid', isEqualTo: user.uid).get();
