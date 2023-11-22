@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account/account.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account/pages/nova_tela.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/search_page.dart';
-import 'package:git_flutter_festou/src/features/home/home_page.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/my%20favorite%20spaces%20mvvm/my_favorite_spaces_page.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/my%20favorite%20spaces%20mvvm/my_favorite_spaces_page.dart';
+
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/profile.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/search/search_page.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/home/home_page.dart';
 
 class BottomNavBarPage extends StatefulWidget {
   const BottomNavBarPage({super.key});
@@ -56,7 +56,7 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
             case 2:
               return const MyFavoriteSpacePage();
             case 3:
-              return const NovaTela();
+              return const Profile();
             default:
               return Container(); // Lida com índices fora do alcance, se aplicável
           }

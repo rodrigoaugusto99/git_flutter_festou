@@ -4,11 +4,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
+import 'package:git_flutter_festou/src/models/user_model.dart';
 import './user_firestore_repository.dart';
 
 class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
+
+  final user = FirebaseAuth.instance.currentUser!;
   @override
   Future<Either<RepositoryException, Nil>> saveUser(
       ({
@@ -124,6 +127,75 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       log('Erro ao atualizar userType locatario para locador: $e');
       return Failure(RepositoryException(
           message: 'Erro ao atualizar o usuário como Locador'));
+    }
+  }
+
+  @override
+  Future<Either<RepositoryException, UserModel>> getUser() async {
+    try {
+      final userDocument = await getUserDocument();
+
+      final userData = userDocument.data() as Map<String, dynamic>;
+
+      final UserModel userModel = UserModel(
+        userData['email'] ?? '',
+        userData['nome'] ?? '',
+        userData['user_address']['cep'] ?? '',
+        userData['user_address']['logradouro'] ?? '',
+        userData['telefone'] ?? '',
+        userData['user_address']['bairro'] ?? '',
+        userData['user_address']['cidade'] ?? '',
+        user.uid,
+      );
+      return Success(userModel);
+    } catch (e) {
+      log('Erro ao recuperar dados do usuario no firestore: $e');
+      return Failure(
+          RepositoryException(message: 'Erro ao atualizar o usuário: $e'));
+    }
+  }
+
+  Future<DocumentSnapshot> getUserDocument() async {
+    final userDocument =
+        await usersCollection.where('uid', isEqualTo: user.uid).get();
+
+    if (userDocument.docs.isNotEmpty) {
+      return userDocument.docs[0]; // Retorna o primeiro documento encontrado.
+    }
+
+    // Trate o caso em que nenhum usuário foi encontrado.
+    throw Exception("Usuário não encontrado");
+  }
+
+  @override
+  Future<Either<RepositoryException, Nil>> updatetUser(
+      String text, String newText) async {
+    try {
+      final userDocument = await getUserDocument();
+
+      if (text == 'nome') {
+        // Atualize o campo 'nome' com o novo valor 'newText'
+        await userDocument.reference.update({
+          'nome': newText,
+        });
+      } else if (text == 'telefone') {
+        // Lógica para atualizar o campo 'telefone'
+        await userDocument.reference.update({
+          'telefone': newText,
+        });
+      } else {
+        // Lógica para outros campos, se necessário
+        await userDocument.reference.update({
+          'email': newText,
+        });
+      }
+
+      // Retorna sucesso (Nil) se a atualização for bem-sucedida
+      return Success(Nil());
+    } catch (e) {
+      // Trate exceções e retorne um erro personalizado se necessário
+      return Failure(
+          RepositoryException(message: 'Erro ao atualizar o usuário: $e'));
     }
   }
 }

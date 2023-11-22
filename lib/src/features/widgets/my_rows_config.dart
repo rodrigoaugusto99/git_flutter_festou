@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account/pages/impostos.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account/pages/informacoes_pessoais.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account/pages/login_seguranca.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account/pages/notificacoes.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account/pages/pagamentos.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account/pages/traducao.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu.dart';
+
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/impostos.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/login_seguranca.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/notificacoes.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/traducao.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
+import 'package:git_flutter_festou/src/models/user_model.dart';
 
 class MyRowsConfig extends StatefulWidget {
-  const MyRowsConfig({super.key});
+  final UserModel userModel;
+  const MyRowsConfig({super.key, required this.userModel});
 
   @override
   State<MyRowsConfig> createState() => _MyRowsConfigState();
@@ -25,7 +28,8 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const InformacoesPessoais(),
+              builder: (context) =>
+                  InformacoesPessoais(userModel: widget.userModel),
             ),
           ),
         ),

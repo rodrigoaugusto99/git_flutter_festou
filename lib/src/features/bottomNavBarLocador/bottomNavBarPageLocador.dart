@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account/pages/nova_tela.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/search_page.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu.dart';
-import 'package:git_flutter_festou/src/features/home/home_page.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/my%20favorite%20spaces%20mvvm/my_favorite_spaces_page.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/calendario.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/home/home_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_page.dart';
+import 'package:git_flutter_festou/src/models/user_model.dart';
 
 class BottomNavBarPageLocador extends StatefulWidget {
-  const BottomNavBarPageLocador({super.key});
+  final UserModel userModel;
+  const BottomNavBarPageLocador({super.key, required this.userModel});
 
   @override
   _BottomNavBarPageLocadorState createState() =>
@@ -60,7 +59,9 @@ class _BottomNavBarPageLocadorState extends State<BottomNavBarPageLocador> {
             case 2:
               return const Mensagens();
             case 3:
-              return const Menu();
+              return Menu(
+                userModel: widget.userModel,
+              );
             default:
               return Container(); // Lida com índices fora do alcance, se aplicável
           }

@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account/pages/impostos.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account/pages/informacoes_pessoais.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account/pages/login_seguranca.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account/pages/notificacoes.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account/pages/pagamentos.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/account/pages/traducao.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarPageLocador.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/impostos.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/login_seguranca.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/pages/configuracoes.dart';
+import 'package:git_flutter_festou/src/models/user_model.dart';
 
 class Menu extends StatefulWidget {
-  const Menu({super.key});
+  final UserModel userModel;
+  const Menu({super.key, required this.userModel});
 
   @override
   State<Menu> createState() => _MenuState();
@@ -46,7 +45,9 @@ class _MenuState extends State<Menu> {
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const InformacoesPessoais(),
+                    builder: (context) => InformacoesPessoais(
+                      userModel: widget.userModel,
+                    ),
                   ),
                 ),
               ),
@@ -72,7 +73,9 @@ class _MenuState extends State<Menu> {
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const Configuracoes(),
+                    builder: (context) => Configuracoes(
+                      userModel: widget.userModel,
+                    ),
                   ),
                 ),
               ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/home/home_page.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/home/home_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_state.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';

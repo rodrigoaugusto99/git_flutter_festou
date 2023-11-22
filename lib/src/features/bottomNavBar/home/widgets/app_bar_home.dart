@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/providers/application_providers.dart';
+import '../../../../core/providers/application_providers.dart';
 
 class AppBarHome extends ConsumerStatefulWidget {
   const AppBarHome({super.key});
