@@ -12,6 +12,30 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       FirebaseFirestore.instance.collection('users');
 
   final user = FirebaseAuth.instance.currentUser!;
+
+  /*@override
+  Future<Either<RepositoryException, Nil>> saveUserWithGoogle() async {
+// Verificar se o usuário possui um documento no Firestore
+    try {
+      final userDocument =
+          await usersCollection.where('uid', isEqualTo: user.uid).get();
+
+      if (userDocument.docs.isEmpty) {
+        final userDataFirestore = (
+          id: user.uid.toString(),
+          email: user.email.toString(),
+        );
+        // Se o usuário não tiver um documento, salvar as informações no Firestore
+        await saveUser(userDataFirestore);
+      }
+      return Success(nil);
+    } catch (e) {
+      log('Erro ao adicionar informações de usuário no Firestore: $e');
+      return Failure(RepositoryException(
+          message: 'Erro ao cadastrar usuario no banco de dados'));
+    }
+  }*/
+
   @override
   Future<Either<RepositoryException, Nil>> saveUser(
       ({
@@ -198,16 +222,37 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         await userDocument.reference.update({
           'telefone': newText,
         });
-      } else {
+      } else if (text == 'email') {
         // Lógica para outros campos, se necessário
         await userDocument.reference.update({
           'email': newText,
+        });
+      } else if (text == 'cep') {
+        // Lógica para outros campos, se necessário
+        await userDocument.reference.update({
+          'user_address.cep': newText,
+        });
+      } else if (text == 'bairro') {
+        // Lógica para outros campos, se necessário
+        await userDocument.reference.update({
+          'user_address.bairro': newText,
+        });
+      } else if (text == 'cidade') {
+        // Lógica para outros campos, se necessário
+        await userDocument.reference.update({
+          'user_address.cidade': newText,
+        });
+      } else if (text == 'logradouro') {
+        // Lógica para outros campos, se necessário
+        await userDocument.reference.update({
+          'user_address.logradouro': newText,
         });
       }
 
       // Retorna sucesso (Nil) se a atualização for bem-sucedida
       return Success(nil);
     } catch (e) {
+      log(e.toString());
       // Trate exceções e retorne um erro personalizado se necessário
       return Failure(
           RepositoryException(message: 'Erro ao atualizar o usuário: $e'));

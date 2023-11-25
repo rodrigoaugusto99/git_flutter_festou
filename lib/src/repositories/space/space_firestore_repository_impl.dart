@@ -352,7 +352,8 @@ p decidir o isFavorited*/
     }
 
     // Trate o caso em que nenhum usuário foi encontrado.
-    throw Exception("Usuário não encontrado");
+    //se esse erro ocorrer la numm metodo que chama getUsrDocument, o (e) do catch vai ter essa msg
+    throw Exception("Usuário n encontrado");
   }
 
 //retorna a lista de ids dos espaços favoritados pelo usuario

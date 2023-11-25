@@ -6,6 +6,7 @@ import 'package:git_flutter_festou/src/core/fp/nil.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 
 abstract interface class UserFirestoreRepository {
+  //Future<Either<RepositoryException, Nil>> saveUserWithGoogle();
   Future<Either<RepositoryException, Nil>> saveUser(
       ({
         String id,

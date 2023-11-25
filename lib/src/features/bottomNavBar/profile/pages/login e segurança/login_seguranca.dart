@@ -1,4 +1,8 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/esqueci_senha.dart';
 
 class LoginSeguranca extends StatefulWidget {
   const LoginSeguranca({super.key});
@@ -9,6 +13,45 @@ class LoginSeguranca extends StatefulWidget {
 
 class _LoginSegurancaState extends State<LoginSeguranca> {
   bool isUpdatingPassword = false;
+
+  void showUserProvider() {
+    final user = FirebaseAuth.instance.currentUser!;
+
+    if (user != null) {
+      for (var profile in user.providerData) {
+        log("Provider ID: ${profile.providerId}");
+        log("uid: ${profile.uid}");
+        log("Display Name: ${profile.displayName}");
+        log("Email: ${profile.email}");
+        log("Photo URL ID: ${profile.photoURL}");
+      }
+    } else {
+      log("Usuário não autenticado");
+      /*try {
+                        await user.unlink(provider);
+                        console.log(`Desconectado do ${provider}`);
+                        // Atualize a interface do usuário conforme necessário
+                    } catch (error) {
+                        console.error(`Erro ao desconectar do ${provider}:`, error);
+                    }*/
+    }
+
+    if (user != null) {
+      FirebaseAuth.instance
+          .fetchSignInMethodsForEmail(user.email!)
+          .then((providers) => {
+                if (providers.isNotEmpty)
+                  {
+                    log("O usuário está conectado com os seguintes provedores: $providers"),
+                  }
+                else
+                  {log("providers is empty")}
+              });
+    } else {
+      log("Usuário não autenticado");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,10 +96,18 @@ class _LoginSegurancaState extends State<LoginSeguranca> {
                         obscureText: true,
                       ),
                       const SizedBox(height: 0),
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text('Esqueci minha senha'),
+                          InkWell(
+                              onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const EsqueciSenha(),
+                                    ),
+                                  ),
+                              child: const Text('Esqueci minha senha')),
                         ],
                       ),
                       const SizedBox(height: 0),
@@ -85,6 +136,10 @@ class _LoginSegurancaState extends State<LoginSeguranca> {
               const Text(
                 'Contas sociais',
                 style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+              ),
+              InkWell(
+                onTap: () => showUserProvider(),
+                child: const Text('tst'),
               ),
               MyRow(
                 title: '\$Facebook',
