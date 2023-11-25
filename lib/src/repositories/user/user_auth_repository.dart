@@ -8,7 +8,7 @@ abstract interface class UserAuthRepository {
 
   //Future<Either<AuthException, Nil>> loginWithGoogle();
 
-  Future<Either<AuthException, Nil>> registerUser(
+  Future<Either<AuthException, UserCredential>> registerUser(
     ({String email, String password}) userData,
   );
 }

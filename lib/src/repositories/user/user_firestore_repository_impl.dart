@@ -11,8 +11,6 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
 
-  final user = FirebaseAuth.instance.currentUser!;
-
   /*@override
   Future<Either<RepositoryException, Nil>> saveUserWithGoogle() async {
 // Verificar se o usuário possui um documento no Firestore
@@ -160,7 +158,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       final userDocument = await getUserDocument();
 
       final userData = userDocument.data() as Map<String, dynamic>;
-
+      final user = FirebaseAuth.instance.currentUser!;
       final UserModel userModel = UserModel(
         userData['email'] ?? '',
         userData['nome'] ?? '',
@@ -195,6 +193,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
   }
 
   Future<DocumentSnapshot> getUserDocument() async {
+    final user = FirebaseAuth.instance.currentUser!;
     final userDocument =
         await usersCollection.where('uid', isEqualTo: user.uid).get();
 

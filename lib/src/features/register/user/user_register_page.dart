@@ -83,14 +83,21 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                               const Text(
                                 'FESTOU',
                                 style: TextStyle(
-                                    fontFamily: 'NerkoOne', fontSize: 60, color: Color.fromARGB(255, 13, 46, 89),),
+                                  fontFamily: 'NerkoOne',
+                                  fontSize: 60,
+                                  color: Color.fromARGB(255, 13, 46, 89),
+                                ),
                               ),
                               Positioned(
                                 bottom: 0,
                                 left: screenWidth * 0.11,
                                 child: const Text(
                                   'Cadastro',
-                                  style: TextStyle(fontSize: 20, fontFamily: 'Marcellus', color: Color.fromARGB(255, 13, 46, 89),),
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontFamily: 'Marcellus',
+                                    color: Color.fromARGB(255, 13, 46, 89),
+                                  ),
                                 ),
                               ),
                             ],
@@ -118,43 +125,43 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                         ),
                         //password textfield
                         TextFormField(
-                          validator: userRegisterVM.validatePassword(),
-                          decoration: InputDecoration(
-                            hintText: 'Senha',
-                            hintStyle: TextStyle(fontSize: 14),
-                            suffixIcon: GestureDetector(
+                            validator: userRegisterVM.validatePassword(),
+                            decoration: InputDecoration(
+                              hintText: 'Senha',
+                              hintStyle: const TextStyle(fontSize: 14),
+                              suffixIcon: GestureDetector(
                                 onTap: () => setState(
-                                      () {
+                                  () {
                                     isVisible = !isVisible;
                                   },
                                 ),
                                 child: isVisible
                                     ? const Icon(Icons.visibility)
-                                    : const Icon(Icons.visibility_off),),
-                          ),
-                          style: const TextStyle(fontSize: 14),
-                          controller: passwordEC,
-                          obscureText: isVisible ? false : true
-                        ),
-                        TextFormField(
-                          validator: userRegisterVM.confirmEmail(passwordEC),
-                          decoration: InputDecoration(
-                            hintText: 'Confirme sua senha',
-                            hintStyle: TextStyle(fontSize: 14),
-                            suffixIcon: GestureDetector(
-                              onTap: () => setState(
-                                    () {
-                                  confirmIsVisible = !confirmIsVisible;
-                                },
+                                    : const Icon(Icons.visibility_off),
                               ),
-                              child: confirmIsVisible
-                                  ? const Icon(Icons.visibility)
-                                  : const Icon(Icons.visibility_off),),
-                          ),
+                            ),
                             style: const TextStyle(fontSize: 14),
                             controller: passwordEC,
-                            obscureText: confirmIsVisible ? false : true
-                        ),
+                            obscureText: isVisible ? false : true),
+                        TextFormField(
+                            validator: userRegisterVM.confirmEmail(passwordEC),
+                            decoration: InputDecoration(
+                              hintText: 'Confirme sua senha',
+                              hintStyle: const TextStyle(fontSize: 14),
+                              suffixIcon: GestureDetector(
+                                onTap: () => setState(
+                                  () {
+                                    confirmIsVisible = !confirmIsVisible;
+                                  },
+                                ),
+                                child: confirmIsVisible
+                                    ? const Icon(Icons.visibility)
+                                    : const Icon(Icons.visibility_off),
+                              ),
+                            ),
+                            style: const TextStyle(fontSize: 14),
+                            controller: confirmPasswordEC,
+                            obscureText: confirmIsVisible ? false : true),
                         SizedBox(height: screenHeight * 0.1),
                         InkWell(
                           onTap: () {

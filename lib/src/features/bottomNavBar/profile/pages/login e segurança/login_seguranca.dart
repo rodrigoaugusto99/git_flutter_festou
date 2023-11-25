@@ -14,6 +14,85 @@ class LoginSeguranca extends StatefulWidget {
 class _LoginSegurancaState extends State<LoginSeguranca> {
   bool isUpdatingPassword = false;
 
+  List<String> providers = [];
+
+  Future<void> displayAuthProviderList() async {
+    try {
+      // Obtenha o usuário atualmente autenticado
+      final user = FirebaseAuth.instance.currentUser!;
+
+      // Obtém a lista de provedores associados ao usuário
+
+      for (UserInfo userInfo in user.providerData) {
+        providers.add(userInfo.providerId);
+      }
+
+      // Exibe a lista de provedores
+      log("Provedores associados ao usuário: $providers");
+    } catch (e) {
+      log("Erro ao obter a lista de provedores: $e");
+    }
+  }
+
+  // Verifica se "google.com" está na lista de provedores
+  // bool isGoogleConnected = providers.contains("google.com");
+  Widget buildGoogleWidget() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            const Text("Google"),
+            Image.asset(
+              'lib/assets/images/google.png',
+              width: 24, // Ajuste conforme necessário
+              height: 24,
+            ),
+          ],
+        ),
+        InkWell(
+          onTap: () {},
+          child: const Text(
+            'Desconectar',
+            style: TextStyle(
+              decoration: TextDecoration.underline,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildFacebookWidget() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            const Text("Facebook"),
+            Image.asset(
+              'lib/assets/images/Facebook_icon.svg.png.png',
+              width: 24, // Ajuste conforme necessário
+              height: 24,
+            ),
+          ],
+        ),
+        InkWell(
+          onTap: () {},
+          child: const Text(
+            'Desconectar',
+            style: TextStyle(
+              decoration: TextDecoration.underline,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+//providerData para obter os detalhes do usuario autenticado.
   void showUserProvider() {
     final user = FirebaseAuth.instance.currentUser!;
 
@@ -27,13 +106,6 @@ class _LoginSegurancaState extends State<LoginSeguranca> {
       }
     } else {
       log("Usuário não autenticado");
-      /*try {
-                        await user.unlink(provider);
-                        console.log(`Desconectado do ${provider}`);
-                        // Atualize a interface do usuário conforme necessário
-                    } catch (error) {
-                        console.error(`Erro ao desconectar do ${provider}:`, error);
-                    }*/
     }
 
     if (user != null) {
@@ -45,7 +117,9 @@ class _LoginSegurancaState extends State<LoginSeguranca> {
                     log("O usuário está conectado com os seguintes provedores: $providers"),
                   }
                 else
-                  {log("providers is empty")}
+                  {
+                    log("providers is empty"),
+                  }
               });
     } else {
       log("Usuário não autenticado");
@@ -138,15 +212,15 @@ class _LoginSegurancaState extends State<LoginSeguranca> {
                 style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
               ),
               InkWell(
-                onTap: () => showUserProvider(),
+                onTap: () => displayAuthProviderList(),
                 child: const Text('tst'),
               ),
-              MyRow(
-                title: '\$Facebook',
-                subtitle: '\$Conectado',
-                textButton: 'Desconectar',
-                onTap: () {},
-              ),
+              providers.contains("google.com")
+                  ? buildGoogleWidget()
+                  : Container(),
+              providers.contains("facebook.com")
+                  ? buildFacebookWidget()
+                  : Container(),
               const SizedBox(height: 30),
               const Text(
                 'Conta',

@@ -29,9 +29,9 @@ class UserRegisterServiceImpl implements UserRegisterService {
     o método de criar usuario no firestore*/
 
     switch (registerAuthResult) {
-      case Success():
+      case Success(value: final userCredential):
         //TODO: registerFirestoreResult entrar no switch
-        final user = FirebaseAuth.instance.currentUser!;
+        final user = userCredential.user!;
 
         final userDataFirestore = (
           id: user.uid,
