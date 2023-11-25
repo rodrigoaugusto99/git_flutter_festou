@@ -2,16 +2,54 @@ import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/esqueci_senha.dart';
 
-class LoginSeguranca extends StatefulWidget {
+class LoginSeguranca extends ConsumerStatefulWidget {
   const LoginSeguranca({super.key});
 
   @override
-  State<LoginSeguranca> createState() => _LoginSegurancaState();
+  ConsumerState<LoginSeguranca> createState() => _LoginSegurancaState();
 }
 
-class _LoginSegurancaState extends State<LoginSeguranca> {
+class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    // Adiciona o observer para monitorar mudanças de ciclo de vida do widget
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // Remove o observer ao destruir o widget
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Este bloco de código será executado depois da construção completa da árvore de widgets.
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Este bloco de código será executado após a construção completa da árvore de widgets.
+
+      yourFunctionToBeCalled();
+      displayAuthProviderList();
+      showUserProvider();
+      setState(() {});
+    });
+  }
+
+  void yourFunctionToBeCalled() {
+    // Faça algo aqui
+    log("\nTela completamente construída!");
+  }
+
   bool isUpdatingPassword = false;
 
   List<String> providers = [];
@@ -28,7 +66,7 @@ class _LoginSegurancaState extends State<LoginSeguranca> {
       }
 
       // Exibe a lista de provedores
-      log("Provedores associados ao usuário: $providers");
+      log("\nProvedores associados ao usuário: $providers");
     } catch (e) {
       log("Erro ao obter a lista de provedores: $e");
     }
@@ -98,6 +136,7 @@ class _LoginSegurancaState extends State<LoginSeguranca> {
 
     if (user != null) {
       for (var profile in user.providerData) {
+        log('\n---------DADOS DO USUARIO NO AUTH---------');
         log("Provider ID: ${profile.providerId}");
         log("uid: ${profile.uid}");
         log("Display Name: ${profile.displayName}");
@@ -211,15 +250,57 @@ class _LoginSegurancaState extends State<LoginSeguranca> {
                 'Contas sociais',
                 style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
               ),
-              InkWell(
-                onTap: () => displayAuthProviderList(),
-                child: const Text('tst'),
-              ),
               providers.contains("google.com")
-                  ? buildGoogleWidget()
+                  ? Column(
+                      children: [
+                        buildGoogleWidget(),
+                        ElevatedButton(
+                          onPressed: () async {
+                            final user = FirebaseAuth.instance.currentUser;
+
+                            if (user != null) {
+                              try {
+                                // Verifica se o usuário está vinculado ao provedor do Google
+                                if (user.providerData.any((info) =>
+                                    info.providerId == "google.com")) {
+                                  // Desvincula a conta do Google
+                                  await user.unlink("google.com");
+                                  // Atualiza a lista de provedores após o unlink
+                                  await displayAuthProviderList();
+                                  // Exibe uma mensagem de sucesso (pode ser ajustada conforme necessário)
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Conta do Google desvinculada com sucesso!'),
+                                    ),
+                                  );
+                                } else {
+                                  // Caso o usuário não esteja vinculado ao provedor do Google
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Usuário não está vinculado ao Google.'),
+                                    ),
+                                  );
+                                }
+                              } on FirebaseAuthException catch (e) {
+                                // Trata exceções específicas, se necessário
+                                print(
+                                    'Erro ao desvincular conta do Google: ${e.message}');
+                              }
+                            }
+                          },
+                          child: const Text('Desvincular Conta do Google'),
+                        )
+                      ],
+                    )
                   : Container(),
               providers.contains("facebook.com")
                   ? buildFacebookWidget()
+                  : Container(),
+              providers.isEmpty ||
+                      (providers.length == 1 && providers.contains("password"))
+                  ? const Text('Nenhuma conta vinculada')
                   : Container(),
               const SizedBox(height: 30),
               const Text(
@@ -227,11 +308,64 @@ class _LoginSegurancaState extends State<LoginSeguranca> {
                 style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
               ),
               MyRow(
-                title: 'Desativar sua conta',
-                subtitle: '',
-                textButton: 'Desativar',
-                onTap: () {},
-              ),
+                  title: 'Desativar sua conta',
+                  subtitle: '',
+                  textButton: 'Desativar',
+                  onTap: () async {
+                    final user = FirebaseAuth.instance.currentUser;
+
+                    if (user != null) {
+                      // Mostra um diálogo de confirmação antes de excluir a conta
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Confirmação'),
+                            content: const Text(
+                                'Tem certeza de que deseja excluir sua conta?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pop(); // Fecha o diálogo
+                                },
+                                child: const Text('Cancelar'),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  Navigator.of(context)
+                                      .pop(); // Fecha o diálogo
+
+                                  try {
+                                    // Exclua a conta do usuário
+                                    await user.delete();
+
+                                    // Redirecione o usuário para a tela de login ou execute outras ações necessárias
+
+                                    await ref
+                                        .read(userFirestoreRepositoryProvider)
+                                        .deleteUserDocument(user);
+                                    ref.read(logoutProvider.future);
+                                    log('Conta excluída com sucesso.');
+                                  } on FirebaseAuthException catch (e) {
+                                    log('Erro ao excluir a conta: ${e.code}, ${e.message}');
+                                    // Trate os erros conforme necessário, exiba mensagens ao usuário, etc.
+                                  } catch (e) {
+                                    log('Erro desconhecido ao excluir a conta: $e');
+                                    // Trate outros erros conforme necessário.
+                                  }
+                                },
+                                child: const Text('Confirmar'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    } else {
+                      log('Usuário não autenticado');
+                      // Se o usuário não estiver autenticado, trate conforme necessário.
+                    }
+                  }),
             ],
           ),
         ),

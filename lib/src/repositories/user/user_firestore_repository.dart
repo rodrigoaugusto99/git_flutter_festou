@@ -13,6 +13,7 @@ abstract interface class UserFirestoreRepository {
         String email,
       }) userData);
 
+  Future<Either<RepositoryException, Nil>> deleteUserDocument(User user);
   Future<Either<RepositoryException, Nil>> saveUserInfos(
       ({
         String userId,

@@ -68,33 +68,43 @@ class AuthService {
 
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
-
+  //todo!:resolver eemail ja usado pra google - nao pode usar p email/senha
+  //todo!:rsolver depois de criar conta com email/snha, se logar com google com o mesmmo mail, nao pode mais usar email/senha
+//todo!:resolver, se logar com email/senha, depois logar com google, se descinvuclar o google, nao consegue logar com email e senha
+//todo!:resolver invalid-credential -possivlmente precisa de um refres token ou reauthentication
+//todo! bug de as vezes cadastrar por email/login e dar erro no primeiro login (usuario n encontrado)
+//todo! as vezes toda a homepage é carregada antes mesmo de fazer oc adastro de user infos ???????
   Future<Either<AuthException, UserCredential>> signInWithGoogle() async {
-    //begin interactive sign in process
-
     try {
-      final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-      //obtain auth details from request
-      final GoogleSignInAuthentication gAuth = await gUser!.authentication;
+      // Check if the user cancelled the sign-in process
+      if (googleUser == null) {
+        return Failure(AuthError(message: 'Login com Google cancelado.'));
+      }
 
-      //create a new credential for user
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      // Create a new credential
       final credential = GoogleAuthProvider.credential(
-        accessToken: gAuth.accessToken,
-        idToken: gAuth.idToken,
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
       );
 
       final userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
-      //final user = userCredential.user;
+      final user = userCredential.user;
 
-      final x = userCredential.user!;
-      saveUserWithGoogle(x);
+      // O usuário não existe, então você pode prosseguir com a criação da conta
+      await saveUserWithGoogle(user!);
 
       return Success(userCredential);
     } catch (e) {
-      log('Erro ao logar com google: $e');
-      return Failure(AuthError(message: 'erro ao logar com google'));
+      log('Erro ao logar com Google: $e');
+      return Failure(AuthError(message: 'Erro ao logar com Google.'));
     }
   }
 }

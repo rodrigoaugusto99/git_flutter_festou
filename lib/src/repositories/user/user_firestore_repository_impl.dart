@@ -56,7 +56,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         }
       };
 
-      // Insira o espaço na coleção 'spaces'
+      // Insira o usuario na coleção 'users'
       await usersCollection.add(newUser);
 
       log('usuario criado na coleção users');
@@ -189,6 +189,26 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
     } catch (e) {
       log('Erro ao recuperar $string do usuario do firestore: $e');
       return 'deu erro';
+    }
+  }
+
+  @override
+  Future<Either<RepositoryException, Nil>> deleteUserDocument(User user) async {
+    final userDocument =
+        await usersCollection.where('uid', isEqualTo: user.uid).get();
+
+    try {
+      if (userDocument.docs.isNotEmpty) {
+        userDocument.docs[0].reference.delete();
+      } else {
+        return Failure(RepositoryException(message: 'Erro impossivel'));
+      }
+      return Success(nil);
+    } catch (e) {
+      log(e.toString());
+      // Trate exceções e retorne um erro personalizado se necessário
+      return Failure(
+          RepositoryException(message: 'Erro ao deletar o usuário: $e'));
     }
   }
 
