@@ -63,6 +63,11 @@ dependencies:
   glassmorphism_ui: ^0.3.0
   card_swiper: ^3.0.1
   
+  social_share: ^2.3.1
+  field_suggestion: ^0.2.5
+  flutter_typeahead: ^4.8.0
+  http: ^1.1.0
+  
 
 dev_dependencies:
   flutter_test:
@@ -115,6 +120,10 @@ flutter:
     - family: NerkoOne
       fonts:
       - asset: lib/assets/fonts/NerkoOne.ttf
+
+    - family: Marcellus
+      fonts:
+        - asset: lib/assets/fonts/Marcellus.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

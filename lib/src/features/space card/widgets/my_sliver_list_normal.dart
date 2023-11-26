@@ -25,7 +25,10 @@ class MySliverListNormal extends StatelessWidget {
                           SpacesWithSugestionPage(space: data.spaces[index]),
                     ),
                   ),
-              child: NewSpaceCard(space: data.spaces[index])),
+              child: NewSpaceCard(
+                space: data.spaces[index],
+                isReview: false,
+              )),
           childCount: data.spaces.length),
     );
   }

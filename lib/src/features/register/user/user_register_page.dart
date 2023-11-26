@@ -28,6 +28,9 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
     super.dispose();
   }
 
+  bool isVisible = false;
+  bool confirmIsVisible = false;
+
   @override
   Widget build(BuildContext context) {
     final userRegisterVM = ref.watch(userRegisterVmProvider.notifier);
@@ -73,19 +76,32 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                         Image.asset(
                           ImageConstants.serpentinae,
                         ),
-                        const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Festou',
-                              style: TextStyle(
-                                  fontFamily: 'NerkoOne', fontSize: 60),
-                            ),
-                            Text(
-                              'Cadastro',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ],
+                        SizedBox(
+                          height: screenHeight * 0.12,
+                          child: Stack(
+                            children: [
+                              const Text(
+                                'FESTOU',
+                                style: TextStyle(
+                                  fontFamily: 'NerkoOne',
+                                  fontSize: 60,
+                                  color: Color.fromARGB(255, 13, 46, 89),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                left: screenWidth * 0.11,
+                                child: const Text(
+                                  'Cadastro',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontFamily: 'Marcellus',
+                                    color: Color.fromARGB(255, 13, 46, 89),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                         Image.asset(
                           ImageConstants.serpentinad,
@@ -100,32 +116,53 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                         TextFormField(
                           validator: userRegisterVM.validateEmail(),
                           decoration: const InputDecoration(
-                            hintText: 'Email',
+                            hintText: 'E-mail',
+                            hintStyle: TextStyle(fontSize: 14),
                           ),
+                          style: const TextStyle(fontSize: 14),
                           controller: emailEC,
                           obscureText: false,
                         ),
                         //password textfield
                         TextFormField(
-                          validator: userRegisterVM.validatePassword(),
-                          decoration: const InputDecoration(
-                            hintText: 'Password',
-                          ),
-                          controller: passwordEC,
-                          obscureText: false,
-                        ),
-                        //confirm password textfield
+                            validator: userRegisterVM.validatePassword(),
+                            decoration: InputDecoration(
+                              hintText: 'Senha',
+                              hintStyle: const TextStyle(fontSize: 14),
+                              suffixIcon: GestureDetector(
+                                onTap: () => setState(
+                                  () {
+                                    isVisible = !isVisible;
+                                  },
+                                ),
+                                child: isVisible
+                                    ? const Icon(Icons.visibility)
+                                    : const Icon(Icons.visibility_off),
+                              ),
+                            ),
+                            style: const TextStyle(fontSize: 14),
+                            controller: passwordEC,
+                            obscureText: isVisible ? false : true),
                         TextFormField(
-                          validator: userRegisterVM.confirmEmail(passwordEC),
-                          decoration: const InputDecoration(
-                            hintText: 'Confirm password',
-                          ),
-                          controller: confirmPasswordEC,
-                          obscureText: false,
-                        ),
-
-                        const SizedBox(height: 10),
-
+                            validator: userRegisterVM.confirmEmail(passwordEC),
+                            decoration: InputDecoration(
+                              hintText: 'Confirme sua senha',
+                              hintStyle: const TextStyle(fontSize: 14),
+                              suffixIcon: GestureDetector(
+                                onTap: () => setState(
+                                  () {
+                                    confirmIsVisible = !confirmIsVisible;
+                                  },
+                                ),
+                                child: confirmIsVisible
+                                    ? const Icon(Icons.visibility)
+                                    : const Icon(Icons.visibility_off),
+                              ),
+                            ),
+                            style: const TextStyle(fontSize: 14),
+                            controller: confirmPasswordEC,
+                            obscureText: confirmIsVisible ? false : true),
+                        SizedBox(height: screenHeight * 0.1),
                         InkWell(
                           onTap: () {
                             userRegisterVM.validateForm(
@@ -150,6 +187,7 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                             ),
                           ),
                         ),
+                        SizedBox(height: screenHeight * 0.01),
                         InkWell(
                           onTap: () =>
                               Navigator.of(context).pushNamed('/login'),

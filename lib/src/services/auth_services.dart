@@ -1,21 +1,110 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:git_flutter_festou/src/core/exceptions/auth_exception.dart';
+import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
+import 'package:git_flutter_festou/src/core/fp/either.dart';
+import 'package:git_flutter_festou/src/core/fp/nil.dart';
+import 'package:git_flutter_festou/src/repositories/user/user_firestore_repository_impl.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
-//método que faz
-  signInWithGoogle() async {
-    //begin interactive sign in process
-    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+  Future<Either<RepositoryException, Nil>> saveUserWithGoogle(User user) async {
+// Verificar se o usuário possui um documento no Firestore
+    try {
+      final userDocument =
+          await usersCollection.where('uid', isEqualTo: user.uid).get();
 
-    //obtain auth details from request
-    final GoogleSignInAuthentication gAuth = await gUser!.authentication;
+      if (userDocument.docs.isEmpty) {
+        final userDataFirestore = (
+          id: user.uid.toString(),
+          email: user.email.toString(),
+        );
+        // Se o usuário não tiver um documento, salvar as informações no Firestore
+        await saveUser(userDataFirestore);
+      }
+      return Success(nil);
+    } catch (e) {
+      log('Erro ao adicionar informações de usuário no Firestore: $e');
+      return Failure(RepositoryException(
+          message: 'Erro ao cadastrar usuario no banco de dados'));
+    }
+  }
 
-    //create a new credential for user
-    final credential = GoogleAuthProvider.credential(
-      accessToken: gAuth.accessToken,
-      idToken: gAuth.idToken,
-    );
-    //finally, lts sign in
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+  Future<Either<RepositoryException, Nil>> saveUser(
+      ({
+        String id,
+        String email,
+      }) userData) async {
+    try {
+// Crie um novo usuario com os dados fornecidos
+      Map<String, dynamic> newUser = {
+        'uid': userData.id,
+        'email': userData.email,
+        'userType': 'LOCATARIO',
+        'nome': '',
+        'telefone': '',
+        'user_address': {
+          'cep': '',
+          'logradouro': '',
+          'bairro': '',
+          'cidade': '',
+        }
+      };
+
+      // Insira o espaço na coleção 'spaces'
+      await usersCollection.add(newUser);
+
+      log('usuario criado na coleção users');
+
+      return Success(nil);
+    } catch (e) {
+      log('Erro ao adicionar informações de usuário no Firestore: $e');
+      return Failure(RepositoryException(
+          message: 'Erro ao cadastrar usuario no banco de dados'));
+    }
+  }
+
+  final CollectionReference usersCollection =
+      FirebaseFirestore.instance.collection('users');
+  //todo!:resolver eemail ja usado pra google - nao pode usar p email/senha
+  //todo!:rsolver depois de criar conta com email/snha, se logar com google com o mesmmo mail, nao pode mais usar email/senha
+//todo!:resolver, se logar com email/senha, depois logar com google, se descinvuclar o google, nao consegue logar com email e senha
+//todo!:resolver invalid-credential -possivlmente precisa de um refres token ou reauthentication
+//todo! bug de as vezes cadastrar por email/login e dar erro no primeiro login (usuario n encontrado)
+//todo! as vezes toda a homepage é carregada antes mesmo de fazer oc adastro de user infos ???????
+  Future<Either<AuthException, UserCredential>> signInWithGoogle() async {
+    try {
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      // Check if the user cancelled the sign-in process
+      if (googleUser == null) {
+        return Failure(AuthError(message: 'Login com Google cancelado.'));
+      }
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      final user = userCredential.user;
+
+      // O usuário não existe, então você pode prosseguir com a criação da conta
+      await saveUserWithGoogle(user!);
+
+      return Success(userCredential);
+    } catch (e) {
+      log('Erro ao logar com Google: $e');
+      return Failure(AuthError(message: 'Erro ao logar com Google.'));
+    }
   }
 }

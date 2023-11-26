@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/exceptions/auth_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
+import 'package:git_flutter_festou/src/services/auth_services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -56,6 +57,21 @@ class LoginVM extends _$LoginVM {
     final loginResult = await userAuthRepository.login(email, password);
 
     switch (loginResult) {
+      case Success():
+        state = state.copyWith(status: LoginStateStatus.userLogin);
+        break;
+      case Failure(exception: AuthError(:final message)):
+        state = state.copyWith(
+          status: LoginStateStatus.error,
+          errorMessage: () => message,
+        );
+    }
+  }
+
+  Future<void> loginWithGoogle() async {
+    final result = await AuthService().signInWithGoogle();
+
+    switch (result) {
       case Success():
         state = state.copyWith(status: LoginStateStatus.userLogin);
         break;
