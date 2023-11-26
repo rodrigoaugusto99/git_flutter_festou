@@ -45,6 +45,8 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
         List<String> selectedServices,
         List<String> availableDays,
         List<File> imageFiles,
+        String descricao,
+        String city
       }) spaceData) async {
     try {
       final locadorName = await getLocadorName(spaceData.userId);
@@ -65,6 +67,8 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
         'average_rating': '',
         'num_comments': '',
         'locador_name': locadorName,
+        'descricao': spaceData.descricao,
+        'city': spaceData.city,
       };
 
       // Consulte a coleção 'spaces' para verificar se um espaço com as mesmas informações já existe.
@@ -302,6 +306,8 @@ p decidir o isFavorited*/
       averageRating,
       numComments,
       spaceDocument['locador_name'] ?? '',
+      spaceDocument['descricao'] ?? '',
+      spaceDocument['city'] ?? '',
     );
   }
 

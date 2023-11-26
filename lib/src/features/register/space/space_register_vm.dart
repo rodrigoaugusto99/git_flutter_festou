@@ -112,8 +112,18 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
     return Validatorless.required('Cidade obrigatorio');
   }
 
-  Future<void> validateForm(BuildContext context, formKey, nomeEC, emailEC,
-      cepEC, logradouroEC, numeroEC, bairroEC, cidadeEC) async {
+  Future<void> validateForm(
+      BuildContext context,
+      formKey,
+      nomeEC,
+      emailEC,
+      cepEC,
+      logradouroEC,
+      numeroEC,
+      bairroEC,
+      cidadeEC,
+      descricaoEC,
+      cityEC) async {
     //if (formKey.currentState?.validate() == true) {
     await register(
       nomeEC.text,
@@ -123,6 +133,8 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
       numeroEC.text,
       bairroEC.text,
       cidadeEC.text,
+      descricaoEC.text,
+      cityEC.text,
     );
     //se nao tiver esse else, o compilador passa nesse copyWith sempre
     //} else {
@@ -152,6 +164,8 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
     String numero,
     String bairro,
     String cidade,
+    String descricao,
+    String city,
   ) async {
     final SpaceRegisterState(
       :selectedTypes,
@@ -177,6 +191,8 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
       availableDays: availableDays,
       selectedServices: selectedServices,
       imageFiles: imageFiles,
+      descricao: descricao,
+      city: city
     );
 
     final spaceFirestoreRepository = ref.read(spaceFirestoreRepositoryProvider);

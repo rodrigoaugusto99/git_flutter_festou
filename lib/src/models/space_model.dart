@@ -15,6 +15,8 @@ class SpaceModel {
   final String averageRating;
   final String numComments;
   final String locadorName;
+  final String descricao;
+  final String city;
 
   SpaceModel(
     this.isFavorited,
@@ -33,5 +35,7 @@ class SpaceModel {
     this.averageRating,
     this.numComments,
     this.locadorName,
+    this.descricao,
+    this.city,
   );
 }
