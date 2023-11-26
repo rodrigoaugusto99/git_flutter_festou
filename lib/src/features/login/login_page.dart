@@ -99,259 +99,295 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     return Scaffold(
       body: Form(
         key: formKey,
-        child: DecoratedBox(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage(
-                  ImageConstants.loginBackground,
+        child: SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(ImageConstants.loginBackground),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: Stack(
+              children: [
+                // logo
+                Positioned(
+                  width: logoWidth,
+                  height: logoHeight,
+                  top: logoTop,
+                  left: logoLeft,
+                  child: Image.asset(
+                    ImageConstants.festouLogo,
+                  ),
                 ),
-                fit: BoxFit.cover),
-          ),
-          child: CustomScrollView(
-            slivers: [
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: Stack(
-                  children: [
-                    // logo
-                    Positioned(
-                      width: logoWidth,
-                      height: logoHeight,
-                      top: logoTop,
-                      left: logoLeft,
-                      child: Image.asset(
-                        ImageConstants.festouLogo,
-                      ),
+                //glass
+                Positioned(
+                  top: glassTop,
+                  left: glassLeft,
+                  child: GlassmorphicContainer(
+                    width: glassWidth,
+                    height: glassHeight,
+                    borderRadius: 20,
+                    blur: 1,
+                    border: 0,
+                    linearGradient: const LinearGradient(
+                      colors: [
+                        Color.fromRGBO(0, 0, 0, 0.35),
+                        Colors.transparent,
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
                     ),
-                    //glass
-                    Positioned(
-                      top: glassTop,
-                      left: glassLeft,
-                      child: GlassmorphicContainer(
-                        width: glassWidth,
-                        height: glassHeight,
-                        borderRadius: 20,
-                        blur: 20,
-                        border: 0,
-                        linearGradient: const LinearGradient(
-                          colors: [
-                            Color.fromRGBO(0, 0, 0, 0.35),
-                            Color.fromRGBO(0, 0, 0, 0),
-                          ],
-                        ),
-                        borderGradient: const LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Color.fromRGBO(0, 0, 0, 0.35),
-                            Color.fromRGBO(0, 0, 0, 0),
-                          ],
-                        ),
-                        child: Align(
-                          child: Column(
-                            children: [
-                              // email textfield
-                              SizedBox(
-                                height: screenHeight * 0.022,
-                              ),
-                              Container(
-                                width: emailFieldWidth,
-                                height: emailFieldHeight,
-                                decoration: BoxDecoration(
-                                  color: Colors.white, // Cor de fundo branca
-                                  borderRadius: BorderRadius.circular(
-                                      50.0), // Borda arredondada
-                                ),
-                                child: TextFormField(
-                                  validator: loginVM.validateEmail(),
-                                  controller: emailEC,
-                                  decoration: const InputDecoration(
-                                    hintText: 'Email',
-                                    border: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    focusedBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    prefixIcon: Icon(
-                                      // Ícone à esquerda
-                                      Icons.email,
-                                      color: Colors.grey, // Cor do ícone
-                                    ),
-                                  ),
+                    borderGradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color.fromRGBO(0, 0, 0, 0),
+                        Color.fromRGBO(0, 0, 0, 0),
+                      ],
+                    ),
+                    child: Align(
+                      child: Column(
+                        children: [
+                          // email textfield
+                          SizedBox(
+                            height: screenHeight * 0.022,
+                          ),
+                          Container(
+                            width: emailFieldWidth,
+                            height: emailFieldHeight,
+                            decoration: BoxDecoration(
+                              color: Colors.white, // Cor de fundo branca
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
+                            child: TextFormField(
+                              style: const TextStyle(fontSize: 14.0),
+                              validator: loginVM.validateEmail(),
+                              controller: emailEC,
+                              onTapOutside: (_) =>
+                                  FocusScope.of(context).unfocus(),
+                              decoration: const InputDecoration(
+                                hintText: 'Email',
+                                hintStyle: TextStyle(fontSize: 14, height: 1.4),
+                                border: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                                prefixIcon: Icon(
+                                  // Ícone à esquerda
+                                  Icons.email,
+                                  color: Colors.grey, // Cor do ícone
                                 ),
                               ),
-                              SizedBox(
-                                height: screenHeight * 0.02,
-                              ),
-                              Container(
-                                width: passwordFieldWidth,
-                                height: passwordFieldHeight,
-                                decoration: BoxDecoration(
-                                  color: Colors.white, // Cor de fundo branca
-                                  borderRadius: BorderRadius.circular(
-                                      50.0), // Borda arredondada
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.02,
+                          ),
+                          Container(
+                            width: passwordFieldWidth,
+                            height: passwordFieldHeight,
+                            decoration: BoxDecoration(
+                              color: Colors.white, // Cor de fundo branca
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
+                            child: TextFormField(
+                              style: const TextStyle(fontSize: 14.0),
+                              validator: loginVM.validatePassword(),
+                              obscureText: isVisible ? false : true,
+                              controller: passwordEC,
+                              decoration: InputDecoration(
+                                hintText: 'Password',
+                                hintStyle:
+                                    const TextStyle(fontSize: 14, height: 1.4),
+                                border:
+                                    InputBorder.none, // Remove a borda padrão
+                                prefixIcon: const Icon(
+                                  // Ícone à esquerda
+                                  Icons.lock,
+                                  color: Colors.grey, // Cor do ícone
                                 ),
-                                child: TextFormField(
-                                  validator: loginVM.validatePassword(),
-                                  obscureText: isVisible ? false : true,
-                                  controller: passwordEC,
-                                  decoration: InputDecoration(
-                                    hintText: 'Password',
-
-                                    border: InputBorder
-                                        .none, // Remove a borda padrão
-                                    prefixIcon: const Icon(
-                                      // Ícone à esquerda
-                                      Icons.lock,
-                                      color: Colors.grey, // Cor do ícone
-                                    ),
-                                    suffixIcon: GestureDetector(
-                                      onTap: () => setState(
-                                        () {
-                                          isVisible = !isVisible;
-                                        },
-                                      ),
-                                      child: isVisible
-                                          ? const Icon(Icons.visibility)
-                                          : const Icon(Icons.visibility_off),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: screenHeight * 0.02,
-                              ),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Padding(
-                                  padding:
-                                      EdgeInsets.only(right: screenWidth * 0.1),
-                                  child: InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return const ForgotPasswordPage();
-                                          },
-                                        ),
-                                      );
+                                suffixIcon: GestureDetector(
+                                  onTap: () => setState(
+                                    () {
+                                      isVisible = !isVisible;
                                     },
-                                    child: const Text(
-                                      'Esqueci minha senha',
-                                      style: TextStyle(
-                                        //fontFamily: ,
-                                        color:
-                                            Color.fromARGB(255, 255, 255, 255),
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 11,
-                                      ),
-                                    ),
                                   ),
+                                  child: isVisible
+                                      ? const Icon(Icons.visibility)
+                                      : const Icon(Icons.visibility_off),
                                 ),
                               ),
-                              // sign in button
-                              SizedBox(
-                                height: screenHeight * 0.022,
-                              ),
-                              InkWell(
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.02,
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding:
+                                  EdgeInsets.only(right: screenWidth * 0.1),
+                              child: InkWell(
                                 onTap: () {
-                                  loginVM.validateForm(
+                                  Navigator.push(
                                     context,
-                                    formKey,
-                                    emailEC,
-                                    passwordEC,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return const ForgotPasswordPage();
+                                      },
+                                    ),
                                   );
                                 },
-                                child: Container(
-                                  width: loginButtonWidth,
-                                  height: loginButtonHeight,
-                                  decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        Color.fromRGBO(9, 41, 84, 1),
-                                        Color.fromRGBO(29, 63, 111, 1)
-                                      ],
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                    ),
-                                    borderRadius: BorderRadius.circular(
-                                        50), // Borda arredondada
+                                child: const Text(
+                                  'Esqueci minha senha',
+                                  style: TextStyle(
+                                    //fontFamily: ,
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 11,
                                   ),
-                                  child: const Center(
-                                    child: Text(
-                                      'LOGIN',
-                                      style: TextStyle(
-                                          color: Colors.white, // Cor do texto
-                                          fontSize: 11, // Tamanho do texto
-                                          fontWeight: FontWeight
-                                              .w400 // Estilo de texto em negrito
-                                          ),
-                                    ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          // sign in button
+                          SizedBox(
+                            height: screenHeight * 0.022,
+                          ),
+                          InkWell(
+                            onTap: () {
+                              loginVM.validateForm(
+                                context,
+                                formKey,
+                                emailEC,
+                                passwordEC,
+                              );
+                            },
+                            child: Container(
+                              width: loginButtonWidth,
+                              height: loginButtonHeight,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color.fromRGBO(9, 41, 84, 1),
+                                    Color.fromRGBO(29, 63, 111, 1)
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                    50), // Borda arredondada
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  'LOGIN',
+                                  style: TextStyle(
+                                      color: Colors.white, // Cor do texto
+                                      fontSize: 11, // Tamanho do texto
+                                      fontWeight: FontWeight
+                                          .w400 // Estilo de texto em negrito
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.02,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                'Não tem conta?',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () => Navigator.of(context)
+                                    .pushNamed('/register/user'),
+                                child: const Text(
+                                  ' Cadastre-se',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w400,
+                                    color: Color.fromARGB(255, 250, 0, 255),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.022,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: dividerWidth,
+                                child: const Divider(
+                                  thickness: 1,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                child: Text(
+                                  'OU',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 11,
                                   ),
                                 ),
                               ),
                               SizedBox(
-                                height: screenHeight * 0.02,
+                                width: dividerWidth,
+                                child: const Divider(
+                                  thickness: 1,
+                                  color: Colors.white,
+                                ),
                               ),
-                              Row(
+                            ],
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.025,
+                          ),
+                          InkWell(
+                            onTap: () => AuthService().signInWithGoogle(),
+                            child: Container(
+                              width: googleLoginButtonWidth,
+                              height: googleLoginButtonHeight,
+                              decoration: BoxDecoration(
+                                color: const Color.fromARGB(255, 13, 46, 89),
+                                borderRadius: BorderRadius.circular(
+                                    10), // Borda arredondada
+                              ),
+                              child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                                  Image.asset(
+                                    ImageConstants.googleLogo,
+                                    width: googleLogoWidth,
+                                    height: googleLogoHeight * screenHeight,
+                                  ),
+                                  SizedBox(
+                                    width: screenWidth * 0.03,
+                                  ),
                                   const Text(
-                                    'Não tem conta?',
+                                    'LOGIN COM O GOOGLE',
                                     style: TextStyle(
-                                      fontSize: 11,
+                                      color: Colors.white,
+                                      fontSize: 10,
                                       fontWeight: FontWeight.w400,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () => Navigator.of(context)
-                                        .pushNamed('/register/user'),
-                                    child: const Text(
-                                      ' Cadastre-se',
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w400,
-                                        color: Color.fromARGB(255, 250, 0, 255),
-                                      ),
                                     ),
                                   ),
                                 ],
                               ),
-                              SizedBox(
-                                height: screenHeight * 0.022,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: dividerWidth,
-                                    child: const Divider(
-                                      thickness: 1,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  const Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10.0),
-                                    child: Text(
-                                      'OU',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 11,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: dividerWidth,
-                                    child: const Divider(
-                                      thickness: 1,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            ),
                               SizedBox(
                                 height: screenHeight * 0.025,
                               ),
@@ -391,13 +427,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               ),
                             ],
                           ),
-                        ),
+                        ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              )
-            ],
+              ],
+            ),
           ),
         ),
       ),
