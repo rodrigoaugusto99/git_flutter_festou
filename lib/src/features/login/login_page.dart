@@ -356,7 +356,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 height: screenHeight * 0.025,
                               ),
                               InkWell(
-                                onTap: () => AuthService().signInWithGoogle(),
+                                onTap: () => loginVM.loginWithGoogle(),
                                 child: Container(
                                   width: googleLoginButtonWidth,
                                   height: googleLoginButtonHeight,

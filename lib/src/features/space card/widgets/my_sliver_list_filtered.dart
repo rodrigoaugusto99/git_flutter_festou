@@ -21,7 +21,10 @@ class MySliverListFiltered extends StatelessWidget {
                       builder: (context) => NewCardInfo(space: spaces[index]),
                     ),
                   ),
-              child: NewSpaceCard(space: spaces[index])),
+              child: NewSpaceCard(
+                space: spaces[index],
+                isReview: false,
+              )),
           childCount: spaces.length),
     );
   }
