@@ -1277,6 +1277,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  syncfusion_flutter_core:
+    dependency: transitive
+    description:
+      name: syncfusion_flutter_core
+      sha256: "8a1220f978491f56431c66dacf1bb97bf2abcd1458b542fe0dfbf1a630c67260"
+      url: "https://pub.dev"
+    source: hosted
+    version: "23.2.4"
+  syncfusion_flutter_datepicker:
+    dependency: "direct main"
+    description:
+      name: syncfusion_flutter_datepicker
+      sha256: a676067cb93697f059f84b2a4d143234273a1f9b10d0b5540bb63297d1f93f74
+      url: "https://pub.dev"
+    source: hosted
+    version: "23.2.4"
   term_glyph:
     dependency: transitive
     description:
@@ -1293,6 +1309,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.0"
+  ticket_widget:
+    dependency: "direct main"
+    description:
+      name: ticket_widget
+      sha256: "82cfcd2296ea83b47ec474a2e55c64ac8cdfc3058ec08f079b2d05e598bdf137"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   timing:
     dependency: transitive
     description:

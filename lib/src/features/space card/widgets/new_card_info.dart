@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_denunciar_anuncio.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_descricao.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/calendar_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_new_map.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_map.dart';
 import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
@@ -39,6 +40,15 @@ class _NewCardInfoState extends State<NewCardInfo> {
           child: FeedbackPage(space: space),
         );
       },
+    );
+  }
+
+  void showDateDialog(SpaceModel space) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CalendarPage(space: space),
+      ),
     );
   }
 
@@ -192,6 +202,10 @@ class _NewCardInfoState extends State<NewCardInfo> {
               ElevatedButton(
                 onPressed: () => showRatingDialog(widget.space.space),
                 child: const Text('Avalie'),
+              ),
+              ElevatedButton(
+                onPressed: () => showDateDialog(widget.space.space),
+                child: const Text('Reserve'),
               ),
               Padding(
                 padding: const EdgeInsets.all(18.0),

@@ -357,7 +357,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             height: screenHeight * 0.025,
                           ),
                           InkWell(
-                            onTap: () => AuthService().signInWithGoogle(),
+                            onTap: () => loginVM.loginWithGoogle(),
                             child: Container(
                               width: googleLoginButtonWidth,
                               height: googleLoginButtonHeight,
@@ -388,44 +388,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 ],
                               ),
                             ),
-                              SizedBox(
-                                height: screenHeight * 0.025,
-                              ),
-                              InkWell(
-                                onTap: () => loginVM.loginWithGoogle(),
-                                child: Container(
-                                  width: googleLoginButtonWidth,
-                                  height: googleLoginButtonHeight,
-                                  decoration: BoxDecoration(
-                                    color:
-                                        const Color.fromARGB(255, 13, 46, 89),
-                                    borderRadius: BorderRadius.circular(
-                                        10), // Borda arredondada
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        ImageConstants.googleLogo,
-                                        width: googleLogoWidth,
-                                        height: googleLogoHeight * screenHeight,
-                                      ),
-                                      SizedBox(
-                                        width: screenWidth * 0.03,
-                                      ),
-                                      const Text(
-                                        'LOGIN COM O GOOGLE',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
                           ),
                         ],
                       ),
