@@ -1,20 +1,22 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/features/register/reserva/reserva_register_vm.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-import 'package:ticket_widget/ticket_widget.dart';
 
-class CalendarPage extends StatefulWidget {
-  final SpaceModel? space;
-  const CalendarPage({super.key, this.space});
+class ReservaRegisterPage extends ConsumerStatefulWidget {
+  final SpaceModel space;
+  const ReservaRegisterPage({super.key, required this.space});
 
   @override
-  State<CalendarPage> createState() => _CalendarPageState();
+  ConsumerState<ReservaRegisterPage> createState() =>
+      _ReservaRegisterPageState();
 }
 
-class _CalendarPageState extends State<CalendarPage> {
+class _ReservaRegisterPageState extends ConsumerState<ReservaRegisterPage> {
   String _range = '';
   String text = 'Nenhuma data selecionada';
 
@@ -87,6 +89,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
+    final reservationVm = ref.watch(reservationRegisterVmProvider);
     return Scaffold(
       body: Column(
         children: [

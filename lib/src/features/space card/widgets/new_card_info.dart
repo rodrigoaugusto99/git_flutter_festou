@@ -1,8 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/register/reserva/reserva_register_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_denunciar_anuncio.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_descricao.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/calendar_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_new_map.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_map.dart';
 import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
@@ -47,7 +47,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CalendarPage(space: space),
+        builder: (context) => ReservaRegisterPage(space: space),
       ),
     );
   }
