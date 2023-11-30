@@ -95,7 +95,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const HomePage(),
+      home: const SplashPage(),
     );
   }
 }

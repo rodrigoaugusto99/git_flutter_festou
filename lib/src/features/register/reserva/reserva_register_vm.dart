@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
@@ -16,21 +18,21 @@ class ReservationRegisterVm extends _$ReservationRegisterVm {
   final uuid = const Uuid();
   final user = FirebaseAuth.instance.currentUser!;
 
-  void addToState(String newRnge) {
+  void addToState(String newRange) {
     state = state.copyWith(
-      range: newRnge,
+      range: newRange,
       status: ReservationRegisterStateStatus.initial,
     );
+    log('estado do range: ${state.range}');
   }
 
-  Future<void> register() async {
+  Future<void> register(String spaceId) async {
     final ReservationRegisterState(:range) = state;
 
-    final reservationId = uuid.v4();
     final userId = user.uid;
     final reservationData = (
       userId: userId,
-      reservationId: reservationId,
+      spaceId: spaceId,
       range: range,
     );
 

@@ -68,7 +68,8 @@ class AuthService {
 
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
-  //todo!:resolver eemail ja usado pra google - nao pode usar p email/senha
+
+  //todo:resolver email ja usado pra google - nao pode usar p email/senha
   //todo!:rsolver depois de criar conta com email/snha, se logar com google com o mesmmo mail, nao pode mais usar email/senha
 //todo!:resolver, se logar com email/senha, depois logar com google, se descinvuclar o google, nao consegue logar com email e senha
 //todo!:resolver invalid-credential -possivlmente precisa de um refres token ou reauthentication

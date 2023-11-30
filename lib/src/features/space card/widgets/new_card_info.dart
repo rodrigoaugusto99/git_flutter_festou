@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/register/reserva/reserva_register_page.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/show%20reservations/space_reservations_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_denunciar_anuncio.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_descricao.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_new_map.dart';
@@ -202,6 +203,18 @@ class _NewCardInfoState extends State<NewCardInfo> {
               ElevatedButton(
                 onPressed: () => showRatingDialog(widget.space.space),
                 child: const Text('Avalie'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          SpaceReservationsPage(space: widget.space.space),
+                    ),
+                  );
+                },
+                child: const Text('ver reservas'),
               ),
               ElevatedButton(
                 onPressed: () => showDateDialog(widget.space.space),

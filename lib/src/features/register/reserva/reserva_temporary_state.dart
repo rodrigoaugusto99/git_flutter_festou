@@ -4,27 +4,21 @@ import 'dart:io';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 
-enum ReservationRegisterStateStatus { initial, success, error }
+enum ReservationRegisterState2Status { loaded, error }
 
-class ReservationRegisterState {
-  final ReservationRegisterStateStatus status;
+class ReservationRegisterState2 {
+  final ReservationRegisterState2Status status;
   final String range;
   final String? errorMessage;
 
-  ReservationRegisterState.initial()
-      : this(
-          status: ReservationRegisterStateStatus.initial,
-          range: '',
-        );
-
-  ReservationRegisterState(
+  ReservationRegisterState2(
       {required this.status, required this.range, this.errorMessage});
 
-  ReservationRegisterState copyWith(
-      {ReservationRegisterStateStatus? status,
+  ReservationRegisterState2 copyWith(
+      {ReservationRegisterState2Status? status,
       String? range,
       ValueGetter<String?>? errorMessage}) {
-    return ReservationRegisterState(
+    return ReservationRegisterState2(
         status: status ?? this.status,
         range: range ?? this.range,
         errorMessage:

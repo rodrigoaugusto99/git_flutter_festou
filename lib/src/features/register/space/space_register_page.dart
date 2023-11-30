@@ -73,8 +73,7 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
     }
   }
 
-  final TextEditingController _textController = TextEditingController();
-  final int maxLength = 200;
+  final int maxLength = 10;
 
   @override
   Widget build(BuildContext context) {
@@ -205,17 +204,20 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
                     labelText: 'Descrição do espaço',
                   ),
                   onChanged: (text) {
-                    if (text.length > maxLength) {
-                      // Limita o texto ao número máximo de caracteres
-                      _textController.text = text.substring(0, maxLength);
-                    }
+                    setState(() {
+                      if (text.length > maxLength) {
+                        // Limita o texto ao número máximo de caracteres
+                        descricaoEC.text = text.substring(0, maxLength);
+                      }
+                    });
                   },
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Caracteres restantes: ${maxLength - _textController.text.length}',
-                  style: const TextStyle(color: Colors.grey),
+                  'Caracteres restantes: ${maxLength - descricaoEC.text.length}',
+                  style: const TextStyle(color: Colors.black),
                 ),
+
                 /*WeekDaysPanel(
                   text: 'Selecione os DIAS da semana',
                   onDayPressed: (value) {
