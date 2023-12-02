@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/models/user_model.dart';
 
 enum InformacoesPessoaisStateStatus { initial, success, error }
 

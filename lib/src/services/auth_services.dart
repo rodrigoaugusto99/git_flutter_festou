@@ -6,7 +6,6 @@ import 'package:git_flutter_festou/src/core/exceptions/auth_exception.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
-import 'package:git_flutter_festou/src/repositories/user/user_firestore_repository_impl.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {

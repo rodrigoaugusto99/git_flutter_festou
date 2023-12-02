@@ -99,37 +99,7 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
   Future<void> validateForm(BuildContext context, formKey, tituloEC, cepEC,
       logradouroEC, numeroEC, bairroEC, cidadeEC, descricaoEC, cityEC) async {
     if (formKey.currentState?.validate() == true) {
-      //final spaceId = uuid.v4();
-      final userId = user.uid;
-      final SpaceRegisterState(:selectedTypes, :selectedServices, :imageFiles) =
-          state;
-      SpaceModel temporarySpaceModel = SpaceModel(
-        false,
-        'spaceId',
-        userId,
-        tituloEC.text,
-        cepEC.text,
-        logradouroEC.text,
-        numeroEC.text,
-        bairroEC.text,
-        cidadeEC.text,
-        selectedTypes,
-        selectedServices,
-        'averageRating',
-        'numComments',
-        'locadorName',
-        descricaoEC.text,
-        cityEC.text,
-      );
-      // Supondo que `imageFiles` seja uma List<File>
-      List<String> imagePaths = imageFiles.map((file) => file.path).toList();
-      SpaceWithImages temporarySpaceWithImages =
-          SpaceWithImages(temporarySpaceModel, imagePaths);
-      state = state.copyWith(
-        status: SpaceRegisterStateStatus.success,
-        temporarySpace: temporarySpaceWithImages,
-      );
-      /*await register(
+      await register(
         tituloEC.text,
         cepEC.text,
         logradouroEC.text,
@@ -138,8 +108,7 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
         cidadeEC.text,
         descricaoEC.text,
         cityEC.text,
-      );*/
-      //se nao tiver esse else, o compilador passa nesse copyWith sempre
+      );
     } else {
       state = state.copyWith(status: SpaceRegisterStateStatus.invalidForm);
     }

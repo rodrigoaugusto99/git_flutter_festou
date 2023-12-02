@@ -1,23 +1,23 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/pages/adicione_fotos.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/pages/new_space_register_vm.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/services_panel.dart';
+import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
+import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/descricao.dart';
+import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 
-class ServicosAcomodacoes extends ConsumerStatefulWidget {
-  const ServicosAcomodacoes({super.key});
+class Titulo extends ConsumerStatefulWidget {
+  const Titulo({super.key});
 
   @override
-  ConsumerState<ServicosAcomodacoes> createState() =>
-      _ServicosAcomodacoesState();
+  ConsumerState<Titulo> createState() => _TituloState();
 }
 
-class _ServicosAcomodacoesState extends ConsumerState<ServicosAcomodacoes> {
+class _TituloState extends ConsumerState<Titulo> {
+  final tituloEC = TextEditingController();
+  final int maxLength = 100;
   @override
   Widget build(BuildContext context) {
-    final newSpaceRegister = ref.read(newSpaceRegisterVmProvider.notifier);
+    final spaceRegister = ref.watch(newSpaceRegisterVmProvider.notifier);
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,18 +60,40 @@ class _ServicosAcomodacoesState extends ConsumerState<ServicosAcomodacoes> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Informe aos hospedes o que seu espaço tem pra oferecer',
+                'Agora vamos dar um titulo ao seu espaço',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               const Text(
-                  'voce pode adicionar mais comodidades depois de publicar'),
-              ServicesPanel(
-                text: 'Selecione os SERVIÇOS do espaço',
-                onServicePressed: (value) {
-                  log('onServicePressed: $value');
-                  newSpaceRegister.addOrRemoveService(value);
+                  'titulos curtos funcionam melhor. nao se preocupe, voce podra fazer alteracoes depois'),
+              TextField(
+                controller: tituloEC,
+                maxLines: null, // Permite várias linhas
+                maxLength: maxLength,
+                maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                decoration: InputDecoration(
+                    hintText: 'Digite seu texto...',
+                    counterText: '${tituloEC.text.length}/$maxLength',
+                    errorText: tituloEC.text.length > 99 ? 'Já chega' : null),
+              ),
+              TextField(
+                controller: tituloEC,
+                maxLines: null,
+                decoration: const InputDecoration(
+                  labelText: 'Titulo do espaço',
+                ),
+                onChanged: (text) {
+                  setState(() {
+                    if (text.length > maxLength) {
+                      // Limita o texto ao número máximo de caracteres
+                      tituloEC.text = text.substring(0, maxLength);
+                    }
+                  });
                 },
-                selectedServices: const [],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Caracteres restantes: ${maxLength - tituloEC.text.length}',
+                style: const TextStyle(color: Colors.black),
               ),
             ],
           ),
@@ -93,12 +115,20 @@ class _ServicosAcomodacoesState extends ConsumerState<ServicosAcomodacoes> {
                   ),
                 ),
                 InkWell(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const AdicioneFotos(),
-                    ),
-                  ),
+                  onTap: () {
+                    final result = spaceRegister.validateTitulo(tituloEC.text);
+                    if (result) {
+                      Messages.showSuccess('Belo titulo', context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Descricao(),
+                        ),
+                      );
+                    } else {
+                      Messages.showError('Insira o titulo', context);
+                    }
+                  },
                   child: Container(
                     decoration: BoxDecoration(
                         color: Colors.black,

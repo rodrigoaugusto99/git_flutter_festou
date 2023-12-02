@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/calendario.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/home/home_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_page.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 

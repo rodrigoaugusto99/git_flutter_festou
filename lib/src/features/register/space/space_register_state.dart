@@ -10,7 +10,7 @@ class SpaceRegisterState {
   final List<String> selectedTypes;
   final List<String> selectedServices;
   final List<String> availableDays;
-  final SpaceWithImages temporarySpace;
+
   //final AddressModel addressModel;
   //final Map<String, List<int>> availableHours;
   final List<File> imageFiles;
@@ -18,46 +18,26 @@ class SpaceRegisterState {
 
   SpaceRegisterState.initial()
       : this(
-            status: SpaceRegisterStateStatus.initial,
-            selectedTypes: <String>[],
-            selectedServices: <String>[],
-            availableDays: <String>[],
-            imageFiles: <File>[],
-            temporarySpace: SpaceWithImages(
-              SpaceModel(
-                  false,
-                  'spaceId',
-                  'userId',
-                  'titulo',
-                  'cep',
-                  'logradouro',
-                  'numero',
-                  'bairro',
-                  'cidade',
-                  <String>[],
-                  <String>[],
-                  'averageRating',
-                  'numComments',
-                  'locadorName',
-                  'descricao',
-                  'city'),
-              <String>[],
-            )
-            /*addressModel: AddressModel(
+          status: SpaceRegisterStateStatus.initial,
+          selectedTypes: <String>[],
+          selectedServices: <String>[],
+          availableDays: <String>[],
+          imageFiles: <File>[],
+
+          /*addressModel: AddressModel(
             cep: '',
             logradouro: '',
             numero: '',
             bairro: '',
             cidade: '',
           ),*/
-            );
+        );
 
   SpaceRegisterState(
       {required this.status,
       required this.selectedTypes,
       required this.selectedServices,
       required this.availableDays,
-      required this.temporarySpace,
       required this.imageFiles,
       this.errorMessage});
 
@@ -66,7 +46,6 @@ class SpaceRegisterState {
       List<String>? selectedTypes,
       List<String>? selectedServices,
       List<String>? availableDays,
-      SpaceWithImages? temporarySpace,
       List<File>? imageFiles,
       ValueGetter<String?>? errorMessage}) {
     return SpaceRegisterState(
@@ -74,7 +53,6 @@ class SpaceRegisterState {
         selectedTypes: selectedTypes ?? this.selectedTypes,
         selectedServices: selectedServices ?? this.selectedServices,
         availableDays: availableDays ?? this.availableDays,
-        temporarySpace: temporarySpace ?? this.temporarySpace,
         imageFiles: imageFiles ?? this.imageFiles,
         errorMessage:
             errorMessage != null ? errorMessage() : this.errorMessage);

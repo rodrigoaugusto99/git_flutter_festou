@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/pages/descricao.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
+import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
+import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/preco.dart';
 
-class Titulo extends StatefulWidget {
-  const Titulo({super.key});
+class Descricao extends ConsumerStatefulWidget {
+  const Descricao({super.key});
 
   @override
-  State<Titulo> createState() => _TituloState();
+  ConsumerState<Descricao> createState() => _DescricaoState();
 }
 
-class _TituloState extends State<Titulo> {
+class _DescricaoState extends ConsumerState<Descricao> {
+  final descricaoEC = TextEditingController();
+  final int maxLength = 30;
   @override
   Widget build(BuildContext context) {
+    final spaceRegister = ref.watch(newSpaceRegisterVmProvider.notifier);
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,26 +55,38 @@ class _TituloState extends State<Titulo> {
               ],
             ),
           ),
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Agora vamos dar um titulo ao seu espaço',
+              const Text(
+                'Crie sua descricao',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
-              Text(
-                  'titulos curtos funcionam melhor. nao se preocupe, voce podra fazer alteracoes depois'),
-              SizedBox(
-                height: 200,
-                width: 400,
-                child: Placeholder(),
+              const Text('Explique o que sua acomodacao tem de especial'),
+              TextField(
+                controller: descricaoEC,
+                maxLines: 5, // Número máximo de linhas visíveis
+                minLines: 3, // Número mínimo de linhas visíveis
+                decoration: const InputDecoration(
+                  labelText: 'Descrição do espaço',
+                ),
+                onChanged: (text) {
+                  setState(() {
+                    if (text.length > maxLength) {
+                      // Limita o texto ao número máximo de caracteres
+                      descricaoEC.text = text.substring(0, maxLength);
+                    }
+                  });
+                },
               ),
-              Text('32 caracteres disponiveis'),
+              const SizedBox(height: 16),
+              Text(
+                'Caracteres restantes: ${maxLength - descricaoEC.text.length}',
+                style: const TextStyle(color: Colors.black),
+              ),
             ],
           ),
-          const SizedBox(
-            height: 20,
-          ),
+          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: Row(
@@ -84,12 +102,21 @@ class _TituloState extends State<Titulo> {
                   ),
                 ),
                 InkWell(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Descricao(),
-                    ),
-                  ),
+                  onTap: () {
+                    final result =
+                        spaceRegister.validateTitulo(descricaoEC.text);
+                    if (result) {
+                      Messages.showSuccess('Bela descricao', context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Preco(),
+                        ),
+                      );
+                    } else {
+                      Messages.showError('escreva  descrico', context);
+                    }
+                  },
                   child: Container(
                     decoration: BoxDecoration(
                         color: Colors.black,
