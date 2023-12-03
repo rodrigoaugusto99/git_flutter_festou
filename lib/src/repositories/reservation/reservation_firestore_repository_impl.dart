@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 
 import 'package:git_flutter_festou/src/core/fp/either.dart';
@@ -15,6 +16,14 @@ class ReservationFirestoreRepositoryImpl
     implements ReservationFirestoreRepository {
   final CollectionReference reservationCollection =
       FirebaseFirestore.instance.collection('reservations');
+
+  final CollectionReference spacesCollection =
+      FirebaseFirestore.instance.collection('spaces');
+
+  final CollectionReference usersCollection =
+      FirebaseFirestore.instance.collection('users');
+
+  final user = FirebaseAuth.instance.currentUser!;
   @override
   Future<Either<RepositoryException, Nil>> saveReservation(
     ({
@@ -72,5 +81,46 @@ class ReservationFirestoreRepositoryImpl
       range: reservationDocument['range'] ?? '',
       date: reservationDocument['date'] ?? '',
     );
+  }
+
+  @override
+  Future<Either<RepositoryException, List<ReservationModel>>>
+      getMyReservedClients() async {
+    //espaços com meu id
+    try {
+      final mySpacesDocuments =
+          await spacesCollection.where('user_id', isEqualTo: user.uid).get();
+
+      // Lista para armazenar todos os documentos de reservas
+      List<DocumentSnapshot> allReservations = [];
+
+      // Iterar sobre os documentos de espaços
+      for (var spaceDocument in mySpacesDocuments.docs) {
+        // Recuperar o space_id do documento de espaço
+        String spaceId = spaceDocument['space_id'];
+
+        // Consultar as reservas com base no space_id
+        final reservationsQuery = await reservationCollection
+            .where('space_id', isEqualTo: spaceId)
+            .get();
+
+        // Adicionar todos os documentos de reservas à lista
+        allReservations.addAll(reservationsQuery.docs);
+      }
+
+      List<ReservationModel> reservationModels =
+          allReservations.map((reservationModels) {
+        //todo: como evitar esse cast?
+        return mapReservationDocumentToModel(
+            reservationModels as QueryDocumentSnapshot);
+      }).toList();
+
+      // Retornar a lista de documentos de reservas
+      return Success(reservationModels);
+    } catch (e) {
+      log('Erro ao recuperar as reservas dos meus espaços: $e');
+      return Failure(RepositoryException(
+          message: 'Erro ao carregar as reservas dos meus espaços'));
+    }
   }
 }
