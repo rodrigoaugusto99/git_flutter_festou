@@ -90,9 +90,9 @@ class ReservationFirestoreRepositoryImpl
     try {
       final mySpacesDocuments =
           await spacesCollection.where('user_id', isEqualTo: user.uid).get();
-
+//qual o melhor tipo p ess lista? e se for ReservaModel logo?
       // Lista para armazenar todos os documentos de reservas
-      List<DocumentSnapshot> allReservations = [];
+      List<QueryDocumentSnapshot> allReservations = [];
 
       // Iterar sobre os documentos de espaços
       for (var spaceDocument in mySpacesDocuments.docs) {
@@ -110,9 +110,7 @@ class ReservationFirestoreRepositoryImpl
 
       List<ReservationModel> reservationModels =
           allReservations.map((reservationModels) {
-        //todo: como evitar esse cast?
-        return mapReservationDocumentToModel(
-            reservationModels as QueryDocumentSnapshot);
+        return mapReservationDocumentToModel(reservationModels);
       }).toList();
 
       // Retornar a lista de documentos de reservas
