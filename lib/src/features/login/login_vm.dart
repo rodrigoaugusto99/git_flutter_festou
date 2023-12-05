@@ -79,35 +79,29 @@ class LoginVM extends _$LoginVM {
     final result = await AuthService(context: context).signInWithGoogle();
 
 //pega o valor de hasPassword de lá
-    bool myBool = AuthService(context: context).hasPassword;
-
-//se for true, estaa com email/senha:
-    dialogMessage = myBool
-        ? 'Você não poderá mais fazer login com e-mail/senha.'
-        : 'vc n tinha email/senha, ta tranks';
-    log(dialogMessage);
+    bool isNew = true;
 
     switch (result) {
       case Success(value: final userCredential):
-        final user = userCredential.user!;
+
         // Verificar se o e-mail já está registrado no Firebase Auth
         if (userCredential.additionalUserInfo!.isNewUser) {
-          // não há email igual no banco
+          // Não há e-mail igual no banco
           log("Novo usuário registrado");
-
+          final user = userCredential.user!;
           final dto = (
             id: user.uid.toString(),
             email: user.email.toString(),
           );
           await useFirestoreRepository.saveUser(dto);
         } else {
+          // O usuário já estava registrado anteriormente
           log("Usuário não é novo");
-          // O usuário já estava registrado, mas com um provedor diferente
-          //dialogMessage = 'Você não poderá mais fazer login com e-mail/senha.';
+          isNew = false;
         }
         state = state.copyWith(
-            status: LoginStateStatus.userLogin,
-            dialogMessage: () => dialogMessage);
+            status: LoginStateStatus.userLogin, isNew: () => isNew);
+        log(isNew.toString());
         break;
       case Failure(exception: AuthError(:final message)):
         state = state.copyWith(

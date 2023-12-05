@@ -81,7 +81,6 @@ class AuthService {
 //todo!:resolver, se logar com email/senha, depois logar com google, se descinvuclar o google, nao consegue logar com email e senha
 //todo! bug de as vezes cadastrar por email/login e dar erro no primeiro login (usuario n encontrado)
 
-  bool hasPassword = false;
   Future<Either<AuthException, UserCredential>> signInWithGoogle() async {
     try {
       // Trigger the authentication flow
@@ -97,16 +96,20 @@ class AuthService {
           await googleUser.authentication;
 
       // Check if the email is already registered with email/password provider
-      final email = googleUser.email;
+      /*final email = googleUser.email;
+      log('email:');
+      log(email);
       final providers =
-          await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
+          //await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
+      log(providers.toString());
 
       if (providers.contains('password')) {
         // O e-mail já está registrado com email/senha
-
+        log('passou');
         hasPassword = true;
+        log(hasPassword.toString());
       }
-
+*/
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
@@ -115,7 +118,8 @@ class AuthService {
 
       final userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
-
+      //log(hasPassword.toString());
+      //log(providers.toString());
       return Success(userCredential);
     } catch (e) {
       log('Erro ao logar com Google: $e');

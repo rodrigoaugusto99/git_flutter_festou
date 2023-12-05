@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -35,19 +36,42 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
     final loginVM = ref.watch(loginVMProvider.notifier);
 
-    changeProviderDialog(String dialogMessage) async {
-      await showDialog(
+    // Função para lidar com o login com o Google
+    void handleGoogleLogin() {
+      // Coloque a lógica aqui para lidar com o login usando o provedor do Google
+    }
+
+// Função para lidar com o login com e-mail/senha
+    void handleEmailPasswordLogin() {
+      // Coloque a lógica aqui para lidar com o login usando e-mail/senha
+    }
+
+    Future changeProviderDialog() async {
+      showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Provedor Trocado'),
-            content: Text(dialogMessage),
-            actions: <Widget>[
+            title: const Text('Escolha uma opção'),
+            content: const Text(
+                'Você já tem uma conta cadastrada com e-mail/senha. Deseja fazer login com o Google?'),
+            actions: [
               TextButton(
                 onPressed: () {
+                  // Fazer login com o Google
                   Navigator.of(context).pop();
+                  // Chame a função que lida com o login com o Google
+                  handleGoogleLogin();
                 },
-                child: const Text('OK'),
+                child: const Text('Login com Google'),
+              ),
+              TextButton(
+                onPressed: () {
+                  // Fazer login com e-mail/senha
+                  Navigator.of(context).pop();
+                  // Chame a função que lida com o login com e-mail/senha
+                  handleEmailPasswordLogin();
+                },
+                child: const Text('Login com E-mail/Senha'),
               ),
             ],
           );
@@ -55,7 +79,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       );
     }
 
-    ref.listen(loginVMProvider, (_, state) {
+    ref.listen(loginVMProvider, (_, state) async {
       switch (state) {
         case LoginState(status: LoginStateStatus.initial):
           break;
@@ -65,13 +89,19 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           Messages.showError('Erro ao realizar login', context);
         case LoginState(status: LoginStateStatus.invalidForm):
           Messages.showInfo('Formulário inválido', context);
-        case LoginState(
-            status: LoginStateStatus.userLogin,
-            :final dialogMessage?
-          ):
-          //todo: ajustar - exibir apenas na primeira vez que fizer a troca de provedor
+        case LoginState(status: LoginStateStatus.userLogin, :final isNew?):
+          if (isNew) {
+            log('isNew é true');
+            //email novo - tudo certo
+          } else {
+            //email ja existe - (email/senha)
+            //todo: lógica para usuario escolher trocar de provedor ou logar com email e senha
+            await changeProviderDialog();
+            log('isNew é false');
+          }
           Navigator.of(context)
               .pushNamedAndRemoveUntil('/home', (route) => false);
+
         //changeProviderDialog(dialogMessage);
       }
     });
@@ -89,29 +119,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final double glassHeight = (333 / 732) * screenHeight;
     final double glassWidth = (340 / 412) * screenWidth;
 
-    //final double emailFieldTop = (390 / 732) * screenHeight;
-    //final double emailFieldLeft = (62 / 412) * screenWidth;
     final double emailFieldWidth = (291 / 412) * screenWidth;
     final double emailFieldHeight = (39 / 732) * screenHeight;
 
-    //final double passwordFieldTop = (446 / 732) * screenHeight;
-    //final double passwordFieldLeft = (61 / 412) * screenWidth;
     final double passwordFieldWidth = (291 / 412) * screenWidth;
     final double passwordFieldHeight = (39 / 732) * screenHeight;
 
-    //final double forgotPasswordTextTop = (497 / 732) * screenHeight;
-    //final double forgotPasswordTextLeft = (229 / 412) * screenWidth;
-
-    //final double loginButtonTop = (530 / 732) * screenHeight;
-    //final double loginButtonLeft = (149 / 412) * screenWidth;
     final double loginButtonWidth = (115 / 412) * screenWidth;
     final double loginButtonHeight = (31 / 732) * screenHeight;
 
-    //final double registerTextTop = (577 / 732) * screenHeight;
-    //final double registerTextLeft = (128 / 412) * screenWidth;
-
-    //final double googleLoginButtonTop = (645 / 732) * screenHeight;
-    //final double googleLoginButtonLeft = (106 / 412) * screenWidth;
     final double googleLoginButtonWidth = (202 / 412) * screenWidth;
     final double googleLoginButtonHeight = (37 / 732) * screenHeight;
 
