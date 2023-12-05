@@ -1,8 +1,12 @@
+import 'dart:developer';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/exceptions/auth_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
+
 import 'package:git_flutter_festou/src/services/auth_services.dart';
+import 'package:riverpod/src/framework.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -12,6 +16,7 @@ part 'login_vm.g.dart';
 
 @riverpod
 class LoginVM extends _$LoginVM {
+  String dialogMessage = '';
   @override
   LoginState build() => LoginState.initial();
 
@@ -68,12 +73,33 @@ class LoginVM extends _$LoginVM {
     }
   }
 
-  Future<void> loginWithGoogle() async {
-    final result = await AuthService().signInWithGoogle();
+  Future<void> loginWithGoogle(BuildContext context) async {
+    final useFirestoreRepository = ref.watch(userFirestoreRepositoryProvider);
+
+    final result = await AuthService(context: context).signInWithGoogle();
 
     switch (result) {
-      case Success():
-        state = state.copyWith(status: LoginStateStatus.userLogin);
+      case Success(value: final userCredential):
+        // Verificar se o e-mail já está registrado no Firebase Auth
+        if (userCredential.additionalUserInfo!.isNewUser) {
+          // não há email igual no banco
+          log("Novo usuário registrado");
+          final user = userCredential.user!;
+          final dto = (
+            id: user.uid.toString(),
+            email: user.email.toString(),
+          );
+          await useFirestoreRepository.saveUser(dto);
+        } else {
+          // O usuário já estava registrado anteriormente (email/senha)
+          log("Usuário já registrado");
+          //o id no auth permanece o mesmo(ufa)
+          //todo: aviso de troca de provedor.
+          dialogMessage = 'Você não poderá mais fazer login com e-mail/senha.';
+        }
+        state = state.copyWith(
+            status: LoginStateStatus.userLogin,
+            dialogMessage: () => dialogMessage);
         break;
       case Failure(exception: AuthError(:final message)):
         state = state.copyWith(

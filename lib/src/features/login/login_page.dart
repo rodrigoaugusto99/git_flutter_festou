@@ -35,6 +35,26 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
     final loginVM = ref.watch(loginVMProvider.notifier);
 
+    changeProviderDialog(String dialogMessage) async {
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Provedor Trocado'),
+            content: Text(dialogMessage),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     ref.listen(loginVMProvider, (_, state) {
       switch (state) {
         case LoginState(status: LoginStateStatus.initial):
@@ -42,13 +62,17 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         case LoginState(status: LoginStateStatus.error, :final errorMessage?):
           Messages.showError(errorMessage, context);
         case LoginState(status: LoginStateStatus.error):
-          Messages.showInfo('Erro ao realizar login', context);
+          Messages.showError('Erro ao realizar login', context);
         case LoginState(status: LoginStateStatus.invalidForm):
-          Messages.showError('Formulário inválido', context);
-        case LoginState(status: LoginStateStatus.userLogin):
+          Messages.showInfo('Formulário inválido', context);
+        case LoginState(
+            status: LoginStateStatus.userLogin,
+            :final dialogMessage?
+          ):
+          //todo: ajustar - exibir apenas na primeira vez que fizer a troca de provedor
           Navigator.of(context)
               .pushNamedAndRemoveUntil('/home', (route) => false);
-          Messages.showSuccess('Logado com sucesso!', context);
+          changeProviderDialog(dialogMessage);
       }
     });
 
@@ -357,7 +381,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             height: screenHeight * 0.025,
                           ),
                           InkWell(
-                            onTap: () => loginVM.loginWithGoogle(),
+                            onTap: () => loginVM.loginWithGoogle(context),
                             child: Container(
                               width: googleLoginButtonWidth,
                               height: googleLoginButtonHeight,
