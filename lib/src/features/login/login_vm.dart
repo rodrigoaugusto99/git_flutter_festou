@@ -78,24 +78,32 @@ class LoginVM extends _$LoginVM {
 
     final result = await AuthService(context: context).signInWithGoogle();
 
+//pega o valor de hasPassword de lá
+    bool myBool = AuthService(context: context).hasPassword;
+
+//se for true, estaa com email/senha:
+    dialogMessage = myBool
+        ? 'Você não poderá mais fazer login com e-mail/senha.'
+        : 'vc n tinha email/senha, ta tranks';
+    log(dialogMessage);
+
     switch (result) {
       case Success(value: final userCredential):
+        final user = userCredential.user!;
         // Verificar se o e-mail já está registrado no Firebase Auth
         if (userCredential.additionalUserInfo!.isNewUser) {
           // não há email igual no banco
           log("Novo usuário registrado");
-          final user = userCredential.user!;
+
           final dto = (
             id: user.uid.toString(),
             email: user.email.toString(),
           );
           await useFirestoreRepository.saveUser(dto);
         } else {
-          // O usuário já estava registrado anteriormente (email/senha)
-          log("Usuário já registrado");
-          //o id no auth permanece o mesmo(ufa)
-          //todo: aviso de troca de provedor.
-          dialogMessage = 'Você não poderá mais fazer login com e-mail/senha.';
+          log("Usuário não é novo");
+          // O usuário já estava registrado, mas com um provedor diferente
+          //dialogMessage = 'Você não poderá mais fazer login com e-mail/senha.';
         }
         state = state.copyWith(
             status: LoginStateStatus.userLogin,

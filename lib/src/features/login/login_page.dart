@@ -72,7 +72,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           //todo: ajustar - exibir apenas na primeira vez que fizer a troca de provedor
           Navigator.of(context)
               .pushNamedAndRemoveUntil('/home', (route) => false);
-          changeProviderDialog(dialogMessage);
+        //changeProviderDialog(dialogMessage);
       }
     });
 
