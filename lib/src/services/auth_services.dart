@@ -81,12 +81,36 @@ class AuthService {
 //todo!:resolver, se logar com email/senha, depois logar com google, se descinvuclar o google, nao consegue logar com email e senha
 //todo! bug de as vezes cadastrar por email/login e dar erro no primeiro login (usuario n encontrado)
 
+//se ja fez, boom. se não fez, chamar o onChngedProvider na page.
+//todo: logica para ver se o usuario já fez login com essa conta do google.(silenty)
+
+  /*Future<String?> getGoogleUserEmail() async {
+    try {
+      // Inicialize o GoogleSignIn
+      final GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email']);
+
+      // Tente buscar as informações do perfil sem iniciar uma sessão completa
+      final GoogleSignInAccount? googleUser =
+          await googleSignIn.signInSilently();
+
+      // Se já houver um usuário autenticado, obtenha o e-mail
+      if (googleUser != null) {
+        return googleUser.email;
+      }
+
+      return null; // Retorna nulo se não houver usuário autenticado
+    } catch (e) {
+      // Trate qualquer exceção que possa ocorrer durante a busca do perfil
+      print('Erro ao buscar informações do perfil: $e');
+      return null;
+    }
+  }*/
+
   Future<Either<AuthException, UserCredential>> signInWithGoogle() async {
     try {
       // Trigger the authentication flow
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-      // Check if the user cancelled the sign-in process
       if (googleUser == null) {
         return Failure(AuthError(message: 'Login com Google cancelado.'));
       }
@@ -95,21 +119,6 @@ class AuthService {
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
 
-      // Check if the email is already registered with email/password provider
-      /*final email = googleUser.email;
-      log('email:');
-      log(email);
-      final providers =
-          //await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
-      log(providers.toString());
-
-      if (providers.contains('password')) {
-        // O e-mail já está registrado com email/senha
-        log('passou');
-        hasPassword = true;
-        log(hasPassword.toString());
-      }
-*/
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
@@ -118,8 +127,7 @@ class AuthService {
 
       final userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
-      //log(hasPassword.toString());
-      //log(providers.toString());
+
       return Success(userCredential);
     } catch (e) {
       log('Erro ao logar com Google: $e');

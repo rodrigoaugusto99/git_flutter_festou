@@ -146,23 +146,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
     } else {
       log("Usuário não autenticado");
     }
-
-    if (user != null) {
-      FirebaseAuth.instance
-          .fetchSignInMethodsForEmail(user.email!)
-          .then((providers) => {
-                if (providers.isNotEmpty)
-                  {
-                    log("O usuário está conectado com os seguintes provedores: $providers"),
-                  }
-                else
-                  {
-                    log("providers is empty"),
-                  }
-              });
-    } else {
-      log("Usuário não autenticado");
-    }
   }
 
   @override
@@ -266,7 +249,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                   // Desvincula a conta do Google
                                   await user.unlink("google.com");
                                   // Atualiza a lista de provedores após o unlink
-                                  await displayAuthProviderList();
+
                                   // Exibe uma mensagem de sucesso (pode ser ajustada conforme necessário)
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(

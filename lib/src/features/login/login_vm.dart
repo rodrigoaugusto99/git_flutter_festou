@@ -101,7 +101,7 @@ class LoginVM extends _$LoginVM {
         }
         state = state.copyWith(
             status: LoginStateStatus.userLogin, isNew: () => isNew);
-        log(isNew.toString());
+
         break;
       case Failure(exception: AuthError(:final message)):
         state = state.copyWith(

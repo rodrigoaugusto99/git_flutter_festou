@@ -36,50 +36,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
     final loginVM = ref.watch(loginVMProvider.notifier);
 
-    // Função para lidar com o login com o Google
-    void handleGoogleLogin() {
-      // Coloque a lógica aqui para lidar com o login usando o provedor do Google
-    }
-
-// Função para lidar com o login com e-mail/senha
-    void handleEmailPasswordLogin() {
-      // Coloque a lógica aqui para lidar com o login usando e-mail/senha
-    }
-
-    Future changeProviderDialog() async {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Escolha uma opção'),
-            content: const Text(
-                'Você já tem uma conta cadastrada com e-mail/senha. Deseja fazer login com o Google?'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  // Fazer login com o Google
-                  Navigator.of(context).pop();
-                  // Chame a função que lida com o login com o Google
-                  handleGoogleLogin();
-                },
-                child: const Text('Login com Google'),
-              ),
-              TextButton(
-                onPressed: () {
-                  // Fazer login com e-mail/senha
-                  Navigator.of(context).pop();
-                  // Chame a função que lida com o login com e-mail/senha
-                  handleEmailPasswordLogin();
-                },
-                child: const Text('Login com E-mail/Senha'),
-              ),
-            ],
-          );
-        },
-      );
-    }
-
-    ref.listen(loginVMProvider, (_, state) async {
+    ref.listen(loginVMProvider, (_, state) {
       switch (state) {
         case LoginState(status: LoginStateStatus.initial):
           break;
@@ -89,19 +46,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           Messages.showError('Erro ao realizar login', context);
         case LoginState(status: LoginStateStatus.invalidForm):
           Messages.showInfo('Formulário inválido', context);
-        case LoginState(status: LoginStateStatus.userLogin, :final isNew?):
-          if (isNew) {
-            log('isNew é true');
-            //email novo - tudo certo
-          } else {
-            //email ja existe - (email/senha)
-            //todo: lógica para usuario escolher trocar de provedor ou logar com email e senha
-            await changeProviderDialog();
-            log('isNew é false');
-          }
+        case LoginState(status: LoginStateStatus.userLogin):
           Navigator.of(context)
-              .pushNamedAndRemoveUntil('/home', (route) => false);
-
+              .pushNamedAndRemoveUntil('/emailVerification', (route) => false);
+          break;
         //changeProviderDialog(dialogMessage);
       }
     });
