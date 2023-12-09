@@ -148,12 +148,10 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
     }
   }
 
-  Future<bool> areYouSureOnlyGoogle() async {
+  Future areYouSureOnlyGoogle() async {
     final user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      bool confirmed = false;
-
       await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -164,8 +162,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                    'O google é seu único provedor, se você desvincular, sua conta será permanentemente excluída.\n'),
-                Text('Confirme que a conta é realmente a sua:\n'),
+                    'O google é seu único provedor, se você desvincular, para usar essa conta, terá que criar uma senha com esse email.\n'),
               ],
             ),
             actions: <Widget>[
@@ -180,15 +177,8 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                   Navigator.of(context).pop(); // Fecha o diálogo
 
                   try {
-                    /*// Reautentica o usuário antes de excluir a conta
-                    AuthCredential credential = EmailAuthProvider.credential(
-                      email: user.email!,
-                      password: passwordController.text,
-                    );
-                    await user.reauthenticateWithCredential(credential);
-
-                    // Exclua a conta do usuário após a reautenticação
-                    await user.delete();*/
+                    // Exclua a conta do usuário
+                    await user.unlink("google.com");
 
                     //todo:
                     /* logica para deletar o usuario que tem apenas o goole como provedor,
@@ -197,19 +187,22 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                     pois só há google, nao há email/senha, entao precisaria de reautenticar com link.
                     seria com link mesmo? há um problema em deixar o provedor la vazio?*/
                     //?
-                    /*final authCredential = EmailAuthProvider.credentialWithLink(
-                        email: user.email!, emailLink: user.email!.toString());
 
-                    await user.linkWithCredential(authCredential);*/
                     //?
                     // Redirecione o usuário para a tela de login ou execute outras ações necessárias
-                    await ref
+                    /*await ref
                         .read(userFirestoreRepositoryProvider)
-                        .deleteUserDocument(user);
-                    ref.read(logoutProvider.future);
-                    log('Conta excluída com sucesso.');
-                    confirmed =
-                        true; // Indica que o usuário confirmou a exclusão
+                        .deleteUserDocument(user);*/
+                    //ref.read(logoutProvider.future);
+                    //log('Conta excluída com sucesso.');
+                    // Indica que o usuário confirmou a exclusão
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content:
+                            Text('Conta do Google desvinculada com sucesso!'),
+                      ),
+                    );
                   } on FirebaseAuthException catch (e) {
                     log('Erro ao excluir a conta: ${e.code}, ${e.message}');
                     // Trate os erros conforme necessário, exiba mensagens ao usuário, etc.
@@ -224,11 +217,8 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
           );
         },
       );
-
-      return confirmed;
     } else {
       log('Usuario não autenticado');
-      return false;
     }
   }
 
@@ -329,20 +319,8 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                   if (user.providerData.any((info) =>
                                       info.providerId != "password")) {
                                     //se desvincular, deve deletar o usuario, pois só há google como provedor.
-                                    bool confirmed =
-                                        await areYouSureOnlyGoogle();
-                                    if (confirmed) {
-                                      // Exibe uma mensagem de sucesso (pode ser ajustada conforme necessário)
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                              'Conta do Google desvinculada com sucesso!'),
-                                        ),
-                                      );
-                                    } else {
-                                      log('Usuario cancelou a açao de desvincular e deletar conta');
-                                    }
+
+                                    await areYouSureOnlyGoogle();
                                   } else {
                                     // Desvincula a conta do Google
                                     await user.unlink("google.com");

@@ -84,7 +84,12 @@ class LoginVM extends _$LoginVM {
     switch (result) {
       case Success(value: final userCredential):
 
-        // Verificar se o e-mail já está registrado no Firebase Auth
+/**o intuito desse if é verificar se, ao logar com google, ja tiver um  provedor com aquele email. 
+ * inicialmente, se tiveesse, ele teria sido criado pelo email/senha, mas se ocorreu o caso de 
+ * ter provedor do google unico e desvincular, então realmente nao vai ter provedor com aquele email,
+ * mas como essa verificacao leva em conta apenas
+*/
+        // Verificar se o e-mail já está registrado no Firebase Auth(pelo email/senha)
         if (userCredential.additionalUserInfo!.isNewUser) {
           // Não há e-mail igual no banco
           log("Novo usuário registrado");
@@ -95,7 +100,7 @@ class LoginVM extends _$LoginVM {
           );
           await useFirestoreRepository.saveUser(dto);
         } else {
-          // O usuário já estava registrado anteriormente
+          // O usuário já estava registrado anteriormente com email/senha ou GOOGLE
           log("Usuário não é novo");
           isNew = false;
         }

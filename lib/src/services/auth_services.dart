@@ -109,7 +109,8 @@ class AuthService {
   Future<Either<AuthException, UserCredential>> signInWithGoogle() async {
     try {
       // Trigger the authentication flow
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAccount? googleUser =
+          await GoogleSignIn(scopes: ['profile', 'email']).signIn();
 
       if (googleUser == null) {
         return Failure(AuthError(message: 'Login com Google cancelado.'));
