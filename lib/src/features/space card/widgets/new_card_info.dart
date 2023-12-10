@@ -2,7 +2,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/register/reserva/reserva_register_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/show%20reservations/space_reservations_page.dart';
-import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_denunciar_anuncio.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_descricao.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_new_map.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_map.dart';
@@ -10,10 +9,6 @@ import 'package:git_flutter_festou/src/features/register/feedback/feedback_regis
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_limited.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_all.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_disponibilidade.dart';
-import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_onde_voce_estara.dart';
-import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_politica_de_cancelamento.dart';
-import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_regras.dart';
-import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_seguranca_propriedade.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_todas_comodidades.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/space_with_image_model.dart';

@@ -6,8 +6,6 @@ import 'package:git_flutter_festou/src/core/fp/nil.dart';
 
 import 'package:git_flutter_festou/src/features/login/login_vm.dart';
 
-import 'package:git_flutter_festou/src/repositories/user/user_firestore_repository.dart';
-import 'package:git_flutter_festou/src/services/auth_services.dart';
 
 import 'user_auth_repository.dart';
 

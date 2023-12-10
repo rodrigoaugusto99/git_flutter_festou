@@ -2,9 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_state.dart';
+import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
+import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/servicos_acomodacoes.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_vm.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/pages/faca_destacar.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/pages/new_space_register_vm.dart';
+
 import 'package:git_flutter_festou/src/models/address_model.dart';
 import 'package:search_cep/search_cep.dart';
 
@@ -65,20 +67,7 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
 
   @override
   Widget build(BuildContext context) {
-    final spaceRegister = ref.read(spaceRegisterVmProvider.notifier);
-
-    void updateAddressAndNavigate(AddressModel address) {
-      // Lógica para atualizar o estado aqui
-      //spaceRegister.addAddress(address);
-
-      // Navega para a próxima página
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const FacaDestacar(),
-        ),
-      );
-    }
+    final spaceRegister = ref.watch(newSpaceRegisterVmProvider.notifier);
 
     return Scaffold(
       body: Column(
@@ -189,15 +178,24 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
                   ),
                 ),
                 InkWell(
-                  onTap: () => updateAddressAndNavigate(
-                    AddressModel(
-                      cep: cepEC.text,
-                      logradouro: logradouroEC.text,
-                      numero: numeroEC.text,
-                      bairro: bairroEC.text,
-                      cidade: cidadeEC.text,
-                    ),
-                  ),
+                  onTap: () async {
+                    await spaceRegister.validateForm(
+                      context,
+                      formKey,
+                      cepEC,
+                      logradouroEC,
+                      numeroEC,
+                      bairroEC,
+                      cidadeEC,
+                    );
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ServicosAcomodacoes(),
+                      ),
+                    );
+                  },
                   child: Container(
                     decoration: BoxDecoration(
                         color: Colors.black,

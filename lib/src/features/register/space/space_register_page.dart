@@ -3,10 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
+import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_review_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_state.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_vm.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/pages/new_space_register.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/services_panel.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/type_panel.dart';
 import 'package:search_cep/search_cep.dart';
@@ -86,17 +86,6 @@ class _EspacoRegisterPageState extends ConsumerState<EspacoRegisterPage> {
         case SpaceRegisterState(status: SpaceRegisterStateStatus.invalidForm):
           Messages.showError('Formulario invalido', context);
           break;
-        case SpaceRegisterState(
-            status: SpaceRegisterStateStatus.success,
-            temporarySpace: final space,
-          ):
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SpaceRegisterReviewPage(space: space),
-            ),
-          );
-          Messages.showSuccess('revise seu espaço', context);
 
         case SpaceRegisterState(
             status: SpaceRegisterStateStatus.error,
