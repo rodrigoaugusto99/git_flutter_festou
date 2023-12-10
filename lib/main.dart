@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/firebase_options.dart';
 import 'package:git_flutter_festou/src/core/ui/festou_nav_global_key.dart';
 import 'package:git_flutter_festou/src/features/auth/auth_page.dart';
+import 'package:git_flutter_festou/src/features/auth/verify_email_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/my%20favorite%20spaces%20mvvm/my_favorite_spaces_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/locador/quero_ser_locador.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
       navigatorKey: FestouNavGlobalKey.instance.navKey,
       routes: {
         '/home': (_) => const BottomNavBarPage(),
+        '/emailVerification': (_) => const VerifyEmailPage(),
         '/auth': (_) => const AuthPage(),
         '/login': (_) => const LoginPage(),
         '/register/user': (_) => const UserRegisterPage(),

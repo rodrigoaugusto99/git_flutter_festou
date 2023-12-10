@@ -29,7 +29,6 @@ class UserRegisterServiceImpl implements UserRegisterService {
 
     switch (registerAuthResult) {
       case Success(value: final userCredential):
-        //TODO: registerFirestoreResult entrar no switch
         final user = userCredential.user!;
 
         final userDataFirestore = (
