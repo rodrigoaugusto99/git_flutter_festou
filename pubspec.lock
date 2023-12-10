@@ -1208,6 +1208,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
+  simple_gesture_detector:
+    dependency: transitive
+    description:
+      name: simple_gesture_detector
+      sha256: "86d08f85f1f58583b7b4b941d989f48ea6ce08c1724a1d10954a277c2ec36592"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -1277,6 +1285,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  syncfusion_flutter_core:
+    dependency: transitive
+    description:
+      name: syncfusion_flutter_core
+      sha256: "8a1220f978491f56431c66dacf1bb97bf2abcd1458b542fe0dfbf1a630c67260"
+      url: "https://pub.dev"
+    source: hosted
+    version: "23.2.4"
+  syncfusion_flutter_datepicker:
+    dependency: "direct main"
+    description:
+      name: syncfusion_flutter_datepicker
+      sha256: a676067cb93697f059f84b2a4d143234273a1f9b10d0b5540bb63297d1f93f74
+      url: "https://pub.dev"
+    source: hosted
+    version: "23.2.4"
+  table_calendar:
+    dependency: "direct main"
+    description:
+      name: table_calendar
+      sha256: "1e3521a3e6d3fc7f645a58b135ab663d458ab12504f1ea7f9b4b81d47086c478"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.9"
   term_glyph:
     dependency: transitive
     description:
@@ -1293,6 +1325,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.0"
+  ticket_widget:
+    dependency: "direct main"
+    description:
+      name: ticket_widget
+      sha256: "82cfcd2296ea83b47ec474a2e55c64ac8cdfc3058ec08f079b2d05e598bdf137"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   timing:
     dependency: transitive
     description:

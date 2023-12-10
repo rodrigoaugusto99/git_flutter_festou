@@ -36,4 +36,6 @@ abstract interface class UserFirestoreRepository {
         String cnpj,
         String emailComercial,
       }) userData);
+
+  Future<Either<RepositoryException, UserModel>> getUserById(String userId);
 }

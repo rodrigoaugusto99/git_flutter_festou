@@ -177,7 +177,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
     }
   }
 
-  Future<String> getInfo(String string) async {
+  /*Future<String> getInfo(String string) async {
     try {
       final userDocument = await getUserDocument();
 
@@ -189,6 +189,32 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
     } catch (e) {
       log('Erro ao recuperar $string do usuario do firestore: $e');
       return 'deu erro';
+    }
+  }*/
+
+  @override
+  Future<Either<RepositoryException, UserModel>> getUserById(
+      String userId) async {
+    try {
+      final userDocument = await getUserDocumentById(userId);
+
+      final userData = userDocument.data() as Map<String, dynamic>;
+
+      final UserModel userModel = UserModel(
+        userData['email'] ?? '',
+        userData['nome'] ?? '',
+        userData['user_address']['cep'] ?? '',
+        userData['user_address']['logradouro'] ?? '',
+        userData['telefone'] ?? '',
+        userData['user_address']['bairro'] ?? '',
+        userData['user_address']['cidade'] ?? '',
+        userId,
+      );
+      return Success(userModel);
+    } catch (e) {
+      log('Erro ao recuperar dados do usuario no firestore: $e');
+      return Failure(
+          RepositoryException(message: 'Erro ao atualizar o usuário: $e'));
     }
   }
 
@@ -216,6 +242,18 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
     final user = FirebaseAuth.instance.currentUser!;
     final userDocument =
         await usersCollection.where('uid', isEqualTo: user.uid).get();
+
+    if (userDocument.docs.isNotEmpty) {
+      return userDocument.docs[0]; // Retorna o primeiro documento encontrado.
+    }
+
+    // Trate o caso em que nenhum usuário foi encontrado.
+    throw Exception("Usuário não encontrado");
+  }
+
+  Future<DocumentSnapshot> getUserDocumentById(String userId) async {
+    final userDocument =
+        await usersCollection.where('uid', isEqualTo: userId).get();
 
     if (userDocument.docs.isNotEmpty) {
       return userDocument.docs[0]; // Retorna o primeiro documento encontrado.

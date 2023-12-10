@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -42,13 +43,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         case LoginState(status: LoginStateStatus.error, :final errorMessage?):
           Messages.showError(errorMessage, context);
         case LoginState(status: LoginStateStatus.error):
-          Messages.showInfo('Erro ao realizar login', context);
+          Messages.showError('Erro ao realizar login', context);
         case LoginState(status: LoginStateStatus.invalidForm):
-          Messages.showError('Formulário inválido', context);
+          Messages.showInfo('Formulário inválido', context);
         case LoginState(status: LoginStateStatus.userLogin):
           Navigator.of(context)
-              .pushNamedAndRemoveUntil('/home', (route) => false);
-          Messages.showSuccess('Logado com sucesso!', context);
+              .pushNamedAndRemoveUntil('/emailVerification', (route) => false);
+          break;
+        //changeProviderDialog(dialogMessage);
       }
     });
 
@@ -65,29 +67,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final double glassHeight = (333 / 732) * screenHeight;
     final double glassWidth = (340 / 412) * screenWidth;
 
-    //final double emailFieldTop = (390 / 732) * screenHeight;
-    //final double emailFieldLeft = (62 / 412) * screenWidth;
     final double emailFieldWidth = (291 / 412) * screenWidth;
     final double emailFieldHeight = (39 / 732) * screenHeight;
 
-    //final double passwordFieldTop = (446 / 732) * screenHeight;
-    //final double passwordFieldLeft = (61 / 412) * screenWidth;
     final double passwordFieldWidth = (291 / 412) * screenWidth;
     final double passwordFieldHeight = (39 / 732) * screenHeight;
 
-    //final double forgotPasswordTextTop = (497 / 732) * screenHeight;
-    //final double forgotPasswordTextLeft = (229 / 412) * screenWidth;
-
-    //final double loginButtonTop = (530 / 732) * screenHeight;
-    //final double loginButtonLeft = (149 / 412) * screenWidth;
     final double loginButtonWidth = (115 / 412) * screenWidth;
     final double loginButtonHeight = (31 / 732) * screenHeight;
 
-    //final double registerTextTop = (577 / 732) * screenHeight;
-    //final double registerTextLeft = (128 / 412) * screenWidth;
-
-    //final double googleLoginButtonTop = (645 / 732) * screenHeight;
-    //final double googleLoginButtonLeft = (106 / 412) * screenWidth;
     final double googleLoginButtonWidth = (202 / 412) * screenWidth;
     final double googleLoginButtonHeight = (37 / 732) * screenHeight;
 
@@ -357,7 +345,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             height: screenHeight * 0.025,
                           ),
                           InkWell(
-                            onTap: () => AuthService().signInWithGoogle(),
+                            onTap: () => loginVM.loginWithGoogle(context),
                             child: Container(
                               width: googleLoginButtonWidth,
                               height: googleLoginButtonHeight,
@@ -388,44 +376,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 ],
                               ),
                             ),
-                              SizedBox(
-                                height: screenHeight * 0.025,
-                              ),
-                              InkWell(
-                                onTap: () => loginVM.loginWithGoogle(),
-                                child: Container(
-                                  width: googleLoginButtonWidth,
-                                  height: googleLoginButtonHeight,
-                                  decoration: BoxDecoration(
-                                    color:
-                                        const Color.fromARGB(255, 13, 46, 89),
-                                    borderRadius: BorderRadius.circular(
-                                        10), // Borda arredondada
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        ImageConstants.googleLogo,
-                                        width: googleLogoWidth,
-                                        height: googleLogoHeight * screenHeight,
-                                      ),
-                                      SizedBox(
-                                        width: screenWidth * 0.03,
-                                      ),
-                                      const Text(
-                                        'LOGIN COM O GOOGLE',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
                           ),
                         ],
                       ),
