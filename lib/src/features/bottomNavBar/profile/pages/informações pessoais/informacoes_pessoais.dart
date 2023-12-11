@@ -66,44 +66,10 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
     super.dispose();
   }
 
-  void verFotos(List<String> fotos) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Todas as fotos'),
-          content: SizedBox(
-            width: double.maxFinite,
-            height: 300, // Ajuste conforme necessário
-            child: ListView.builder(
-              itemCount: fotos.length,
-              itemBuilder: (BuildContext context, int index) {
-                // Aqui você pode personalizar a exibição da imagem.
-                // Por exemplo, usando a classe Image.network para exibir imagens da web.
-                return Image.network(
-                  fotos[index],
-                  fit: BoxFit.cover, // Ajuste conforme necessário
-                );
-              },
-            ),
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Fechar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final informacoesPessoaisVm =
-        ref.read(informacoesPessoaisVMProvider.notifier);
+        ref.watch(informacoesPessoaisVMProvider.notifier);
 
     ref.listen(informacoesPessoaisVMProvider, (_, state) {
       switch (state) {
@@ -313,25 +279,76 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                   },
                 ),
               ),
-              Row(
-                children: [
-                  ElevatedButton(
-                    onPressed: () => informacoesPessoaisVm.pickImage(),
-                    child: const Text('upload photo'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => informacoesPessoaisVm
-                        .uploadNewImages(widget.userWithImages.user.id),
-                    child: const Text('salvar'),
-                  ),
-                ],
+
+              InkWell(
+                onLongPress: () {
+                  log('message');
+                },
+                onTap: () => informacoesPessoaisVm.pickImage1(),
+                child: SizedBox(
+                  height: 200,
+                  child: widget.userWithImages.imageUrls.isNotEmpty
+                      ? Image.network(
+                          widget.userWithImages.imageUrls[0],
+                          fit: BoxFit.cover, // Ajuste conforme necessário
+                        )
+                      : Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(border: Border.all()),
+                          height: 200,
+                          child: const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Adicionar uma imagem'),
+                              Icon(
+                                Icons.photo_outlined,
+                                size: 40,
+                              ),
+                            ],
+                          ),
+                        ),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              InkWell(
+                onLongPress: () {
+                  log('message');
+                },
+                onTap: () => informacoesPessoaisVm.pickImage2(),
+                child: SizedBox(
+                  height: 200,
+                  child: widget.userWithImages.imageUrls.length > 1 &&
+                          widget.userWithImages.imageUrls[1].isNotEmpty
+                      ? Image.network(
+                          widget.userWithImages.imageUrls[1],
+                          fit: BoxFit.cover, // Ajuste conforme necessário
+                        )
+                      : Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(border: Border.all()),
+                          height: 200,
+                          child: const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Adicionar uma imagem'),
+                              Icon(
+                                Icons.photo_outlined,
+                                size: 40,
+                              ),
+                            ],
+                          ),
+                        ),
+                ),
               ),
 
               ElevatedButton(
                 onPressed: () {
-                  verFotos(widget.userWithImages.imageUrls);
+                  informacoesPessoaisVm
+                      .uploadNewImages(widget.userWithImages.user.id);
                 },
-                child: const Text('Ver documentos teste 2'),
+                child: const Text('salvar'),
               ),
             ],
           ),

@@ -65,23 +65,29 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
   }
 
   @override
-  Future<Either<RepositoryException, Nil>> uploadDocImages(
-      {required List<File> imageFiles, required String userId}) async {
+  Future<Either<RepositoryException, Nil>> uploadDocImages({
+    required List<File> imageFiles,
+    required String userId,
+  }) async {
     try {
-      // Crie um prefixo para as imagens com base no userId
       final prefix = 'documentos/$userId';
 
-      // Faça o upload de cada imagem individualmente
       for (int i = 0; i < imageFiles.length; i++) {
         final imageFile = imageFiles[i];
-        var storageRef = storage.ref().child('$prefix/imagem_$i.jpg');
 
-        await storageRef.putFile(imageFile);
+        // Verifique se o arquivo existe antes de tentar fazer o upload
+        if (imageFile.existsSync()) {
+          var storageRef = storage.ref().child('$prefix/imagem_$i.jpg');
+          await storageRef.putFile(imageFile);
+        } else {
+          // Caso o arquivo não exista, lide com isso de acordo com a sua lógica
+          log('Arquivo não encontrado: ${imageFile.path}');
+          // Pode lançar uma exceção ou retornar um resultado de falha, dependendo do que você preferir
+        }
       }
 
       log('Imagens do documento $userId enviadas com sucesso para o Firebase Storage');
 
-      // todo: return?
       return Success(nil);
     } catch (e) {
       log('Erro ao enviar documentos para o Firebase Storage: $e');

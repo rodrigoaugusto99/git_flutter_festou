@@ -32,6 +32,40 @@ class InformacoesPessoaisVM extends _$InformacoesPessoaisVM {
     }
   }
 
+  void pickImage1() async {
+    final imagePicker = ImagePicker();
+    final XFile? image =
+        await imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      final File imageFile = File(image.path);
+      state = state.copyWith(
+        image1: imageFile,
+        status: InformacoesPessoaisStateStatus.success,
+      );
+    } else {
+      // O usuário cancelou a seleção de imagem.
+      // Adicione tratamento de acordo com suas necessidades.
+    }
+  }
+
+  void pickImage2() async {
+    final imagePicker = ImagePicker();
+    final XFile? image =
+        await imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      final File imageFile = File(image.path);
+      state = state.copyWith(
+        image2: imageFile,
+        status: InformacoesPessoaisStateStatus.success,
+      );
+    } else {
+      // O usuário cancelou a seleção de imagem.
+      // Adicione tratamento de acordo com suas necessidades.
+    }
+  }
+
   void pickImage() async {
     final List<File> imageFiles = [];
     final imagePicker = ImagePicker();
@@ -47,12 +81,15 @@ class InformacoesPessoaisVM extends _$InformacoesPessoaisVM {
   }
 
   void uploadNewImages(String userId) async {
-    final InformacoesPessoaisState(:imageFiles) = state;
+    final InformacoesPessoaisState(:image1, :image2) = state;
+    //final InformacoesPessoaisState(:imageFiles) = state;
 
     final imageStorageRepository = ref.watch(imagesStorageRepositoryProvider);
+    state = state.copyWith(imageFiles: [image1, image2]);
+    List<File> allImages = state.imageFiles;
 
     final result2 = await imageStorageRepository.uploadDocImages(
-        imageFiles: imageFiles, userId: userId);
+        imageFiles: allImages, userId: userId);
 
     switch (result2) {
       case Success():
