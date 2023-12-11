@@ -14,4 +14,9 @@ abstract interface class ImagesStorageRepository {
       {required List<File> imageFiles, required String userId});
 
   Future<Either<RepositoryException, List<String>>> getDocImages(String userId);
+
+  Future<Either<RepositoryException, Nil>> deleteDocImage({
+    required String userId,
+    required int imageIndex,
+  });
 }

@@ -282,7 +282,47 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
 
               InkWell(
                 onLongPress: () {
-                  log('message');
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Excluir imagem'),
+                        content: const Text(
+                            'Tem certeza de que deseja excluir esta imagem?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pop(); // Fecha o AlertDialog
+                            },
+                            child: const Text('Cancelar'),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              // Exclui a imagem se o usuário clicar em "Confirmar"
+                              final deleted =
+                                  await informacoesPessoaisVm.deleteImage(
+                                      widget.userWithImages.user.id, 1);
+
+                              Navigator.of(context)
+                                  .pop(); // Fecha o AlertDialog
+                              if (deleted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content:
+                                        Text('Imagem deletada com sucesso'),
+                                  ),
+                                );
+                              } else {
+                                log('Erro ao deletar imagem');
+                              }
+                            },
+                            child: const Text('Confirmar'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 },
                 onTap: () => informacoesPessoaisVm.pickImage1(),
                 child: SizedBox(
@@ -314,7 +354,35 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
               ),
               InkWell(
                 onLongPress: () {
-                  log('message');
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Excluir imagem'),
+                        content: const Text(
+                            'Tem certeza de que deseja excluir esta imagem?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pop(); // Fecha o AlertDialog
+                            },
+                            child: const Text('Cancelar'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              // Exclui a imagem se o usuário clicar em "Confirmar"
+                              informacoesPessoaisVm.deleteImage(
+                                  widget.userWithImages.user.id, 2);
+                              Navigator.of(context)
+                                  .pop(); // Fecha o AlertDialog
+                            },
+                            child: const Text('Confirmar'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 },
                 onTap: () => informacoesPessoaisVm.pickImage2(),
                 child: SizedBox(

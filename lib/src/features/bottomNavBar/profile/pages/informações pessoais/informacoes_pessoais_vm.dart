@@ -105,6 +105,28 @@ class InformacoesPessoaisVM extends _$InformacoesPessoaisVM {
     }
   }
 
+  Future<bool> deleteImage(String userId, int index) async {
+    final imageStorageRepository = ref.watch(imagesStorageRepositoryProvider);
+
+    final result = await imageStorageRepository.deleteDocImage(
+        userId: userId, imageIndex: index);
+
+    switch (result) {
+      case Success():
+        state = state.copyWith(
+          status: InformacoesPessoaisStateStatus.success,
+        );
+        return true;
+
+      case Failure(exception: RepositoryException(:final message)):
+        state = state.copyWith(
+          status: InformacoesPessoaisStateStatus.error,
+          errorMessage: () => message,
+        );
+        return false;
+    }
+  }
+
 //ver as fotos que estao armazenadas no estado
 //(as que estão no banco)
   /*Future<List<String>> getNewImages(String userId) async {

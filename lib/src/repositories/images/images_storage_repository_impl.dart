@@ -121,4 +121,25 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
           RepositoryException(message: 'Erro ao recuperar documento'));
     }
   }
+
+  @override
+  Future<Either<RepositoryException, Nil>> deleteDocImage({
+    required String userId,
+    required int imageIndex,
+  }) async {
+    try {
+      final prefix = 'documentos/$userId';
+      var storageRef = storage.ref().child('$prefix/imagem_$imageIndex.jpg');
+
+      // Exclua a imagem no Firebase Storage
+      await storageRef.delete();
+
+      log('Imagem $imageIndex do documento $userId excluída com sucesso do Firebase Storage');
+
+      return Success(nil);
+    } catch (e) {
+      log('Erro ao excluir imagem do Firebase Storage: $e');
+      return Failure(RepositoryException(message: 'Erro ao excluir imagem'));
+    }
+  }
 }
