@@ -63,4 +63,56 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
       return Failure(RepositoryException(message: 'Erro ao recuperar imagens'));
     }
   }
+
+  @override
+  Future<Either<RepositoryException, Nil>> uploadDocImages(
+      {required List<File> imageFiles, required String userId}) async {
+    try {
+      // Crie um prefixo para as imagens com base no userId
+      final prefix = 'documentos/$userId';
+
+      // Faça o upload de cada imagem individualmente
+      for (int i = 0; i < imageFiles.length; i++) {
+        final imageFile = imageFiles[i];
+        var storageRef = storage.ref().child('$prefix/imagem_$i.jpg');
+
+        await storageRef.putFile(imageFile);
+      }
+
+      log('Imagens do documento $userId enviadas com sucesso para o Firebase Storage');
+
+      // todo: return?
+      return Success(nil);
+    } catch (e) {
+      log('Erro ao enviar documentos para o Firebase Storage: $e');
+      return Failure(RepositoryException(message: 'Erro ao salvar documento'));
+    }
+  }
+
+  @override
+  Future<Either<RepositoryException, List<String>>> getDocImages(
+      String userId) async {
+    try {
+      // Crie um prefixo para as imagens com base no userId
+      final prefix = 'documentos/$userId';
+
+      // Recupere a lista de itens no Firebase Storage com o prefixo
+      final ListResult result = await storage.ref().child(prefix).listAll();
+      final imageUrls = <String>[];
+
+      // Extraia as URLs das imagens da lista de itens
+      for (var item in result.items) {
+        final downloadURL = await item.getDownloadURL();
+        imageUrls.add(downloadURL);
+      }
+
+      log('Imagens do documento do $userId recuperadas com sucesso do Firebase Storage');
+
+      return Success(imageUrls);
+    } catch (e) {
+      log('Erro ao recuperar documentos do Firebase Storage: $e');
+      return Failure(
+          RepositoryException(message: 'Erro ao recuperar documento'));
+    }
+  }
 }

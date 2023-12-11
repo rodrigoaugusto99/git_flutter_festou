@@ -23,7 +23,7 @@ final userAuthRepositoryProvider = Provider<UserAuthRepository>.internal(
 
 typedef UserAuthRepositoryRef = ProviderRef<UserAuthRepository>;
 String _$userFirestoreRepositoryHash() =>
-    r'4229b69572695b836bb6de88ca8760f4e40a0658';
+    r'9364744e1f13c641572841575a6bfbcf66444a6d';
 
 /// See also [userFirestoreRepository].
 @ProviderFor(userFirestoreRepository)

@@ -29,7 +29,8 @@ UserAuthRepository userAuthRepository(UserAuthRepositoryRef ref) =>
 @Riverpod(keepAlive: true)
 UserFirestoreRepository userFirestoreRepository(
         UserFirestoreRepositoryRef ref) =>
-    UserFirestoreRepositoryImpl();
+    UserFirestoreRepositoryImpl(
+        imagesStorageRepository: ref.watch(imagesStorageRepositoryProvider));
 
 @Riverpod(keepAlive: true)
 UserLoginService userLoginService(UserLoginServiceRef ref) =>

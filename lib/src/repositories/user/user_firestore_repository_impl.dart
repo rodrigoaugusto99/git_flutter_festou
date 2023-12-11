@@ -5,11 +5,16 @@ import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:git_flutter_festou/src/models/user_with_images.dart';
+import 'package:git_flutter_festou/src/repositories/images/images_storage_repository.dart';
 import './user_firestore_repository.dart';
 
 class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
+  final ImagesStorageRepository imagesStorageRepository;
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
+
+  UserFirestoreRepositoryImpl({required this.imagesStorageRepository});
 
   /*@override
   Future<Either<RepositoryException, Nil>> saveUserWithGoogle() async {
@@ -153,7 +158,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
   }
 
   @override
-  Future<Either<RepositoryException, UserModel>> getUser() async {
+  Future<Either<RepositoryException, UserWithImages>> getUser() async {
     try {
       final userDocument = await getUserDocument();
 
@@ -169,7 +174,24 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         userData['user_address']['cidade'] ?? '',
         user.uid,
       );
-      return Success(userModel);
+
+      final userResult =
+          await imagesStorageRepository.getDocImages(userModel.id);
+
+      switch (userResult) {
+        case Success(value: final imagesData):
+          final UserWithImages userWithImages = UserWithImages(
+            userModel,
+            imagesData,
+          );
+          return Success(userWithImages);
+        case Failure():
+          log('Erro ao recuperar documentos do user: $userResult');
+          return Failure(RepositoryException(
+              message: 'Erro ao recuperar documentos do user: $userResult'));
+      }
+
+      //return Success(userWithImages);
     } catch (e) {
       log('Erro ao recuperar dados do usuario no firestore: $e');
       return Failure(

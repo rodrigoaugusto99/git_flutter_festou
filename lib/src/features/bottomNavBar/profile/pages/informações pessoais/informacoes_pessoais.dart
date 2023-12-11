@@ -1,15 +1,20 @@
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/image_grid.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais_status.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais_vm.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:git_flutter_festou/src/models/user_with_images.dart';
+import 'package:image_picker/image_picker.dart';
 
 class InformacoesPessoais extends ConsumerStatefulWidget {
-  final UserModel userModel;
-  const InformacoesPessoais({super.key, required this.userModel});
+  final UserWithImages userWithImages;
+  const InformacoesPessoais({super.key, required this.userWithImages});
 
   @override
   ConsumerState<InformacoesPessoais> createState() =>
@@ -37,13 +42,15 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
   void initState() {
     super.initState();
 
-    nameEC = TextEditingController(text: widget.userModel.name);
-    telefoneEC = TextEditingController(text: widget.userModel.telefone);
-    emailEC = TextEditingController(text: widget.userModel.email);
-    cepEC = TextEditingController(text: widget.userModel.cep);
-    logradourolEC = TextEditingController(text: widget.userModel.logradouro);
-    bairroEC = TextEditingController(text: widget.userModel.bairro);
-    cidadeEC = TextEditingController(text: widget.userModel.cidade);
+    nameEC = TextEditingController(text: widget.userWithImages.user.name);
+    telefoneEC =
+        TextEditingController(text: widget.userWithImages.user.telefone);
+    emailEC = TextEditingController(text: widget.userWithImages.user.email);
+    cepEC = TextEditingController(text: widget.userWithImages.user.cep);
+    logradourolEC =
+        TextEditingController(text: widget.userWithImages.user.logradouro);
+    bairroEC = TextEditingController(text: widget.userWithImages.user.bairro);
+    cidadeEC = TextEditingController(text: widget.userWithImages.user.cidade);
   }
 
   @override
@@ -59,6 +66,40 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
     super.dispose();
   }
 
+  void verFotos(List<String> fotos) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Todas as fotos'),
+          content: SizedBox(
+            width: double.maxFinite,
+            height: 300, // Ajuste conforme necessário
+            child: ListView.builder(
+              itemCount: fotos.length,
+              itemBuilder: (BuildContext context, int index) {
+                // Aqui você pode personalizar a exibição da imagem.
+                // Por exemplo, usando a classe Image.network para exibir imagens da web.
+                return Image.network(
+                  fotos[index],
+                  fit: BoxFit.cover, // Ajuste conforme necessário
+                );
+              },
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Fechar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final informacoesPessoaisVm =
@@ -70,6 +111,11 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
             status: InformacoesPessoaisStateStatus.success
           ):
           Messages.showSuccess('Alterado com sucesso!', context);
+        case InformacoesPessoaisState(
+            status: InformacoesPessoaisStateStatus.error,
+            :final errorMessage?
+          ):
+          Messages.showError(errorMessage, context);
         case InformacoesPessoaisState(
             status: InformacoesPessoaisStateStatus.error
           ):
@@ -100,7 +146,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 onTap: () => setState(() {
                   isEditingName = !isEditingName;
                 }),
-                child: MyRow(
+                child: myRow(
                   label: 'Nome civil',
                   controller: nameEC,
                   isEditing: isEditingName,
@@ -124,7 +170,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 onTap: () => setState(() {
                   isEditingTelefone = !isEditingTelefone;
                 }),
-                child: MyRow(
+                child: myRow(
                   label: 'Telefone',
                   controller: telefoneEC,
                   isEditing: isEditingTelefone,
@@ -147,7 +193,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 onTap: () => setState(() {
                   isEditinEmail = !isEditinEmail;
                 }),
-                child: MyRow(
+                child: myRow(
                   label: 'E-mail',
                   controller: emailEC,
                   isEditing: isEditinEmail,
@@ -173,7 +219,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 onTap: () => setState(() {
                   isEditingCep = !isEditingCep;
                 }),
-                child: MyRow(
+                child: myRow(
                   label: 'CEP',
                   controller: cepEC,
                   isEditing: isEditingCep,
@@ -198,7 +244,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 onTap: () => setState(() {
                   isEditingLogradouro = !isEditingLogradouro;
                 }),
-                child: MyRow(
+                child: myRow(
                   label: 'Logradouro',
                   controller: logradourolEC,
                   isEditing: isEditingLogradouro,
@@ -223,7 +269,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 onTap: () => setState(() {
                   isEditingBairro = !isEditingBairro;
                 }),
-                child: MyRow(
+                child: myRow(
                   label: 'Bairro',
                   controller: bairroEC,
                   isEditing: isEditingBairro,
@@ -247,7 +293,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 onTap: () => setState(() {
                   isEditingCidade = !isEditingCidade;
                 }),
-                child: MyRow(
+                child: myRow(
                   label: 'Cidade',
                   controller: cidadeEC,
                   isEditing: isEditingCidade,
@@ -267,6 +313,26 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                   },
                 ),
               ),
+              Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: () => informacoesPessoaisVm.pickImage(),
+                    child: const Text('upload photo'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => informacoesPessoaisVm
+                        .uploadNewImages(widget.userWithImages.user.id),
+                    child: const Text('salvar'),
+                  ),
+                ],
+              ),
+
+              ElevatedButton(
+                onPressed: () {
+                  verFotos(widget.userWithImages.imageUrls);
+                },
+                child: const Text('Ver documentos teste 2'),
+              ),
             ],
           ),
         ),
@@ -274,7 +340,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
     );
   }
 
-  Widget MyRow({
+  Widget myRow({
     required String label,
     required TextEditingController controller,
     required bool isEditing,

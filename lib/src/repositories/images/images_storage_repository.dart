@@ -9,4 +9,9 @@ abstract interface class ImagesStorageRepository {
 
   Future<Either<RepositoryException, List<String>>> getSpaceImages(
       String spaceId);
+
+  Future<Either<RepositoryException, Nil>> uploadDocImages(
+      {required List<File> imageFiles, required String userId});
+
+  Future<Either<RepositoryException, List<String>>> getDocImages(String userId);
 }
