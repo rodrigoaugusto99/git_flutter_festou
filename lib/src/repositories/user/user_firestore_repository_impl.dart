@@ -180,11 +180,23 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
 
       switch (userResult) {
         case Success(value: final imagesData):
-          final UserWithImages userWithImages = UserWithImages(
-            userModel,
-            imagesData,
-          );
-          return Success(userWithImages);
+          final userResult2 =
+              await imagesStorageRepository.getAvatarImage(userModel.id);
+
+          switch (userResult2) {
+            case Success(value: final avatarData):
+              final UserWithImages userWithImages = UserWithImages(
+                userModel,
+                imagesData,
+                avatarData,
+              );
+              return Success(userWithImages);
+            case Failure():
+              return Failure(RepositoryException(
+                  message:
+                      'Erro ao recuperar documentos do user: $userResult'));
+          }
+
         case Failure():
           log('Erro ao recuperar documentos do user: $userResult');
           return Failure(RepositoryException(

@@ -98,15 +98,37 @@ class InformacoesPessoaisVM extends _$InformacoesPessoaisVM {
   }
 
   void uploadNewImages(String userId) async {
-    final InformacoesPessoaisState(:image1, :image2, :avatar) = state;
+    final InformacoesPessoaisState(:image1, :image2) = state;
     //final InformacoesPessoaisState(:imageFiles) = state;
 
     final imageStorageRepository = ref.watch(imagesStorageRepositoryProvider);
-    state = state.copyWith(imageFiles: [image1, image2, avatar]);
+    state = state.copyWith(imageFiles: [image1, image2]);
     List<File> allImages = state.imageFiles;
 
     final result2 = await imageStorageRepository.uploadDocImages(
         imageFiles: allImages, userId: userId);
+
+    switch (result2) {
+      case Success():
+        state = state.copyWith(
+          status: InformacoesPessoaisStateStatus.success,
+        );
+
+      case Failure(exception: RepositoryException(:final message)):
+        state = state.copyWith(
+          status: InformacoesPessoaisStateStatus.error,
+          errorMessage: () => message,
+        );
+    }
+  }
+
+  void uploadAvatar(String userId) async {
+    final InformacoesPessoaisState(:avatar) = state;
+
+    final imageStorageRepository = ref.watch(imagesStorageRepositoryProvider);
+
+    final result2 = await imageStorageRepository.uploadAvatarImage(
+        avatar: avatar, userId: userId);
 
     switch (result2) {
       case Success():

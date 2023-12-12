@@ -143,7 +143,7 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
     }
   }
 
-  /*@override
+  @override
   Future<Either<RepositoryException, Nil>> uploadAvatarImage({
     required File avatar,
     required String userId,
@@ -171,7 +171,7 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
   }
 
   @override
-  Future<Either<RepositoryException, String>> getAvatarImage(
+  Future<Either<RepositoryException, List<String>>> getAvatarImage(
     String userId,
   ) async {
     try {
@@ -179,15 +179,20 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
       final prefix = 'avatar/$userId';
 
       // Recupere a referência da imagem no Firebase Storage
-      final result = await storage.ref().child(prefix).getDownloadURL();
+      final ListResult result = await storage.ref().child(prefix).listAll();
+      final imageUrls = <String>[];
+      for (var item in result.items) {
+        final downloadURL = await item.getDownloadURL();
+        imageUrls.add(downloadURL);
+      }
 
       log('Imagem do avatar do $userId recuperada com sucesso do Firebase Storage');
 
-      return Success(result);
+      return Success(imageUrls);
     } catch (e) {
       log('Erro ao recuperar imagem do avatar do Firebase Storage: $e');
       return Failure(
           RepositoryException(message: 'Erro ao recuperar imagem do avatar'));
     }
-  }*/
+  }
 }

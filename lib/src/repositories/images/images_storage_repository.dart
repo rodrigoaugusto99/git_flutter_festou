@@ -20,11 +20,11 @@ abstract interface class ImagesStorageRepository {
     required int imageIndex,
   });
 
-  /*Future<Either<RepositoryException, Nil>> uploadAvatarImage({
+  Future<Either<RepositoryException, Nil>> uploadAvatarImage({
     required File avatar,
     required String userId,
   });
-  Future<Either<RepositoryException, String>> getAvatarImage(
+  Future<Either<RepositoryException, List<String>>> getAvatarImage(
     String userId,
-  );*/
+  );
 }

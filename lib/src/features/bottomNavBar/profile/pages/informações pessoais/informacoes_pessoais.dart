@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
@@ -108,6 +109,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+
               InkWell(
                 onLongPress: () {
                   showDialog(
@@ -137,9 +139,9 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 onTap: () => informacoesPessoaisVm.pickAvatar(),
                 child: CircleAvatar(
                   radius: 60,
-                  child: widget.userWithImages.imageUrls[2] != ''
+                  child: widget.userWithImages.avatar.isNotEmpty
                       ? Image.network(
-                          widget.userWithImages.imageUrls[2],
+                          widget.userWithImages.avatar.first,
                           fit: BoxFit.cover, // Ajuste conforme necessário
                         )
                       : const Icon(
@@ -148,6 +150,14 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                         ),
                 ),
               ),
+              ElevatedButton(
+                onPressed: () {
+                  informacoesPessoaisVm
+                      .uploadAvatar(widget.userWithImages.user.id);
+                },
+                child: const Text('salvar avatar'),
+              ),
+
               InkWell(
                 onTap: () => setState(() {
                   isEditingName = !isEditingName;
@@ -367,7 +377,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 onTap: () => informacoesPessoaisVm.pickImage1(),
                 child: SizedBox(
                   height: 200,
-                  child: widget.userWithImages.imageUrls[0] != ''
+                  child: widget.userWithImages.imageUrls.isNotEmpty
                       ? Image.network(
                           widget.userWithImages.imageUrls[0],
                           fit: BoxFit.cover, // Ajuste conforme necessário
@@ -427,7 +437,8 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 onTap: () => informacoesPessoaisVm.pickImage2(),
                 child: SizedBox(
                   height: 200,
-                  child: widget.userWithImages.imageUrls[1] != ''
+                  child: widget.userWithImages.imageUrls.length > 1 &&
+                          widget.userWithImages.imageUrls[1].isNotEmpty
                       ? Image.network(
                           widget.userWithImages.imageUrls[1],
                           fit: BoxFit.cover, // Ajuste conforme necessário
