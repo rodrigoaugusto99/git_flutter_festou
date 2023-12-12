@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
@@ -83,23 +84,8 @@ class InformacoesPessoaisVM extends _$InformacoesPessoaisVM {
     }
   }
 
-  void pickImage() async {
-    final List<File> imageFiles = [];
-    final imagePicker = ImagePicker();
-    final List<XFile> images = await imagePicker.pickMultiImage();
-    for (XFile image in images) {
-      final imageFile = File(image.path);
-      imageFiles.add(imageFile);
-    }
-    state = state.copyWith(
-      imageFiles: imageFiles,
-      status: InformacoesPessoaisStateStatus.success,
-    );
-  }
-
-  void uploadNewImages(String userId) async {
+  Future<bool> uploadNewImages(String userId) async {
     final InformacoesPessoaisState(:image1, :image2) = state;
-    //final InformacoesPessoaisState(:imageFiles) = state;
 
     final imageStorageRepository = ref.watch(imagesStorageRepositoryProvider);
     state = state.copyWith(imageFiles: [image1, image2]);
@@ -113,16 +99,18 @@ class InformacoesPessoaisVM extends _$InformacoesPessoaisVM {
         state = state.copyWith(
           status: InformacoesPessoaisStateStatus.success,
         );
+        return true;
 
       case Failure(exception: RepositoryException(:final message)):
         state = state.copyWith(
           status: InformacoesPessoaisStateStatus.error,
           errorMessage: () => message,
         );
+        return false;
     }
   }
 
-  void uploadAvatar(String userId) async {
+  Future<bool> uploadAvatar(String userId) async {
     final InformacoesPessoaisState(:avatar) = state;
 
     final imageStorageRepository = ref.watch(imagesStorageRepositoryProvider);
@@ -135,12 +123,14 @@ class InformacoesPessoaisVM extends _$InformacoesPessoaisVM {
         state = state.copyWith(
           status: InformacoesPessoaisStateStatus.success,
         );
+        return true;
 
       case Failure(exception: RepositoryException(:final message)):
         state = state.copyWith(
           status: InformacoesPessoaisStateStatus.error,
           errorMessage: () => message,
         );
+        return false;
     }
   }
 
@@ -149,6 +139,27 @@ class InformacoesPessoaisVM extends _$InformacoesPessoaisVM {
 
     final result = await imageStorageRepository.deleteDocImage(
         userId: userId, imageIndex: index);
+
+    switch (result) {
+      case Success():
+        state = state.copyWith(
+          status: InformacoesPessoaisStateStatus.success,
+        );
+        return true;
+
+      case Failure(exception: RepositoryException(:final message)):
+        state = state.copyWith(
+          status: InformacoesPessoaisStateStatus.error,
+          errorMessage: () => message,
+        );
+        return false;
+    }
+  }
+
+  Future<bool> deleteImageFirestore(String fieldName, String userId) async {
+    final imageStorageRepository = ref.watch(userFirestoreRepositoryProvider);
+
+    final result = await imageStorageRepository.clearField(fieldName, userId);
 
     switch (result) {
       case Success():

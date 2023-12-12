@@ -38,5 +38,9 @@ abstract interface class UserFirestoreRepository {
         String emailComercial,
       }) userData);
 
-  Future<Either<RepositoryException, UserModel>> getUserById(String userId);
+  Future<Either<RepositoryException, UserWithImages>> getUserById(
+      String userId);
+
+  Future<Either<RepositoryException, Nil>> clearField(
+      String fieldName, String userId);
 }

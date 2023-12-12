@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -67,6 +68,9 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
     super.dispose();
   }
 
+  final Stream<QuerySnapshot> _usersStream =
+      FirebaseFirestore.instance.collection('users').snapshots();
+
   @override
   Widget build(BuildContext context) {
     final informacoesPessoaisVm =
@@ -77,12 +81,14 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
         case InformacoesPessoaisState(
             status: InformacoesPessoaisStateStatus.success
           ):
-          Messages.showSuccess('Alterado com sucesso!', context);
+          break;
+
         case InformacoesPessoaisState(
             status: InformacoesPessoaisStateStatus.error,
             :final errorMessage?
           ):
           Messages.showError(errorMessage, context);
+
         case InformacoesPessoaisState(
             status: InformacoesPessoaisStateStatus.error
           ):
@@ -110,53 +116,75 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 ),
               ),
 
-              InkWell(
-                onLongPress: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Excluir avatar'),
-                        content: const Text(
-                            'Tem certeza de que deseja excluir seu avatar?'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .pop(); // Fecha o AlertDialog
+              StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('users')
+                      .where('uid', isEqualTo: widget.userWithImages.user.id)
+                      .limit(1)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    }
+
+                    if (snapshot.hasError) {
+                      return Text('Erro: ${snapshot.error}');
+                    }
+                    if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                      Map<String, dynamic> userData =
+                          snapshot.data!.docs[0].data() as Map<String, dynamic>;
+                      String avatarUrl = userData['avatar_url'] ?? '';
+
+                      return InkWell(
+                        onLongPress: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Excluir avatar'),
+                                content: const Text(
+                                    'Tem certeza de que deseja excluir seu avatar?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(); // Fecha o AlertDialog
+                                    },
+                                    child: const Text('Cancelar'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      informacoesPessoaisVm
+                                          .deleteImageFirestore('avatar_url',
+                                              widget.userWithImages.user.id);
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Confirmar'),
+                                  ),
+                                ],
+                              );
                             },
-                            child: const Text('Cancelar'),
-                          ),
-                          TextButton(
-                            onPressed: () async {},
-                            child: const Text('Confirmar'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                onTap: () => informacoesPessoaisVm.pickAvatar(),
-                child: CircleAvatar(
-                  radius: 60,
-                  child: widget.userWithImages.avatar.isNotEmpty
-                      ? Image.network(
-                          widget.userWithImages.avatar.first,
-                          fit: BoxFit.cover, // Ajuste conforme necessário
-                        )
-                      : const Icon(
-                          Icons.person,
-                          size: 90,
+                          );
+                        },
+                        onTap: () => informacoesPessoaisVm.pickAvatar(),
+                        child: CircleAvatar(
+                          radius: 60,
+                          child: avatarUrl != ''
+                              ? Image.network(
+                                  avatarUrl,
+                                  fit: BoxFit
+                                      .cover, // Ajuste conforme necessário
+                                )
+                              : const Icon(
+                                  Icons.person,
+                                  size: 90,
+                                ),
                         ),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  informacoesPessoaisVm
-                      .uploadAvatar(widget.userWithImages.user.id);
-                },
-                child: const Text('salvar avatar'),
-              ),
+                      );
+                    } else {
+                      return const Text('Nenhum documento encontrado.');
+                    }
+                  }),
 
               InkWell(
                 onTap: () => setState(() {
@@ -330,79 +358,166 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 ),
               ),
 
-              InkWell(
-                onLongPress: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Excluir imagem'),
-                        content: const Text(
-                            'Tem certeza de que deseja excluir esta imagem?'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .pop(); // Fecha o AlertDialog
-                            },
-                            child: const Text('Cancelar'),
-                          ),
-                          TextButton(
-                            onPressed: () async {
-                              // Exclui a imagem se o usuário clicar em "Confirmar"
-                              final deleted =
-                                  await informacoesPessoaisVm.deleteImage(
-                                      widget.userWithImages.user.id, 0);
+              StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('users')
+                    .where('uid', isEqualTo: widget.userWithImages.user.id)
+                    .limit(1)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  }
 
-                              Navigator.of(context)
-                                  .pop(); // Fecha o AlertDialog
-                              if (deleted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content:
-                                        Text('Imagem deletada com sucesso'),
-                                  ),
+                  if (snapshot.hasError) {
+                    return Text('Erro: ${snapshot.error}');
+                  }
+
+                  // Verifique se há documentos disponíveis
+                  if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                    // Obtenha os dados do primeiro documento encontrado
+                    Map<String, dynamic> userData =
+                        snapshot.data!.docs[0].data() as Map<String, dynamic>;
+                    String doc1Url = userData['doc1_url'] ?? '';
+                    String doc2Url = userData['doc2_url'] ?? '';
+
+                    return Column(
+                      children: [
+                        InkWell(
+                          onLongPress: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Excluir imagem'),
+                                  content: const Text(
+                                      'Tem certeza de que deseja excluir esta imagem?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pop(); // Fecha o AlertDialog
+                                      },
+                                      child: const Text('Cancelar'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        // Exclui a imagem se o usuário clicar em "Confirmar"
+                                        informacoesPessoaisVm.deleteImage(
+                                            widget.userWithImages.user.id, 0);
+                                        informacoesPessoaisVm
+                                            .deleteImageFirestore('doc1_url',
+                                                widget.userWithImages.user.id);
+                                        Navigator.of(context)
+                                            .pop(); // Fecha o AlertDialog
+                                      },
+                                      child: const Text('Confirmar'),
+                                    ),
+                                  ],
                                 );
-                              } else {
-                                log('Erro ao deletar imagem');
-                              }
-                            },
-                            child: const Text('Confirmar'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                onTap: () => informacoesPessoaisVm.pickImage1(),
-                child: SizedBox(
-                  height: 200,
-                  child: widget.userWithImages.imageUrls.isNotEmpty
-                      ? Image.network(
-                          widget.userWithImages.imageUrls[0],
-                          fit: BoxFit.cover, // Ajuste conforme necessário
-                        )
-                      : Container(
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(border: Border.all()),
-                          height: 200,
-                          child: const Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('Adicionar uma imagem'),
-                              Icon(
-                                Icons.photo_outlined,
-                                size: 40,
-                              ),
-                            ],
+                              },
+                            );
+                          },
+                          onTap: () => informacoesPessoaisVm.pickImage1(),
+                          child: SizedBox(
+                            height: 200,
+                            child: doc1Url != ''
+                                ? Image.network(
+                                    doc1Url,
+                                    fit: BoxFit
+                                        .cover, // Ajuste conforme necessário
+                                  )
+                                : Container(
+                                    alignment: Alignment.center,
+                                    decoration:
+                                        BoxDecoration(border: Border.all()),
+                                    height: 200,
+                                    child: const Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text('Adicionar uma imagem'),
+                                        Icon(
+                                          Icons.photo_outlined,
+                                          size: 40,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                           ),
                         ),
-                ),
+                        InkWell(
+                          onLongPress: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Excluir imagem'),
+                                  content: const Text(
+                                      'Tem certeza de que deseja excluir esta imagem?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pop(); // Fecha o AlertDialog
+                                      },
+                                      child: const Text('Cancelar'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        // Exclui a imagem se o usuário clicar em "Confirmar"
+                                        informacoesPessoaisVm.deleteImage(
+                                            widget.userWithImages.user.id, 1);
+                                        informacoesPessoaisVm
+                                            .deleteImageFirestore('doc2_url',
+                                                widget.userWithImages.user.id);
+                                        Navigator.of(context)
+                                            .pop(); // Fecha o AlertDialog
+                                      },
+                                      child: const Text('Confirmar'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          onTap: () => informacoesPessoaisVm.pickImage2(),
+                          child: SizedBox(
+                            height: 200,
+                            child: doc2Url != ''
+                                ? Image.network(
+                                    doc2Url,
+                                    fit: BoxFit
+                                        .cover, // Ajuste conforme necessário
+                                  )
+                                : Container(
+                                    alignment: Alignment.center,
+                                    decoration:
+                                        BoxDecoration(border: Border.all()),
+                                    height: 200,
+                                    child: const Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text('Adicionar uma imagem'),
+                                        Icon(
+                                          Icons.photo_outlined,
+                                          size: 40,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                          ),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return const Text('Nenhum documento encontrado.');
+                  }
+                },
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              InkWell(
+
+              /*InkWell(
                 onLongPress: () {
                   showDialog(
                     context: context,
@@ -437,10 +552,9 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 onTap: () => informacoesPessoaisVm.pickImage2(),
                 child: SizedBox(
                   height: 200,
-                  child: widget.userWithImages.imageUrls.length > 1 &&
-                          widget.userWithImages.imageUrls[1].isNotEmpty
+                  child: widget.userWithImages.doc2Url != ''
                       ? Image.network(
-                          widget.userWithImages.imageUrls[1],
+                          widget.userWithImages.doc2Url,
                           fit: BoxFit.cover, // Ajuste conforme necessário
                         )
                       : Container(
@@ -459,12 +573,24 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                           ),
                         ),
                 ),
-              ),
+              ),*/
 
               ElevatedButton(
-                onPressed: () {
-                  informacoesPessoaisVm
+                onPressed: () async {
+                  final bool1 = await informacoesPessoaisVm
                       .uploadNewImages(widget.userWithImages.user.id);
+                  final bool2 = await informacoesPessoaisVm
+                      .uploadAvatar(widget.userWithImages.user.id);
+
+                  if (bool1 && bool2) {
+                    Messages.showSuccess('Dados salvos com sucesso', context);
+                  } else if (!bool1 && bool2) {
+                    Messages.showError('erro ao salvar documentos', context);
+                  } else if (!bool2 && bool1) {
+                    Messages.showError('erro ao salvar avatar', context);
+                  } else {
+                    Messages.showError('erro ao salvar dados', context);
+                  }
                 },
                 child: const Text('salvar'),
               ),

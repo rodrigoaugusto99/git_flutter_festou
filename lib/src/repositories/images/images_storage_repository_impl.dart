@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 
@@ -12,6 +13,9 @@ import './images_storage_repository.dart';
 
 class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
   final storage = FirebaseStorage.instance;
+
+  final CollectionReference usersCollection =
+      FirebaseFirestore.instance.collection('users');
 
   @override
   Future<Either<RepositoryException, Nil>> uploadSpaceImages(
@@ -79,6 +83,23 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
         if (imageFile.existsSync()) {
           var storageRef = storage.ref().child('$prefix/imagem_doc$i.jpg');
           await storageRef.putFile(imageFile);
+
+          // Obtém a URL da imagem após o upload
+          final imageUrl = await storageRef.getDownloadURL();
+
+          // Atualiza o documento do usuário no Firestore
+          QuerySnapshot querySnapshot =
+              await usersCollection.where("uid", isEqualTo: userId).get();
+
+          if (querySnapshot.docs.length == 1) {
+            DocumentReference userDocRef = querySnapshot.docs[0].reference;
+
+            await userDocRef.update({
+              'doc${i + 1}_url': imageUrl,
+            });
+
+            log('Informações de usuário adicionadas com sucesso!');
+          }
         } else {
           // Caso o arquivo não exista, lide com isso de acordo com a sua lógica
           log('Arquivo não encontrado: ${imageFile.path}');
@@ -86,7 +107,7 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
         }
       }
 
-      log('Imagens do documento $userId enviadas com sucesso para o Firebase Storage');
+      log('Imagens do documento $userId enviadas com sucesso para o Firebase Storage e URLs salvas no Firestore');
 
       return Success(nil);
     } catch (e) {
@@ -155,6 +176,23 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
       if (avatar.existsSync()) {
         var storageRef = storage.ref().child('$prefix/imagem_avatar.jpg');
         await storageRef.putFile(avatar);
+
+        // Obtém a URL da imagem após o upload
+        final imageUrl = await storageRef.getDownloadURL();
+
+        // Atualiza o documento do usuário no Firestore
+        QuerySnapshot querySnapshot =
+            await usersCollection.where("uid", isEqualTo: userId).get();
+
+        if (querySnapshot.docs.length == 1) {
+          DocumentReference userDocRef = querySnapshot.docs[0].reference;
+
+          await userDocRef.update({
+            'avatar_url': imageUrl,
+          });
+
+          log('Informações de usuário adicionadas com sucesso!');
+        }
       } else {
         // Caso o arquivo não exista, lide com isso de acordo com a sua lógica
         log('Arquivo não encontrado: ${avatar.path}');
