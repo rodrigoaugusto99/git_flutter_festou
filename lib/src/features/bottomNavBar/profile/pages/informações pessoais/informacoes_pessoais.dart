@@ -90,7 +90,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
     });
 
     //todo!: apenas atualiza no app se restartar
-    //todo: vm - build {}, page .when, :loading em cada textfield quando atualizar?
+    //todo: vm - build {}, page .when, :loading em cada textfield quando atualizar? ou stream logo
 
     return Scaffold(
       appBar: AppBar(
@@ -106,6 +106,46 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
+                ),
+              ),
+              InkWell(
+                onLongPress: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Excluir avatar'),
+                        content: const Text(
+                            'Tem certeza de que deseja excluir seu avatar?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pop(); // Fecha o AlertDialog
+                            },
+                            child: const Text('Cancelar'),
+                          ),
+                          TextButton(
+                            onPressed: () async {},
+                            child: const Text('Confirmar'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                onTap: () => informacoesPessoaisVm.pickAvatar(),
+                child: CircleAvatar(
+                  radius: 60,
+                  child: widget.userWithImages.imageUrls[2] != ''
+                      ? Image.network(
+                          widget.userWithImages.imageUrls[2],
+                          fit: BoxFit.cover, // Ajuste conforme necessário
+                        )
+                      : const Icon(
+                          Icons.person,
+                          size: 90,
+                        ),
                 ),
               ),
               InkWell(
@@ -302,7 +342,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                               // Exclui a imagem se o usuário clicar em "Confirmar"
                               final deleted =
                                   await informacoesPessoaisVm.deleteImage(
-                                      widget.userWithImages.user.id, 1);
+                                      widget.userWithImages.user.id, 0);
 
                               Navigator.of(context)
                                   .pop(); // Fecha o AlertDialog
@@ -327,7 +367,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 onTap: () => informacoesPessoaisVm.pickImage1(),
                 child: SizedBox(
                   height: 200,
-                  child: widget.userWithImages.imageUrls.isNotEmpty
+                  child: widget.userWithImages.imageUrls[0] != ''
                       ? Image.network(
                           widget.userWithImages.imageUrls[0],
                           fit: BoxFit.cover, // Ajuste conforme necessário
@@ -373,7 +413,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                             onPressed: () {
                               // Exclui a imagem se o usuário clicar em "Confirmar"
                               informacoesPessoaisVm.deleteImage(
-                                  widget.userWithImages.user.id, 2);
+                                  widget.userWithImages.user.id, 1);
                               Navigator.of(context)
                                   .pop(); // Fecha o AlertDialog
                             },
@@ -387,8 +427,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 onTap: () => informacoesPessoaisVm.pickImage2(),
                 child: SizedBox(
                   height: 200,
-                  child: widget.userWithImages.imageUrls.length > 1 &&
-                          widget.userWithImages.imageUrls[1].isNotEmpty
+                  child: widget.userWithImages.imageUrls[1] != ''
                       ? Image.network(
                           widget.userWithImages.imageUrls[1],
                           fit: BoxFit.cover, // Ajuste conforme necessário

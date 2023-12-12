@@ -32,6 +32,23 @@ class InformacoesPessoaisVM extends _$InformacoesPessoaisVM {
     }
   }
 
+  void pickAvatar() async {
+    final imagePicker = ImagePicker();
+    final XFile? image =
+        await imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      final File avatarFile = File(image.path);
+      state = state.copyWith(
+        avatar: avatarFile,
+        status: InformacoesPessoaisStateStatus.success,
+      );
+    } else {
+      // O usuário cancelou a seleção de imagem.
+      // Adicione tratamento de acordo com suas necessidades.
+    }
+  }
+
   void pickImage1() async {
     final imagePicker = ImagePicker();
     final XFile? image =
@@ -81,11 +98,11 @@ class InformacoesPessoaisVM extends _$InformacoesPessoaisVM {
   }
 
   void uploadNewImages(String userId) async {
-    final InformacoesPessoaisState(:image1, :image2) = state;
+    final InformacoesPessoaisState(:image1, :image2, :avatar) = state;
     //final InformacoesPessoaisState(:imageFiles) = state;
 
     final imageStorageRepository = ref.watch(imagesStorageRepositoryProvider);
-    state = state.copyWith(imageFiles: [image1, image2]);
+    state = state.copyWith(imageFiles: [image1, image2, avatar]);
     List<File> allImages = state.imageFiles;
 
     final result2 = await imageStorageRepository.uploadDocImages(

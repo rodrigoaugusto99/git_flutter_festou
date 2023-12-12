@@ -4,5 +4,8 @@ class UserWithImages {
   final UserModel user;
   final List<String> imageUrls;
 
-  UserWithImages(this.user, this.imageUrls);
+  UserWithImages(
+    this.user,
+    this.imageUrls,
+  );
 }

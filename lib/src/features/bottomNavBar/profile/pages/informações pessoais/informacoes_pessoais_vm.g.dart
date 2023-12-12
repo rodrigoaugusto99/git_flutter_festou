@@ -7,7 +7,7 @@ part of 'informacoes_pessoais_vm.dart';
 // **************************************************************************
 
 String _$informacoesPessoaisVMHash() =>
-    r'd094d071faf68983db5a7978c8928221a508d35e';
+    r'f7831f3da7b70865a5051f3f5db551f6dde672a7';
 
 /// See also [InformacoesPessoaisVM].
 @ProviderFor(InformacoesPessoaisVM)

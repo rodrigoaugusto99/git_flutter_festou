@@ -77,7 +77,7 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
 
         // Verifique se o arquivo existe antes de tentar fazer o upload
         if (imageFile.existsSync()) {
-          var storageRef = storage.ref().child('$prefix/imagem_$i.jpg');
+          var storageRef = storage.ref().child('$prefix/imagem_doc$i.jpg');
           await storageRef.putFile(imageFile);
         } else {
           // Caso o arquivo não exista, lide com isso de acordo com a sua lógica
@@ -129,7 +129,7 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
   }) async {
     try {
       final prefix = 'documentos/$userId';
-      var storageRef = storage.ref().child('$prefix/imagem_$imageIndex.jpg');
+      var storageRef = storage.ref().child('$prefix/imagem_doc$imageIndex.jpg');
 
       // Exclua a imagem no Firebase Storage
       await storageRef.delete();
@@ -142,4 +142,52 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
       return Failure(RepositoryException(message: 'Erro ao excluir imagem'));
     }
   }
+
+  /*@override
+  Future<Either<RepositoryException, Nil>> uploadAvatarImage({
+    required File avatar,
+    required String userId,
+  }) async {
+    try {
+      final prefix = 'avatar/$userId';
+
+      // Verifique se o arquivo existe antes de tentar fazer o upload
+      if (avatar.existsSync()) {
+        var storageRef = storage.ref().child('$prefix/imagem_avatar.jpg');
+        await storageRef.putFile(avatar);
+      } else {
+        // Caso o arquivo não exista, lide com isso de acordo com a sua lógica
+        log('Arquivo não encontrado: ${avatar.path}');
+        // Pode lançar uma exceção ou retornar um resultado de falha, dependendo do que você preferir
+      }
+
+      log('Avatar do usuario $userId enviado com sucesso para o Firebase Storage');
+
+      return Success(nil);
+    } catch (e) {
+      log('Erro ao enviar aavatar para o Firebase Storage: $e');
+      return Failure(RepositoryException(message: 'Erro ao salvar avatar'));
+    }
+  }
+
+  @override
+  Future<Either<RepositoryException, String>> getAvatarImage(
+    String userId,
+  ) async {
+    try {
+      // Crie um prefixo para as imagens com base no userId
+      final prefix = 'avatar/$userId';
+
+      // Recupere a referência da imagem no Firebase Storage
+      final result = await storage.ref().child(prefix).getDownloadURL();
+
+      log('Imagem do avatar do $userId recuperada com sucesso do Firebase Storage');
+
+      return Success(result);
+    } catch (e) {
+      log('Erro ao recuperar imagem do avatar do Firebase Storage: $e');
+      return Failure(
+          RepositoryException(message: 'Erro ao recuperar imagem do avatar'));
+    }
+  }*/
 }
