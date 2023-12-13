@@ -66,32 +66,7 @@ class _NewFeedbackWidgetAllState extends State<NewFeedbackWidgetAll> {
                               feedback.avatar,
                               fit: BoxFit.cover, // Ajuste conforme necessário
                             )
-                          : const Icon(
-                              Icons.person,
-                              size: 40,
-                            ),
-                    ),
-                    CircleAvatar(
-                      child: Text(
-                        feedback.userName.isNotEmpty
-                            ? feedback.userName[0].toUpperCase()
-                            : '',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                    ),
-                    CircleAvatar(
-                      child: Text(
-                        feedback.userName.isNotEmpty
-                            ? feedback.userName[0].toUpperCase()
-                            : '',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                        ),
-                      ),
+                          : Text(feedback.userName[0].toUpperCase()),
                     ),
 
                     const SizedBox(width: 8.0),

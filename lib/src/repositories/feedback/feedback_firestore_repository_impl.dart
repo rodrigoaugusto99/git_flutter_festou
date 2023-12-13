@@ -188,7 +188,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
       content: feedbackDocument['content'] ?? '',
       userName: feedbackDocument['user_name'] ?? '',
       date: feedbackDocument['date'] ?? '',
-      avatar: '',
+      avatar: feedbackDocument['avatar'] ?? '',
     );
   }
 
