@@ -70,6 +70,13 @@ ReservationFirestoreRepository reservationFirestoreRepository(
 
 @riverpod
 Future<void> logout(LogoutRef ref) async {
+  ref.invalidate(userFirestoreRepositoryProvider);
+  ref.invalidate(userAuthRepositoryProvider);
+  //ref.invalidate(spaceFirestoreRepositoryProvider);
+  //ref.invalidate(imagesStorageRepositoryProvider);
+  //ref.invalidate(feedbackFirestoreRepositoryProvider);
+  //ref.invalidate(reservationFirestoreRepositoryProvider);
+
   FirebaseAuth.instance.signOut();
 
   Navigator.of(FestouNavGlobalKey.instance.navKey.currentContext!)

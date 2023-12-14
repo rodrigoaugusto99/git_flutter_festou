@@ -126,7 +126,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           },
           error: (Object error, StackTrace stackTrace) {
             return const Stack(children: [
-              Center(child: Text('Inserir imagem melhor papai')),
+              Center(child: Text('ish deu erro')),
               Center(child: Icon(Icons.error)),
             ]);
           },
