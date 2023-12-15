@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/ui/festou_nav_global_key.dart';
-import 'package:git_flutter_festou/src/features/login/login_vm.dart';
 import 'package:git_flutter_festou/src/repositories/feedback/feedback_firestore_repository.dart';
 import 'package:git_flutter_festou/src/repositories/feedback/feedback_firestore_repository_impl.dart';
 import 'package:git_flutter_festou/src/repositories/images/images_storage_repository.dart';
@@ -30,7 +29,8 @@ UserAuthRepository userAuthRepository(UserAuthRepositoryRef ref) =>
 @Riverpod(keepAlive: true)
 UserFirestoreRepository userFirestoreRepository(
         UserFirestoreRepositoryRef ref) =>
-    UserFirestoreRepositoryImpl();
+    UserFirestoreRepositoryImpl(
+        imagesStorageRepository: ref.watch(imagesStorageRepositoryProvider));
 
 @Riverpod(keepAlive: true)
 UserLoginService userLoginService(UserLoginServiceRef ref) =>
@@ -70,6 +70,13 @@ ReservationFirestoreRepository reservationFirestoreRepository(
 
 @riverpod
 Future<void> logout(LogoutRef ref) async {
+  ref.invalidate(userFirestoreRepositoryProvider);
+  ref.invalidate(userAuthRepositoryProvider);
+  //ref.invalidate(spaceFirestoreRepositoryProvider);
+  //ref.invalidate(imagesStorageRepositoryProvider);
+  //ref.invalidate(feedbackFirestoreRepositoryProvider);
+  //ref.invalidate(reservationFirestoreRepositoryProvider);
+
   FirebaseAuth.instance.signOut();
 
   Navigator.of(FestouNavGlobalKey.instance.navKey.currentContext!)

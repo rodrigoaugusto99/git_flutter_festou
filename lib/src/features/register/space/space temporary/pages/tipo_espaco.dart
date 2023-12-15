@@ -1,19 +1,31 @@
-import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/pages/titulo.dart';
+import 'dart:developer';
 
-class ProntoQuetal extends StatefulWidget {
-  const ProntoQuetal({super.key});
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
+import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/localizacao.dart';
+import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_state.dart';
+import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
+
+import 'package:git_flutter_festou/src/features/register/space/widgets/type_panel.dart';
+
+class TipoEspaco extends ConsumerStatefulWidget {
+  const TipoEspaco({super.key});
 
   @override
-  State<ProntoQuetal> createState() => _ProntoQuetalState();
+  ConsumerState<TipoEspaco> createState() => _TipoEspacoState();
 }
 
-class _ProntoQuetalState extends State<ProntoQuetal> {
+class _TipoEspacoState extends ConsumerState<TipoEspaco> {
   @override
   Widget build(BuildContext context) {
+    final newSpaceRegister = ref.watch(newSpaceRegisterVmProvider.notifier);
+
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(''),
+      ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.all(25.0),
@@ -49,19 +61,21 @@ class _ProntoQuetalState extends State<ProntoQuetal> {
               ],
             ),
           ),
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Column(
             children: [
-              Text(
-                'Pronto, que tal?\nArraste para ordenar',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              const Text(
+                'Qual das seguintes opções descreve melhor seu espaço?',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
-              Text(
-                  'mostrar as imagens, possibilitar escolha de foto de capa, ordenar, e adicionar mais fotos'),
+              TypePanel(
+                text: 'Selecione o TIPO de espaço',
+                onTypePressed: (value) {
+                  log('onTypePressed: $value');
+                  newSpaceRegister.addOrRemoveType(value);
+                },
+                selectedTypes: const [],
+              ),
             ],
-          ),
-          const SizedBox(
-            height: 20,
           ),
           Padding(
             padding: const EdgeInsets.all(15.0),
@@ -81,7 +95,7 @@ class _ProntoQuetalState extends State<ProntoQuetal> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const Titulo(),
+                      builder: (context) => const Localizacao(),
                     ),
                   ),
                   child: Container(
@@ -99,6 +113,36 @@ class _ProntoQuetalState extends State<ProntoQuetal> {
                 )
               ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class GridItem extends StatelessWidget {
+  final IconData icon;
+  final String text;
+
+  const GridItem({Key? key, required this.icon, required this.text})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 5.0,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            size: 40.0,
+            color: Colors.blue,
+          ),
+          const SizedBox(height: 8.0),
+          Text(
+            text,
+            style: const TextStyle(fontSize: 16.0),
           ),
         ],
       ),

@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/core/exceptions/auth_exception.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
@@ -19,9 +17,10 @@ class ProfileVM extends _$ProfileVM {
       final usersResult = await userRepository.getUser();
 
       switch (usersResult) {
-        case Success(value: final userModel):
+        case Success(value: final userWithImages):
           return ProfileState(
-              status: ProfileStateStatus.loaded, userModel: userModel);
+              status: ProfileStateStatus.loaded,
+              userWithImages: userWithImages);
 
         case Failure(exception: RepositoryException(:final message)):
           errorMessage = message;

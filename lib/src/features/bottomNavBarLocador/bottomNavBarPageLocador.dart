@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/calendario.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/home/home_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_page.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:git_flutter_festou/src/models/user_with_images.dart';
 
 class BottomNavBarPageLocador extends StatefulWidget {
-  final UserModel userModel;
-  const BottomNavBarPageLocador({super.key, required this.userModel});
+  final UserWithImages userWithImages;
+  const BottomNavBarPageLocador({super.key, required this.userWithImages});
 
   @override
   _BottomNavBarPageLocadorState createState() =>
@@ -60,7 +60,7 @@ class _BottomNavBarPageLocadorState extends State<BottomNavBarPageLocador> {
               return const Mensagens();
             case 3:
               return Menu(
-                userModel: widget.userModel,
+                userWithImages: widget.userWithImages,
               );
             default:
               return Container(); // Lida com índices fora do alcance, se aplicável

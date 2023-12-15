@@ -2,6 +2,7 @@ import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:git_flutter_festou/src/models/user_with_images.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'space_feedbacks_vm.g.dart';

@@ -132,7 +132,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
 
 //providerData para obter os detalhes do usuario autenticado.
   void showUserProvider() {
-    final user = FirebaseAuth.instance.currentUser!;
+    final user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
       for (var profile in user.providerData) {
@@ -146,22 +146,79 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
     } else {
       log("Usuário não autenticado");
     }
+  }
+
+  Future areYouSureOnlyGoogle() async {
+    final user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      FirebaseAuth.instance
-          .fetchSignInMethodsForEmail(user.email!)
-          .then((providers) => {
-                if (providers.isNotEmpty)
-                  {
-                    log("O usuário está conectado com os seguintes provedores: $providers"),
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Tem certeza?'),
+            content: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                    'O google é seu único provedor, se você desvincular, para usar essa conta, terá que criar uma senha com esse email.\n'),
+              ],
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Fecha o diálogo
+                },
+                child: const Text('Cancelar'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  Navigator.of(context).pop(); // Fecha o diálogo
+
+                  try {
+                    // Exclua a conta do usuário
+                    await user.unlink("google.com");
+
+                    //todo:
+                    /* logica para deletar o usuario que tem apenas o goole como provedor,
+                    pois: 1) se desvincular, ficará apenas o usuario lá no auth com provedor vazio, 
+                    eu queria excluir tudo ali; 2) pra deletar de fato, precisa de reautenticacao sem senha,
+                    pois só há google, nao há email/senha, entao precisaria de reautenticar com link.
+                    seria com link mesmo? há um problema em deixar o provedor la vazio?*/
+                    //?
+
+                    //?
+                    // Redirecione o usuário para a tela de login ou execute outras ações necessárias
+                    /*await ref
+                        .read(userFirestoreRepositoryProvider)
+                        .deleteUserDocument(user);*/
+                    //ref.read(logoutProvider.future);
+                    //log('Conta excluída com sucesso.');
+                    // Indica que o usuário confirmou a exclusão
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content:
+                            Text('Conta do Google desvinculada com sucesso!'),
+                      ),
+                    );
+                  } on FirebaseAuthException catch (e) {
+                    log('Erro ao excluir a conta: ${e.code}, ${e.message}');
+                    // Trate os erros conforme necessário, exiba mensagens ao usuário, etc.
+                  } catch (e) {
+                    log('Erro desconhecido ao excluir a conta: $e');
+                    // Trate outros erros conforme necessário.
                   }
-                else
-                  {
-                    log("providers is empty"),
-                  }
-              });
+                },
+                child: const Text('Deletar conta'),
+              ),
+            ],
+          );
+        },
+      );
     } else {
-      log("Usuário não autenticado");
+      log('Usuario não autenticado');
     }
   }
 
@@ -201,48 +258,44 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
               ),
               if (isUpdatingPassword) ...[
                 // Container com os campos de atualização da senha
-                Container(
-                  child: Column(
-                    children: [
-                      const TextField(
-                        decoration: InputDecoration(labelText: 'Senha Atual'),
-                        obscureText: true,
-                      ),
-                      const SizedBox(height: 0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          InkWell(
-                              onTap: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const EsqueciSenha(),
-                                    ),
+                Column(
+                  children: [
+                    const TextField(
+                      decoration: InputDecoration(labelText: 'Senha Atual'),
+                      obscureText: true,
+                    ),
+                    const SizedBox(height: 0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        InkWell(
+                            onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const EsqueciSenha(),
                                   ),
-                              child: const Text('Esqueci minha senha')),
-                        ],
-                      ),
-                      const SizedBox(height: 0),
-                      const TextField(
-                        decoration: InputDecoration(labelText: 'Nova Senha'),
-                        obscureText: true,
-                      ),
-                      const SizedBox(height: 0),
-                      const TextField(
-                        decoration:
-                            InputDecoration(labelText: 'Confirmar Senha'),
-                        obscureText: true,
-                      ),
-                      const SizedBox(height: 0),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Implemente a lógica para "Alterar Senha"
-                        },
-                        child: const Text('Alterar Senha'),
-                      ),
-                    ],
-                  ),
+                                ),
+                            child: const Text('Esqueci minha senha')),
+                      ],
+                    ),
+                    const SizedBox(height: 0),
+                    const TextField(
+                      decoration: InputDecoration(labelText: 'Nova Senha'),
+                      obscureText: true,
+                    ),
+                    const SizedBox(height: 0),
+                    const TextField(
+                      decoration: InputDecoration(labelText: 'Confirmar Senha'),
+                      obscureText: true,
+                    ),
+                    const SizedBox(height: 0),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Implemente a lógica para "Alterar Senha"
+                      },
+                      child: const Text('Alterar Senha'),
+                    ),
+                  ],
                 ),
               ],
               const SizedBox(height: 30),
@@ -263,17 +316,15 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                 // Verifica se o usuário está vinculado ao provedor do Google
                                 if (user.providerData.any((info) =>
                                     info.providerId == "google.com")) {
-                                  // Desvincula a conta do Google
-                                  await user.unlink("google.com");
-                                  // Atualiza a lista de provedores após o unlink
-                                  await displayAuthProviderList();
-                                  // Exibe uma mensagem de sucesso (pode ser ajustada conforme necessário)
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                          'Conta do Google desvinculada com sucesso!'),
-                                    ),
-                                  );
+                                  if (user.providerData.any((info) =>
+                                      info.providerId != "password")) {
+                                    //se desvincular, deve deletar o usuario, pois só há google como provedor.
+
+                                    await areYouSureOnlyGoogle();
+                                  } else {
+                                    // Desvincula a conta do Google
+                                    await user.unlink("google.com");
+                                  }
                                 } else {
                                   // Caso o usuário não esteja vinculado ao provedor do Google
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -285,8 +336,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                 }
                               } on FirebaseAuthException catch (e) {
                                 // Trata exceções específicas, se necessário
-                                print(
-                                    'Erro ao desvincular conta do Google: ${e.message}');
+                                log('Erro ao desvincular conta do Google, usuario nao autenticado: ${e.message}');
                               }
                             }
                           },
@@ -316,13 +366,30 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
 
                     if (user != null) {
                       // Mostra um diálogo de confirmação antes de excluir a conta
-                      showDialog(
+                      await showDialog(
                         context: context,
                         builder: (BuildContext context) {
+                          TextEditingController passwordController =
+                              TextEditingController();
+
                           return AlertDialog(
-                            title: const Text('Confirmação'),
-                            content: const Text(
-                                'Tem certeza de que deseja excluir sua conta?'),
+                            title: const Text('Tem certeza?'),
+                            content: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Text(
+                                    'Tem certeza de que deseja excluir sua conta?'),
+                                const Text(
+                                    'Confirme sua senha para prosseguir'),
+                                TextFormField(
+                                  controller: passwordController,
+                                  obscureText: true,
+                                  decoration:
+                                      const InputDecoration(labelText: 'Senha'),
+                                ),
+                              ],
+                            ),
                             actions: <Widget>[
                               TextButton(
                                 onPressed: () {
@@ -337,11 +404,19 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                       .pop(); // Fecha o diálogo
 
                                   try {
-                                    // Exclua a conta do usuário
+                                    // Reautentica o usuário antes de excluir a conta
+                                    AuthCredential credential =
+                                        EmailAuthProvider.credential(
+                                      email: user.email!,
+                                      password: passwordController.text,
+                                    );
+                                    await user.reauthenticateWithCredential(
+                                        credential);
+
+                                    // Exclua a conta do usuário após a reautenticação
                                     await user.delete();
 
                                     // Redirecione o usuário para a tela de login ou execute outras ações necessárias
-
                                     await ref
                                         .read(userFirestoreRepositoryProvider)
                                         .deleteUserDocument(user);
@@ -355,7 +430,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                     // Trate outros erros conforme necessário.
                                   }
                                 },
-                                child: const Text('Confirmar'),
+                                child: const Text('Deletar conta'),
                               ),
                             ],
                           );

@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/pages/servicos_acomodacoes.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
+import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/titulo.dart';
+import 'package:git_flutter_festou/src/features/register/space/space_register_vm.dart';
 
-class FacaDestacar extends StatefulWidget {
-  const FacaDestacar({super.key});
+class AdicioneFotos extends ConsumerStatefulWidget {
+  const AdicioneFotos({super.key});
 
   @override
-  State<FacaDestacar> createState() => _FacaDestacarState();
+  ConsumerState<AdicioneFotos> createState() => _AdicioneFotosState();
 }
 
-class _FacaDestacarState extends State<FacaDestacar> {
+class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
   @override
   Widget build(BuildContext context) {
+    final spaceRegister = ref.watch(newSpaceRegisterVmProvider.notifier);
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,6 +38,7 @@ class _FacaDestacarState extends State<FacaDestacar> {
                   ),
                 ),
                 InkWell(
+                  onTap: () {},
                   child: Container(
                     padding: const EdgeInsets.all(7.0),
                     decoration: BoxDecoration(
@@ -49,22 +54,24 @@ class _FacaDestacarState extends State<FacaDestacar> {
             ),
           ),
           const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Etapa 2',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
+                'Adicione algumas fotos da sua acomodaçao((tipo de espaço))',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               Text(
-                'Faça sua acomodacao se destacar',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-              Text(
-                'Nessa etapa, voce adicionara algumas das comodidades que sua acomodacao oferece, alem de 5 fotos ou mais. depois, voce devvera criar um titulo e uma descricao',
-              ),
+                  'voce precisara de cinco fotos para começar. voce pode adicionar outras imagens ou faer alterações mais tarde.'),
             ],
           ),
+          const SizedBox(
+            height: 20,
+          ),
+          ElevatedButton(
+              onPressed: () => spaceRegister.pickImage(),
+              child: const Text('Adicionar fotos')),
+          ElevatedButton(
+              onPressed: () {}, child: const Text('Tirar novas fotos')),
           const SizedBox(
             height: 20,
           ),
@@ -86,7 +93,7 @@ class _FacaDestacarState extends State<FacaDestacar> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ServicosAcomodacoes(),
+                      builder: (context) => const Titulo(),
                     ),
                   ),
                   child: Container(

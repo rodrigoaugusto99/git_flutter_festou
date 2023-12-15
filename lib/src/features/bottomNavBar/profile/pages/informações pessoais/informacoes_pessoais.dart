@@ -1,15 +1,22 @@
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/image_grid.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais_status.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais_vm.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:git_flutter_festou/src/models/user_with_images.dart';
+import 'package:image_picker/image_picker.dart';
 
 class InformacoesPessoais extends ConsumerStatefulWidget {
-  final UserModel userModel;
-  const InformacoesPessoais({super.key, required this.userModel});
+  final UserWithImages userWithImages;
+  const InformacoesPessoais({super.key, required this.userWithImages});
 
   @override
   ConsumerState<InformacoesPessoais> createState() =>
@@ -37,13 +44,15 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
   void initState() {
     super.initState();
 
-    nameEC = TextEditingController(text: widget.userModel.name);
-    telefoneEC = TextEditingController(text: widget.userModel.telefone);
-    emailEC = TextEditingController(text: widget.userModel.email);
-    cepEC = TextEditingController(text: widget.userModel.cep);
-    logradourolEC = TextEditingController(text: widget.userModel.logradouro);
-    bairroEC = TextEditingController(text: widget.userModel.bairro);
-    cidadeEC = TextEditingController(text: widget.userModel.cidade);
+    nameEC = TextEditingController(text: widget.userWithImages.user.name);
+    telefoneEC =
+        TextEditingController(text: widget.userWithImages.user.telefone);
+    emailEC = TextEditingController(text: widget.userWithImages.user.email);
+    cepEC = TextEditingController(text: widget.userWithImages.user.cep);
+    logradourolEC =
+        TextEditingController(text: widget.userWithImages.user.logradouro);
+    bairroEC = TextEditingController(text: widget.userWithImages.user.bairro);
+    cidadeEC = TextEditingController(text: widget.userWithImages.user.cidade);
   }
 
   @override
@@ -59,17 +68,27 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
     super.dispose();
   }
 
+  final Stream<QuerySnapshot> _usersStream =
+      FirebaseFirestore.instance.collection('users').snapshots();
+
   @override
   Widget build(BuildContext context) {
     final informacoesPessoaisVm =
-        ref.read(informacoesPessoaisVMProvider.notifier);
+        ref.watch(informacoesPessoaisVMProvider.notifier);
 
     ref.listen(informacoesPessoaisVMProvider, (_, state) {
       switch (state) {
         case InformacoesPessoaisState(
             status: InformacoesPessoaisStateStatus.success
           ):
-          Messages.showSuccess('Alterado com sucesso!', context);
+          break;
+
+        case InformacoesPessoaisState(
+            status: InformacoesPessoaisStateStatus.error,
+            :final errorMessage?
+          ):
+          Messages.showError(errorMessage, context);
+
         case InformacoesPessoaisState(
             status: InformacoesPessoaisStateStatus.error
           ):
@@ -78,7 +97,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
     });
 
     //todo!: apenas atualiza no app se restartar
-    //todo: vm - build {}, page .when, :loading em cada textfield quando atualizar?
+    //todo: vm - build {}, page .when, :loading em cada textfield quando atualizar? ou stream logo
 
     return Scaffold(
       appBar: AppBar(
@@ -96,11 +115,82 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+
+              StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('users')
+                      .where('uid', isEqualTo: widget.userWithImages.user.id)
+                      .limit(1)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    }
+
+                    if (snapshot.hasError) {
+                      return Text('Erro: ${snapshot.error}');
+                    }
+                    if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                      Map<String, dynamic> userData =
+                          snapshot.data!.docs[0].data() as Map<String, dynamic>;
+                      String avatarUrl = userData['avatar_url'] ?? '';
+
+                      return InkWell(
+                        onLongPress: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Excluir avatar'),
+                                content: const Text(
+                                    'Tem certeza de que deseja excluir seu avatar?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(); // Fecha o AlertDialog
+                                    },
+                                    child: const Text('Cancelar'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      informacoesPessoaisVm
+                                          .deleteImageFirestore('avatar_url',
+                                              widget.userWithImages.user.id);
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Confirmar'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        onTap: () => informacoesPessoaisVm.pickAvatar(),
+                        child: CircleAvatar(
+                          radius: 60,
+                          child: avatarUrl != ''
+                              ? Image.network(
+                                  avatarUrl,
+                                  fit: BoxFit
+                                      .cover, // Ajuste conforme necessário
+                                )
+                              : const Icon(
+                                  Icons.person,
+                                  size: 90,
+                                ),
+                        ),
+                      );
+                    } else {
+                      return const Text('Nenhum documento encontrado.');
+                    }
+                  }),
+
               InkWell(
                 onTap: () => setState(() {
                   isEditingName = !isEditingName;
                 }),
-                child: MyRow(
+                child: myRow(
                   label: 'Nome civil',
                   controller: nameEC,
                   isEditing: isEditingName,
@@ -124,7 +214,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 onTap: () => setState(() {
                   isEditingTelefone = !isEditingTelefone;
                 }),
-                child: MyRow(
+                child: myRow(
                   label: 'Telefone',
                   controller: telefoneEC,
                   isEditing: isEditingTelefone,
@@ -147,7 +237,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 onTap: () => setState(() {
                   isEditinEmail = !isEditinEmail;
                 }),
-                child: MyRow(
+                child: myRow(
                   label: 'E-mail',
                   controller: emailEC,
                   isEditing: isEditinEmail,
@@ -173,7 +263,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 onTap: () => setState(() {
                   isEditingCep = !isEditingCep;
                 }),
-                child: MyRow(
+                child: myRow(
                   label: 'CEP',
                   controller: cepEC,
                   isEditing: isEditingCep,
@@ -198,7 +288,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 onTap: () => setState(() {
                   isEditingLogradouro = !isEditingLogradouro;
                 }),
-                child: MyRow(
+                child: myRow(
                   label: 'Logradouro',
                   controller: logradourolEC,
                   isEditing: isEditingLogradouro,
@@ -223,7 +313,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 onTap: () => setState(() {
                   isEditingBairro = !isEditingBairro;
                 }),
-                child: MyRow(
+                child: myRow(
                   label: 'Bairro',
                   controller: bairroEC,
                   isEditing: isEditingBairro,
@@ -247,7 +337,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 onTap: () => setState(() {
                   isEditingCidade = !isEditingCidade;
                 }),
-                child: MyRow(
+                child: myRow(
                   label: 'Cidade',
                   controller: cidadeEC,
                   isEditing: isEditingCidade,
@@ -267,6 +357,243 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                   },
                 ),
               ),
+
+              StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('users')
+                    .where('uid', isEqualTo: widget.userWithImages.user.id)
+                    .limit(1)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  }
+
+                  if (snapshot.hasError) {
+                    return Text('Erro: ${snapshot.error}');
+                  }
+
+                  // Verifique se há documentos disponíveis
+                  if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                    // Obtenha os dados do primeiro documento encontrado
+                    Map<String, dynamic> userData =
+                        snapshot.data!.docs[0].data() as Map<String, dynamic>;
+                    String doc1Url = userData['doc1_url'] ?? '';
+                    String doc2Url = userData['doc2_url'] ?? '';
+
+                    return Column(
+                      children: [
+                        InkWell(
+                          onLongPress: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Excluir imagem'),
+                                  content: const Text(
+                                      'Tem certeza de que deseja excluir esta imagem?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pop(); // Fecha o AlertDialog
+                                      },
+                                      child: const Text('Cancelar'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        // Exclui a imagem se o usuário clicar em "Confirmar"
+                                        informacoesPessoaisVm.deleteImage(
+                                            widget.userWithImages.user.id, 0);
+                                        informacoesPessoaisVm
+                                            .deleteImageFirestore('doc1_url',
+                                                widget.userWithImages.user.id);
+                                        Navigator.of(context)
+                                            .pop(); // Fecha o AlertDialog
+                                      },
+                                      child: const Text('Confirmar'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          onTap: () => informacoesPessoaisVm.pickImage1(),
+                          child: SizedBox(
+                            height: 200,
+                            child: doc1Url != ''
+                                ? Image.network(
+                                    doc1Url,
+                                    fit: BoxFit
+                                        .cover, // Ajuste conforme necessário
+                                  )
+                                : Container(
+                                    alignment: Alignment.center,
+                                    decoration:
+                                        BoxDecoration(border: Border.all()),
+                                    height: 200,
+                                    child: const Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text('Adicionar uma imagem'),
+                                        Icon(
+                                          Icons.photo_outlined,
+                                          size: 40,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                          ),
+                        ),
+                        InkWell(
+                          onLongPress: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Excluir imagem'),
+                                  content: const Text(
+                                      'Tem certeza de que deseja excluir esta imagem?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pop(); // Fecha o AlertDialog
+                                      },
+                                      child: const Text('Cancelar'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        // Exclui a imagem se o usuário clicar em "Confirmar"
+                                        informacoesPessoaisVm.deleteImage(
+                                            widget.userWithImages.user.id, 1);
+                                        informacoesPessoaisVm
+                                            .deleteImageFirestore('doc2_url',
+                                                widget.userWithImages.user.id);
+                                        Navigator.of(context)
+                                            .pop(); // Fecha o AlertDialog
+                                      },
+                                      child: const Text('Confirmar'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          onTap: () => informacoesPessoaisVm.pickImage2(),
+                          child: SizedBox(
+                            height: 200,
+                            child: doc2Url != ''
+                                ? Image.network(
+                                    doc2Url,
+                                    fit: BoxFit
+                                        .cover, // Ajuste conforme necessário
+                                  )
+                                : Container(
+                                    alignment: Alignment.center,
+                                    decoration:
+                                        BoxDecoration(border: Border.all()),
+                                    height: 200,
+                                    child: const Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text('Adicionar uma imagem'),
+                                        Icon(
+                                          Icons.photo_outlined,
+                                          size: 40,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                          ),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return const Text('Nenhum documento encontrado.');
+                  }
+                },
+              ),
+
+              /*InkWell(
+                onLongPress: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Excluir imagem'),
+                        content: const Text(
+                            'Tem certeza de que deseja excluir esta imagem?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pop(); // Fecha o AlertDialog
+                            },
+                            child: const Text('Cancelar'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              // Exclui a imagem se o usuário clicar em "Confirmar"
+                              informacoesPessoaisVm.deleteImage(
+                                  widget.userWithImages.user.id, 1);
+                              Navigator.of(context)
+                                  .pop(); // Fecha o AlertDialog
+                            },
+                            child: const Text('Confirmar'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                onTap: () => informacoesPessoaisVm.pickImage2(),
+                child: SizedBox(
+                  height: 200,
+                  child: widget.userWithImages.doc2Url != ''
+                      ? Image.network(
+                          widget.userWithImages.doc2Url,
+                          fit: BoxFit.cover, // Ajuste conforme necessário
+                        )
+                      : Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(border: Border.all()),
+                          height: 200,
+                          child: const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Adicionar uma imagem'),
+                              Icon(
+                                Icons.photo_outlined,
+                                size: 40,
+                              ),
+                            ],
+                          ),
+                        ),
+                ),
+              ),*/
+
+              ElevatedButton(
+                onPressed: () async {
+                  final bool1 = await informacoesPessoaisVm
+                      .uploadNewImages(widget.userWithImages.user.id);
+                  final bool2 = await informacoesPessoaisVm
+                      .uploadAvatar(widget.userWithImages.user.id);
+
+                  if (bool1 && bool2) {
+                    Messages.showSuccess('Dados salvos com sucesso', context);
+                  } else if (!bool1 && bool2) {
+                    Messages.showError('erro ao salvar documentos', context);
+                  } else if (!bool2 && bool1) {
+                    Messages.showError('erro ao salvar avatar', context);
+                  } else {
+                    Messages.showError('erro ao salvar dados', context);
+                  }
+                },
+                child: const Text('salvar'),
+              ),
             ],
           ),
         ),
@@ -274,7 +601,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
     );
   }
 
-  Widget MyRow({
+  Widget myRow({
     required String label,
     required TextEditingController controller,
     required bool isEditing,

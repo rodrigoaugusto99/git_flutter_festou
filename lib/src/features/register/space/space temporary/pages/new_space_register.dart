@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/pages/descreva_acomodacao.dart';
+import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/tipo_espaco.dart';
 
 class NewSpaceRegister extends StatefulWidget {
   const NewSpaceRegister({super.key});
@@ -61,7 +61,7 @@ class _NewSpaceRegisterState extends State<NewSpaceRegister> {
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const DescrevaAcomodacao(),
+                    builder: (context) => const TipoEspaco(),
                   ),
                 ),
                 child: Container(

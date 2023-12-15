@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/exceptions/service_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
@@ -30,7 +29,6 @@ class UserRegisterServiceImpl implements UserRegisterService {
 
     switch (registerAuthResult) {
       case Success(value: final userCredential):
-        //TODO: registerFirestoreResult entrar no switch
         final user = userCredential.user!;
 
         final userDataFirestore = (

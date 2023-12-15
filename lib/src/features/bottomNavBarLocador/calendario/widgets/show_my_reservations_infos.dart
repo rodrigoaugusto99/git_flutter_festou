@@ -6,6 +6,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/w
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/widgets/show_my_reservations_info_vm.dart';
 import 'package:git_flutter_festou/src/models/reservation_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class ShowMyReservationsInfos extends ConsumerStatefulWidget {
   final ReservationModel reserva;

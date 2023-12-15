@@ -1,16 +1,24 @@
-import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/pages/conclua_publique.dart';
+import 'dart:developer';
 
-class Descricao extends StatefulWidget {
-  const Descricao({super.key});
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/adicione_fotos.dart';
+import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
+
+import 'package:git_flutter_festou/src/features/register/space/widgets/services_panel.dart';
+
+class ServicosAcomodacoes extends ConsumerStatefulWidget {
+  const ServicosAcomodacoes({super.key});
 
   @override
-  State<Descricao> createState() => _DescricaoState();
+  ConsumerState<ServicosAcomodacoes> createState() =>
+      _ServicosAcomodacoesState();
 }
 
-class _DescricaoState extends State<Descricao> {
+class _ServicosAcomodacoesState extends ConsumerState<ServicosAcomodacoes> {
   @override
   Widget build(BuildContext context) {
+    final newSpaceRegister = ref.read(newSpaceRegisterVmProvider.notifier);
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,23 +57,28 @@ class _DescricaoState extends State<Descricao> {
               ],
             ),
           ),
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Crie sua descricao',
+              const Text(
+                'Informe aos hospedes o que seu espaço tem pra oferecer',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
-              Text('Explique o que sua acomodacao tem de especial'),
-              SizedBox(
-                height: 200,
-                width: 400,
-                child: Placeholder(),
+              const Text(
+                  'voce pode adicionar mais comodidades depois de publicar'),
+              ServicesPanel(
+                text: 'Selecione os SERVIÇOS do espaço',
+                onServicePressed: (value) {
+                  log('onServicePressed: $value');
+                  newSpaceRegister.addOrRemoveService(value);
+                },
+                selectedServices: const [],
               ),
-              Text('399 caracteres disponiveis'),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(
+            height: 20,
+          ),
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: Row(
@@ -84,7 +97,7 @@ class _DescricaoState extends State<Descricao> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ConcluaPublique(),
+                      builder: (context) => const AdicioneFotos(),
                     ),
                   ),
                   child: Container(

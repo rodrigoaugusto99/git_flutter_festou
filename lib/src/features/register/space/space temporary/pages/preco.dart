@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/pages/preco.dart';
+import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/revisao.dart';
 
-class ConcluaPublique extends StatefulWidget {
-  const ConcluaPublique({super.key});
+class Preco extends StatefulWidget {
+  const Preco({super.key});
 
   @override
-  State<ConcluaPublique> createState() => _ConcluaPubliqueState();
+  State<Preco> createState() => _PrecoState();
 }
 
-class _ConcluaPubliqueState extends State<ConcluaPublique> {
+class _PrecoState extends State<Preco> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,6 +34,7 @@ class _ConcluaPubliqueState extends State<ConcluaPublique> {
                   ),
                 ),
                 InkWell(
+                  onTap: () {},
                   child: Container(
                     padding: const EdgeInsets.all(7.0),
                     decoration: BoxDecoration(
@@ -48,20 +49,30 @@ class _ConcluaPubliqueState extends State<ConcluaPublique> {
               ],
             ),
           ),
-          const Column(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Etapa 3',
+              const Text(
+                'Agora, determine seu preço',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              const Text('voce podera altera-lo quando quiser.'),
+              Container(
+                child: const Text('RS 199'),
+              ),
+              const Text('Preço para o hospede sem impostos: RS 227'),
+              Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      border: Border.all(),
+                      borderRadius: BorderRadius.circular(10)),
+                  child: const Text(
+                      'Comparar anuncios parecidos de RS 170 a RS 249')),
+              const Text(
+                'Saiba mais sobre preços',
                 style: TextStyle(
-                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.underline,
                 ),
-              ),
-              Text(
-                'Conclua e publique',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-              Text(
-                'Por ultimo, voce popdera escolher se prefere comecar com um hospede experiente e, em seguida, difinara seu prelo por noite. Responda algumas perguntas rapidas e publique quando estiver tudo protno',
               ),
             ],
           ),
@@ -86,7 +97,7 @@ class _ConcluaPubliqueState extends State<ConcluaPublique> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const Preco(),
+                      builder: (context) => const Revisao(),
                     ),
                   ),
                   child: Container(

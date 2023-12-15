@@ -63,7 +63,7 @@ class _ProfileState extends ConsumerState<Profile> {
                   const SizedBox(height: 10),
                   MyText(text: 'Configurações'),
                   const SizedBox(height: 25),
-                  MyRowsConfig(userModel: data.userModel!),
+                  MyRowsConfig(userWithImages: data.userWithImages!),
                   const SizedBox(height: 10),
                   MyText(text: 'Alocar'),
                   const SizedBox(height: 25),
@@ -74,7 +74,7 @@ class _ProfileState extends ConsumerState<Profile> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => BottomNavBarPageLocador(
-                          userModel: data.userModel!,
+                          userWithImages: data.userWithImages!,
                         ),
                       ),
                     ),

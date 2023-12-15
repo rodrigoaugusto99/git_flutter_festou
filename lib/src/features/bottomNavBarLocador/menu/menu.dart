@@ -6,10 +6,11 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/pages/configuracoes.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:git_flutter_festou/src/models/user_with_images.dart';
 
 class Menu extends StatefulWidget {
-  final UserModel userModel;
-  const Menu({super.key, required this.userModel});
+  final UserWithImages userWithImages;
+  const Menu({super.key, required this.userWithImages});
 
   @override
   State<Menu> createState() => _MenuState();
@@ -46,7 +47,7 @@ class _MenuState extends State<Menu> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => InformacoesPessoais(
-                      userModel: widget.userModel,
+                      userWithImages: widget.userWithImages,
                     ),
                   ),
                 ),
@@ -74,7 +75,7 @@ class _MenuState extends State<Menu> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => Configuracoes(
-                      userModel: widget.userModel,
+                      userWithImages: widget.userWithImages,
                     ),
                   ),
                 ),
