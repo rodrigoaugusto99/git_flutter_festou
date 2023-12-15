@@ -29,14 +29,14 @@ class _ShowMyReservationsInfosState
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text('xoxo'),
+          title: const Text('Informacoes dessa reserva'),
         ),
         body: showMyReservationsInfosVm.when(
           data: (ShowMyReservationsInfosState data) {
             return Column(
               children: [
-                Text(
-                    'Informacoes dessa reserva:\nNome do cliente: ${data.user!.user.name}'),
+                //Image.network(data.)
+                Text('Nome do cliente: ${data.user!.name}'),
               ],
             );
           },
