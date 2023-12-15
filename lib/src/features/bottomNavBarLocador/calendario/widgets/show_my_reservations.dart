@@ -60,14 +60,7 @@ class _ShowMyReservationsState extends State<ShowMyReservations> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'id: ${reserva.userId}',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.0,
-                            ),
-                          ),
-                          Text(
-                            'range: ${reserva.range}',
+                            'Reserva: ${reserva.range}',
                             style: const TextStyle(
                               fontSize: 16.0,
                             ),
