@@ -29,7 +29,8 @@ UserAuthRepository userAuthRepository(UserAuthRepositoryRef ref) =>
 @Riverpod(keepAlive: true)
 UserFirestoreRepository userFirestoreRepository(
         UserFirestoreRepositoryRef ref) =>
-    UserFirestoreRepositoryImpl();
+    UserFirestoreRepositoryImpl(
+        imagesStorageRepository: ref.watch(imagesStorageRepositoryProvider));
 
 @Riverpod(keepAlive: true)
 UserLoginService userLoginService(UserLoginServiceRef ref) =>
@@ -69,6 +70,13 @@ ReservationFirestoreRepository reservationFirestoreRepository(
 
 @riverpod
 Future<void> logout(LogoutRef ref) async {
+  ref.invalidate(userFirestoreRepositoryProvider);
+  ref.invalidate(userAuthRepositoryProvider);
+  //ref.invalidate(spaceFirestoreRepositoryProvider);
+  //ref.invalidate(imagesStorageRepositoryProvider);
+  //ref.invalidate(feedbackFirestoreRepositoryProvider);
+  //ref.invalidate(reservationFirestoreRepositoryProvider);
+
   FirebaseAuth.instance.signOut();
 
   Navigator.of(FestouNavGlobalKey.instance.navKey.currentContext!)

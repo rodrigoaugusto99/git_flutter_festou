@@ -36,7 +36,7 @@ class _ShowMyReservationsInfosState
             return Column(
               children: [
                 Text(
-                    'Informacoes dessa reserva:\nNome do cliente: ${data.user!.name}'),
+                    'Informacoes dessa reserva:\nNome do cliente: ${data.user!.user.name}'),
               ],
             );
           },

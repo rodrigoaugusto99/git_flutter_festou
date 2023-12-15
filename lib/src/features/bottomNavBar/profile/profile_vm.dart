@@ -17,9 +17,10 @@ class ProfileVM extends _$ProfileVM {
       final usersResult = await userRepository.getUser();
 
       switch (usersResult) {
-        case Success(value: final userModel):
+        case Success(value: final userWithImages):
           return ProfileState(
-              status: ProfileStateStatus.loaded, userModel: userModel);
+              status: ProfileStateStatus.loaded,
+              userWithImages: userWithImages);
 
         case Failure(exception: RepositoryException(:final message)):
           errorMessage = message;

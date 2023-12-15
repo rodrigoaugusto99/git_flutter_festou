@@ -49,6 +49,8 @@ class _AppBarMenuSpaceTypesState extends ConsumerState<AppBarHome> {
                   IconButton(
                     icon: const Icon(Icons.logout),
                     onPressed: () {
+                      ref.invalidate(userFirestoreRepositoryProvider);
+                      ref.invalidate(userAuthRepositoryProvider);
                       ref.read(logoutProvider.future);
                     },
                   ),

@@ -407,7 +407,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                 ),
               ),
               SpaceFeedbacksPageLimited(
-                x: 3,
+                x: 1,
                 space: widget.space.space,
               ),
               Padding(

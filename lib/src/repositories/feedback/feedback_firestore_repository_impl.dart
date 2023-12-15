@@ -31,6 +31,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
     // Crie um mapa com os dados passados como parâmetros
     log('entrou');
     String userName = await getUserName();
+    String userAvatar = await getUserAvatar();
     final currentDateTime = DateTime.now();
     final dateFormat = DateFormat('dd/MM/yyyy - HH');
     final formattedDateTime = dateFormat.format(currentDateTime);
@@ -42,6 +43,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
         'content': feedbackData.content,
         'user_name': userName,
         'date': formattedDateTime,
+        'avatar': userAvatar,
       };
       log('ntrou');
       await feedbacksCollection.add(newFeedback);
@@ -186,6 +188,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
       content: feedbackDocument['content'] ?? '',
       userName: feedbackDocument['user_name'] ?? '',
       date: feedbackDocument['date'] ?? '',
+      avatar: feedbackDocument['avatar'] ?? '',
     );
   }
 
@@ -196,6 +199,18 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
       final name = userData['nome'];
 
       return name.toString();
+    }
+    // Trate o caso em que o documento não contém o campo "name" ou não existe.
+    throw Exception("Nome do usuário não encontrado");
+  }
+
+  Future<String> getUserAvatar() async {
+    final userDocument = await getUserDocument();
+    if (userDocument.exists) {
+      final userData = userDocument.data() as Map<String, dynamic>;
+      final avatar = userData['avatar_url'];
+
+      return avatar.toString();
     }
     // Trate o caso em que o documento não contém o campo "name" ou não existe.
     throw Exception("Nome do usuário não encontrado");

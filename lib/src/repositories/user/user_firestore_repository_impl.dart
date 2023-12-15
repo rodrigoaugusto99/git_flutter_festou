@@ -5,11 +5,16 @@ import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:git_flutter_festou/src/models/user_with_images.dart';
+import 'package:git_flutter_festou/src/repositories/images/images_storage_repository.dart';
 import './user_firestore_repository.dart';
 
 class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
+  final ImagesStorageRepository imagesStorageRepository;
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
+
+  UserFirestoreRepositoryImpl({required this.imagesStorageRepository});
 
   /*@override
   Future<Either<RepositoryException, Nil>> saveUserWithGoogle() async {
@@ -53,7 +58,10 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
           'logradouro': '',
           'bairro': '',
           'cidade': '',
-        }
+        },
+        'avatar_url': '',
+        'doc1_url': '',
+        'doc2_url': '',
       };
 
       // Insira o usuario na coleção 'users'
@@ -153,7 +161,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
   }
 
   @override
-  Future<Either<RepositoryException, UserModel>> getUser() async {
+  Future<Either<RepositoryException, UserWithImages>> getUser() async {
     try {
       final userDocument = await getUserDocument();
 
@@ -169,7 +177,39 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         userData['user_address']['cidade'] ?? '',
         user.uid,
       );
-      return Success(userModel);
+
+      final userResult =
+          await imagesStorageRepository.getDocImages(userModel.id);
+
+      switch (userResult) {
+        case Success(value: final imagesData):
+          final userResult2 =
+              await imagesStorageRepository.getAvatarImage(userModel.id);
+
+          switch (userResult2) {
+            case Success(value: final avatarData):
+              final UserWithImages userWithImages = UserWithImages(
+                userModel,
+                imagesData,
+                avatarData,
+                userData['doc1_url'] ?? '',
+                userData['doc2_url'] ?? '',
+                userData['avatar_url'] ?? '',
+              );
+              return Success(userWithImages);
+            case Failure():
+              return Failure(RepositoryException(
+                  message:
+                      'Erro ao recuperar documentos do user: $userResult'));
+          }
+
+        case Failure():
+          log('Erro ao recuperar documentos do user: $userResult');
+          return Failure(RepositoryException(
+              message: 'Erro ao recuperar documentos do user: $userResult'));
+      }
+
+      //return Success(userWithImages);
     } catch (e) {
       log('Erro ao recuperar dados do usuario no firestore: $e');
       return Failure(
@@ -193,7 +233,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
   }*/
 
   @override
-  Future<Either<RepositoryException, UserModel>> getUserById(
+  Future<Either<RepositoryException, UserWithImages>> getUserById(
       String userId) async {
     try {
       final userDocument = await getUserDocumentById(userId);
@@ -210,7 +250,38 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         userData['user_address']['cidade'] ?? '',
         userId,
       );
-      return Success(userModel);
+//gambiarra - colocando dados do firestore e do storage aqui
+//esses swqitchs sao pra pegar os storags(cada um)
+      final userResult =
+          await imagesStorageRepository.getDocImages(userModel.id);
+
+      switch (userResult) {
+        case Success(value: final imagesData):
+          final userResult2 =
+              await imagesStorageRepository.getAvatarImage(userModel.id);
+
+          switch (userResult2) {
+            case Success(value: final avatarData):
+              final UserWithImages userWithImages = UserWithImages(
+                userModel,
+                imagesData,
+                avatarData,
+                userData['doc1_url'] ?? '',
+                userData['doc2_url'] ?? '',
+                userData['avatar_url'] ?? '',
+              );
+              return Success(userWithImages);
+            case Failure():
+              return Failure(RepositoryException(
+                  message:
+                      'Erro ao recuperar documentos do user: $userResult'));
+          }
+
+        case Failure():
+          log('Erro ao recuperar documentos do user: $userResult');
+          return Failure(RepositoryException(
+              message: 'Erro ao recuperar documentos do user: $userResult'));
+      }
     } catch (e) {
       log('Erro ao recuperar dados do usuario no firestore: $e');
       return Failure(
@@ -313,6 +384,28 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       // Trate exceções e retorne um erro personalizado se necessário
       return Failure(
           RepositoryException(message: 'Erro ao atualizar o usuário: $e'));
+    }
+  }
+
+  @override
+  Future<Either<RepositoryException, Nil>> clearField(
+      String fieldName, String userId) async {
+    try {
+      // Atualize o campo específico para uma string vazia ('') no Firestore
+      final userDocument = await getUserDocumentById(userId);
+
+      await userDocument.reference.update({
+        fieldName: '',
+      });
+
+      log('Campo $fieldName apagado com sucesso para o usuário $userId');
+      return Success(nil);
+    } catch (e) {
+      log(e.toString());
+      log('Erro ao apagar esse campo: $e');
+      // Trate exceções e retorne um erro personalizado se necessário
+      return Failure(
+          RepositoryException(message: 'Erro ao apagar esse campo: $e'));
     }
   }
 }

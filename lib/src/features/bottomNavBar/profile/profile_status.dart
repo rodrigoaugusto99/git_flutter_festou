@@ -1,23 +1,24 @@
 import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:git_flutter_festou/src/models/user_with_images.dart';
 
 enum ProfileStateStatus { loaded, error }
 
 class ProfileState {
   final ProfileStateStatus status;
-  final UserModel? userModel;
+  final UserWithImages? userWithImages;
 
   ProfileState({
     required this.status,
-    this.userModel,
+    this.userWithImages,
   });
 
   ProfileState copyWith({
     ProfileStateStatus? status,
-    UserModel? userModel,
+    UserWithImages? userModel,
   }) {
     return ProfileState(
       status: status ?? this.status,
-      userModel: userModel ?? this.userModel,
+      userWithImages: userModel ?? userWithImages,
     );
   }
 }
