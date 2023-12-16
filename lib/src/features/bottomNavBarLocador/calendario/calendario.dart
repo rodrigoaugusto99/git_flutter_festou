@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/calendario_state.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/calendario_vm.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/widgets/show_my_reservations.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/show_my_reservations.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/show_upcoming_reservations.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/show%20reservations/widgets/show_reservations.dart';
 
 class Calendario extends ConsumerStatefulWidget {
@@ -23,18 +24,11 @@ class _CalendarioState extends ConsumerState<Calendario> {
       body: Center(
         child: calendarVm.when(
           data: (CalendarioReservationsState data) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            return ListView(
               children: [
                 const Text('Clientes hospedados agora'),
-                const Text('Clientes chegando'),
-                const Text('Clientes reservados/agendados'),
-                Expanded(
-                  child: ShowMyReservations(
-                    data: data,
-                    reservas: calendarVm,
-                  ),
-                ),
+                ShowMyReservations(data: data),
+                ShowUpcomingReservations(data: data),
               ],
             );
           },

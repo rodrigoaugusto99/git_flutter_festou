@@ -33,7 +33,7 @@ class ReservationFirestoreRepositoryImpl
     }) reservationData,
   ) async {
     final currentDateTime = DateTime.now();
-    final dateFormat = DateFormat('dd/MM/yyyy - HH');
+    final dateFormat = DateFormat('dd/MM/yyyy');
     final formattedDateTime = dateFormat.format(currentDateTime);
     try {
       Map<String, dynamic> newReservation = {
