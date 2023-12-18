@@ -43,9 +43,9 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(16.0),
                 child: CarouselSlider(
-                  items: widget.space.imageUrls
+                  items: widget.space.space.imagesUrl
                       .map((imageUrl) => Image.network(
-                            imageUrl.toString(),
+                            imageUrl,
                             fit: BoxFit.cover,
                           ))
                       .toList(),

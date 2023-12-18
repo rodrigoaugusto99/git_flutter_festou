@@ -44,28 +44,10 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
         List<String> selectedServices,
         List<File> imageFiles,
         String descricao,
-        String city
+        String city,
       }) spaceData) async {
     try {
-      final locadorName = await getLocadorName(spaceData.userId);
       // Crie um novo espaço com os dados fornecidos
-      Map<String, dynamic> newSpace = {
-        'space_id': spaceData.spaceId,
-        'user_id': spaceData.userId,
-        'titulo': spaceData.titulo,
-        'cep': spaceData.cep,
-        'logradouro': spaceData.logradouro,
-        'numero': spaceData.numero,
-        'bairro': spaceData.bairro,
-        'cidade': spaceData.cidade,
-        'selectedTypes': spaceData.selectedTypes,
-        'selectedServices': spaceData.selectedServices,
-        'average_rating': '0',
-        'num_comments': '0',
-        'locador_name': locadorName,
-        'descricao': spaceData.descricao,
-        'city': spaceData.city,
-      };
 
       // Consulte a coleção 'spaces' para verificar se um espaço com as mesmas informações já existe.
       final existingSpace = await spacesCollection
@@ -79,11 +61,43 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
 
       // Se não houver documentos correspondentes, insira o novo espaço.
       if (existingSpace.docs.isEmpty) {
-        await spacesCollection.add(newSpace);
-        imagesStorageRepository.uploadSpaceImages(
+        await imagesStorageRepository.uploadSpaceImages(
           imageFiles: spaceData.imageFiles,
           spaceId: spaceData.spaceId,
         );
+
+        final spaceResult =
+            await imagesStorageRepository.getSpaceImages(spaceData.spaceId);
+
+        switch (spaceResult) {
+          case Success(value: final imagesData):
+            final locadorName = await getLocadorName(spaceData.userId);
+
+            Map<String, dynamic> newSpace = {
+              'space_id': spaceData.spaceId,
+              'user_id': spaceData.userId,
+              'titulo': spaceData.titulo,
+              'cep': spaceData.cep,
+              'logradouro': spaceData.logradouro,
+              'numero': spaceData.numero,
+              'bairro': spaceData.bairro,
+              'cidade': spaceData.cidade,
+              'selectedTypes': spaceData.selectedTypes,
+              'selectedServices': spaceData.selectedServices,
+              'average_rating': '0',
+              'num_comments': '0',
+              'locador_name': locadorName,
+              'descricao': spaceData.descricao,
+              'city': spaceData.city,
+              'images_url': imagesData,
+            };
+            await spacesCollection.add(newSpace);
+
+          case Failure():
+            return Failure(
+                RepositoryException(message: 'Esse espaço já existe'));
+        }
+
         log('Informações de espaço adicionadas com sucesso!');
         return Success(nil);
       } else {
@@ -277,12 +291,17 @@ p decidir o isFavorited*/
         List<String>.from(spaceDocument['selectedTypes'] ?? []);
     List<String> selectedServices =
         List<String>.from(spaceDocument['selectedServices'] ?? []);
+    List<String> imagesUrl =
+        List<String>.from(spaceDocument['images_url'] ?? []);
 
     String spaceId = spaceDocument.get('space_id');
     //String userId = spaceDocument.get('user_id');
     final averageRating = await getAverageRating(spaceId);
     final numComments = await getNumComments(spaceId);
     //final locadorName = await getLocadorName(userId);
+
+//?função para capturar a lista de imagens desse espaço
+
     return SpaceModel(
       isFavorited,
       spaceDocument['space_id'] ?? '',
@@ -300,6 +319,8 @@ p decidir o isFavorited*/
       spaceDocument['locador_name'] ?? '',
       spaceDocument['descricao'] ?? '',
       spaceDocument['city'] ?? '',
+      //imagesData,
+      imagesUrl,
     );
   }
 
