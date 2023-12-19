@@ -1,11 +1,10 @@
 import 'package:git_flutter_festou/src/models/user_model.dart';
-import 'package:git_flutter_festou/src/models/user_with_images.dart';
 
 enum ShowMyReservationsInfosStateStatus { loaded, error }
 
 class ShowMyReservationsInfosState {
   final ShowMyReservationsInfosStateStatus status;
-  final UserWithImages? user;
+  final UserModel? user;
 
   ShowMyReservationsInfosState({
     required this.status,
@@ -14,7 +13,7 @@ class ShowMyReservationsInfosState {
 
   ShowMyReservationsInfosState copyWith({
     ShowMyReservationsInfosStateStatus? status,
-    UserWithImages? user,
+    UserModel? user,
   }) {
     return ShowMyReservationsInfosState(
       status: status ?? this.status,

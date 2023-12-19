@@ -8,11 +8,10 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagam
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/traducao.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
-import 'package:git_flutter_festou/src/models/user_with_images.dart';
 
 class MyRowsConfig extends StatefulWidget {
-  final UserWithImages userWithImages;
-  const MyRowsConfig({super.key, required this.userWithImages});
+  final UserModel userModel;
+  const MyRowsConfig({super.key, required this.userModel});
 
   @override
   State<MyRowsConfig> createState() => _MyRowsConfigState();
@@ -30,7 +29,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
             context,
             MaterialPageRoute(
               builder: (context) =>
-                  InformacoesPessoais(userWithImages: widget.userWithImages),
+                  InformacoesPessoais(userModel: widget.userModel),
             ),
           ),
         ),
