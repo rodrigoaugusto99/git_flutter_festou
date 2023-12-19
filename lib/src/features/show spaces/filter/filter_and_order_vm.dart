@@ -2,16 +2,16 @@ import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/filter/filter_and_order_state.dart';
-import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'filter_and_order_vm.g.dart';
 
 @riverpod
 class FilterAndOrderVm extends _$FilterAndOrderVm {
-  List<SpaceWithImages> spacesFilterType = [];
-  List<SpaceWithImages> spacesFilterService = [];
-  List<SpaceWithImages> spacesFilterDays = [];
+  List<SpaceModel> spacesFilterType = [];
+  List<SpaceModel> spacesFilterService = [];
+  List<SpaceModel> spacesFilterDays = [];
   String errorMessage = '';
 
   void addOrRemoveAvailableDay(String weekDay) {

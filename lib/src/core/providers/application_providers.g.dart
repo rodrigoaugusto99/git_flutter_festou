@@ -140,7 +140,7 @@ final reservationFirestoreRepositoryProvider =
 
 typedef ReservationFirestoreRepositoryRef
     = ProviderRef<ReservationFirestoreRepository>;
-String _$logoutHash() => r'9e943065799eddf9201be58b762ca1f1f18240d6';
+String _$logoutHash() => r'7ea42675097a08c6e33c22de70903cfbf5632d53';
 
 /// See also [logout].
 @ProviderFor(logout)

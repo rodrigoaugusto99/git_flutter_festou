@@ -4,7 +4,6 @@ import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
-import 'package:git_flutter_festou/src/models/user_with_images.dart';
 
 abstract interface class UserFirestoreRepository {
   //Future<Either<RepositoryException, Nil>> saveUserWithGoogle();
@@ -26,7 +25,7 @@ abstract interface class UserFirestoreRepository {
         String cidade,
       }) userData);
 
-  Future<Either<RepositoryException, UserWithImages>> getUser();
+  Future<Either<RepositoryException, UserModel>> getUser();
 
   Future<Either<RepositoryException, Nil>> updatetUser(
       String text, String newText);
@@ -38,8 +37,7 @@ abstract interface class UserFirestoreRepository {
         String emailComercial,
       }) userData);
 
-  Future<Either<RepositoryException, UserWithImages>> getUserById(
-      String userId);
+  Future<Either<RepositoryException, UserModel>> getUserById(String userId);
 
   Future<Either<RepositoryException, Nil>> clearField(
       String fieldName, String userId);

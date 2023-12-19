@@ -4,10 +4,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
-import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class NewSpaceCard extends ConsumerStatefulWidget {
-  final SpaceWithImages space;
+  final SpaceModel space;
   final bool isReview;
   const NewSpaceCard({
     super.key,
@@ -26,10 +26,10 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
 
     void toggle() {
       setState(() {
-        widget.space.space.isFavorited = !widget.space.space.isFavorited;
+        widget.space.isFavorited = !widget.space.isFavorited;
       });
       spaceRepository.toggleFavoriteSpace(
-          widget.space.space.spaceId, widget.space.space.isFavorited);
+          widget.space.spaceId, widget.space.isFavorited);
     }
 
     //final x = MediaQuery.of(context).size.width;
@@ -37,15 +37,15 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
 
     Widget myCarousel(bool isReview) {
       if (isReview == false) {
-        if (widget.space.imageUrls.isNotEmpty) {
+        if (widget.space.imagesUrl.isNotEmpty) {
           return Stack(
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(16.0),
                 child: CarouselSlider(
-                  items: widget.space.imageUrls
+                  items: widget.space.imagesUrl
                       .map((imageUrl) => Image.network(
-                            imageUrl.toString(),
+                            imageUrl,
                             fit: BoxFit.cover,
                           ))
                       .toList(),
@@ -62,7 +62,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                 right: 20,
                 child: InkWell(
                   onTap: toggle,
-                  child: widget.space.space.isFavorited
+                  child: widget.space.isFavorited
                       ? const Icon(
                           Icons.favorite,
                           color: Colors.red,
@@ -78,13 +78,13 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
           return Container();
         }
       } else {
-        if (widget.space.imageUrls.isNotEmpty) {
+        if (widget.space.imagesUrl.isNotEmpty) {
           return Stack(
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(16.0),
                 child: CarouselSlider(
-                  items: widget.space.imageUrls
+                  items: widget.space.imagesUrl
                       .map((filePath) => Image.file(
                             File(filePath),
                             fit: BoxFit.cover,
@@ -103,7 +103,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                 right: 20,
                 child: InkWell(
                   onTap: toggle,
-                  child: widget.space.space.isFavorited
+                  child: widget.space.isFavorited
                       ? const Icon(
                           Icons.favorite,
                           color: Colors.red,
@@ -146,7 +146,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      ' ${widget.space.space.cidade} ${widget.space.space.selectedTypes}',
+                      ' ${widget.space.cidade} ${widget.space.selectedTypes}',
                       style: const TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold),
                     ),
@@ -159,7 +159,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(widget.space.space.titulo),
+                        Text(widget.space.titulo),
                         const Text('_preço_'),
                       ],
                     ),

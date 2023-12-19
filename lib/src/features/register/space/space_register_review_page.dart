@@ -5,10 +5,10 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/home/home_page.dart
 import 'package:git_flutter_festou/src/features/register/space/space_register_state.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
-import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class SpaceRegisterReviewPage extends ConsumerStatefulWidget {
-  final SpaceWithImages space;
+  final SpaceModel space;
   const SpaceRegisterReviewPage({super.key, required this.space});
 
   @override
@@ -54,14 +54,14 @@ class _SpaceRegisterReviewPageState
           ),
           ElevatedButton(
             onPressed: () => spaceRegister.register(
-              widget.space.space.titulo,
-              widget.space.space.cep,
-              widget.space.space.logradouro,
-              widget.space.space.numero,
-              widget.space.space.bairro,
-              widget.space.space.cidade,
-              widget.space.space.descricao,
-              widget.space.space.city,
+              widget.space.titulo,
+              widget.space.cep,
+              widget.space.logradouro,
+              widget.space.numero,
+              widget.space.bairro,
+              widget.space.cidade,
+              widget.space.descricao,
+              widget.space.city,
             ),
             child: const Text('Confirmar'),
           ),

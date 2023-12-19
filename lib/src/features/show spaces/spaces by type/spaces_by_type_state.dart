@@ -1,10 +1,10 @@
-import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 
 enum SpacesByTypeStateStatus { loaded, error }
 
 class SpacesByTypeState {
   final SpacesByTypeStateStatus status;
-  final List<SpaceWithImages> spaces;
+  final List<SpaceModel> spaces;
 
   SpacesByTypeState({
     required this.status,
@@ -13,7 +13,7 @@ class SpacesByTypeState {
 
   SpacesByTypeState copyWith({
     SpacesByTypeStateStatus? status,
-    List<SpaceWithImages>? spaces,
+    List<SpaceModel>? spaces,
   }) {
     return SpacesByTypeState(
       status: status ?? this.status,

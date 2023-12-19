@@ -8,10 +8,10 @@ import 'package:git_flutter_festou/src/features/space%20card/widgets/my_sliver_l
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/spaces%20with%20sugestion/spaces_with_sugestion_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/spaces%20with%20sugestion/spaces_with_sugestion_vm.dart';
-import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class SpacesWithSugestionPage extends ConsumerStatefulWidget {
-  final SpaceWithImages space;
+  final SpaceModel space;
   const SpacesWithSugestionPage({super.key, required this.space});
 
   @override

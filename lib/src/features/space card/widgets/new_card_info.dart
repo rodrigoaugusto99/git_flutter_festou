@@ -11,11 +11,10 @@ import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_disponibilidade.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_todas_comodidades.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
-import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 import 'package:social_share/social_share.dart';
 
 class NewCardInfo extends StatefulWidget {
-  final SpaceWithImages space;
+  final SpaceModel space;
   const NewCardInfo({
     super.key,
     required this.space,
@@ -53,7 +52,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
     SocialShare.shareOptions('Confira este espaço: $spaceLink');
   }
 
-  String generateSpaceLink(SpaceWithImages space) {
+  String generateSpaceLink(SpaceModel space) {
     // Substitua pelo código do projeto do Firebase
     String projectId = 'flutterfestou';
 
@@ -61,13 +60,13 @@ class _NewCardInfoState extends State<NewCardInfo> {
     String baseUrl = 'https://$projectId.web.app/espaco/';
 
     // Substitua pelo campo correto do seu modelo
-    String spaceId = space.space.spaceId.toString();
+    String spaceId = space.spaceId.toString();
 
     return '$baseUrl$spaceId';
   }
 
   Widget boolComments(String text) {
-    if (widget.space.space.numComments == '0') {
+    if (widget.space.numComments == '0') {
       return Row(
         children: [
           const Icon(
@@ -93,15 +92,14 @@ class _NewCardInfoState extends State<NewCardInfo> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
               color: _getColor(
-                double.parse(widget.space.space.averageRating),
+                double.parse(widget.space.averageRating),
               ),
             ),
             height: 35, // Ajuste conforme necessário
             width: 25, // Ajuste conforme necessário
             child: Center(
               child: Text(
-                double.parse(widget.space.space.averageRating)
-                    .toStringAsFixed(1),
+                double.parse(widget.space.averageRating).toStringAsFixed(1),
                 style: const TextStyle(
                   color: Colors.white, // Cor do texto
                   fontWeight: FontWeight.bold,
@@ -113,7 +111,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
             width: 10,
           ),
           Text(
-            '${widget.space.space.numComments} comments',
+            '${widget.space.numComments} comments',
             style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w400,
@@ -158,7 +156,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
               Stack(
                 children: [
                   CarouselSlider(
-                    items: widget.space.imageUrls
+                    items: widget.space.imagesUrl
                         .map((imageUrl) => Image.network(
                               imageUrl.toString(),
                               fit: BoxFit.cover,
@@ -185,7 +183,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 3, horizontal: 10),
                       child: Text(
-                        '${_currentSlide + 1}/${widget.space.imageUrls.length}',
+                        '${_currentSlide + 1}/${widget.space.imagesUrl.length}',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18.0,
@@ -196,7 +194,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                 ],
               ),
               ElevatedButton(
-                onPressed: () => showRatingDialog(widget.space.space),
+                onPressed: () => showRatingDialog(widget.space),
                 child: const Text('Avalie'),
               ),
               ElevatedButton(
@@ -205,14 +203,14 @@ class _NewCardInfoState extends State<NewCardInfo> {
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                          SpaceReservationsPage(space: widget.space.space),
+                          SpaceReservationsPage(space: widget.space),
                     ),
                   );
                 },
                 child: const Text('ver reservas'),
               ),
               ElevatedButton(
-                onPressed: () => showDateDialog(widget.space.space),
+                onPressed: () => showDateDialog(widget.space),
                 child: const Text('Reserve'),
               ),
               Padding(
@@ -221,7 +219,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.space.space.titulo,
+                      widget.space.titulo,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -229,8 +227,8 @@ class _NewCardInfoState extends State<NewCardInfo> {
                     ),
                     Text(
                       //mostrar bairro(localizacao mais precisa) apenas se o locador permitir
-                      /*${widget.space.space.bairro}*/
-                      '${widget.space.space.cidade}, ${widget.space.space.city}',
+                      /*${widget.space.bairro}*/
+                      '${widget.space.cidade}, ${widget.space.city}',
 
                       style: const TextStyle(
                         fontSize: 13,
@@ -249,7 +247,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          'Locador: ${widget.space.space.locadorName}',
+                          'Locador: ${widget.space.locadorName}',
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -260,7 +258,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                     const SizedBox(height: 10),
                     const Divider(thickness: 0.4, color: Colors.grey),
                     const SizedBox(height: 10),
-                    Text(widget.space.space.descricao),
+                    Text(widget.space.descricao),
                     InkWell(
                       child: const Row(
                         children: [
@@ -296,7 +294,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                     const SizedBox(height: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: widget.space.space.selectedServices
+                      children: widget.space.selectedServices
                           .take(3)
                           .map((service) => Text(service))
                           .toList(),
@@ -351,7 +349,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ShowNewMap(
-                              space: widget.space.space,
+                              space: widget.space,
                             ),
                           ),
                         );
@@ -359,7 +357,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                       child: AbsorbPointer(
                         absorbing: true,
                         child: ShowMap(
-                          space: widget.space.space,
+                          space: widget.space,
                           scrollGesturesEnabled: false,
                           zoomControlsEnabled: false,
                           zoomGesturesEnabled: false,
@@ -371,7 +369,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                     ),
                     const SizedBox(height: 15),
                     /*Text(
-                      '${widget.space.space.bairro}, ${widget.space.space.cidade}',
+                      '${widget.space.bairro}, ${widget.space.cidade}',
                     ),
                     const SizedBox(height: 15),
                     const Text(
@@ -408,7 +406,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
               ),
               SpaceFeedbacksPageLimited(
                 x: 1,
-                space: widget.space.space,
+                space: widget.space,
               ),
               Padding(
                 padding: const EdgeInsets.all(18.0),
@@ -440,8 +438,8 @@ class _NewCardInfoState extends State<NewCardInfo> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SpaceFeedbacksPageAll(
-                                space: widget.space.space),
+                            builder: (context) =>
+                                SpaceFeedbacksPageAll(space: widget.space),
                           ),
                         );
                       },
@@ -459,7 +457,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Alocado por ${widget.space.space.locadorName}',
+                                  'Alocado por ${widget.space.locadorName}',
                                   style: const TextStyle(
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold,
