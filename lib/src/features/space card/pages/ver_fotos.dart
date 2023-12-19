@@ -11,7 +11,7 @@ class VerFotos extends StatefulWidget {
   });
 
   @override
-  _VerFotosState createState() => _VerFotosState();
+  State<VerFotos> createState() => _VerFotosState();
 }
 
 class _VerFotosState extends State<VerFotos> {

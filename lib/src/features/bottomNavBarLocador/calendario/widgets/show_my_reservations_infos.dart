@@ -36,7 +36,8 @@ class _ShowMyReservationsInfosState
             return Column(
               children: [
                 //Image.network(data.)
-                Text('Nome do cliente: ${data.user!.name}'),
+                //Text('Nome do cliente: ${data.user!.name}'),
+                Text('Nome do cliente: ${data.user!}'),
               ],
             );
           },

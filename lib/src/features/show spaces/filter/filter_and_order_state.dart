@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 
 enum FilterAndOrderStateStatus { initial, success, error }
 
@@ -9,7 +9,7 @@ class FilterAndOrderState {
   final List<String> selectedServices;
   final List<String> availableDays;
   //final List<String> selectedNotes;
-  final List<SpaceWithImages> filteredSpaces;
+  final List<SpaceModel> filteredSpaces;
   final String? errorMessage;
 
   FilterAndOrderState.initial()
@@ -18,7 +18,7 @@ class FilterAndOrderState {
           selectedTypes: <String>[],
           selectedServices: <String>[],
           availableDays: <String>[],
-          filteredSpaces: <SpaceWithImages>[],
+          filteredSpaces: <SpaceModel>[],
         );
 
   FilterAndOrderState(
@@ -34,7 +34,7 @@ class FilterAndOrderState {
       List<String>? selectedTypes,
       List<String>? selectedServices,
       List<String>? availableDays,
-      List<SpaceWithImages>? filteredSpaces,
+      List<SpaceModel>? filteredSpaces,
       ValueGetter<String?>? errorMessage}) {
     return FilterAndOrderState(
       status: status ?? this.status,

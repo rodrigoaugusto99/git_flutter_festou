@@ -7,7 +7,6 @@ import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
-import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
 import 'package:git_flutter_festou/src/repositories/feedback/feedback_firestore_repository.dart';
 import 'package:git_flutter_festou/src/repositories/images/images_storage_repository.dart';
 import 'package:git_flutter_festou/src/repositories/space/space_firestore_repository.dart';
@@ -111,8 +110,7 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
   }
 
   @override
-  Future<Either<RepositoryException, List<SpaceWithImages>>>
-      getAllSpaces() async {
+  Future<Either<RepositoryException, List<SpaceModel>>> getAllSpaces() async {
     try {
       //pega todos os documentos dos espaços
       final allSpaceDocuments = await spacesCollection.get();
@@ -132,21 +130,7 @@ p decidir o isFavorited*/
         return mapSpaceDocumentToModel(spaceDocument, isFavorited);
       }).toList());
 
-      final spaceWithImagesList = <SpaceWithImages>[];
-
-      for (var space in spaceModels) {
-        final imageResult =
-            await imagesStorageRepository.getSpaceImages(space.spaceId);
-
-        switch (imageResult) {
-          case Success(value: final imagesData):
-            spaceWithImagesList.add(SpaceWithImages(space, imagesData));
-          case Failure():
-            log('Erro ao recuperar imagens: $imageResult');
-        }
-      }
-
-      return Success(spaceWithImagesList);
+      return Success(spaceModels);
     } catch (e) {
       log('Erro ao recuperar todos os espaços: $e');
       return Failure(RepositoryException(message: 'Erro ao carregar espaços'));
@@ -154,8 +138,7 @@ p decidir o isFavorited*/
   }
 
   @override
-  Future<Either<RepositoryException, List<SpaceWithImages>>>
-      getMySpaces() async {
+  Future<Either<RepositoryException, List<SpaceModel>>> getMySpaces() async {
     try {
       //espaços a serem buildado
       final mySpaceDocuments =
@@ -172,21 +155,8 @@ p decidir o isFavorited*/
             userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
         return mapSpaceDocumentToModel(spaceDocument, isFavorited);
       }).toList());
-      final spaceWithImagesList = <SpaceWithImages>[];
 
-      for (var space in spaceModels) {
-        final imageResult =
-            await imagesStorageRepository.getSpaceImages(space.spaceId);
-
-        switch (imageResult) {
-          case Success(value: final imagesData):
-            spaceWithImagesList.add(SpaceWithImages(space, imagesData));
-          case Failure():
-            log('Erro ao recuperar imagens: $imageResult');
-        }
-      }
-
-      return Success(spaceWithImagesList);
+      return Success(spaceModels);
     } catch (e) {
       log('Erro ao recuperar meus espaços: $e');
       return Failure(
@@ -195,7 +165,7 @@ p decidir o isFavorited*/
   }
 
   @override
-  Future<Either<RepositoryException, List<SpaceWithImages>>>
+  Future<Either<RepositoryException, List<SpaceModel>>>
       getMyFavoriteSpaces() async {
     try {
       //lista de espaços favoritados pelo usuario
@@ -224,21 +194,7 @@ p decidir o isFavorited*/
           }),
         );
 
-        final spaceWithImagesList = <SpaceWithImages>[];
-
-        for (var space in spaceModels) {
-          final imageResult =
-              await imagesStorageRepository.getSpaceImages(space.spaceId);
-
-          switch (imageResult) {
-            case Success(value: final imagesData):
-              spaceWithImagesList.add(SpaceWithImages(space, imagesData));
-            case Failure():
-              log('Erro ao recuperar imagens: $imageResult');
-          }
-        }
-
-        return Success(spaceWithImagesList);
+        return Success(spaceModels);
       } //tratando caso emm que nao há espaços favoritados pelo usario
       else {
         return Success([]);
@@ -394,7 +350,7 @@ p decidir o isFavorited*/
   }
 
   @override
-  Future<Either<RepositoryException, List<SpaceWithImages>>> getSpacesByType(
+  Future<Either<RepositoryException, List<SpaceModel>>> getSpacesByType(
       List<String> types) async {
     try {
       // Consulta espaços onde o campo "selectedTypes" contenha pelo menos um dos tipos da lista.
@@ -416,22 +372,7 @@ p decidir o isFavorited*/
         );
       }).toList());
 
-      final spaceWithImagesList = <SpaceWithImages>[];
-
-      for (var space in spaceModels) {
-        final imageResult =
-            await imagesStorageRepository.getSpaceImages(space.spaceId);
-
-        switch (imageResult) {
-          case Success(value: final imagesData):
-            spaceWithImagesList.add(SpaceWithImages(space, imagesData));
-            break; // Break the switch statement after a successful image retrieval.
-          case Failure():
-            log('Erro ao recuperar imagens: $imageResult');
-        }
-      }
-
-      return Success(spaceWithImagesList);
+      return Success(spaceModels);
     } catch (e) {
       log('Erro ao recuperar espaços por tipo: $e');
       return Failure(
@@ -440,11 +381,11 @@ p decidir o isFavorited*/
   }
 
   @override
-  Future<Either<RepositoryException, List<SpaceWithImages>>> getSugestions(
-      SpaceWithImages spaceWithImages) async {
+  Future<Either<RepositoryException, List<SpaceModel>>> getSugestions(
+      SpaceModel spaceModel) async {
     try {
       // Obtém os tipos do espaço fornecido.
-      final selectedTypes = spaceWithImages.space.selectedTypes;
+      final selectedTypes = spaceModel.selectedTypes;
 
       // Consulta espaços que possuam pelo menos um dos tipos encontrados.
       final spacesResult = await getSpacesWithSameTypes(selectedTypes);
@@ -452,8 +393,7 @@ p decidir o isFavorited*/
       switch (spacesResult) {
         case Success(value: final spacesData):
           final filteredSpaces = spacesData
-              .where((space) =>
-                  space.space.spaceId != spaceWithImages.space.spaceId)
+              .where((space) => space.spaceId != spaceModel.spaceId)
               .toList();
           return Success(filteredSpaces);
         case Failure(exception: RepositoryException(:final message)):
@@ -465,8 +405,8 @@ p decidir o isFavorited*/
     }
   }
 
-  Future<Either<RepositoryException, List<SpaceWithImages>>>
-      getSpacesWithSameTypes(List<dynamic> types) async {
+  Future<Either<RepositoryException, List<SpaceModel>>> getSpacesWithSameTypes(
+      List<dynamic> types) async {
     try {
       final userSpacesFavorite = await getUserFavoriteSpaces();
 
@@ -483,22 +423,7 @@ p decidir o isFavorited*/
         return mapSpaceDocumentToModel(spaceDocument, isFavorited);
       }).toList());
 
-      final spaceWithImagesList = <SpaceWithImages>[];
-
-      for (var space in spaceModels) {
-        final imageResult =
-            await imagesStorageRepository.getSpaceImages(space.spaceId);
-
-        switch (imageResult) {
-          case Success(value: final imagesData):
-            spaceWithImagesList.add(SpaceWithImages(space, imagesData));
-            break;
-          case Failure():
-            log('Erro ao recuperar imagens: $imageResult');
-        }
-      }
-
-      return Success(spaceWithImagesList);
+      return Success(spaceModels);
     } catch (e) {
       log('Erro ao recuperar espaços por tipo: $e');
       return Failure(
@@ -507,14 +432,13 @@ p decidir o isFavorited*/
   }
 
   @override
-  Future<Either<RepositoryException, List<SpaceWithImages>>>
-      getSurroundingSpaces() {
+  Future<Either<RepositoryException, List<SpaceModel>>> getSurroundingSpaces() {
     // TODO: implement getSurroundingSpaces
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<RepositoryException, List<SpaceWithImages>>>
+  Future<Either<RepositoryException, List<SpaceModel>>>
       getSpacesBySelectedTypes({
     List<String>? selectedTypes,
   }) async {
@@ -539,22 +463,7 @@ p decidir o isFavorited*/
         return mapSpaceDocumentToModel(spaceDocument, isFavorited);
       }).toList());
 
-      final spaceWithImagesList = <SpaceWithImages>[];
-
-      for (var space in spaceModels) {
-        final imageResult =
-            await imagesStorageRepository.getSpaceImages(space.spaceId);
-
-        switch (imageResult) {
-          case Success(value: final imagesData):
-            spaceWithImagesList.add(SpaceWithImages(space, imagesData));
-            break;
-          case Failure():
-            log('Erro ao recuperar imagens: $imageResult');
-        }
-      }
-
-      return Success(spaceWithImagesList);
+      return Success(spaceModels);
     } catch (e) {
       log('Erro ao recuperar espaços filtrados: $e');
       return Failure(
@@ -563,7 +472,7 @@ p decidir o isFavorited*/
   }
 
   @override
-  Future<Either<RepositoryException, List<SpaceWithImages>>>
+  Future<Either<RepositoryException, List<SpaceModel>>>
       getSpacesByAvailableDays({
     List<String>? availableDays,
   }) async {
@@ -588,22 +497,7 @@ p decidir o isFavorited*/
         return mapSpaceDocumentToModel(spaceDocument, isFavorited);
       }).toList());
 
-      final spaceWithImagesList = <SpaceWithImages>[];
-
-      for (var space in spaceModels) {
-        final imageResult =
-            await imagesStorageRepository.getSpaceImages(space.spaceId);
-
-        switch (imageResult) {
-          case Success(value: final imagesData):
-            spaceWithImagesList.add(SpaceWithImages(space, imagesData));
-            break;
-          case Failure():
-            log('Erro ao recuperar imagens: $imageResult');
-        }
-      }
-
-      return Success(spaceWithImagesList);
+      return Success(spaceModels);
     } catch (e) {
       log('Erro ao recuperar espaços filtrados: $e');
       return Failure(
@@ -612,7 +506,7 @@ p decidir o isFavorited*/
   }
 
   @override
-  Future<Either<RepositoryException, List<SpaceWithImages>>>
+  Future<Either<RepositoryException, List<SpaceModel>>>
       getSpacesBySelectedServices({
     List<String>? selectedServices,
   }) async {
@@ -639,22 +533,7 @@ p decidir o isFavorited*/
         return mapSpaceDocumentToModel(spaceDocument, isFavorited);
       }).toList());
 
-      final spaceWithImagesList = <SpaceWithImages>[];
-
-      for (var space in spaceModels) {
-        final imageResult =
-            await imagesStorageRepository.getSpaceImages(space.spaceId);
-
-        switch (imageResult) {
-          case Success(value: final imagesData):
-            spaceWithImagesList.add(SpaceWithImages(space, imagesData));
-            break;
-          case Failure():
-            log('Erro ao recuperar imagens: $imageResult');
-        }
-      }
-      log('$spaceWithImagesList');
-      return Success(spaceWithImagesList);
+      return Success(spaceModels);
     } catch (e) {
       log('Erro ao recuperar espaços filtrados: $e');
       return Failure(
@@ -663,10 +542,10 @@ p decidir o isFavorited*/
   }
 
   @override
-  Future<Either<RepositoryException, List<SpaceWithImages>>> filterSpaces(
-      List<SpaceWithImages> spaces1,
-      List<SpaceWithImages> spaces2,
-      List<SpaceWithImages> spaces3) async {
+  Future<Either<RepositoryException, List<SpaceModel>>> filterSpaces(
+      List<SpaceModel> spaces1,
+      List<SpaceModel> spaces2,
+      List<SpaceModel> spaces3) async {
     try {
       if (spaces1.isNotEmpty && spaces2.isEmpty && spaces3.isEmpty) {
         return Success(spaces1);
@@ -676,32 +555,32 @@ p decidir o isFavorited*/
         return Success(spaces3);
       } else if (spaces1.isNotEmpty && spaces2.isNotEmpty && spaces3.isEmpty) {
         final intersection = spaces1
-            .where((space1) => spaces2
-                .any((space2) => space1.space.spaceId == space2.space.spaceId))
+            .where((space1) =>
+                spaces2.any((space2) => space1.spaceId == space2.spaceId))
             .toList();
         return Success(intersection);
       } else if (spaces1.isNotEmpty && spaces2.isEmpty && spaces3.isNotEmpty) {
         final intersection = spaces1
-            .where((space1) => spaces3
-                .any((space3) => space1.space.spaceId == space3.space.spaceId))
+            .where((space1) =>
+                spaces3.any((space3) => space1.spaceId == space3.spaceId))
             .toList();
         return Success(intersection);
       } else if (spaces1.isEmpty && spaces2.isNotEmpty && spaces3.isNotEmpty) {
         final intersection = spaces2
-            .where((space2) => spaces3
-                .any((space3) => space2.space.spaceId == space3.space.spaceId))
+            .where((space2) =>
+                spaces3.any((space3) => space2.spaceId == space3.spaceId))
             .toList();
         return Success(intersection);
       } else if (spaces1.isNotEmpty &&
           spaces2.isNotEmpty &&
           spaces3.isNotEmpty) {
         final intersection1 = spaces1
-            .where((space1) => spaces2
-                .any((space2) => space1.space.spaceId == space2.space.spaceId))
+            .where((space1) =>
+                spaces2.any((space2) => space1.spaceId == space2.spaceId))
             .toList();
         final finalIntersection = intersection1
-            .where((space1) => spaces3
-                .any((space3) => space1.space.spaceId == space3.space.spaceId))
+            .where((space1) =>
+                spaces3.any((space3) => space1.spaceId == space3.spaceId))
             .toList();
         return Success(finalIntersection);
       } else {

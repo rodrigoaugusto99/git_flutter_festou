@@ -68,9 +68,6 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
     super.dispose();
   }
 
-  final Stream<QuerySnapshot> _usersStream =
-      FirebaseFirestore.instance.collection('users').snapshots();
-
   @override
   Widget build(BuildContext context) {
     final informacoesPessoaisVm =

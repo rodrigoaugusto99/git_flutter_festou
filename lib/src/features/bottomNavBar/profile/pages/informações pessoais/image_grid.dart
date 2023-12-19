@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ImageGrid extends StatelessWidget {
-  final List<String> imageUrls;
+  final List<String> imagesUrl;
 
-  const ImageGrid({super.key, required this.imageUrls});
+  const ImageGrid({super.key, required this.imagesUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -16,11 +16,11 @@ class ImageGrid extends StatelessWidget {
       delegate: SliverChildBuilderDelegate(
         (BuildContext context, int index) {
           return Image.network(
-            imageUrls[index],
+            imagesUrl[index],
             fit: BoxFit.cover,
           );
         },
-        childCount: imageUrls.length,
+        childCount: imagesUrl.length,
       ),
     );
   }

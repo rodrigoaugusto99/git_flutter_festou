@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
-import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 
 abstract interface class SpaceFirestoreRepository {
   Future<Either<RepositoryException, Nil>> saveSpace(
@@ -23,36 +23,34 @@ abstract interface class SpaceFirestoreRepository {
     }) spaceData,
   );
 
-  Future<Either<RepositoryException, List<SpaceWithImages>>> getAllSpaces();
-  Future<Either<RepositoryException, List<SpaceWithImages>>> getSpacesByType(
+  Future<Either<RepositoryException, List<SpaceModel>>> getAllSpaces();
+  Future<Either<RepositoryException, List<SpaceModel>>> getSpacesByType(
       List<String> types);
-  Future<Either<RepositoryException, List<SpaceWithImages>>> getSugestions(
-      SpaceWithImages spaceWithImages);
-  Future<Either<RepositoryException, List<SpaceWithImages>>>
-      getSurroundingSpaces();
-  Future<Either<RepositoryException, List<SpaceWithImages>>> getMySpaces();
+  Future<Either<RepositoryException, List<SpaceModel>>> getSugestions(
+      SpaceModel spaceModel);
+  Future<Either<RepositoryException, List<SpaceModel>>> getSurroundingSpaces();
+  Future<Either<RepositoryException, List<SpaceModel>>> getMySpaces();
 
-  Future<Either<RepositoryException, List<SpaceWithImages>>>
+  Future<Either<RepositoryException, List<SpaceModel>>>
       getSpacesBySelectedTypes({
     List<String> selectedTypes,
   });
-  Future<Either<RepositoryException, List<SpaceWithImages>>>
+  Future<Either<RepositoryException, List<SpaceModel>>>
       getSpacesBySelectedServices({
     List<String> selectedServices,
   });
-  Future<Either<RepositoryException, List<SpaceWithImages>>>
+  Future<Either<RepositoryException, List<SpaceModel>>>
       getSpacesByAvailableDays({
     List<String> availableDays,
   });
 
-  Future<Either<RepositoryException, List<SpaceWithImages>>> filterSpaces(
-    List<SpaceWithImages> spaces1,
-    List<SpaceWithImages> spaces2,
-    List<SpaceWithImages> spaces3,
+  Future<Either<RepositoryException, List<SpaceModel>>> filterSpaces(
+    List<SpaceModel> spaces1,
+    List<SpaceModel> spaces2,
+    List<SpaceModel> spaces3,
   );
 
-  Future<Either<RepositoryException, List<SpaceWithImages>>>
-      getMyFavoriteSpaces();
+  Future<Either<RepositoryException, List<SpaceModel>>> getMyFavoriteSpaces();
   Future<Either<RepositoryException, Nil>> toggleFavoriteSpace(
       String spaceId, bool isFavorited);
 }

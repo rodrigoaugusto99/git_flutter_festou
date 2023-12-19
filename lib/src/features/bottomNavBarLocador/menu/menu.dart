@@ -43,31 +43,20 @@ class _MenuState extends State<Menu> {
               MyRow(
                 text: 'Meus espaços',
                 icon: const Icon(Icons.abc),
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => InformacoesPessoais(
-                      userWithImages: widget.userWithImages,
-                    ),
-                  ),
-                ),
+                onTap: () {},
               ),
               MyRow(
                 text: 'Crie um novo espaço',
                 icon: const Icon(Icons.abc),
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LoginSeguranca(),
-                  ),
-                ),
+                onTap: () {},
               ),
               MyText(text: 'Conta'),
               const SizedBox(height: 25),
               MyRow(
-                  text: 'Seu perfil',
-                  icon: const Icon(Icons.abc),
-                  onTap: () => {}),
+                text: 'Seu perfil',
+                icon: const Icon(Icons.abc),
+                onTap: () => {},
+              ),
               MyRow(
                 text: 'Configurações',
                 icon: const Icon(Icons.abc),

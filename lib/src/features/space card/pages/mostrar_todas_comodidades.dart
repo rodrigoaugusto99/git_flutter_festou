@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class MostrarTodasComodidades extends StatefulWidget {
-  final SpaceWithImages space;
+  final SpaceModel space;
   const MostrarTodasComodidades({
     super.key,
     required this.space,
@@ -39,7 +39,7 @@ class _MostrarTodasComodidadesState extends State<MostrarTodasComodidades> {
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: widget.space.space.selectedServices
+              children: widget.space.selectedServices
                   .map((service) => Column(
                         children: [
                           Text(service),

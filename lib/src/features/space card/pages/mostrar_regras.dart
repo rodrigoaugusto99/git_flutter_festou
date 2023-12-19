@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class MostrarRegras extends StatefulWidget {
-  final SpaceWithImages space;
+  final SpaceModel space;
   const MostrarRegras({
     super.key,
     required this.space,
