@@ -70,6 +70,7 @@ dependencies:
   syncfusion_flutter_datepicker: ^23.2.4
   ticket_widget: ^1.0.2
   table_calendar: ^3.0.9
+  flutter_holo_date_picker_widget: ^1.1.2
   
 
 dev_dependencies:

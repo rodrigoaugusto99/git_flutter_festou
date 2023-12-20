@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_holo_date_picker_widget/date_picker.dart';
+import 'package:flutter_holo_date_picker_widget/i18n/date_picker_i18n.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
@@ -31,6 +33,8 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
   bool isVisible = false;
   bool confirmIsVisible = false;
 
+  DateTime? selectedDate;
+
   @override
   Widget build(BuildContext context) {
     final userRegisterVM = ref.watch(userRegisterVmProvider.notifier);
@@ -59,6 +63,37 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
     final double googleLoginButtonHeight = (37 / 732) * screenHeight;
 
     final double firstContainer = (179 / 732) * screenHeight;
+
+    bool isAdult(DateTime date) {
+      DateTime now = DateTime.now();
+      DateTime adultDate = DateTime(now.year - 18, now.month, now.day);
+      return date.isBefore(adultDate);
+    }
+
+    Future<void> _selectDate(BuildContext context) async {
+      var datePicked = await DatePicker.showSimpleDatePicker(
+        context,
+        initialDate: DateTime(2005),
+        firstDate: DateTime(1901),
+        lastDate: DateTime(2023),
+        dateFormat: "dd-MMMM-yyyy",
+        locale: DateTimePickerLocale.pt_br,
+        looping: true,
+      );
+
+      if (datePicked != null) {
+        setState(() {
+          selectedDate = datePicked;
+        });
+
+        if (!isAdult(datePicked)) {
+          const snackBar = SnackBar(
+            content: Text("Você precisa ter no mínimo 18 anos."),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+      }
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -163,18 +198,41 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                             style: const TextStyle(fontSize: 14),
                             controller: confirmPasswordEC,
                             obscureText: confirmIsVisible ? false : true),
+                        ElevatedButton(
+                          child: const Text("open picker dialog"),
+                          onPressed: () => _selectDate(context),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          padding: const EdgeInsets.all(10.0),
+                          child: selectedDate != null
+                              ? Text(
+                                  '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}',
+                                  style: const TextStyle(fontSize: 16.0),
+                                )
+                              : const Text('Nenhuma data selecionada'),
+                        ),
                         SizedBox(height: screenHeight * 0.1),
                         InkWell(
-                          onTap: () {
-                            userRegisterVM.validateForm(
-                                context, formKey, emailEC, passwordEC);
-                          },
+                          onTap: selectedDate != null &&
+                                  isAdult(selectedDate!) == true
+                              ? () {
+                                  userRegisterVM.validateForm(
+                                      context, formKey, emailEC, passwordEC);
+                                }
+                              : null,
                           child: Container(
                             alignment: Alignment.center,
                             width: googleLoginButtonWidth,
                             height: googleLoginButtonHeight,
                             decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 13, 46, 89),
+                              color: selectedDate != null &&
+                                      isAdult(selectedDate!) == true
+                                  ? const Color.fromARGB(255, 13, 46, 89)
+                                  : Colors.black,
                               borderRadius: BorderRadius.circular(
                                   10), // Borda arredondada
                             ),
