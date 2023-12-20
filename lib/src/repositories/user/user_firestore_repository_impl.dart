@@ -5,7 +5,6 @@ import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
-import 'package:git_flutter_festou/src/models/user_with_images.dart';
 import 'package:git_flutter_festou/src/repositories/images/images_storage_repository.dart';
 import './user_firestore_repository.dart';
 
@@ -161,7 +160,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
   }
 
   @override
-  Future<Either<RepositoryException, UserWithImages>> getUser() async {
+  Future<Either<RepositoryException, UserModel>> getUser() async {
     try {
       final userDocument = await getUserDocument();
 
@@ -176,40 +175,14 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         userData['user_address']['bairro'] ?? '',
         userData['user_address']['cidade'] ?? '',
         user.uid,
+        userData['doc1_url'] ?? '',
+        userData['doc2_url'] ?? '',
+        userData['avatar_url'] ?? '',
       );
 
-      final userResult =
-          await imagesStorageRepository.getDocImages(userModel.id);
+      return Success(userModel);
 
-      switch (userResult) {
-        case Success(value: final imagesData):
-          final userResult2 =
-              await imagesStorageRepository.getAvatarImage(userModel.id);
-
-          switch (userResult2) {
-            case Success(value: final avatarData):
-              final UserWithImages userWithImages = UserWithImages(
-                userModel,
-                imagesData,
-                avatarData,
-                userData['doc1_url'] ?? '',
-                userData['doc2_url'] ?? '',
-                userData['avatar_url'] ?? '',
-              );
-              return Success(userWithImages);
-            case Failure():
-              return Failure(RepositoryException(
-                  message:
-                      'Erro ao recuperar documentos do user: $userResult'));
-          }
-
-        case Failure():
-          log('Erro ao recuperar documentos do user: $userResult');
-          return Failure(RepositoryException(
-              message: 'Erro ao recuperar documentos do user: $userResult'));
-      }
-
-      //return Success(userWithImages);
+      //return Success(userModel);
     } catch (e) {
       log('Erro ao recuperar dados do usuario no firestore: $e');
       return Failure(
@@ -233,7 +206,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
   }*/
 
   @override
-  Future<Either<RepositoryException, UserWithImages>> getUserById(
+  Future<Either<RepositoryException, UserModel>> getUserById(
       String userId) async {
     try {
       final userDocument = await getUserDocumentById(userId);
@@ -249,39 +222,14 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         userData['user_address']['bairro'] ?? '',
         userData['user_address']['cidade'] ?? '',
         userId,
+        userData['doc1_url'] ?? '',
+        userData['doc2_url'] ?? '',
+        userData['avatar_url'] ?? '',
       );
 //gambiarra - colocando dados do firestore e do storage aqui
 //esses swqitchs sao pra pegar os storags(cada um)
-      final userResult =
-          await imagesStorageRepository.getDocImages(userModel.id);
 
-      switch (userResult) {
-        case Success(value: final imagesData):
-          final userResult2 =
-              await imagesStorageRepository.getAvatarImage(userModel.id);
-
-          switch (userResult2) {
-            case Success(value: final avatarData):
-              final UserWithImages userWithImages = UserWithImages(
-                userModel,
-                imagesData,
-                avatarData,
-                userData['doc1_url'] ?? '',
-                userData['doc2_url'] ?? '',
-                userData['avatar_url'] ?? '',
-              );
-              return Success(userWithImages);
-            case Failure():
-              return Failure(RepositoryException(
-                  message:
-                      'Erro ao recuperar documentos do user: $userResult'));
-          }
-
-        case Failure():
-          log('Erro ao recuperar documentos do user: $userResult');
-          return Failure(RepositoryException(
-              message: 'Erro ao recuperar documentos do user: $userResult'));
-      }
+      return Success(userModel);
     } catch (e) {
       log('Erro ao recuperar dados do usuario no firestore: $e');
       return Failure(

@@ -1,10 +1,10 @@
-import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 
 enum MyFavoriteSpacesStateStatus { loaded, error }
 
 class MyFavoriteSpacesState {
   final MyFavoriteSpacesStateStatus status;
-  final List<SpaceWithImages> spaces;
+  final List<SpaceModel> spaces;
 
   MyFavoriteSpacesState({
     required this.status,
@@ -13,7 +13,7 @@ class MyFavoriteSpacesState {
 
   MyFavoriteSpacesState copyWith({
     MyFavoriteSpacesStateStatus? status,
-    List<SpaceWithImages>? spaces,
+    List<SpaceModel>? spaces,
   }) {
     return MyFavoriteSpacesState(
       status: status ?? this.status,

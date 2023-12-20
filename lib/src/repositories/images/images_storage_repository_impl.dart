@@ -51,17 +51,17 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
 
       // Recupere a lista de itens no Firebase Storage com o prefixo
       final ListResult result = await storage.ref().child(prefix).listAll();
-      final imageUrls = <String>[];
+      final imagesUrl = <String>[];
 
       // Extraia as URLs das imagens da lista de itens
       for (var item in result.items) {
         final downloadURL = await item.getDownloadURL();
-        imageUrls.add(downloadURL);
+        imagesUrl.add(downloadURL);
       }
 
       log('Imagens do espaço $spaceId recuperadas com sucesso do Firebase Storage');
 
-      return Success(imageUrls);
+      return Success(imagesUrl);
     } catch (e) {
       log('Erro ao recuperar imagens do Firebase Storage: $e');
       return Failure(RepositoryException(message: 'Erro ao recuperar imagens'));
@@ -125,17 +125,17 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
 
       // Recupere a lista de itens no Firebase Storage com o prefixo
       final ListResult result = await storage.ref().child(prefix).listAll();
-      final imageUrls = <String>[];
+      final imagesUrl = <String>[];
 
       // Extraia as URLs das imagens da lista de itens
       for (var item in result.items) {
         final downloadURL = await item.getDownloadURL();
-        imageUrls.add(downloadURL);
+        imagesUrl.add(downloadURL);
       }
 
       log('Imagens do documento do $userId recuperadas com sucesso do Firebase Storage');
 
-      return Success(imageUrls);
+      return Success(imagesUrl);
     } catch (e) {
       log('Erro ao recuperar documentos do Firebase Storage: $e');
       return Failure(
@@ -218,15 +218,15 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
 
       // Recupere a referência da imagem no Firebase Storage
       final ListResult result = await storage.ref().child(prefix).listAll();
-      final imageUrls = <String>[];
+      final imagesUrl = <String>[];
       for (var item in result.items) {
         final downloadURL = await item.getDownloadURL();
-        imageUrls.add(downloadURL);
+        imagesUrl.add(downloadURL);
       }
 
       log('Imagem do avatar do $userId recuperada com sucesso do Firebase Storage');
 
-      return Success(imageUrls);
+      return Success(imagesUrl);
     } catch (e) {
       log('Erro ao recuperar imagem do avatar do Firebase Storage: $e');
       return Failure(

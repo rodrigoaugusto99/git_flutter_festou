@@ -7,7 +7,7 @@ part of 'spaces_with_sugestion_vm.dart';
 // **************************************************************************
 
 String _$spacesWithSugestionVmHash() =>
-    r'f1e739df289442e1e76e0bac68120d1bfa0e352e';
+    r'4614da2b136f247f83baa302ee1d5fe4b69226c4';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -32,10 +32,10 @@ class _SystemHash {
 
 abstract class _$SpacesWithSugestionVm
     extends BuildlessAutoDisposeAsyncNotifier<SpacesWithSugestionState> {
-  late final SpaceWithImages spaceWithImages;
+  late final SpaceModel spaceModel;
 
   Future<SpacesWithSugestionState> build(
-    SpaceWithImages spaceWithImages,
+    SpaceModel spaceModel,
   );
 }
 
@@ -51,10 +51,10 @@ class SpacesWithSugestionVmFamily
 
   /// See also [SpacesWithSugestionVm].
   SpacesWithSugestionVmProvider call(
-    SpaceWithImages spaceWithImages,
+    SpaceModel spaceModel,
   ) {
     return SpacesWithSugestionVmProvider(
-      spaceWithImages,
+      spaceModel,
     );
   }
 
@@ -63,7 +63,7 @@ class SpacesWithSugestionVmFamily
     covariant SpacesWithSugestionVmProvider provider,
   ) {
     return call(
-      provider.spaceWithImages,
+      provider.spaceModel,
     );
   }
 
@@ -88,9 +88,9 @@ class SpacesWithSugestionVmProvider
         SpacesWithSugestionState> {
   /// See also [SpacesWithSugestionVm].
   SpacesWithSugestionVmProvider(
-    SpaceWithImages spaceWithImages,
+    SpaceModel spaceModel,
   ) : this._internal(
-          () => SpacesWithSugestionVm()..spaceWithImages = spaceWithImages,
+          () => SpacesWithSugestionVm()..spaceModel = spaceModel,
           from: spacesWithSugestionVmProvider,
           name: r'spacesWithSugestionVmProvider',
           debugGetCreateSourceHash:
@@ -100,7 +100,7 @@ class SpacesWithSugestionVmProvider
           dependencies: SpacesWithSugestionVmFamily._dependencies,
           allTransitiveDependencies:
               SpacesWithSugestionVmFamily._allTransitiveDependencies,
-          spaceWithImages: spaceWithImages,
+          spaceModel: spaceModel,
         );
 
   SpacesWithSugestionVmProvider._internal(
@@ -110,17 +110,17 @@ class SpacesWithSugestionVmProvider
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.spaceWithImages,
+    required this.spaceModel,
   }) : super.internal();
 
-  final SpaceWithImages spaceWithImages;
+  final SpaceModel spaceModel;
 
   @override
   Future<SpacesWithSugestionState> runNotifierBuild(
     covariant SpacesWithSugestionVm notifier,
   ) {
     return notifier.build(
-      spaceWithImages,
+      spaceModel,
     );
   }
 
@@ -129,13 +129,13 @@ class SpacesWithSugestionVmProvider
     return ProviderOverride(
       origin: this,
       override: SpacesWithSugestionVmProvider._internal(
-        () => create()..spaceWithImages = spaceWithImages,
+        () => create()..spaceModel = spaceModel,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        spaceWithImages: spaceWithImages,
+        spaceModel: spaceModel,
       ),
     );
   }
@@ -149,13 +149,13 @@ class SpacesWithSugestionVmProvider
   @override
   bool operator ==(Object other) {
     return other is SpacesWithSugestionVmProvider &&
-        other.spaceWithImages == spaceWithImages;
+        other.spaceModel == spaceModel;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, spaceWithImages.hashCode);
+    hash = _SystemHash.combine(hash, spaceModel.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -163,8 +163,8 @@ class SpacesWithSugestionVmProvider
 
 mixin SpacesWithSugestionVmRef
     on AutoDisposeAsyncNotifierProviderRef<SpacesWithSugestionState> {
-  /// The parameter `spaceWithImages` of this provider.
-  SpaceWithImages get spaceWithImages;
+  /// The parameter `spaceModel` of this provider.
+  SpaceModel get spaceModel;
 }
 
 class _SpacesWithSugestionVmProviderElement
@@ -173,8 +173,8 @@ class _SpacesWithSugestionVmProviderElement
   _SpacesWithSugestionVmProviderElement(super.provider);
 
   @override
-  SpaceWithImages get spaceWithImages =>
-      (origin as SpacesWithSugestionVmProvider).spaceWithImages;
+  SpaceModel get spaceModel =>
+      (origin as SpacesWithSugestionVmProvider).spaceModel;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter

@@ -2,11 +2,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
-import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 
 class SmallSpaceCard extends ConsumerStatefulWidget {
-  final SpaceWithImages space;
+  final SpaceModel space;
   const SmallSpaceCard({
     super.key,
     required this.space,
@@ -23,10 +23,10 @@ class _SmallSpaceCardState extends ConsumerState<SmallSpaceCard> {
 
     void close() {
       setState(() {
-        widget.space.space.isFavorited = !widget.space.space.isFavorited;
+        widget.space.isFavorited = !widget.space.isFavorited;
       });
       spaceRepository.toggleFavoriteSpace(
-          widget.space.space.spaceId, widget.space.space.isFavorited);
+          widget.space.spaceId, widget.space.isFavorited);
     }
 
     final x = MediaQuery.of(context).size.width;
@@ -38,7 +38,7 @@ class _SmallSpaceCardState extends ConsumerState<SmallSpaceCard> {
       width: x * 0.6,
       child: Column(
         children: [
-          widget.space.imageUrls.isNotEmpty
+          widget.space.imagesUrl.isNotEmpty
               ? Stack(
                   children: [
                     ClipRRect(
@@ -46,8 +46,8 @@ class _SmallSpaceCardState extends ConsumerState<SmallSpaceCard> {
                       child: CarouselSlider(
                         items: [
                           Image.network(
-                            widget.space.imageUrls.isNotEmpty
-                                ? widget.space.imageUrls[0]
+                            widget.space.imagesUrl.isNotEmpty
+                                ? widget.space.imagesUrl[0]
                                 : 'URL de uma imagem padrão ou vazia', // Substituir pela URL da imagem padrão ou vazia
                             fit: BoxFit.cover,
                           ),
@@ -102,7 +102,7 @@ class _SmallSpaceCardState extends ConsumerState<SmallSpaceCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.space.space.titulo,
+                            widget.space.titulo,
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -113,7 +113,7 @@ class _SmallSpaceCardState extends ConsumerState<SmallSpaceCard> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                '8, ${widget.space.space.cidade}',
+                                '8, ${widget.space.cidade}',
                                 style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w400,

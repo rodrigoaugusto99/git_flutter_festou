@@ -94,7 +94,8 @@ class _ShowMyReservationsInfosState
                           .cover, // ou outro ajuste de acordo com suas necessidades
                     ),
                   ),
-                  Text('Locatário: ${data.user!.user.name}'),
+                  //Text('Nome do cliente: ${data.user!.name}'),
+                  Text('Nome do cliente: ${data.user!}'),
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text('Reserva: ${widget.reserva.range}'),

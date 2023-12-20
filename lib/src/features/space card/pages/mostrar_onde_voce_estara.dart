@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/models/space_with_image_model.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class MostrarOndeVoceEstara extends StatefulWidget {
-  final SpaceWithImages space;
+  final SpaceModel space;
   const MostrarOndeVoceEstara({
     super.key,
     required this.space,
@@ -37,7 +37,7 @@ class _MostrarOndeVoceEstaraState extends State<MostrarOndeVoceEstara> {
               height: 20,
             ),
             Text(
-              '${widget.space.space.bairro}, ${widget.space.space.cidade}',
+              '${widget.space.bairro}, ${widget.space.cidade}',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(

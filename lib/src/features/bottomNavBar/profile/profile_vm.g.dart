@@ -6,7 +6,7 @@ part of 'profile_vm.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$profileVMHash() => r'3adf47d63ec614d9424d0c7a29d773d7ec3fcf92';
+String _$profileVMHash() => r'cbf237465bb8911b6d22d37597d72dcd51e30abc';
 
 /// See also [ProfileVM].
 @ProviderFor(ProfileVM)

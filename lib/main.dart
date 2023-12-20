@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
         }
         if (settings.name == '/spaces/spaces_with_sugestion') {
           // Verifica se há argumentos na rota.
-          final space = settings.arguments as SpaceWithImages;
+          final space = settings.arguments as SpaceModel;
 
           // Crie a página `SpacesByTypePage` e passe os argumentos, se houver, para ela.
           return MaterialPageRoute(

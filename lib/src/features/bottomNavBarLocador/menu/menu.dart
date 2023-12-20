@@ -6,11 +6,10 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/pages/configuracoes.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
-import 'package:git_flutter_festou/src/models/user_with_images.dart';
 
 class Menu extends StatefulWidget {
-  final UserWithImages userWithImages;
-  const Menu({super.key, required this.userWithImages});
+  final UserModel userModel;
+  const Menu({super.key, required this.userModel});
 
   @override
   State<Menu> createState() => _MenuState();
@@ -43,31 +42,20 @@ class _MenuState extends State<Menu> {
               MyRow(
                 text: 'Meus espaços',
                 icon: const Icon(Icons.abc),
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => InformacoesPessoais(
-                      userWithImages: widget.userWithImages,
-                    ),
-                  ),
-                ),
+                onTap: () {},
               ),
               MyRow(
                 text: 'Crie um novo espaço',
                 icon: const Icon(Icons.abc),
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LoginSeguranca(),
-                  ),
-                ),
+                onTap: () {},
               ),
               MyText(text: 'Conta'),
               const SizedBox(height: 25),
               MyRow(
-                  text: 'Seu perfil',
-                  icon: const Icon(Icons.abc),
-                  onTap: () => {}),
+                text: 'Seu perfil',
+                icon: const Icon(Icons.abc),
+                onTap: () => {},
+              ),
               MyRow(
                 text: 'Configurações',
                 icon: const Icon(Icons.abc),
@@ -75,7 +63,7 @@ class _MenuState extends State<Menu> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => Configuracoes(
-                      userWithImages: widget.userWithImages,
+                      userModel: widget.userModel,
                     ),
                   ),
                 ),

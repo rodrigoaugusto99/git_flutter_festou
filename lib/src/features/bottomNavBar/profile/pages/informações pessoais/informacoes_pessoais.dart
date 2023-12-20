@@ -11,12 +11,11 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/infor
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais_status.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais_vm.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
-import 'package:git_flutter_festou/src/models/user_with_images.dart';
 import 'package:image_picker/image_picker.dart';
 
 class InformacoesPessoais extends ConsumerStatefulWidget {
-  final UserWithImages userWithImages;
-  const InformacoesPessoais({super.key, required this.userWithImages});
+  final UserModel userModel;
+  const InformacoesPessoais({super.key, required this.userModel});
 
   @override
   ConsumerState<InformacoesPessoais> createState() =>
@@ -44,15 +43,13 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
   void initState() {
     super.initState();
 
-    nameEC = TextEditingController(text: widget.userWithImages.user.name);
-    telefoneEC =
-        TextEditingController(text: widget.userWithImages.user.telefone);
-    emailEC = TextEditingController(text: widget.userWithImages.user.email);
-    cepEC = TextEditingController(text: widget.userWithImages.user.cep);
-    logradourolEC =
-        TextEditingController(text: widget.userWithImages.user.logradouro);
-    bairroEC = TextEditingController(text: widget.userWithImages.user.bairro);
-    cidadeEC = TextEditingController(text: widget.userWithImages.user.cidade);
+    nameEC = TextEditingController(text: widget.userModel.name);
+    telefoneEC = TextEditingController(text: widget.userModel.telefone);
+    emailEC = TextEditingController(text: widget.userModel.email);
+    cepEC = TextEditingController(text: widget.userModel.cep);
+    logradourolEC = TextEditingController(text: widget.userModel.logradouro);
+    bairroEC = TextEditingController(text: widget.userModel.bairro);
+    cidadeEC = TextEditingController(text: widget.userModel.cidade);
   }
 
   @override
@@ -67,9 +64,6 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
 
     super.dispose();
   }
-
-  final Stream<QuerySnapshot> _usersStream =
-      FirebaseFirestore.instance.collection('users').snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +113,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
               StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
                       .collection('users')
-                      .where('uid', isEqualTo: widget.userWithImages.user.id)
+                      .where('uid', isEqualTo: widget.userModel.id)
                       .limit(1)
                       .snapshots(),
                   builder: (context, snapshot) {
@@ -156,7 +150,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                                     onPressed: () async {
                                       informacoesPessoaisVm
                                           .deleteImageFirestore('avatar_url',
-                                              widget.userWithImages.user.id);
+                                              widget.userModel.id);
                                       Navigator.of(context).pop();
                                     },
                                     child: const Text('Confirmar'),
@@ -361,7 +355,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
               StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('users')
-                    .where('uid', isEqualTo: widget.userWithImages.user.id)
+                    .where('uid', isEqualTo: widget.userModel.id)
                     .limit(1)
                     .snapshots(),
                 builder: (context, snapshot) {
@@ -404,10 +398,10 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                                       onPressed: () {
                                         // Exclui a imagem se o usuário clicar em "Confirmar"
                                         informacoesPessoaisVm.deleteImage(
-                                            widget.userWithImages.user.id, 0);
+                                            widget.userModel.id, 0);
                                         informacoesPessoaisVm
                                             .deleteImageFirestore('doc1_url',
-                                                widget.userWithImages.user.id);
+                                                widget.userModel.id);
                                         Navigator.of(context)
                                             .pop(); // Fecha o AlertDialog
                                       },
@@ -467,10 +461,10 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                                       onPressed: () {
                                         // Exclui a imagem se o usuário clicar em "Confirmar"
                                         informacoesPessoaisVm.deleteImage(
-                                            widget.userWithImages.user.id, 1);
+                                            widget.userModel.id, 1);
                                         informacoesPessoaisVm
                                             .deleteImageFirestore('doc2_url',
-                                                widget.userWithImages.user.id);
+                                                widget.userModel.id);
                                         Navigator.of(context)
                                             .pop(); // Fecha o AlertDialog
                                       },
@@ -538,7 +532,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                             onPressed: () {
                               // Exclui a imagem se o usuário clicar em "Confirmar"
                               informacoesPessoaisVm.deleteImage(
-                                  widget.userWithImages.user.id, 1);
+                                  widget.userModel.id, 1);
                               Navigator.of(context)
                                   .pop(); // Fecha o AlertDialog
                             },
@@ -552,9 +546,9 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 onTap: () => informacoesPessoaisVm.pickImage2(),
                 child: SizedBox(
                   height: 200,
-                  child: widget.userWithImages.doc2Url != ''
+                  child: widget.userModel.doc2Url != ''
                       ? Image.network(
-                          widget.userWithImages.doc2Url,
+                          widget.userModel.doc2Url,
                           fit: BoxFit.cover, // Ajuste conforme necessário
                         )
                       : Container(
@@ -578,9 +572,9 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
               ElevatedButton(
                 onPressed: () async {
                   final bool1 = await informacoesPessoaisVm
-                      .uploadNewImages(widget.userWithImages.user.id);
+                      .uploadNewImages(widget.userModel.id);
                   final bool2 = await informacoesPessoaisVm
-                      .uploadAvatar(widget.userWithImages.user.id);
+                      .uploadAvatar(widget.userModel.id);
 
                   if (bool1 && bool2) {
                     Messages.showSuccess('Dados salvos com sucesso', context);
