@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/register/host%20feedback/host_feedback_register_page.dart';
 import 'package:git_flutter_festou/src/features/register/reserva/reserva_register_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/show%20reservations/space_reservations_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_descricao.dart';
@@ -33,6 +34,17 @@ class _NewCardInfoState extends State<NewCardInfo> {
       builder: (context) {
         return Dialog(
           child: FeedbackPage(space: space),
+        );
+      },
+    );
+  }
+
+  void showRateHostDialog(SpaceModel space) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: HostFeedbackRegisterPage(space: space),
         );
       },
     );
@@ -212,6 +224,10 @@ class _NewCardInfoState extends State<NewCardInfo> {
               ElevatedButton(
                 onPressed: () => showDateDialog(widget.space),
                 child: const Text('Reserve'),
+              ),
+              ElevatedButton(
+                onPressed: () => showRateHostDialog(widget.space),
+                child: const Text('Avalie o anfitrião'),
               ),
               Padding(
                 padding: const EdgeInsets.all(18.0),

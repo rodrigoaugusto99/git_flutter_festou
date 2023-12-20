@@ -12,6 +12,9 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
   final CollectionReference feedbacksCollection =
       FirebaseFirestore.instance.collection('feedbacks');
 
+  final CollectionReference hostFeedbacksCollection =
+      FirebaseFirestore.instance.collection('host_feedbacks');
+
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
   final CollectionReference spacesCollection =
@@ -58,6 +61,45 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
     }
   }
 
+  @override
+  Future<Either<RepositoryException, Nil>> saveHostFeedback(
+    ({
+      String hostId,
+      String userId,
+      int rating,
+      String content,
+    }) feedbackData,
+  ) async {
+    // Crie um mapa com os dados passados como parâmetros
+    log('entrou');
+    String userName = await getUserName();
+    String userAvatar = await getUserAvatar();
+    final currentDateTime = DateTime.now();
+    final dateFormat = DateFormat('dd/MM/yyyy - HH');
+    final formattedDateTime = dateFormat.format(currentDateTime);
+    try {
+      Map<String, dynamic> newFeedback = {
+        'host_id': feedbackData.hostId,
+        'user_id': feedbackData.userId,
+        'rating': feedbackData.rating,
+        'content': feedbackData.content,
+        'user_name': userName,
+        'date': formattedDateTime,
+        'avatar': userAvatar,
+      };
+      log('ntrou');
+      await hostFeedbacksCollection.add(newFeedback);
+      log('Avaliação de host adicionado com sucesso!');
+      // Após adicionar o feedback, atualize a média no espaço correspondente
+      await updateHostAverageRating(feedbackData.hostId);
+      await updateHostNumComments(feedbackData.hostId);
+      return Success(nil);
+    } catch (e) {
+      log('Erro ao avaliar espaço: $e');
+      return Failure(RepositoryException(message: 'Erro ao avaliar host'));
+    }
+  }
+
 // Função para calcular a numero de comntarioss e atualizar o campo average_rating no Firestore
   Future<void> updateNumComments(String spaceId) async {
     try {
@@ -67,7 +109,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
       // Verifica se há documentos reais na coleção
       if (allFeedbacksDocuments.size == 0) {
         // Não há feedbacks para o espaço fornecido
-        log('Nenhum documento encontrado para o espaço com spaceId: $spaceId');
+        log('Nenhum doc encontrado p o espaço com spaceId: $spaceId');
         return;
       }
       log('allFeedbacksDocuments: $allFeedbacksDocuments');
@@ -92,6 +134,40 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
     }
   }
 
+  Future<void> updateHostNumComments(String hostId) async {
+    try {
+      final allFeedbacksDocuments = await hostFeedbacksCollection
+          .where('host_id', isEqualTo: hostId)
+          .get();
+
+      // Verifica se há documentos reais na coleção
+      if (allFeedbacksDocuments.size == 0) {
+        // Não há feedbacks para o espaço fornecido
+        log('Nenhum doc encontrado p o espaço com hostId: $hostId');
+        return;
+      }
+      log('allFeedbacksDocuments: $allFeedbacksDocuments');
+      log('hostId: $hostId');
+
+      int totalDocuments = allFeedbacksDocuments.docs.length;
+
+      await usersCollection
+          .where('uid', isEqualTo: hostId)
+          .get()
+          .then((querySnapshot) {
+        if (querySnapshot.docs.isNotEmpty) {
+          querySnapshot.docs.first.reference
+              .update({'num_comments': totalDocuments.toString()});
+          log('Numero de comntarios atualizado com sucesso!');
+        } else {
+          log('Nenhum documento encontrado para o host com host_id: $hostId');
+        }
+      });
+    } catch (e) {
+      log('Erro ao atualizar numero de comntarios: $e');
+    }
+  }
+
   // Função para calcular a média dos ratings e atualizar o campo average_rating no Firestore
   Future<void> updateAverageRating(String spaceId) async {
     try {
@@ -101,7 +177,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
       // Verifica se há documentos reais na coleção
       if (allFeedbacksDocuments.size == 0) {
         // Não há feedbacks para o espaço fornecido
-        log('Nenhum documento encontrado para o espaço com spaceId: $spaceId');
+        log('Nenhum doc encontrado p o espaço com spaceId: $spaceId');
         return;
       }
       log('allFeedbacksDocuments: $allFeedbacksDocuments');
@@ -132,6 +208,53 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
           log('Average rating atualizado com sucesso!');
         } else {
           log('Nenhum documento encontrado para o espaço com space_id: $spaceId');
+        }
+      });
+    } catch (e) {
+      log('Erro ao atualizar average rating: $e');
+    }
+  }
+
+  Future<void> updateHostAverageRating(String hostId) async {
+    try {
+      final allFeedbacksDocuments = await hostFeedbacksCollection
+          .where('host_id', isEqualTo: hostId)
+          .get();
+
+      // Verifica se há documentos reais na coleção
+      if (allFeedbacksDocuments.size == 0) {
+        // Não há feedbacks para o espaço fornecido
+        log('Nenhum doc encontrado p o host com hostId: $hostId');
+        return;
+      }
+      log('allFeedbacksDocuments: $allFeedbacksDocuments');
+      log('HostId: $hostId');
+
+      int totalRating = 0;
+      int totalDocuments = allFeedbacksDocuments.docs.length;
+
+      for (QueryDocumentSnapshot document in allFeedbacksDocuments.docs) {
+        // Obtém o valor de 'rating' do documento
+        int rating = document['rating'];
+
+        // Soma os ratings
+        totalRating += rating;
+      }
+
+      // Calcula a média dos ratings
+      double averageRating = totalRating / totalDocuments;
+
+      // Atualiza o campo average_rating no documento do espaço com base no campo space_id
+      await usersCollection
+          .where('uid', isEqualTo: hostId)
+          .get()
+          .then((querySnapshot) {
+        if (querySnapshot.docs.isNotEmpty) {
+          querySnapshot.docs.first.reference
+              .update({'average_rating': averageRating.toString()});
+          log('Average rating atualizado com sucesso!');
+        } else {
+          log('Nenhum documento encontrado para o host com host_id: $hostId');
         }
       });
     } catch (e) {
