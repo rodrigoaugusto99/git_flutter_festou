@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/my%20reservations%20info/guest%20feedback/guest_feedback_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/my%20reservations%20info/show_my_reservations_info_state.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/my%20reservations%20info/show_my_reservations_info_vm.dart';
 import 'package:git_flutter_festou/src/models/reservation_model.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -76,6 +78,17 @@ class _ShowMyReservationsInfosState
       );
     }
 
+    void showRatingDialog(String userId) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            child: GuestFeedbackPage(userId: userId),
+          );
+        },
+      );
+    }
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Informacoes dessa reserva'),
@@ -95,7 +108,7 @@ class _ShowMyReservationsInfosState
                     ),
                   ),
                   //Text('Nome do cliente: ${data.user!.name}'),
-                  Text('Nome do cliente: ${data.user!}'),
+                  Text('Nome do cliente: ${data.user!.name}'),
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text('Reserva: ${widget.reserva.range}'),
@@ -131,7 +144,11 @@ class _ShowMyReservationsInfosState
                         ),
                       ),
                     ],
-                  )
+                  ),
+                  ElevatedButton(
+                    onPressed: () => showRatingDialog(widget.reserva.userId),
+                    child: const Text('Avaliar hospede'),
+                  ),
                 ],
               ),
             );
