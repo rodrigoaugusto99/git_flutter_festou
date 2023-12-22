@@ -15,6 +15,9 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
   final CollectionReference hostFeedbacksCollection =
       FirebaseFirestore.instance.collection('host_feedbacks');
 
+  final CollectionReference guestFeedbacksCollection =
+      FirebaseFirestore.instance.collection('guest_feedbacks');
+
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
   final CollectionReference spacesCollection =
@@ -100,6 +103,43 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
     }
   }
 
+  @override
+  Future<Either<RepositoryException, Nil>> saveGuestFeedback(
+      ({
+        String content,
+        String guestId,
+        int rating,
+        String userId
+      }) feedbackData) async {
+    log('entrou');
+    String userName = await getUserName();
+    String userAvatar = await getUserAvatar();
+    final currentDateTime = DateTime.now();
+    final dateFormat = DateFormat('dd/MM/yyyy - HH');
+    final formattedDateTime = dateFormat.format(currentDateTime);
+    try {
+      Map<String, dynamic> newFeedback = {
+        'guest_id': feedbackData.guestId,
+        'user_id': feedbackData.userId,
+        'rating': feedbackData.rating,
+        'content': feedbackData.content,
+        'user_name': userName,
+        'date': formattedDateTime,
+        'avatar': userAvatar,
+      };
+      log('ntrou');
+      await guestFeedbacksCollection.add(newFeedback);
+      log('Avaliação de guest adicionado com sucesso!');
+      // Após adicionar o feedback, atualize a média no espaço correspondente
+      await updateGuestAverageRating(feedbackData.guestId);
+      await updateGuestNumComments(feedbackData.guestId);
+      return Success(nil);
+    } catch (e) {
+      log('Erro ao avaliar guest: $e');
+      return Failure(RepositoryException(message: 'Erro ao avaliar guest'));
+    }
+  }
+
 // Função para calcular a numero de comntarioss e atualizar o campo average_rating no Firestore
   Future<void> updateNumComments(String spaceId) async {
     try {
@@ -161,6 +201,40 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
           log('Numero de comntarios atualizado com sucesso!');
         } else {
           log('Nenhum documento encontrado para o host com host_id: $hostId');
+        }
+      });
+    } catch (e) {
+      log('Erro ao atualizar numero de comntarios: $e');
+    }
+  }
+
+  Future<void> updateGuestNumComments(String guestId) async {
+    try {
+      final allFeedbacksDocuments = await guestFeedbacksCollection
+          .where('guest_id', isEqualTo: guestId)
+          .get();
+
+      // Verifica se há documentos reais na coleção
+      if (allFeedbacksDocuments.size == 0) {
+        // Não há feedbacks para o espaço fornecido
+        log('Nenhum doc encontrado p o espaço com guestId: $guestId');
+        return;
+      }
+      log('allFeedbacksDocuments: $allFeedbacksDocuments');
+      log('hostId: $guestId');
+
+      int totalDocuments = allFeedbacksDocuments.docs.length;
+
+      await usersCollection
+          .where('uid', isEqualTo: guestId)
+          .get()
+          .then((querySnapshot) {
+        if (querySnapshot.docs.isNotEmpty) {
+          querySnapshot.docs.first.reference
+              .update({'num_comments': totalDocuments.toString()});
+          log('Numero de comntarios atualizado com sucesso!');
+        } else {
+          log('Nenhum documento encontrado para o guest com host_id: $guestId');
         }
       });
     } catch (e) {
@@ -262,6 +336,53 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
     }
   }
 
+  Future<void> updateGuestAverageRating(String guestId) async {
+    try {
+      final allFeedbacksDocuments = await guestFeedbacksCollection
+          .where('guest_id', isEqualTo: guestId)
+          .get();
+
+      // Verifica se há documentos reais na coleção
+      if (allFeedbacksDocuments.size == 0) {
+        // Não há feedbacks para o espaço fornecido
+        log('Nenhum doc encontrado p o host com guestId: $guestId');
+        return;
+      }
+      log('allFeedbacksDocuments: $allFeedbacksDocuments');
+      log('HostId: $guestId');
+
+      int totalRating = 0;
+      int totalDocuments = allFeedbacksDocuments.docs.length;
+
+      for (QueryDocumentSnapshot document in allFeedbacksDocuments.docs) {
+        // Obtém o valor de 'rating' do documento
+        int rating = document['rating'];
+
+        // Soma os ratings
+        totalRating += rating;
+      }
+
+      // Calcula a média dos ratings
+      double averageRating = totalRating / totalDocuments;
+
+      // Atualiza o campo average_rating no documento do espaço com base no campo space_id
+      await usersCollection
+          .where('uid', isEqualTo: guestId)
+          .get()
+          .then((querySnapshot) {
+        if (querySnapshot.docs.isNotEmpty) {
+          querySnapshot.docs.first.reference
+              .update({'average_rating': averageRating.toString()});
+          log('Average rating atualizado com sucesso!');
+        } else {
+          log('Nenhum documento encontrado para o guest com guest_id: $guestId');
+        }
+      });
+    } catch (e) {
+      log('Erro ao atualizar average rating: $e');
+    }
+  }
+
   @override
   Future<Either<RepositoryException, List<FeedbackModel>>> getFeedbacks(
       String spaceId) async {
@@ -349,5 +470,24 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
 
     // Trate o caso em que nenhum usuário foi encontrado.
     throw Exception("Usuário não encontrado");
+  }
+
+  @override
+  Future<Either<RepositoryException, List<FeedbackModel>>> getMyFeedbacks(
+      String userId) async {
+    try {
+      final allFeedbacksDocuments =
+          await feedbacksCollection.where('user_id', isEqualTo: userId).get();
+
+      List<FeedbackModel> feedbackModels =
+          allFeedbacksDocuments.docs.map((feedbackDocument) {
+        return mapFeedbackDocumentToModel(feedbackDocument);
+      }).toList();
+      return Success(feedbackModels);
+    } catch (e) {
+      log('Erro ao recuperar os meus feeedbacks do firestore: $e');
+      return Failure(
+          RepositoryException(message: 'Erro ao carregar os meus feedbacks'));
+    }
   }
 }

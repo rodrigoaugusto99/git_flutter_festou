@@ -4,7 +4,6 @@ import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/c
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/calendario_vm.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/show_my_reservations.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/show_upcoming_reservations.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/show%20reservations/widgets/show_reservations.dart';
 
 import 'show_my_today_reservations.dart';
 
