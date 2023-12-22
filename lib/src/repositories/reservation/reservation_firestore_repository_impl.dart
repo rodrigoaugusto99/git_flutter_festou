@@ -41,6 +41,7 @@ class ReservationFirestoreRepositoryImpl
         'space_id': reservationData.spaceId,
         'range': reservationData.range,
         'date': formattedDateTime,
+        'status': 'solicitado',
       };
 
       await reservationCollection.add(newReservation);
@@ -80,6 +81,7 @@ class ReservationFirestoreRepositoryImpl
       userId: reservationDocument['user_id'] ?? '',
       range: reservationDocument['range'] ?? '',
       date: reservationDocument['date'] ?? '',
+      status: reservationDocument['status'] ?? '',
     );
   }
 
@@ -119,6 +121,25 @@ class ReservationFirestoreRepositoryImpl
       log('Erro ao recuperar as reservas dos meus espaços: $e');
       return Failure(RepositoryException(
           message: 'Erro ao carregar as reservas dos meus espaços'));
+    }
+  }
+
+  @override
+  Future<Either<RepositoryException, List<ReservationModel>>> getMyReservations(
+      String userId) async {
+    try {
+      final allReservationsDocuments =
+          await reservationCollection.where('user_id', isEqualTo: userId).get();
+
+      List<ReservationModel> reservationModels =
+          allReservationsDocuments.docs.map((reservationModels) {
+        return mapReservationDocumentToModel(reservationModels);
+      }).toList();
+      return Success(reservationModels);
+    } catch (e) {
+      log('Erro ao recuperar as reservas que eu fiz do firestore: $e');
+      return Failure(
+          RepositoryException(message: 'Erro ao carregar as minhas reservas'));
     }
   }
 }

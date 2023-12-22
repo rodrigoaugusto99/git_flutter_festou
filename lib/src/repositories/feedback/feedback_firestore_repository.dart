@@ -32,6 +32,9 @@ abstract interface class FeedbackFirestoreRepository {
   Future<Either<RepositoryException, List<FeedbackModel>>> getFeedbacks(
       String spaceId);
 
+  Future<Either<RepositoryException, List<FeedbackModel>>> getMyFeedbacks(
+      String userId);
+
   Future<Either<RepositoryException, List<FeedbackModel>>> getFeedbacksOrdered(
       String spaceId, String orderBy);
 }

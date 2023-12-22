@@ -15,6 +15,9 @@ abstract interface class ReservationFirestoreRepository {
   Future<Either<RepositoryException, List<ReservationModel>>> getReservations(
       String spaceId);
 
+  Future<Either<RepositoryException, List<ReservationModel>>> getMyReservations(
+      String userId);
+
   Future<Either<RepositoryException, List<ReservationModel>>>
       getMyReservedClients();
 }

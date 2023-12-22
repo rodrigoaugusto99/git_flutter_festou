@@ -471,4 +471,23 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
     // Trate o caso em que nenhum usuário foi encontrado.
     throw Exception("Usuário não encontrado");
   }
+
+  @override
+  Future<Either<RepositoryException, List<FeedbackModel>>> getMyFeedbacks(
+      String userId) async {
+    try {
+      final allFeedbacksDocuments =
+          await feedbacksCollection.where('user_id', isEqualTo: userId).get();
+
+      List<FeedbackModel> feedbackModels =
+          allFeedbacksDocuments.docs.map((feedbackDocument) {
+        return mapFeedbackDocumentToModel(feedbackDocument);
+      }).toList();
+      return Success(feedbackModels);
+    } catch (e) {
+      log('Erro ao recuperar os meus feeedbacks do firestore: $e');
+      return Failure(
+          RepositoryException(message: 'Erro ao carregar os meus feedbacks'));
+    }
+  }
 }
