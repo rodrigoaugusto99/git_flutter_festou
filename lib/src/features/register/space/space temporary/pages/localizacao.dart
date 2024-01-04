@@ -127,7 +127,7 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
                   onChanged: onChangedCep,
                 ),
                 TextFormField(
-                  enabled: !isCepAutoCompleted,
+                  //enabled: !isCepAutoCompleted,
                   controller: logradouroEC,
                   validator: spaceRegister.validateLogradouro(),
                   decoration: const InputDecoration(
@@ -142,7 +142,7 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
                   ),
                 ),
                 TextFormField(
-                  enabled: !isCepAutoCompleted,
+                  //enabled: !isCepAutoCompleted,
                   controller: bairroEC,
                   validator: spaceRegister.validateBairro(),
                   decoration: const InputDecoration(
