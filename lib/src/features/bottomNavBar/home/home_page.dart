@@ -77,8 +77,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text('Espaços perto de você'),
-                      ElevatedButton(
-                        onPressed: () {
+                      InkWell(
+                        onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -89,12 +89,16 @@ class _HomePageState extends ConsumerState<HomePage> {
                                 scrollGesturesEnabled: true,
                                 zoomControlsEnabled: true,
                                 zoomGesturesEnabled: true,
-                                x: false,
                               ),
                             ),
                           );
                         },
-                        child: const Text(''),
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: y * 0.2,
+                          color: Colors.purple,
+                          child: const Text('Descubra espaços perto de você'),
+                        ),
                       ),
                       SizedBox(
                         height: y * 0.21,
