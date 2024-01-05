@@ -3,6 +3,7 @@ import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 abstract interface class SpaceFirestoreRepository {
   Future<Either<RepositoryException, Nil>> saveSpace(
@@ -20,6 +21,8 @@ abstract interface class SpaceFirestoreRepository {
       List<File> imageFiles,
       String descricao,
       String city,
+      double latitude,
+      double longitude,
     }) spaceData,
   );
 
@@ -28,7 +31,8 @@ abstract interface class SpaceFirestoreRepository {
       List<String> types);
   Future<Either<RepositoryException, List<SpaceModel>>> getSugestions(
       SpaceModel spaceModel);
-  Future<Either<RepositoryException, List<SpaceModel>>> getSurroundingSpaces();
+  Future<Either<RepositoryException, List<SpaceModel>>> getSurroundingSpaces(
+      LatLngBounds visibleRegion);
   Future<Either<RepositoryException, List<SpaceModel>>> getMySpaces();
 
   Future<Either<RepositoryException, List<SpaceModel>>>

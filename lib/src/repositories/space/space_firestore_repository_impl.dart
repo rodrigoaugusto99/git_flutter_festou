@@ -6,10 +6,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_page.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/repositories/feedback/feedback_firestore_repository.dart';
 import 'package:git_flutter_festou/src/repositories/images/images_storage_repository.dart';
 import 'package:git_flutter_festou/src/repositories/space/space_firestore_repository.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
   final ImagesStorageRepository imagesStorageRepository;
@@ -44,6 +46,8 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
         List<File> imageFiles,
         String descricao,
         String city,
+        double latitude,
+        double longitude,
       }) spaceData) async {
     try {
       // Crie um novo espaço com os dados fornecidos
@@ -89,6 +93,8 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
               'descricao': spaceData.descricao,
               'city': spaceData.city,
               'images_url': imagesData,
+              'latitude': spaceData.latitude,
+              'longitude': spaceData.longitude,
             };
             await spacesCollection.add(newSpace);
 
@@ -134,6 +140,47 @@ p decidir o isFavorited*/
     } catch (e) {
       log('Erro ao recuperar todos os espaços: $e');
       return Failure(RepositoryException(message: 'Erro ao carregar espaços'));
+    }
+  }
+
+  @override
+  Future<Either<RepositoryException, List<SpaceModel>>> getSurroundingSpaces(
+    LatLngBounds visibleRegion,
+  ) async {
+    try {
+      // Acesse sua coleção "spaces" no Firestore
+      QuerySnapshot surroundingSpaces = await spacesCollection
+          .where(
+            'latitude', // Substitua 'latitude' pelo nome do campo correspondente no Firestore
+            isGreaterThanOrEqualTo: visibleRegion.southwest.latitude,
+            isLessThanOrEqualTo: visibleRegion.northeast.latitude,
+          )
+          .get();
+
+      surroundingSpaces = await spacesCollection
+          .where(
+            'longitude', // Substitua 'longitude' pelo nome do campo correspondente no Firestore
+            isGreaterThanOrEqualTo: visibleRegion.southwest.longitude,
+            isLessThanOrEqualTo: visibleRegion.northeast.longitude,
+          )
+          .get();
+
+      // Obtém os favoritos do usuário
+      final userSpacesFavorite = await getUserFavoriteSpaces();
+
+      // Mapeia os documentos para modelos de espaço
+      List<SpaceModel> spaceModels =
+          await Future.wait(surroundingSpaces.docs.map((spaceDocument) async {
+        final isFavorited =
+            userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
+        return await mapSpaceDocumentToModel(spaceDocument, isFavorited);
+      }).toList());
+
+      return Success(spaceModels);
+    } catch (e) {
+      log('Erro ao obter espaços na região visível: $e');
+      return Failure(RepositoryException(
+          message: 'Erro ao carregar espaços na região visível'));
     }
   }
 
@@ -429,12 +476,6 @@ p decidir o isFavorited*/
       return Failure(
           RepositoryException(message: 'Erro ao carregar espaços por tipo'));
     }
-  }
-
-  @override
-  Future<Either<RepositoryException, List<SpaceModel>>> getSurroundingSpaces() {
-    // TODO: implement getSurroundingSpaces
-    throw UnimplementedError();
   }
 
   @override
