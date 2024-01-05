@@ -7,6 +7,7 @@ import 'package:git_flutter_festou/src/features/space%20card/widgets/my_sliver_l
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_vm.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/new_card_info.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SurroundingSpacesPage extends ConsumerStatefulWidget {
@@ -21,39 +22,12 @@ class SurroundingSpacesPage extends ConsumerStatefulWidget {
 
 class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
   GoogleMapController? mapController;
-  bool isReloading = false;
-
-  Future<void> reloadSpaces(LatLngBounds bounds) async {
-    setState(() {
-      isReloading = true;
-    });
-
-    try {
-      // Lógica para recarregar espaços com base na região visível (bounds)
-      await reloadSpaces(bounds);
-    } finally {
-      setState(() {
-        isReloading = false;
-      });
-    }
-  }
-
-  Future<LatLngBounds?> getVisibleRegion(GoogleMapController controller) async {
-    if (controller == null) return null;
-
-    try {
-      // Obtenha as coordenadas da região visível do mapa
-      LatLngBounds bounds = await controller.getVisibleRegion();
-      return bounds;
-    } catch (e) {
-      log('Erro ao obter a região visível: $e');
-      return null;
-    }
-  }
+  CameraPosition? currentCameraPosition;
+  bool canRefresh = false;
 
   LatLngBounds rioDeJaneiroBounds = LatLngBounds(
-    southwest: const LatLng(-23.0838, -43.7957),
-    northeast: const LatLng(-22.7469, -43.0962),
+    southwest: const LatLng(-23.336615865621933, -43.460534401237965),
+    northeast: const LatLng(-22.472079364142523, -42.89604641497135),
   );
 
   @override
@@ -78,60 +52,62 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
                 onMapCreated: (controller) {
                   mapController = controller;
                 },
-                initialCameraPosition: const CameraPosition(
-                  target: LatLng(-22.9122, -43.2303),
-                  zoom: 10,
-                ),
+                initialCameraPosition: currentCameraPosition ??
+                    const CameraPosition(
+                      target: LatLng(-22.9122, -43.2303),
+                      zoom: 10,
+                    ),
                 onCameraMove: (CameraPosition cameraPosition) async {
+                  currentCameraPosition = cameraPosition;
                   // Esta função será chamada sempre que a câmera do mapa for movida
-                  LatLngBounds visibleRegion =
-                      await mapController!.getVisibleRegion();
-                  log('Visible Region: $visibleRegion');
-
-                  rioDeJaneiroBounds = visibleRegion;
 
                   // Agora você pode usar a visibleRegion para obter os limites visíveis do mapa
                   // e realizar qualquer lógica adicional, como chamar o Firestore para recuperar espaços dentro desses limites.
                 },
-                /*circles: {
-                Circle(
-                  circleId: const CircleId('userRadius'),
-                  center: maracanaCoordinates,
-                  strokeWidth: 1,
-                  strokeColor: Colors.blue,
-                  fillColor: Colors.blue.withOpacity(0.3),
-                ),
-                ...spaceLocations.map((location) {
-                  return Circle(
-                    circleId: CircleId(location.toString()),
-                    center: location,
-                    radius: 1000,
-                    strokeWidth: 0,
-                    fillColor: Colors.red.withOpacity(0.3),
-                    strokeColor: Colors.red,
+                circles: {
+                  ...data.spaces.map((space) {
+                    return Circle(
+                      circleId: CircleId(space.spaceId.toString()),
+                      center: LatLng(space.latitude, space.longitude),
+                      radius: 1000,
+                      strokeWidth: 0,
+                      fillColor: Colors.red.withOpacity(0.3),
+                      strokeColor: Colors.red,
+                    );
+                  }),
+                },
+                markers: data.spaces.map((space) {
+                  return Marker(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NewCardInfo(space: space),
+                      ),
+                    ),
+                    markerId: MarkerId(space.spaceId),
+                    position: LatLng(space.latitude, space.longitude),
+                    // Adicione outras informações sobre o espaço, se necessário
+                    // infoWindow: InfoWindow(title: space.name, snippet: space.description),
                   );
-                }),
-              },
-              markers: spaceLocations.map((location) {
-                return Marker(
-                  markerId: MarkerId(location.toString()),
-                  position: location,
-                  // Adicione outras informações sobre o espaço, se necessário
-                  // infoWindow: InfoWindow(title: space.name, snippet: space.description),
-                );
-              }).toSet(),*/
+                }).toSet(),
               ),
               Positioned(
                 top: 16.0,
                 right: 16.0,
                 child: FloatingActionButton(
-                  onPressed: isReloading
-                      ? null
-                      : () async {
-                          LatLngBounds visibleRegion =
-                              await mapController!.getVisibleRegion();
-                          await reloadSpaces(visibleRegion);
-                        },
+                  onPressed: () async {
+                    LatLngBounds visibleRegion =
+                        await mapController!.getVisibleRegion();
+                    /*eu estava em duvida em sincronizar o initialCameraPosition
+                        com o rioDeJaneiroBounds (visao inicial p carregar o espaços).
+                        então, printei o valor da regiao visivel logo quando entra no mapa,
+                        ou seja, quando é o initialCameraPosition.*/
+                    log('Visible Region: $visibleRegion');
+
+                    setState(() {
+                      rioDeJaneiroBounds = visibleRegion;
+                    });
+                  },
                   child: const Icon(Icons.refresh),
                 ),
               ),

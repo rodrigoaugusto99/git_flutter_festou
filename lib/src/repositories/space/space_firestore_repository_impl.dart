@@ -324,6 +324,8 @@ p decidir o isFavorited*/
       spaceDocument['city'] ?? '',
       //imagesData,
       imagesUrl,
+      spaceDocument['latitude'] ?? '',
+      spaceDocument['longitude'] ?? '',
     );
   }
 
