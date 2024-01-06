@@ -6,24 +6,30 @@ class ChatServices {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<void> sendMessage(
-      String receiverID, String receiverName, message) async {
+  Future<void> sendMessage(String receiverID, message) async {
     final String currentUserID = _auth.currentUser!.uid;
-    final String currentUserEmail = _auth.currentUser!.email!;
+
     final Timestamp timestamp = Timestamp.now();
 
     MessageModel newMessage = MessageModel(
       senderID: currentUserID,
-      senderName: currentUserEmail,
       receiverID: receiverID,
       message: message,
       timestamp: timestamp,
     );
 
     List<String> ids = [currentUserID, receiverID];
+
     ids.sort();
     String chatRoomID = ids.join('_');
 
+    // Adiciona o documento com a lista chatRoomIDs e define o ID como chatRoomID
+    await _firestore
+        .collection('chat_rooms')
+        .doc(chatRoomID)
+        .set({'chatRoomIDs': ids});
+
+    // Adiciona a mensagem à coleção messages no mesmo documento
     await _firestore
         .collection('chat_rooms')
         .doc(chatRoomID)

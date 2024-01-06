@@ -519,7 +519,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => ChatPage(
-                                  receiverName: widget.space.locadorName,
+                                  //receiverName: widget.space.locadorName,
                                   receiverID: widget.space.userId,
                                 ),
                               ),

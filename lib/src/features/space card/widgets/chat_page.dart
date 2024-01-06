@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/services/chat_services.dart';
 
 class ChatPage extends StatelessWidget {
-  final String receiverName;
+  //final String receiverName;
   final String receiverID;
   ChatPage({
     super.key,
-    required this.receiverName,
+    // required this.receiverName,
     required this.receiverID,
   });
 
@@ -19,7 +19,7 @@ class ChatPage extends StatelessWidget {
 
   void sendMessage() async {
     if (messageEC.text.isNotEmpty) {
-      await _chatServices.sendMessage(receiverID, receiverName, messageEC.text);
+      await _chatServices.sendMessage(receiverID, messageEC.text);
 
       messageEC.clear();
     }
@@ -30,7 +30,8 @@ class ChatPage extends StatelessWidget {
     String senderID = FirebaseAuth.instance.currentUser!.uid;
     return Scaffold(
       appBar: AppBar(
-        title: Text(receiverName),
+        //title: Text(receiverName),
+        title: const Text('colocar nome de acordo do outro de acordo com id'),
       ),
       body: Column(
         children: [
