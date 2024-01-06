@@ -25,13 +25,48 @@ class ChatPage extends StatelessWidget {
     }
   }
 
+  final CollectionReference usersCollection =
+      FirebaseFirestore.instance.collection('users');
+  Future<DocumentSnapshot> getUserDocumentById(String userId) async {
+    final userDocument =
+        await usersCollection.where('uid', isEqualTo: userId).get();
+
+    if (userDocument.docs.isNotEmpty) {
+      return userDocument.docs[0]; // Retorna o primeiro documento encontrado.
+    }
+
+    // Trate o caso em que nenhum usuário foi encontrado.
+    throw Exception("Usuário não encontrado");
+  }
+
+  Future<String> getNameById(String id) async {
+    final userDocument = await getUserDocumentById(id);
+
+    final userData = userDocument.data() as Map<String, dynamic>;
+
+    return userData['nome'];
+  }
+
   @override
   Widget build(BuildContext context) {
     String senderID = FirebaseAuth.instance.currentUser!.uid;
+
     return Scaffold(
       appBar: AppBar(
-        //title: Text(receiverName),
-        title: const Text('colocar nome de acordo do outro de acordo com id'),
+        title: FutureBuilder<String>(
+          future: getNameById(receiverID),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              /*se receiver veio com uma string vazia, é pq
+              nao tem um "outro" id, então quer dizer que são iguais,
+              então quer dizer que essa é a conversa comigo mesmo*/
+              return Text(snapshot.data ?? 'Você');
+            } else {
+              return const Text(
+                  'Carregando...'); // ou outro indicador de carregamento
+            }
+          },
+        ),
       ),
       body: Column(
         children: [
