@@ -4,6 +4,7 @@ import 'package:git_flutter_festou/src/features/register/host%20feedback/host_fe
 import 'package:git_flutter_festou/src/features/register/reserva/reserva_register_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/show%20reservations/space_reservations_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_descricao.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_new_map.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_map.dart';
 import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
@@ -513,7 +514,17 @@ class _NewCardInfoState extends State<NewCardInfo> {
                               ),
                             ),
                           ),
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ChatPage(
+                                  //receiverName: widget.space.locadorName,
+                                  receiverID: widget.space.userId,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                         const SizedBox(height: 10),
                         const Row(

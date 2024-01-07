@@ -2,10 +2,12 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_state.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -185,6 +187,32 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
     log('${state.imageFiles}');
   }
 
+  Future<LatLng> calculateLatLng(
+    String logradouro,
+    String numero,
+    String bairro,
+    String cidade,
+    String estado, // ou UF, dependendo da sua modelagem
+  ) async {
+    try {
+      String fullAddress = '$logradouro, $numero, $bairro, $cidade, $estado';
+      List<Location> locations = await locationFromAddress(fullAddress);
+
+      if (locations.isNotEmpty) {
+        return LatLng(
+          locations.first.latitude,
+          locations.first.longitude,
+        );
+      } else {
+        throw Exception(
+            'Não foi possível obter as coordenadas para o endereço: $fullAddress');
+      }
+    } catch (e) {
+      log('Erro ao calcular LatLng: $e');
+      rethrow;
+    }
+  }
+
   Future<void> register() async {
     log('----state atualizado----');
     log('${state.selectedTypes}');
@@ -207,6 +235,10 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
 
     final spaceId = uuid.v4();
     final userId = user.uid;
+
+    final LatLng latLng =
+        await calculateLatLng(logradouro, numero, bairro, cidade, 'RJ');
+
     final spaceData = (
       spaceId: spaceId,
       userId: userId,
@@ -221,6 +253,8 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
       imageFiles: imageFiles,
       descricao: 'teste',
       city: 'teste',
+      latitude: latLng.latitude,
+      longitude: latLng.longitude,
     );
 
     final spaceFirestoreRepository = ref.read(spaceFirestoreRepositoryProvider);

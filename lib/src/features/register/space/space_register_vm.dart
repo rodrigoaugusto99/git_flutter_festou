@@ -2,11 +2,13 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_state.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
@@ -127,6 +129,33 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
     );
   }
 
+  Future<LatLng> calculateLatLng(
+    String logradouro,
+    String numero,
+    String bairro,
+    String cidade,
+    String estado, // ou UF, dependendo da sua modelagem
+  ) async {
+    try {
+      String fullAddress = '$logradouro, $numero, $bairro, $cidade, $estado';
+      List<Location> locations = await locationFromAddress(fullAddress);
+
+      if (locations.isNotEmpty) {
+        return LatLng(
+          locations.first.latitude,
+          locations.first.longitude,
+        );
+      } else {
+        throw Exception(
+            'Não foi possível obter as coordenadas para o endereço: $fullAddress');
+      }
+    } catch (e) {
+      log('Erro ao calcular LatLng: $e');
+      rethrow;
+    }
+  }
+
+//todo: substituir o "RJ" por UF correto do usuario
   Future<void> register(
     String titulo,
     String cep,
@@ -139,6 +168,9 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
   ) async {
     final SpaceRegisterState(:selectedTypes, :selectedServices, :imageFiles) =
         state;
+
+    final LatLng latLng =
+        await calculateLatLng(logradouro, numero, bairro, cidade, 'RJ');
 
     final spaceId = uuid.v4();
     final userId = user.uid;
@@ -156,6 +188,8 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
       imageFiles: imageFiles,
       descricao: descricao,
       city: city,
+      latitude: latLng.latitude,
+      longitude: latLng.longitude,
     );
 
     final spaceFirestoreRepository = ref.read(spaceFirestoreRepositoryProvider);

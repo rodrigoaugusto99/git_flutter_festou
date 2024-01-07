@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/all_spaces_test.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/app_bar_home.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/menu_space_types.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/search_button.dart';
@@ -8,6 +9,7 @@ import 'package:git_flutter_festou/src/features/register/space/space_register_pa
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/my_last_seen_spaces.dart';
+import 'package:git_flutter_festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_page.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   final String? previousRoute;
@@ -76,6 +78,40 @@ class _HomePageState extends ConsumerState<HomePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text('Espaços perto de você'),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AllSpacesTest(
+                                height: MediaQuery.of(context).size.height,
+                                width: MediaQuery.of(context).size.width,
+                                spaces: data.spaces,
+                                scrollGesturesEnabled: true,
+                                zoomControlsEnabled: true,
+                                zoomGesturesEnabled: true,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: y * 0.2,
+                          color: Colors.purple,
+                          child: const Text('Descubra espaços perto de você'),
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const SurroundingSpacesPage()),
+                          );
+                        },
+                        child: const Icon(Icons.access_alarm),
+                      ),
                       SizedBox(
                         height: y * 0.21,
                         child: ListView.builder(

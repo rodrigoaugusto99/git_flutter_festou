@@ -19,6 +19,9 @@ class SpaceModel {
   final String city;
   final List<String> imagesUrl;
 
+  final double latitude;
+  final double longitude;
+
   SpaceModel(
     this.isFavorited,
     this.spaceId,
@@ -37,5 +40,7 @@ class SpaceModel {
     this.descricao,
     this.city,
     this.imagesUrl,
+    this.latitude,
+    this.longitude,
   );
 }
