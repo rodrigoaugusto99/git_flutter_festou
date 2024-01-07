@@ -1,4 +1,4 @@
-package br.com.academiadeflutter.git_flutter_festou
+package com.festou
 
 import io.flutter.embedding.android.FlutterActivity
 
