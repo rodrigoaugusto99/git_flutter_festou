@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_bubble.dart';
 import 'package:git_flutter_festou/src/services/chat_services.dart';
 
 class ChatPage extends StatelessWidget {
@@ -15,7 +16,6 @@ class ChatPage extends StatelessWidget {
   final messageEC = TextEditingController();
 
   final ChatServices _chatServices = ChatServices();
-  final user = FirebaseAuth.instance.currentUser!;
 
   void sendMessage() async {
     if (messageEC.text.isNotEmpty) {
@@ -95,12 +95,19 @@ class ChatPage extends StatelessWidget {
 
   Widget _buildMessageItemm(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    final user = FirebaseAuth.instance.currentUser!;
+    bool isCurrentUser = data['senderID'] == user.uid;
 
-    bool isCurrentUser = data['uid'] == user.uid;
-
-    var aligmnent =
-        isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;
-    return Container(alignment: aligmnent, child: Text(data['message']));
+    return Column(
+      crossAxisAlignment:
+          isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      children: [
+        ChatBubble(
+          message: data['message'],
+          isCurrentUser: isCurrentUser,
+        ),
+      ],
+    );
   }
 
   Widget _buildUserInput() {

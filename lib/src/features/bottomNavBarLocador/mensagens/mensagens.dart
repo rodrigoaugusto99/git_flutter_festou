@@ -105,6 +105,7 @@ class _MensagensState extends State<Mensagens> {
         } else {
           // Usuário atual
           name = 'Você';
+          otherUserID = currentUserID;
         }
 
         // Use FutureBuilder para construir o ListTile quando o nome estiver pronto
