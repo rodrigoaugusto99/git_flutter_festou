@@ -1,10 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:git_flutter_festou/src/features/register/host%20feedback/host_feedback_register_page.dart';
 import 'package:git_flutter_festou/src/features/register/reserva/reserva_register_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/show%20reservations/space_reservations_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_descricao.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_page.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/descricao_teste.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_new_map.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_map.dart';
 import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
@@ -27,6 +29,8 @@ class NewCardInfo extends StatefulWidget {
 }
 
 int _currentSlide = 0;
+
+bool scrollingUp = false;
 
 class _NewCardInfoState extends State<NewCardInfo> {
   void showRatingDialog(SpaceModel space) {
@@ -80,17 +84,51 @@ class _NewCardInfoState extends State<NewCardInfo> {
 
   Widget boolComments(String text) {
     if (widget.space.numComments == '0') {
-      return Row(
+      return const Row(
         children: [
-          const Icon(
+          Icon(
             Icons.star,
             size: 16,
           ),
-          const SizedBox(
+          SizedBox(
             width: 3,
           ),
           Text(
-            text,
+            'Sem avaliações',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
+      );
+    } else if (widget.space.numComments == '1') {
+      return Row(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: _getColor(
+                double.parse(widget.space.averageRating),
+              ),
+            ),
+            height: 35, // Ajuste conforme necessário
+            width: 25, // Ajuste conforme necessário
+            child: Center(
+              child: Text(
+                double.parse(widget.space.averageRating).toStringAsFixed(1),
+                style: const TextStyle(
+                  color: Colors.white, // Cor do texto
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          Text(
+            '${widget.space.numComments} avaliação',
             style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w400,
@@ -124,7 +162,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
             width: 10,
           ),
           Text(
-            '${widget.space.numComments} comments',
+            '${widget.space.numComments} avaliações',
             style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w400,
@@ -135,34 +173,125 @@ class _NewCardInfoState extends State<NewCardInfo> {
     }
   }
 
+  void _showBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.space.descricao,
+                style: const TextStyle(fontSize: 16.0),
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Fechar'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showBottomSheet2(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'O que esse lugar oferece',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: widget.space.selectedServices
+                    .map((service) => Column(
+                          children: [
+                            Text(service),
+                            const SizedBox(height: 10),
+                            const Divider(thickness: 0.4, color: Colors.grey),
+                            const SizedBox(height: 10),
+                          ],
+                        ))
+                    .toList(),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        floatHeaderSlivers: true,
-        headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          SliverAppBar(
-            elevation: 0,
-            foregroundColor: Colors.black,
-            backgroundColor: innerBoxIsScrolled
-                ? Colors.white // Cor do appBar quando scroll para baixo
-                : Colors.transparent, // Cor do appBar quando no topo
-            snap: true,
-            floating: true,
-
-            pinned: false,
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 18.0),
-                child: InkWell(
-                  onTap: () => share(),
-                  child: const Icon(Icons.share),
+      extendBodyBehindAppBar: true,
+      appBar: scrollingUp == true
+          ? AppBar(
+              foregroundColor: Colors.black,
+              leading: Padding(
+                padding: const EdgeInsets.only(left: 18.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.7),
+                    shape: BoxShape.circle,
+                  ),
+                  child: InkWell(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: const Icon(Icons.arrow_back),
+                  ),
                 ),
               ),
-            ],
-          )
-        ],
-        body: SingleChildScrollView(
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 18.0),
+                  child: Container(
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.7),
+                      shape: BoxShape.circle,
+                    ),
+                    child: InkWell(
+                      onTap: () => share(),
+                      child: const Icon(Icons.share),
+                    ),
+                  ),
+                ),
+              ],
+            )
+          : null,
+      body: NotificationListener<UserScrollNotification>(
+        onNotification: (notification) {
+          if (notification.direction == ScrollDirection.forward) {
+            if (!scrollingUp) setState(() => scrollingUp = true);
+          } else if (notification.direction == ScrollDirection.reverse) {
+            if (scrollingUp) setState(() => scrollingUp = false);
+          }
+          return true;
+        },
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -210,6 +339,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                 onPressed: () => showRatingDialog(widget.space),
                 child: const Text('Avalie'),
               ),
+              /*
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -229,127 +359,57 @@ class _NewCardInfoState extends State<NewCardInfo> {
               ElevatedButton(
                 onPressed: () => showRateHostDialog(widget.space),
                 child: const Text('Avalie o anfitrião'),
-              ),
+              ),*/
               Padding(
                 padding: const EdgeInsets.all(18.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      widget.space.titulo,
-                      style: const TextStyle(
+                    const Text(
+                      //widget.space.titulo,
+                      'Cabana dos Alpes',
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    boolComments('Ainda não tem avaliações.'),
                     Text(
                       //mostrar bairro(localizacao mais precisa) apenas se o locador permitir
                       /*${widget.space.bairro}*/
-                      '${widget.space.cidade}, ${widget.space.city}',
-
+                      //'${widget.space.cidade}, ${widget.space.city}',
+                      '${widget.space.cidade}, Brasil',
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    boolComments('Ainda não tem avaliações.'),
                     const SizedBox(height: 10),
-                    const Divider(thickness: 0.4, color: Colors.grey),
+                    const SizedBox(height: 10),
+                    const Divider(thickness: 0.4, color: Colors.black),
                     const SizedBox(height: 10),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        const Icon(
-                          Icons.account_circle, // Substitua pelo ícone desejado
-                          size: 24,
+                        ElevatedButton(
+                          onPressed: () {
+                            _showBottomSheet(context);
+                          },
+                          child: const Text('Ver descrição'),
                         ),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Locador: ${widget.space.locadorName}',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            _showBottomSheet2(context);
+                          },
+                          child: const Text('Comodidades'),
                         ),
                       ],
                     ),
                     const SizedBox(height: 10),
-                    const Divider(thickness: 0.4, color: Colors.grey),
-                    const SizedBox(height: 10),
-                    Text(widget.space.descricao),
-                    InkWell(
-                      child: const Row(
-                        children: [
-                          Text(
-                            'Mostrar mais',
-                            style: TextStyle(
-                                decoration: TextDecoration.underline,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Icon(Icons.arrow_forward),
-                        ],
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                MostrarDescricao(space: widget.space),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    const Divider(thickness: 0.4, color: Colors.grey),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'O que o lugar oferece',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: widget.space.selectedServices
-                          .take(3)
-                          .map((service) => Text(service))
-                          .toList(),
-                    ),
-                    const SizedBox(height: 10),
-                    InkWell(
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black),
-                          borderRadius: const BorderRadius.horizontal(
-                              left: Radius.circular(10),
-                              right: Radius.circular(10)),
-                        ),
-                        child: const Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Mostrar todas as comodidades',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                MostrarTodasComodidades(space: widget.space),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    const Divider(thickness: 0.4, color: Colors.grey),
+                    const Divider(thickness: 0.4, color: Colors.black),
                     const SizedBox(height: 10),
                     const Text(
                       'Onde você estará',
@@ -358,8 +418,7 @@ class _NewCardInfoState extends State<NewCardInfo> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
                     InkWell(
                       onTap: () {
                         Navigator.push(
@@ -384,70 +443,116 @@ class _NewCardInfoState extends State<NewCardInfo> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 10),
+                    const Divider(thickness: 0.4, color: Colors.black),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 60,
+                          child: widget.space.locadorAvatarUrl != ''
+                              ? Image.network(
+                                  widget.space.locadorAvatarUrl,
+                                  fit: BoxFit
+                                      .cover, // Ajuste conforme necessário
+                                )
+                              : const Icon(
+                                  Icons.person,
+                                  size: 90,
+                                ),
+                        ),
+                        const SizedBox(width: 10),
+                        Column(
+                          children: [
+                            Text(
+                              'Locador: ${widget.space.locadorName}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            InkWell(
+                              child: const Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  'Fale com o locador',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ChatPage(
+                                      //receiverName: widget.space.locadorName,
+                                      receiverID: widget.space.userId,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    const Divider(thickness: 0.4, color: Colors.black),
                     /*Text(
-                      '${widget.space.bairro}, ${widget.space.cidade}',
-                    ),
-                    const SizedBox(height: 15),
-                    const Text(
-                      'O Bairro dos Mellos é um bairro rural e familiar. \nNão possui mercados, mas fica bem próximo do centro da cidade Piranguçu. Estamos a 1h40min de Campos de Jordão',
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    InkWell(
-                      child: const Row(
-                        children: [
-                          Text(
-                            'Mostrar mais',
-                            style: TextStyle(
-                                decoration: TextDecoration.underline,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Icon(Icons.arrow_forward),
-                        ],
+                        '${widget.space.bairro}, ${widget.space.cidade}',
                       ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                MostrarOndeVoceEstara(space: widget.space),
-                          ),
-                        );
-                      },
-                    ),*/
+                      const SizedBox(height: 15),
+                      const Text(
+                        'O Bairro dos Mellos é um bairro rural e familiar. \nNão possui mercados, mas fica bem próximo do centro da cidade Piranguçu. Estamos a 1h40min de Campos de Jordão',
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      InkWell(
+                        child: const Row(
+                          children: [
+                            Text(
+                              'Mostrar mais',
+                              style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Icon(Icons.arrow_forward),
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  MostrarOndeVoceEstara(space: widget.space),
+                            ),
+                          );
+                        },
+                      ),*/
                     const SizedBox(height: 10),
                     const Divider(thickness: 0.4, color: Colors.grey),
                   ],
                 ),
               ),
-              SpaceFeedbacksPageLimited(
-                x: 1,
-                space: widget.space,
-              ),
               Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    const Text(
+                      'Avaliações dos hóspedes',
+                      style: TextStyle(fontSize: 23),
+                    ),
                     InkWell(
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black),
-                          borderRadius: const BorderRadius.horizontal(
-                              left: Radius.circular(10),
-                              right: Radius.circular(10)),
-                        ),
-                        child: const Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Mostrar todos os comentarios',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
+                      child: const Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Ver tudo',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
                           ),
                         ),
                       ),
@@ -461,267 +566,12 @@ class _NewCardInfoState extends State<NewCardInfo> {
                         );
                       },
                     ),
-                    const SizedBox(height: 10),
-                    const Divider(thickness: 0.4, color: Colors.grey),
-                    const SizedBox(height: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Alocado por ${widget.space.locadorName}',
-                                  style: const TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 5),
-                                const Text('Membro desde novembro de 2015'),
-                              ],
-                            ),
-                            const SizedBox(width: 10),
-                            const Icon(
-                              Icons
-                                  .account_circle, // Substitua pelo ícone desejado
-                              size: 50,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        InkWell(
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black),
-                              borderRadius: const BorderRadius.horizontal(
-                                  left: Radius.circular(10),
-                                  right: Radius.circular(10)),
-                            ),
-                            child: const Align(
-                              alignment: Alignment.center,
-                              child: Text(
-                                'Fale com o locador',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ChatPage(
-                                  //receiverName: widget.space.locadorName,
-                                  receiverID: widget.space.userId,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 10),
-                        const Row(
-                          children: [
-                            Icon(Icons.security),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                'Para proteger seu pagamento, nunca transfira dinheiro ou se comunique fora do site ou aplicativo Festou.',
-                                style: TextStyle(fontSize: 11),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        const Divider(thickness: 0.4, color: Colors.grey),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Disponibilidade',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Text('23 - 28 de jul. de 9999'),
-                              ],
-                            ),
-                            InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          MostrarDisponibilidade(
-                                              space: widget.space),
-                                    ),
-                                  );
-                                },
-                                child: const Icon(
-                                    Icons.arrow_circle_right_outlined)),
-                          ],
-                        ),
-                        /*const SizedBox(height: 10),
-                        const Divider(thickness: 0.4, color: Colors.grey),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Política de cancelamento',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                SizedBox(
-                                  width: 300, // Defina a largura desejada aqui
-                                  child: Text(
-                                    'Cancelamento gratuito antes de xx/yy. Consulte a política de cancelamento completa do locador, que se aplica mesmo se você cancelar por doenças ou interrupções causadas pela COVID-19',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        MostrarPoliticaDeCancelamento(
-                                            space: widget.space),
-                                  ),
-                                );
-                              },
-                              child: const Icon(
-                                Icons
-                                    .arrow_forward, // Substitua pelo ícone desejado
-                                size: 24,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        const Divider(thickness: 0.4, color: Colors.grey),
-                        const SizedBox(height: 10),
-                        const Text(
-                          'Regras do espaço',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        const Text('Não é permitido animais de estimação'),
-                        const Text('Horário de silêncio'),
-                        const SizedBox(height: 10),
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    MostrarRegras(space: widget.space),
-                              ),
-                            );
-                          },
-                          child: const Text(
-                            'Mostrar mais',
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        const Divider(thickness: 0.4, color: Colors.grey),
-                        const SizedBox(height: 10),
-                        const Text(
-                          'Segurança e propriedade',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        const Text(
-                          'Câmera de segurança/dispositivo de gravação',
-                        ),
-                        const Text(
-                            'O Festou proíbe câmeras e dispositivos sem o conhecimento do locatário.'),
-                        const SizedBox(height: 10),
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    MostrarSegurancaPropriedade(
-                                        space: widget.space),
-                              ),
-                            );
-                          },
-                          child: const Text(
-                            'Mostrar mais',
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        const Divider(thickness: 0.4, color: Colors.grey),
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            const Icon(Icons.flag),
-                            const SizedBox(width: 10),
-                            InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        MostrarDenunciarAnuncio(
-                                            space: widget.space),
-                                  ),
-                                );
-                              },
-                              child: const Text(
-                                'Denunciar este anúncio',
-                                style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),*/
-                      ],
-                    ),
                   ],
                 ),
+              ),
+              SpaceFeedbacksPageLimited(
+                x: 3,
+                space: widget.space,
               ),
             ],
           ),

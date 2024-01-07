@@ -27,7 +27,9 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
       height: 230,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: widget.x ?? widget.data.feedbacks.length,
+        itemCount: widget.data.feedbacks.length > 3
+            ? widget.x
+            : widget.data.feedbacks.length,
         itemBuilder: (BuildContext context, int index) {
           final feedback = widget.data.feedbacks[index];
           return Container(

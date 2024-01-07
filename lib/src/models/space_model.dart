@@ -22,6 +22,8 @@ class SpaceModel {
   final double latitude;
   final double longitude;
 
+  final String locadorAvatarUrl;
+
   SpaceModel(
     this.isFavorited,
     this.spaceId,
@@ -42,5 +44,6 @@ class SpaceModel {
     this.imagesUrl,
     this.latitude,
     this.longitude,
+    this.locadorAvatarUrl,
   );
 }
