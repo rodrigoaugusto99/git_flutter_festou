@@ -49,6 +49,7 @@ class _SpaceRegisterReviewPageState
         children: [
           const Text('Seu espaço ficará assim:'),
           NewSpaceCard(
+            hasHeart: true,
             space: widget.space,
             isReview: true,
           ),

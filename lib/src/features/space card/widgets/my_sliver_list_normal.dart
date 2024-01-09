@@ -26,6 +26,7 @@ class MySliverListNormal extends StatelessWidget {
                     ),
                   ),
               child: NewSpaceCard(
+                hasHeart: true,
                 space: data.spaces[index],
                 isReview: false,
               )),

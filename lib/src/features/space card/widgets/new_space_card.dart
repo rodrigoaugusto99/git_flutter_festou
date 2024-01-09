@@ -11,11 +11,12 @@ import 'package:lottie/lottie.dart';
 class NewSpaceCard extends ConsumerStatefulWidget {
   final SpaceModel space;
   final bool isReview;
-
+  final bool hasHeart;
   const NewSpaceCard({
     super.key,
     required this.space,
     required this.isReview,
+    required this.hasHeart,
   });
 
   @override
@@ -33,7 +34,8 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
       setState(() {
         widget.space.isFavorited = !widget.space.isFavorited;
       });
-      spaceRepository.toggleFavoriteSpace(widget.space.spaceId, widget.space.isFavorited);
+      spaceRepository.toggleFavoriteSpace(
+          widget.space.spaceId, widget.space.isFavorited);
     }
 
     //final x = MediaQuery.of(context).size.width;
@@ -51,9 +53,9 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                 child: CarouselSlider(
                   items: widget.space.imagesUrl
                       .map((imageUrl) => Image.network(
-                    imageUrl,
-                    fit: BoxFit.cover,
-                  ))
+                            imageUrl,
+                            fit: BoxFit.cover,
+                          ))
                       .toList(),
                   options: CarouselOptions(
                     autoPlay: true,
@@ -63,67 +65,71 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                   ),
                 ),
               ),
-              if (showLottie)
-                Center(
-                  child: Lottie.asset(
-                    'lib/assets/animations/heartBeats.json',
-                    repeat: false,
-                    width: 300,
-                    height: 300,
-                    onLoaded: (composition) {
-                      Timer(const Duration(seconds: 2), () {
-                        setState(() {
-                          showLottie = false;
+              if (widget.hasHeart)
+                if (showLottie)
+                  Center(
+                    child: Lottie.asset(
+                      'lib/assets/animations/heartBeats.json',
+                      repeat: false,
+                      width: 300,
+                      height: 300,
+                      onLoaded: (composition) {
+                        Timer(const Duration(seconds: 2), () {
+                          setState(() {
+                            showLottie = false;
+                          });
                         });
-                      });
-                    },
+                      },
+                    ),
+                  ),
+              if (widget.hasHeart)
+                Positioned(
+                  right: 5,
+                  width: 80,
+                  height: 80,
+                  child: InkWell(
+                    onTap: toggle,
+                    child: Stack(
+                      children: [
+                        if (!widget.space.isFavorited)
+                          Lottie.asset(
+                            'lib/assets/animations/heartsFalling.json',
+                            height: y * 0.12,
+                          ),
+                        Positioned(
+                          top: y * 0.035,
+                          right: x * 0.060,
+                          child: widget.space.isFavorited
+                              ? GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      toggle();
+                                    });
+                                  },
+                                  child: const Icon(
+                                    Icons.favorite,
+                                    color: Colors.red,
+                                  ),
+                                )
+                              : GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      toggle();
+                                      if (widget.hasHeart) {
+                                        showLottie = true;
+                                      }
+                                    });
+                                  },
+                                  child: const Icon(
+                                    Icons.favorite_outline,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              Positioned(
-                right: 5,
-                width: 80,
-                height: 80,
-                child: InkWell(
-                  onTap: toggle,
-                  child: Stack(
-                    children: [
-                      if (!widget.space.isFavorited)
-                        Lottie.asset(
-                          'lib/assets/animations/heartsFalling.json',
-                          height: y * 0.12,
-                        ),
-                      Positioned(
-                        top: y * 0.035,
-                        right: x * 0.060,
-                        child: widget.space.isFavorited
-                            ? GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              toggle();
-                            });
-                          },
-                          child: const Icon(
-                            Icons.favorite,
-                            color: Colors.red,
-                          ),
-                        )
-                            : GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              toggle();
-                              showLottie = true;
-                            });
-                          },
-                          child: const Icon(
-                            Icons.favorite_outline,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
             ],
           );
         } else {
@@ -138,9 +144,9 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                 child: CarouselSlider(
                   items: widget.space.imagesUrl
                       .map((filePath) => Image.file(
-                    File(filePath),
-                    fit: BoxFit.cover,
-                  ))
+                            File(filePath),
+                            fit: BoxFit.cover,
+                          ))
                       .toList(),
                   options: CarouselOptions(
                     autoPlay: true,
@@ -157,13 +163,13 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                   onTap: toggle,
                   child: widget.space.isFavorited
                       ? const Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                  )
+                          Icons.favorite,
+                          color: Colors.red,
+                        )
                       : const Icon(
-                    Icons.favorite_outline,
-                    color: Colors.pink,
-                  ),
+                          Icons.favorite_outline,
+                          color: Colors.pink,
+                        ),
                 ),
               ),
             ],
@@ -199,8 +205,9 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${widget.space.cidade}',
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      widget.space.cidade,
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const Text('_avaliaçao_'),
                   ],
