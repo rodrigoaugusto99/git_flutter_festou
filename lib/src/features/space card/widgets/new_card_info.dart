@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/register/host%20feedback/host_feedback_register_page.dart';
 import 'package:git_flutter_festou/src/features/register/reserva/reserva_register_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/show%20reservations/space_reservations_page.dart';
@@ -16,8 +19,9 @@ import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_dispo
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_todas_comodidades.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:social_share/social_share.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
-class NewCardInfo extends StatefulWidget {
+class NewCardInfo extends ConsumerStatefulWidget {
   final SpaceModel space;
   const NewCardInfo({
     super.key,
@@ -25,14 +29,15 @@ class NewCardInfo extends StatefulWidget {
   });
 
   @override
-  State<NewCardInfo> createState() => _NewCardInfoState();
+  ConsumerState<NewCardInfo> createState() => _NewCardInfoState();
 }
 
 int _currentSlide = 0;
 
 bool scrollingUp = false;
 
-class _NewCardInfoState extends State<NewCardInfo> {
+class _NewCardInfoState extends ConsumerState<NewCardInfo>
+    with SingleTickerProviderStateMixin {
   void showRatingDialog(SpaceModel space) {
     showDialog(
       context: context,
@@ -206,10 +211,8 @@ class _NewCardInfoState extends State<NewCardInfo> {
       context: context,
       builder: (context) {
         return Container(
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
                 'O que esse lugar oferece',
@@ -221,17 +224,23 @@ class _NewCardInfoState extends State<NewCardInfo> {
               const SizedBox(
                 height: 20,
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 8, // Espaçamento horizontal entre os chips
+                runSpacing: 8, // Espaçamento vertical entre as linhas de chips
                 children: widget.space.selectedServices
-                    .map((service) => Column(
-                          children: [
-                            Text(service),
-                            const SizedBox(height: 10),
-                            const Divider(thickness: 0.4, color: Colors.grey),
-                            const SizedBox(height: 10),
-                          ],
-                        ))
+                    .map(
+                      (service) => Chip(
+                        backgroundColor:
+                            const Color.fromARGB(255, 195, 162, 201),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 5,
+                          horizontal: 10,
+                        ),
+                        avatar: const Icon(Icons.text_snippet),
+                        label: Text(service),
+                      ),
+                    )
                     .toList(),
               ),
             ],
@@ -241,63 +250,97 @@ class _NewCardInfoState extends State<NewCardInfo> {
     );
   }
 
+  bool isCarouselVisible = true;
+
   @override
   Widget build(BuildContext context) {
+    final spaceRepository = ref.watch(spaceFirestoreRepositoryProvider);
+
+    void toggle() {
+      setState(() {
+        widget.space.isFavorited = !widget.space.isFavorited;
+      });
+      spaceRepository.toggleFavoriteSpace(
+          widget.space.spaceId, widget.space.isFavorited);
+    }
+
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: scrollingUp == true
-          ? AppBar(
-              foregroundColor: Colors.black,
-              leading: Padding(
-                padding: const EdgeInsets.only(left: 18.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.7),
-                    shape: BoxShape.circle,
-                  ),
-                  child: InkWell(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: const Icon(Icons.arrow_back),
-                  ),
-                ),
+      appBar: AppBar(
+        foregroundColor: Colors.black,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 18.0),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.7),
+              shape: BoxShape.circle,
+            ),
+            child: InkWell(
+              onTap: () => Navigator.of(context).pop(),
+              child: const Icon(Icons.arrow_back),
+            ),
+          ),
+        ),
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 18.0),
+            child: Container(
+              width: 40,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.7),
+                shape: BoxShape.circle,
               ),
-              automaticallyImplyLeading: false,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 18.0),
-                  child: Container(
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.7),
-                      shape: BoxShape.circle,
-                    ),
-                    child: InkWell(
-                      onTap: () => share(),
-                      child: const Icon(Icons.share),
-                    ),
-                  ),
-                ),
-              ],
-            )
-          : null,
-      body: NotificationListener<UserScrollNotification>(
-        onNotification: (notification) {
-          if (notification.direction == ScrollDirection.forward) {
-            if (!scrollingUp) setState(() => scrollingUp = true);
-          } else if (notification.direction == ScrollDirection.reverse) {
-            if (scrollingUp) setState(() => scrollingUp = false);
-          }
-          return true;
-        },
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Stack(
-                children: [
-                  CarouselSlider(
+              child: InkWell(
+                onTap: () => share(),
+                child: const Icon(Icons.share),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 18.0),
+            child: Container(
+              width: 40,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.7),
+                shape: BoxShape.circle,
+              ),
+              child: InkWell(
+                onTap: toggle,
+                child: widget.space.isFavorited
+                    ? const Icon(
+                        Icons.favorite,
+                        color: Colors.red,
+                      )
+                    : const Icon(
+                        Icons.favorite_outline,
+                      ),
+              ),
+            ),
+          ),
+        ],
+        flexibleSpace: AnimatedContainer(
+          duration: const Duration(milliseconds: 400),
+          color: isCarouselVisible ? Colors.transparent : Colors.white,
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                VisibilityDetector(
+                  key: const Key('my-widget-key'),
+                  onVisibilityChanged: (VisibilityInfo info) {
+                    setState(() {
+                      isCarouselVisible = info.visibleFraction > 0.0;
+                    });
+                    log(isCarouselVisible.toString());
+                  },
+                  child: CarouselSlider(
                     items: widget.space.imagesUrl
                         .map((imageUrl) => Image.network(
                               imageUrl.toString(),
@@ -315,266 +358,237 @@ class _NewCardInfoState extends State<NewCardInfo> {
                       },
                     ),
                   ),
-                  Positioned(
-                    bottom: 20.0,
-                    right: 20.0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.7),
-                          borderRadius: BorderRadius.circular(10)),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 3, horizontal: 10),
-                      child: Text(
-                        '${_currentSlide + 1}/${widget.space.imagesUrl.length}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18.0,
-                        ),
+                ),
+                Positioned(
+                  bottom: 20.0,
+                  right: 20.0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.7),
+                        borderRadius: BorderRadius.circular(10)),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+                    child: Text(
+                      '${_currentSlide + 1}/${widget.space.imagesUrl.length}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
                       ),
                     ),
-                  )
+                  ),
+                )
+              ],
+            ),
+            ElevatedButton(
+              onPressed: () => showRatingDialog(widget.space),
+              child: const Text('Avalie'),
+            ),
+            /*
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        SpaceReservationsPage(space: widget.space),
+                  ),
+                );
+              },
+              child: const Text('ver reservas'),
+            ),
+            ElevatedButton(
+              onPressed: () => showDateDialog(widget.space),
+              child: const Text('Reserve'),
+            ),
+            ElevatedButton(
+              onPressed: () => showRateHostDialog(widget.space),
+              child: const Text('Avalie o anfitrião'),
+            ),*/
+            Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    //widget.space.titulo,
+                    'Cabana dos Alpes',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  boolComments('Ainda não tem avaliações.'),
+                  Text(
+                    //mostrar bairro(localizacao mais precisa) apenas se o locador permitir
+                    /*${widget.space.bairro}*/
+                    //'${widget.space.cidade}, ${widget.space.city}',
+                    '${widget.space.cidade}, Brasil',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  const SizedBox(height: 10),
+                  const Divider(thickness: 0.4, color: Colors.purple),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          _showBottomSheet(context);
+                        },
+                        child: const Text('Ver descrição'),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          _showBottomSheet2(context);
+                        },
+                        child: const Text('Comodidades'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  const Divider(thickness: 0.4, color: Colors.purple),
+                  const SizedBox(height: 10),
+                  const Text(
+                    'Onde você estará',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ShowNewMap(
+                            space: widget.space,
+                          ),
+                        ),
+                      );
+                    },
+                    child: AbsorbPointer(
+                      absorbing: true,
+                      child: ShowMap(
+                        space: widget.space,
+                        scrollGesturesEnabled: false,
+                        zoomControlsEnabled: false,
+                        zoomGesturesEnabled: false,
+                        height: 200,
+                        width: double.infinity,
+                        x: true,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  const Divider(thickness: 0.4, color: Colors.purple),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 60,
+                        child: widget.space.locadorAvatarUrl != ''
+                            ? Image.network(
+                                widget.space.locadorAvatarUrl,
+                                fit: BoxFit.cover, // Ajuste conforme necessário
+                              )
+                            : const Icon(
+                                Icons.person,
+                                size: 90,
+                              ),
+                      ),
+                      const SizedBox(width: 10),
+                      Column(
+                        children: [
+                          Text(
+                            'Locador: ${widget.space.locadorName}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          InkWell(
+                            child: const Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                'Fale com o locador',
+                                style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ChatPage(
+                                    //receiverName: widget.space.locadorName,
+                                    receiverID: widget.space.userId,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  const Divider(thickness: 0.4, color: Colors.purple),
                 ],
               ),
-              ElevatedButton(
-                onPressed: () => showRatingDialog(widget.space),
-                child: const Text('Avalie'),
+            ),
+            const Align(
+              alignment: Alignment.center,
+              child: Text(
+                'Avaliações dos hóspedes',
+                style: TextStyle(fontSize: 23),
               ),
-              /*
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          SpaceReservationsPage(space: widget.space),
+            ),
+            const SizedBox(height: 10),
+            SpaceFeedbacksPageLimited(
+              x: 3,
+              space: widget.space,
+            ),
+            InkWell(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  child: const Text(
+                    'Ver tudo',
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
                     ),
-                  );
-                },
-                child: const Text('ver reservas'),
-              ),
-              ElevatedButton(
-                onPressed: () => showDateDialog(widget.space),
-                child: const Text('Reserve'),
-              ),
-              ElevatedButton(
-                onPressed: () => showRateHostDialog(widget.space),
-                child: const Text('Avalie o anfitrião'),
-              ),*/
-              Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      //widget.space.titulo,
-                      'Cabana dos Alpes',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    boolComments('Ainda não tem avaliações.'),
-                    Text(
-                      //mostrar bairro(localizacao mais precisa) apenas se o locador permitir
-                      /*${widget.space.bairro}*/
-                      //'${widget.space.cidade}, ${widget.space.city}',
-                      '${widget.space.cidade}, Brasil',
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    const SizedBox(height: 10),
-                    const Divider(thickness: 0.4, color: Colors.black),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            _showBottomSheet(context);
-                          },
-                          child: const Text('Ver descrição'),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            _showBottomSheet2(context);
-                          },
-                          child: const Text('Comodidades'),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    const Divider(thickness: 0.4, color: Colors.black),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Onde você estará',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ShowNewMap(
-                              space: widget.space,
-                            ),
-                          ),
-                        );
-                      },
-                      child: AbsorbPointer(
-                        absorbing: true,
-                        child: ShowMap(
-                          space: widget.space,
-                          scrollGesturesEnabled: false,
-                          zoomControlsEnabled: false,
-                          zoomGesturesEnabled: false,
-                          height: 200,
-                          width: double.infinity,
-                          x: true,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    const Divider(thickness: 0.4, color: Colors.black),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 60,
-                          child: widget.space.locadorAvatarUrl != ''
-                              ? Image.network(
-                                  widget.space.locadorAvatarUrl,
-                                  fit: BoxFit
-                                      .cover, // Ajuste conforme necessário
-                                )
-                              : const Icon(
-                                  Icons.person,
-                                  size: 90,
-                                ),
-                        ),
-                        const SizedBox(width: 10),
-                        Column(
-                          children: [
-                            Text(
-                              'Locador: ${widget.space.locadorName}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            InkWell(
-                              child: const Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  'Fale com o locador',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ChatPage(
-                                      //receiverName: widget.space.locadorName,
-                                      receiverID: widget.space.userId,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    const Divider(thickness: 0.4, color: Colors.black),
-                    /*Text(
-                        '${widget.space.bairro}, ${widget.space.cidade}',
-                      ),
-                      const SizedBox(height: 15),
-                      const Text(
-                        'O Bairro dos Mellos é um bairro rural e familiar. \nNão possui mercados, mas fica bem próximo do centro da cidade Piranguçu. Estamos a 1h40min de Campos de Jordão',
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      InkWell(
-                        child: const Row(
-                          children: [
-                            Text(
-                              'Mostrar mais',
-                              style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Icon(Icons.arrow_forward),
-                          ],
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  MostrarOndeVoceEstara(space: widget.space),
-                            ),
-                          );
-                        },
-                      ),*/
-                    const SizedBox(height: 10),
-                    const Divider(thickness: 0.4, color: Colors.grey),
-                  ],
+                  ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Avaliações dos hóspedes',
-                      style: TextStyle(fontSize: 23),
-                    ),
-                    InkWell(
-                      child: const Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Ver tudo',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                SpaceFeedbacksPageAll(space: widget.space),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              SpaceFeedbacksPageLimited(
-                x: 3,
-                space: widget.space,
-              ),
-            ],
-          ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        SpaceFeedbacksPageAll(space: widget.space),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );

@@ -39,7 +39,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
     String userName = await getUserName();
     String userAvatar = await getUserAvatar();
     final currentDateTime = DateTime.now();
-    final dateFormat = DateFormat('dd/MM/yyyy - HH');
+    final dateFormat = DateFormat('MM/yyyy');
     final formattedDateTime = dateFormat.format(currentDateTime);
     try {
       Map<String, dynamic> newFeedback = {

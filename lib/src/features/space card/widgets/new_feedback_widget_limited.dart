@@ -50,12 +50,10 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      feedback.userName,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                      ),
+                    Row(
+                      children: [
+                        ...buildStarIcons(feedback.rating),
+                      ],
                     ),
                     Text(
                       feedback.date,
@@ -66,27 +64,37 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
                     ),
                   ],
                 ),
-                Row(
-                  children: [
-                    const Text('Avaliação:'),
-                    const SizedBox(width: 8.0),
-                    ...buildStarIcons(feedback.rating),
-                  ],
-                ),
-                Text(
-                  'Avaliação: ${feedback.rating}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14.0,
-                  ),
-                ),
                 const SizedBox(height: 5),
-                const Text('Comentário:'),
+                const Text(
+                    'lor ipsum cactildee ebaaa coco de pombo xixi hehehe cocozeento uhul\nComentário:'),
                 Text(
                   feedback.content.toString(),
                   style: const TextStyle(
                     fontSize: 16.0,
                   ),
+                ),
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      child: feedback.avatar != ''
+                          ? Image.network(
+                              feedback.avatar,
+                              fit: BoxFit.cover, // Ajuste conforme necessário
+                            )
+                          : const Icon(
+                              Icons.person,
+                              size: 90,
+                            ),
+                    ),
+                    Text(
+                      feedback.userName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -97,13 +105,21 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
   }
 
   List<Icon> buildStarIcons(int rating) {
-    return List.generate(
-      rating,
-      (index) => const Icon(
+    final List<Icon> stars = List.generate(
+      5,
+      (index) => Icon(
         Icons.star,
-        color: Colors.yellow,
-        size: 24.0,
+        color: index < rating
+            ? rating == 1 || rating == 2
+                ? Colors.red
+                : rating == 3
+                    ? Colors.orange
+                    : Colors.green
+            : Colors.grey[300], // Cinza claro para estrelas não atingidas
+        size: 14.0,
       ),
     );
+
+    return stars;
   }
 }
