@@ -45,47 +45,56 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
               borderRadius: BorderRadius.circular(8.0),
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ...buildStarIcons(feedback.rating),
+                        Row(
+                          children: [
+                            ...buildStarIcons(feedback.rating),
+                          ],
+                        ),
+                        Text(
+                          feedback.date,
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12.0,
+                          ),
+                        ),
                       ],
                     ),
+                    const SizedBox(height: 5),
                     Text(
-                      feedback.date,
+                      feedback.content.toString(),
                       style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12.0,
+                        fontSize: 16.0,
                       ),
                     ),
                   ],
-                ),
-                const SizedBox(height: 5),
-                const Text(
-                    'lor ipsum cactildee ebaaa coco de pombo xixi hehehe cocozeento uhul\nComentário:'),
-                Text(
-                  feedback.content.toString(),
-                  style: const TextStyle(
-                    fontSize: 16.0,
-                  ),
                 ),
                 Row(
                   children: [
                     CircleAvatar(
                       radius: 20,
                       child: feedback.avatar != ''
-                          ? Image.network(
-                              feedback.avatar,
-                              fit: BoxFit.cover, // Ajuste conforme necessário
+                          ? CircleAvatar(
+                              backgroundImage: Image.network(
+                                feedback.avatar,
+                                fit: BoxFit.cover,
+                              ).image,
+                              radius: 100,
                             )
                           : const Icon(
                               Icons.person,
                               size: 90,
                             ),
+                    ),
+                    const SizedBox(
+                      width: 10,
                     ),
                     Text(
                       feedback.userName,

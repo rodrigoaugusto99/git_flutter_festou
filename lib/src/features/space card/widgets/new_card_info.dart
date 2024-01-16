@@ -495,9 +495,12 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                       CircleAvatar(
                         radius: 60,
                         child: widget.space.locadorAvatarUrl != ''
-                            ? Image.network(
-                                widget.space.locadorAvatarUrl,
-                                fit: BoxFit.cover, // Ajuste conforme necessário
+                            ? CircleAvatar(
+                                backgroundImage: Image.network(
+                                  widget.space.locadorAvatarUrl,
+                                  fit: BoxFit.cover,
+                                ).image,
+                                radius: 100,
                               )
                             : const Icon(
                                 Icons.person,

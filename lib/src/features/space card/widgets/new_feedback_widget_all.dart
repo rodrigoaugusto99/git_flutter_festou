@@ -47,24 +47,59 @@ class _NewFeedbackWidgetAllState extends State<NewFeedbackWidgetAll> {
         itemBuilder: (BuildContext context, int index) {
           final feedback = widget.data.feedbacks[index];
           return Container(
-            margin: const EdgeInsets.symmetric(horizontal: 10),
+            width: 240,
+            margin: const EdgeInsets.all(10.0),
             padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        ...buildStarIcons(feedback.rating),
+                        const SizedBox(width: 8.0),
+                        const Text(
+                          '\u2022',
+                          style: TextStyle(fontSize: 7),
+                        ),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        Text(
+                          formatFeedbackDate(feedback.date),
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8.0),
+                    Text(
+                      feedback.content.toString(),
+                      style: const TextStyle(
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
                 Row(
                   children: [
                     // Avatar aqui (substitua pela implementação do Avatar)
                     CircleAvatar(
-                      radius: 60,
+                      radius: 20,
                       child: feedback.avatar.isNotEmpty
-                          ? Image.network(
-                              feedback.avatar,
-                              fit: BoxFit.cover, // Ajuste conforme necessário
+                          ? CircleAvatar(
+                              backgroundImage: Image.network(
+                                feedback.avatar,
+                                fit: BoxFit.cover,
+                              ).image,
+                              radius: 100,
                             )
                           : Text(feedback.userName[0].toUpperCase()),
                     ),
@@ -78,33 +113,6 @@ class _NewFeedbackWidgetAllState extends State<NewFeedbackWidgetAll> {
                       ),
                     ),
                   ],
-                ),
-                Row(
-                  children: [
-                    ...buildStarIcons(feedback.rating),
-                    const SizedBox(width: 8.0),
-                    const Text(
-                      '\u2022',
-                      style: TextStyle(fontSize: 7),
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    Text(
-                      formatFeedbackDate(feedback.date),
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12.0,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8.0),
-                Text(
-                  feedback.content.toString(),
-                  style: const TextStyle(
-                    fontSize: 16.0,
-                  ),
                 ),
               ],
             ),
