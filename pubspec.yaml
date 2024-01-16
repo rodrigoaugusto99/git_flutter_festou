@@ -73,6 +73,8 @@ dependencies:
   flutter_holo_date_picker_widget: ^1.1.2
   permission_handler: ^11.0.1
   visibility_detector: ^0.4.0+2
+  image_cropper: ^5.0.1
+  dotted_border: ^2.1.0
   
 
 dev_dependencies:
