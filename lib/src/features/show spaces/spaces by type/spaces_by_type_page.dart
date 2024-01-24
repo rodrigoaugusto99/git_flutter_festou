@@ -40,7 +40,11 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
               const SliverToBoxAdapter(
                 child: Text('SPACES BY TYPE'),
               ),
-              MySliverListToCardInfo(data: data, spaces: typeSpaces),
+              MySliverListToCardInfo(
+                data: data,
+                spaces: typeSpaces,
+                x: true,
+              ),
             ],
           );
         },

@@ -37,7 +37,11 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
               const SliverToBoxAdapter(
                 child: Text('MY SPACES'),
               ),
-              MySliverListToCardInfo(data: data, spaces: mySpaces),
+              MySliverListToCardInfo(
+                data: data,
+                spaces: mySpaces,
+                x: false,
+              ),
             ],
           );
         },

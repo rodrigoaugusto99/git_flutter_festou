@@ -38,7 +38,11 @@ class _MyFavoriteSpacePageState extends ConsumerState<MyFavoriteSpacePage> {
               const SliverToBoxAdapter(
                 child: Text('MY FAVORITE SPACES'),
               ),
-              MySliverListToCardInfo(data: data, spaces: favSpaces),
+              MySliverListToCardInfo(
+                data: data,
+                spaces: favSpaces,
+                x: true,
+              ),
             ],
           );
         },

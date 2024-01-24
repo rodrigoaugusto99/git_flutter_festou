@@ -27,7 +27,9 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
       height: 230,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: widget.x ?? widget.data.feedbacks.length,
+        itemCount: widget.data.feedbacks.length > 3
+            ? widget.x
+            : widget.data.feedbacks.length,
         itemBuilder: (BuildContext context, int index) {
           final feedback = widget.data.feedbacks[index];
           return Container(
@@ -43,11 +45,57 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
               borderRadius: BorderRadius.circular(8.0),
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            ...buildStarIcons(feedback.rating),
+                          ],
+                        ),
+                        Text(
+                          feedback.date,
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      feedback.content.toString(),
+                      style: const TextStyle(
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      child: feedback.avatar != ''
+                          ? CircleAvatar(
+                              backgroundImage: Image.network(
+                                feedback.avatar,
+                                fit: BoxFit.cover,
+                              ).image,
+                              radius: 100,
+                            )
+                          : const Icon(
+                              Icons.person,
+                              size: 90,
+                            ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
                     Text(
                       feedback.userName,
                       style: const TextStyle(
@@ -55,36 +103,7 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
                         fontSize: 16.0,
                       ),
                     ),
-                    Text(
-                      feedback.date,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12.0,
-                      ),
-                    ),
                   ],
-                ),
-                Row(
-                  children: [
-                    const Text('Avaliação:'),
-                    const SizedBox(width: 8.0),
-                    ...buildStarIcons(feedback.rating),
-                  ],
-                ),
-                Text(
-                  'Avaliação: ${feedback.rating}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14.0,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                const Text('Comentário:'),
-                Text(
-                  feedback.content.toString(),
-                  style: const TextStyle(
-                    fontSize: 16.0,
-                  ),
                 ),
               ],
             ),
@@ -95,13 +114,21 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
   }
 
   List<Icon> buildStarIcons(int rating) {
-    return List.generate(
-      rating,
-      (index) => const Icon(
+    final List<Icon> stars = List.generate(
+      5,
+      (index) => Icon(
         Icons.star,
-        color: Colors.yellow,
-        size: 24.0,
+        color: index < rating
+            ? rating == 1 || rating == 2
+                ? Colors.red
+                : rating == 3
+                    ? Colors.orange
+                    : Colors.green
+            : Colors.grey[300], // Cinza claro para estrelas não atingidas
+        size: 14.0,
       ),
     );
+
+    return stars;
   }
 }

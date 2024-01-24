@@ -41,7 +41,7 @@ class _SpaceFeedbacksPageLimitedState
             ),
           );
         }
-        log('Average Rating: ${widget.space.averageRating}');
+
         return NewFeedbackWidgetLimited(
           x: widget.x,
           data: data,

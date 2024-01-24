@@ -11,6 +11,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/infor
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais_status.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais_vm.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class InformacoesPessoais extends ConsumerStatefulWidget {
@@ -160,14 +161,21 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                             },
                           );
                         },
-                        onTap: () => informacoesPessoaisVm.pickAvatar(),
-                        child: CircleAvatar(
-                          radius: 60,
+                        onTap: () {
+                          informacoesPessoaisVm.pickAvatar();
+                        },
+                        child: Container(
+                          width: 200,
+                          height: 200,
+                          decoration:
+                              const BoxDecoration(shape: BoxShape.circle),
                           child: avatarUrl != ''
-                              ? Image.network(
-                                  avatarUrl,
-                                  fit: BoxFit
-                                      .cover, // Ajuste conforme necessário
+                              ? CircleAvatar(
+                                  backgroundImage: Image.network(
+                                    avatarUrl,
+                                    fit: BoxFit.cover,
+                                  ).image,
+                                  radius: 100,
                                 )
                               : const Icon(
                                   Icons.person,
@@ -270,7 +278,6 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                     } else {
                       isEditingCep = !isEditingCep;
                     }
-
                     setState(() {
                       cepEC.text = value;
                     });

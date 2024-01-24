@@ -6,10 +6,13 @@ import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_c
 class MySliverListToCardInfo extends StatelessWidget {
   final data;
   final AsyncValue spaces;
+  final bool x;
+
   const MySliverListToCardInfo({
     super.key,
     required this.data,
     required this.spaces,
+    required this.x,
   });
 
   @override
@@ -25,6 +28,7 @@ class MySliverListToCardInfo extends StatelessWidget {
                   ),
                 ),
                 child: NewSpaceCard(
+                  hasHeart: x,
                   space: data.spaces[index],
                   isReview: false,
                 ),
