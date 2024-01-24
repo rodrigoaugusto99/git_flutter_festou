@@ -10,6 +10,7 @@ import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/my_last_seen_spaces.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_page.dart';
+import 'package:lottie/lottie.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   final String? previousRoute;
@@ -77,65 +78,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Espaços perto de você'),
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AllSpacesTest(
-                                height: MediaQuery.of(context).size.height,
-                                width: MediaQuery.of(context).size.width,
-                                spaces: data.spaces,
-                                scrollGesturesEnabled: true,
-                                zoomControlsEnabled: true,
-                                zoomGesturesEnabled: true,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: y * 0.2,
-                          color: Colors.purple,
-                          child: const Text('Descubra espaços perto de você'),
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const SurroundingSpacesPage()),
-                          );
-                        },
-                        child: const Icon(Icons.access_alarm),
-                      ),
-                      SizedBox(
-                        height: y * 0.21,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 5,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                color: Colors.grey,
-                                width: 300,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
                       const Text('GIFS'),
                       SizedBox(
                         height: y * 0.31,
@@ -155,6 +97,37 @@ class _HomePageState extends ConsumerState<HomePage> {
                         ),
                       ),
                     ],
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SurroundingSpacesPage(),
+                        ),
+                      );
+                    },
+                    child: ClipRect(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: SizedBox(
+                          height: 200, // Altura desejada
+                          width: double
+                              .infinity, // Ocupa toda a largura disponível
+                          child: Transform.scale(
+                            scale:
+                                3, // Ajuste o fator de escala conforme necessário
+                            child: Lottie.asset(
+                              'lib/assets/animations/earth1.json',
+                              fit: BoxFit.cover,
+                              animate: false,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ],

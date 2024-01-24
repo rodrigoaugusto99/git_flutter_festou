@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'dart:io';
+
+import 'package:image_cropper/image_cropper.dart';
 
 enum InformacoesPessoaisStateStatus { initial, success, error }
 
@@ -10,19 +13,20 @@ class InformacoesPessoaisState {
   final List<File> imageFiles;
   final File image1;
   final File image2;
-  final File avatar;
+
+  final File avatarCropped;
 
   InformacoesPessoaisState(
       {required this.status,
       required this.imageFiles,
       required this.image1,
       required this.image2,
-      required this.avatar,
+      required this.avatarCropped,
       this.errorMessage});
 
   InformacoesPessoaisState.initial()
       : this(
-          avatar: File(''),
+          avatarCropped: File(''),
           image1: File(''),
           image2: File(''),
           status: InformacoesPessoaisStateStatus.initial,
@@ -34,13 +38,13 @@ class InformacoesPessoaisState {
       List<File>? imageFiles,
       File? image1,
       File? image2,
-      File? avatar}) {
+      File? avatarCropped}) {
     return InformacoesPessoaisState(
         status: status ?? this.status,
         errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
         imageFiles: imageFiles ?? this.imageFiles,
         image1: image1 ?? this.image1,
         image2: image2 ?? this.image2,
-        avatar: avatar ?? this.avatar);
+        avatarCropped: avatarCropped ?? this.avatarCropped);
   }
 }
