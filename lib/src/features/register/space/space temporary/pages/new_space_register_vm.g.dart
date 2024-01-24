@@ -7,7 +7,7 @@ part of 'new_space_register_vm.dart';
 // **************************************************************************
 
 String _$newSpaceRegisterVmHash() =>
-    r'58ef5e9fd15d582a07549a1cd80dc917866cf7b5';
+    r'8b4405a37d2887c6ea45cfb4d7eefd0bb7e109af';
 
 /// See also [NewSpaceRegisterVm].
 @ProviderFor(NewSpaceRegisterVm)

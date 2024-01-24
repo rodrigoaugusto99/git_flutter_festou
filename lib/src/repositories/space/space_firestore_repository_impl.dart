@@ -95,6 +95,7 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
               'images_url': imagesData,
               'latitude': spaceData.latitude,
               'longitude': spaceData.longitude,
+              'locadorAvatarUrl': ''
             };
             await spacesCollection.add(newSpace);
 
@@ -326,6 +327,7 @@ p decidir o isFavorited*/
       imagesUrl,
       spaceDocument['latitude'] ?? '',
       spaceDocument['longitude'] ?? '',
+      spaceDocument['locadorAvatarUrl'] ?? '',
     );
   }
 
