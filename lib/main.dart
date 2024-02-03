@@ -81,8 +81,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         bottomNavigationBarTheme:
             const BottomNavigationBarThemeData(backgroundColor: Colors.grey),
-        appBarTheme: const AppBarTheme(color: Colors.grey),
-        scaffoldBackgroundColor: Colors.grey,
+        appBarTheme: const AppBarTheme(color: Color.fromARGB(255, 81, 45, 168)),
+        scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),
         fontFamily: 'inter',
         primarySwatch: Colors.deepPurple,
         dialogTheme: DialogTheme(

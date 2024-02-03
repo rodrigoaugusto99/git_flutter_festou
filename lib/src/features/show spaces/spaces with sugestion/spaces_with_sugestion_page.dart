@@ -16,12 +16,14 @@ class SpacesWithSugestionPage extends ConsumerStatefulWidget {
   const SpacesWithSugestionPage({super.key, required this.space});
 
   @override
-  ConsumerState<SpacesWithSugestionPage> createState() => _SpacesWithSugestionPageState();
+  ConsumerState<SpacesWithSugestionPage> createState() =>
+      _SpacesWithSugestionPageState();
 }
 
 //TODO: space with sugestion
 
-class _SpacesWithSugestionPageState extends ConsumerState<SpacesWithSugestionPage> {
+class _SpacesWithSugestionPageState
+    extends ConsumerState<SpacesWithSugestionPage> {
   @override
   Widget build(BuildContext context) {
     final sugestions = ref.watch(spacesWithSugestionVmProvider(widget.space));
@@ -35,18 +37,18 @@ class _SpacesWithSugestionPageState extends ConsumerState<SpacesWithSugestionPag
       }
     });
 
+    final x = MediaQuery.of(context).size.width;
+    final y = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: NestedScrollView(
         floatHeaderSlivers: true,
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar(
             elevation: 0,
-            foregroundColor: innerBoxIsScrolled
-                ? Colors.black
-                : Colors.white,
-            backgroundColor: innerBoxIsScrolled
-                ? Colors.white
-                : Colors.deepPurple[700],
+            foregroundColor: innerBoxIsScrolled ? Colors.black : Colors.white,
+            backgroundColor:
+                innerBoxIsScrolled ? Colors.white : Colors.deepPurple[700],
             snap: true,
             floating: true,
             pinned: false,
@@ -60,26 +62,27 @@ class _SpacesWithSugestionPageState extends ConsumerState<SpacesWithSugestionPag
                 SliverToBoxAdapter(
                     child: InkWell(
                         onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => NewCardInfo(space: widget.space),
-                          ),
-                        ),
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    NewCardInfo(space: widget.space),
+                              ),
+                            ),
                         child: NewSpaceCard(
                           space: widget.space,
                           isReview: false,
                         ))),
                 SliverToBoxAdapter(
-                  child: Center(
-                    child: Container(
-                      color: Colors.black,
-                      child: const Text(
-                        'SUGESTÕES',
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.orange,
-                        ),
+                  child: Container(
+                    padding: EdgeInsets.only(
+                        left: x * 0.02, top: y * 0.02, bottom: y * 0.02),
+                    color: Color.fromARGB(255, 255, 255, 255),
+                    child: const Text(
+                      'Sugeridos pra você!',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 0, 0, 0),
                       ),
                     ),
                   ),
