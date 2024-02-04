@@ -11,11 +11,12 @@ import 'package:lottie/lottie.dart';
 class NewSpaceCard extends ConsumerStatefulWidget {
   final SpaceModel space;
   final bool isReview;
-
+  final bool hasHeart;
   const NewSpaceCard({
     super.key,
     required this.space,
     required this.isReview,
+    required this.hasHeart,
   });
 
   @override
@@ -76,8 +77,8 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                         setState(() {
                           showLottie = false;
                         });
-                      });
-                    },
+                      },
+                    ),
                   ),
                 ),
               Positioned(
@@ -129,7 +130,6 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                     ),
                   ),
                 ),
-              ),
             ],
           );
         } else {

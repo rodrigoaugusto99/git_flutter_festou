@@ -69,6 +69,7 @@ class _SpacesWithSugestionPageState
                               ),
                             ),
                         child: NewSpaceCard(
+                          hasHeart: true,
                           space: widget.space,
                           isReview: false,
                         ))),
@@ -88,7 +89,11 @@ class _SpacesWithSugestionPageState
                   ),
                 ),
 
-                MySliverListToCardInfo(data: data, spaces: sugestions),
+                MySliverListToCardInfo(
+                  data: data,
+                  spaces: sugestions,
+                  x: true,
+                ),
               ],
             );
           },

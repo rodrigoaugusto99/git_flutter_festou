@@ -22,6 +22,7 @@ class MySliverListFiltered extends StatelessWidget {
                     ),
                   ),
               child: NewSpaceCard(
+                hasHeart: true,
                 space: spaces[index],
                 isReview: false,
               )),
