@@ -18,9 +18,12 @@ class MyLastSeenSpaces extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text('all spaces (futuro "vistos recentemente")'),
+        Padding(
+          padding: const EdgeInsets.only(left: 15.0, bottom: 10),
+          child: Text(
+            'Próximos a você',
+            style: TextStyle(color: Colors.blueGrey[500]),
+          ),
         ),
         SizedBox(
           height: y * 0.21,
