@@ -117,7 +117,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                   left: x * 0.82,
                   child: Container(
                     decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Color.fromARGB(59, 255, 255, 255),
                         borderRadius: BorderRadius.circular(25)),
                     width: 50,
                     height: 50,
@@ -152,9 +152,10 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                                         showLottie = true;
                                       });
                                     },
-                                    child: const Icon(Icons.favorite_outline,
-                                        color:
-                                            Color.fromARGB(255, 255, 186, 186)),
+                                    child: const Icon(
+                                      Icons.favorite_outline,
+                                      color: Colors.red,
+                                    ),
                                   ),
                           ),
                         ],
