@@ -132,6 +132,10 @@ flutter:
     - family: Marcellus
       fonts:
         - asset: lib/assets/fonts/Marcellus.ttf
+
+    - family: RedHatDisplay
+      fonts:
+        - asset: lib/assets/fonts/RedHatDisplay-black.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

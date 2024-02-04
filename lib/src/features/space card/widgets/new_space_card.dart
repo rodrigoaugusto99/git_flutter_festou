@@ -38,12 +38,12 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
           widget.space.spaceId, widget.space.isFavorited);
     }
 
-    //final x = MediaQuery.of(context).size.width;
-    //final y = MediaQuery.of(context).size.height;
+    final x = MediaQuery.of(context).size.width;
+    final y = MediaQuery.of(context).size.height;
+
+    double leftPadding = x * 0.8;
 
     Widget myCarousel(bool isReview) {
-      final x = MediaQuery.of(context).size.width;
-      final y = MediaQuery.of(context).size.height;
       if (isReview == false) {
         if (widget.space.imagesUrl.isNotEmpty) {
           return Stack(
@@ -67,12 +67,12 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
               ),
               if (widget.hasHeart)
                 if (showLottie)
-                  Center(
+                  Positioned(
+                    left: x * 0.14,
                     child: Lottie.asset(
                       'lib/assets/animations/heartBeats.json',
                       repeat: false,
-                      width: 300,
-                      height: 300,
+                      width: x * 0.72,
                       onLoaded: (composition) {
                         Timer(const Duration(seconds: 2), () {
                           setState(() {
@@ -84,49 +84,52 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                   ),
               if (widget.hasHeart)
                 Positioned(
-                  right: 5,
-                  width: 80,
-                  height: 80,
-                  child: InkWell(
-                    onTap: toggle,
-                    child: Stack(
-                      children: [
-                        if (!widget.space.isFavorited)
-                          Lottie.asset(
-                            'lib/assets/animations/heartsFalling.json',
-                            height: y * 0.12,
-                          ),
-                        Positioned(
-                          top: y * 0.035,
-                          right: x * 0.060,
-                          child: widget.space.isFavorited
-                              ? GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      toggle();
-                                    });
-                                  },
-                                  child: const Icon(
-                                    Icons.favorite,
-                                    color: Colors.red,
-                                  ),
-                                )
-                              : GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      toggle();
-                                      if (widget.hasHeart) {
+                  top: y * 0.009,
+                  left: x * 0.82,
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25)),
+                    width: 50,
+                    height: 50,
+                    child: InkWell(
+                      onTap: toggle,
+                      child: Stack(
+                        children: [
+                          if (!widget.space.isFavorited)
+                            Lottie.asset(
+                              'lib/assets/animations/heartsFalling.json',
+                              height: y * 0.12,
+                            ),
+                          Positioned(
+                            top: y * 0.018,
+                            right: x * 0.035,
+                            child: widget.space.isFavorited
+                                ? GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        toggle();
+                                      });
+                                    },
+                                    child: const Icon(
+                                      Icons.favorite,
+                                      color: Colors.red,
+                                    ),
+                                  )
+                                : GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        toggle();
                                         showLottie = true;
-                                      }
-                                    });
-                                  },
-                                  child: const Icon(
-                                    Icons.favorite_outline,
-                                    color: Colors.white,
+                                      });
+                                    },
+                                    child: const Icon(Icons.favorite_outline,
+                                        color:
+                                            Color.fromARGB(255, 255, 186, 186)),
                                   ),
-                                ),
-                        ),
-                      ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -190,53 +193,182 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
       padding: const EdgeInsets.all(6),
       color: Colors.white,
       width: 370,
-      child: Column(
+      height: 380,
+      child: Stack(
         children: [
           myCarousel(widget.isReview),
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            color: Colors.white,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      widget.space.cidade,
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
+          Positioned(
+            top: y * 0.3,
+            left: x * 0.062,
+            child: Container(
+              width: x * 0.84,
+              height: y * 0.14,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5), // Cor do sombreado
+                      spreadRadius: 2, // Raio de propagação do sombreado
+                      blurRadius: 20, // Raio de desfoque do sombreado
+                      offset: const Offset(0,
+                          3), // Deslocamento do sombreado em relação ao Container
                     ),
-                    const Text('_avaliaçao_'),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  ]),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 15, left: 25),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(widget.space.titulo),
-                        const Text('_preço_'),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        InkWell(
-                          onTap: () {},
-                          child: const Icon(Icons.edit),
+                        Text(
+                          capitalizeFirstLetter(widget.space.titulo),
+                          style: const TextStyle(
+                              fontFamily: 'RedHatDisplay',
+                              fontSize: 18,
+                              fontWeight: FontWeight.w900),
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 25),
+                    child: Text(
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 156, 156, 156),
+                        ),
+                        "${widget.space.bairro}, ${widget.space.cidade}"),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(
+                        left: 25, top: 5, right: 25, bottom: 10),
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Color.fromARGB(255, 223, 223, 223),
+                          width: 2.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 25),
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: _getColor(
+                                double.parse(widget.space.averageRating),
+                              ),
+                            ),
+                            height: y * 0.035, // Ajuste conforme necessário
+                            width: x * 0.07, // Ajuste conforme necessário
+                            child: Center(
+                              child: Text(
+                                double.parse(widget.space.averageRating)
+                                    .toStringAsFixed(1),
+                                style: const TextStyle(
+                                  color: Colors.white, // Cor do texto
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const Text(
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 156, 156, 156),
+                            ),
+                            "(105)"),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Row(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Color.fromARGB(
+                                      255, 156, 156, 156), //Colors.deepPurple,
+                                ),
+                                width: 20,
+                                height: 20,
+                                child: const Icon(
+                                  Icons.attach_money,
+                                  size: 15,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(left: 5),
+                          child: Text(
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 156, 156, 156),
+                            ),
+                            "R\$800,00/h",
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 5),
+                          child: Row(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Color.fromARGB(
+                                      255, 156, 156, 156), //Colors.deepPurple,
+                                ),
+                                width: 20,
+                                height: 20,
+                                child: const Icon(
+                                  Icons.favorite,
+                                  size: 15,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Text(
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 156, 156, 156),
+                            ),
+                            "(598)"),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           )
         ],
       ),
     );
   }
+}
+
+//CRIAR UMA CLASSE UTILITIES
+
+Color _getColor(double averageRating) {
+  if (averageRating >= 4) {
+    return Colors.green; // Ícone verde para rating maior ou igual a 4
+  } else if (averageRating >= 2 && averageRating < 4) {
+    return Colors.orange; // Ícone laranja para rating entre 2 e 4 (exclusive)
+  } else {
+    return Colors.red; // Ícone vermelho para rating abaixo de 2
+  }
+}
+
+String capitalizeFirstLetter(String text) {
+  if (text.isEmpty) {
+    return text;
+  }
+  return text[0].toUpperCase() + text.substring(1);
 }
