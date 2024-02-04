@@ -65,68 +65,71 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                   ),
                 ),
               ),
-              if (showLottie)
-                Positioned(
-                  left: x * 0.14,
-                  child: Lottie.asset(
-                    'lib/assets/animations/heartBeats.json',
-                    repeat: false,
-                    width: x * 0.72,
-                    onLoaded: (composition) {
-                      Timer(const Duration(seconds: 2), () {
-                        setState(() {
-                          showLottie = false;
+              if (widget.hasHeart)
+                if (showLottie)
+                  Positioned(
+                    left: x * 0.14,
+                    child: Lottie.asset(
+                      'lib/assets/animations/heartBeats.json',
+                      repeat: false,
+                      width: x * 0.72,
+                      onLoaded: (composition) {
+                        Timer(const Duration(seconds: 2), () {
+                          setState(() {
+                            showLottie = false;
+                          });
                         });
                       },
                     ),
                   ),
-                ),
-              Positioned(
-                top: y * 0.009,
-                left: x * 0.82,
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(25)),
-                  width: 50,
-                  height: 50,
-                  child: InkWell(
-                    onTap: toggle,
-                    child: Stack(
-                      children: [
-                        if (!widget.space.isFavorited)
-                          Lottie.asset(
-                            'lib/assets/animations/heartsFalling.json',
-                            height: y * 0.12,
-                          ),
-                        Positioned(
-                          top: y * 0.018,
-                          right: x * 0.035,
-                          child: widget.space.isFavorited
-                              ? GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      toggle();
-                                    });
-                                  },
-                                  child: const Icon(
-                                    Icons.favorite,
-                                    color: Colors.red,
+              if (widget.hasHeart)
+                Positioned(
+                  top: y * 0.009,
+                  left: x * 0.82,
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25)),
+                    width: 50,
+                    height: 50,
+                    child: InkWell(
+                      onTap: toggle,
+                      child: Stack(
+                        children: [
+                          if (!widget.space.isFavorited)
+                            Lottie.asset(
+                              'lib/assets/animations/heartsFalling.json',
+                              height: y * 0.12,
+                            ),
+                          Positioned(
+                            top: y * 0.018,
+                            right: x * 0.035,
+                            child: widget.space.isFavorited
+                                ? GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        toggle();
+                                      });
+                                    },
+                                    child: const Icon(
+                                      Icons.favorite,
+                                      color: Colors.red,
+                                    ),
+                                  )
+                                : GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        toggle();
+                                        showLottie = true;
+                                      });
+                                    },
+                                    child: const Icon(Icons.favorite_outline,
+                                        color:
+                                            Color.fromARGB(255, 255, 186, 186)),
                                   ),
-                                )
-                              : GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      toggle();
-                                      showLottie = true;
-                                    });
-                                  },
-                                  child: const Icon(Icons.favorite_outline,
-                                      color:
-                                          Color.fromARGB(255, 255, 186, 186)),
-                                ),
-                        ),
-                      ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
