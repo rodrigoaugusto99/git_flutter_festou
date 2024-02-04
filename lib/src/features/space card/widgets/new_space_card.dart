@@ -117,7 +117,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                   left: x * 0.82,
                   child: Container(
                     decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Color.fromARGB(59, 255, 255, 255),
                         borderRadius: BorderRadius.circular(25)),
                     width: 50,
                     height: 50,
@@ -152,9 +152,10 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                                         showLottie = true;
                                       });
                                     },
-                                    child: const Icon(Icons.favorite_outline,
-                                        color:
-                                            Color.fromARGB(255, 255, 186, 186)),
+                                    child: const Icon(
+                                      Icons.favorite_outline,
+                                      color: Colors.red,
+                                    ),
                                   ),
                           ),
                         ],
@@ -248,7 +249,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 15, left: 25),
+                    padding: const EdgeInsets.only(top: 8, left: 25),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -265,10 +266,12 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                   Padding(
                     padding: const EdgeInsets.only(left: 25),
                     child: Text(
-                        style: const TextStyle(
-                          color: Color.fromARGB(255, 156, 156, 156),
-                        ),
-                        "${widget.space.bairro}, ${widget.space.cidade}"),
+                      style: const TextStyle(
+                        color: Color.fromARGB(255, 156, 156, 156),
+                      ),
+                      capitalizeTitle(
+                          "${widget.space.bairro}, ${widget.space.cidade}"),
+                    ),
                   ),
                   Container(
                     margin: const EdgeInsets.only(
@@ -400,4 +403,18 @@ String capitalizeFirstLetter(String text) {
     return text;
   }
   return text[0].toUpperCase() + text.substring(1);
+}
+
+String capitalizeTitle(String title) {
+  List<String> exceptions = ["da", "de", "di", "do", "du"];
+
+  List<String> words = title.toLowerCase().split(' ');
+
+  for (int i = 0; i < words.length; i++) {
+    if (!exceptions.contains(words[i]) || i == 0) {
+      words[i] = words[i].substring(0, 1).toUpperCase() + words[i].substring(1);
+    }
+  }
+
+  return words.join(' ');
 }
