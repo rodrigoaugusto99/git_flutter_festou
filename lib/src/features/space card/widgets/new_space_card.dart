@@ -25,6 +25,7 @@ class NewSpaceCard extends ConsumerStatefulWidget {
 
 class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
   bool showLottie = false;
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +41,6 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
 
     final x = MediaQuery.of(context).size.width;
     final y = MediaQuery.of(context).size.height;
-
-    double leftPadding = x * 0.8;
 
     Widget myCarousel(bool isReview) {
       if (isReview == false) {
@@ -62,6 +61,36 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                     aspectRatio: 16 / 12,
                     viewportFraction: 1.0,
                     enableInfiniteScroll: true,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        _currentIndex = index;
+                      });
+                    },
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: y * 0.46),
+                child: Positioned(
+                  bottom: 10.0,
+                  left: 0,
+                  right: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: widget.space.imagesUrl.map((url) {
+                      int index = widget.space.imagesUrl.indexOf(url);
+                      return Container(
+                        width: 8.0,
+                        height: 8.0,
+                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _currentIndex == index
+                              ? Colors.deepPurple[700]
+                              : Colors.grey.shade300,
+                        ),
+                      );
+                    }).toList(),
                   ),
                 ),
               ),

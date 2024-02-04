@@ -17,6 +17,7 @@ class MySliverListToCardInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final y = MediaQuery.of(context).size.height;
     return SliverList(
       delegate: SliverChildBuilderDelegate(
           (context, index) => InkWell(
@@ -27,10 +28,13 @@ class MySliverListToCardInfo extends StatelessWidget {
                         NewCardInfo(space: data.spaces[index]),
                   ),
                 ),
-                child: NewSpaceCard(
-                  hasHeart: x,
-                  space: data.spaces[index],
-                  isReview: false,
+                child: Padding(
+                  padding: EdgeInsets.only(top: y * 0.03),
+                  child: NewSpaceCard(
+                    hasHeart: x,
+                    space: data.spaces[index],
+                    isReview: false,
+                  ),
                 ),
               ),
           childCount: data.spaces.length),
