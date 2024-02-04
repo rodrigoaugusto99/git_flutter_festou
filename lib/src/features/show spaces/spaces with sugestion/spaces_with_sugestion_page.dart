@@ -37,6 +37,9 @@ class _SpacesWithSugestionPageState
       }
     });
 
+    final x = MediaQuery.of(context).size.width;
+    final y = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: NestedScrollView(
         floatHeaderSlivers: true,
@@ -71,16 +74,16 @@ class _SpacesWithSugestionPageState
                           isReview: false,
                         ))),
                 SliverToBoxAdapter(
-                  child: Center(
-                    child: Container(
-                      color: Colors.black,
-                      child: const Text(
-                        'SUGESTÕES',
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.orange,
-                        ),
+                  child: Container(
+                    padding: EdgeInsets.only(
+                        left: x * 0.02, top: y * 0.02, bottom: y * 0.02),
+                    color: Color.fromARGB(255, 255, 255, 255),
+                    child: const Text(
+                      'Sugeridos pra você!',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 0, 0, 0),
                       ),
                     ),
                   ),

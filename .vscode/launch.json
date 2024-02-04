@@ -8,18 +8,6 @@
             "name": "git_flutter_festou",
             "request": "launch",
             "type": "dart"
-        },
-        {
-            "name": "git_flutter_festou (profile mode)",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "git_flutter_festou (release mode)",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
         }
     ]
 }
