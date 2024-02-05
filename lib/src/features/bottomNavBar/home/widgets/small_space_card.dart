@@ -49,115 +49,110 @@ class _SmallSpaceCardState extends ConsumerState<SmallSpaceCard> {
     }
 
     return Container(
-      padding: const EdgeInsets.only(left: 5, right: 10),
+      padding: const EdgeInsets.only(left: 10, right: 10),
       color: Colors.white,
       width: x * 0.7,
       child: Column(
         children: [
-          widget.space.imagesUrl.isNotEmpty
-              ? Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        spreadRadius: 1,
-                        blurRadius: 8,
-                        offset: const Offset(0, 3),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  spreadRadius: 1,
+                  blurRadius: 4,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16.0),
+              child: Stack(
+                children: [
+                  CarouselSlider(
+                    items: [
+                      Image.network(
+                        widget.space.imagesUrl.isNotEmpty
+                            ? widget.space.imagesUrl[0]
+                            : 'URL de uma imagem padrão ou vazia',
+                        width: double.infinity,
+                        height: double.infinity,
+                        fit: BoxFit.fill,
                       ),
                     ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16.0),
-                    child: Stack(
-                      children: [
-                        CarouselSlider(
-                          items: [
-                            Image.network(
-                              widget.space.imagesUrl.isNotEmpty
-                                  ? widget.space.imagesUrl[0]
-                                  : 'URL de uma imagem padrão ou vazia',
-                              width: double.infinity,
-                              height: double.infinity,
-                              fit: BoxFit.fill,
-                            ),
-                          ],
-                          options: CarouselOptions(
-                            autoPlay: true,
-                            viewportFraction: 1.0,
-                            enableInfiniteScroll: false,
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Container(
-                            height: 35,
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(16.0),
-                                bottomRight: Radius.circular(16.0),
-                              ),
-                              color: const Color.fromARGB(125, 255, 255, 255),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.3),
-                                  spreadRadius: 2,
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 15),
-                                  child: Text(
-                                    capitalizeTitle(widget.space.titulo),
-                                    style: const TextStyle(
-                                      fontFamily: 'RedHatDisplay',
-                                      fontSize: 14,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 15),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: _getColor(
-                                        double.parse(
-                                            widget.space.averageRating),
-                                      ),
-                                    ),
-                                    height:
-                                        y * 0.035, // Ajuste conforme necessário
-                                    width:
-                                        x * 0.07, // Ajuste conforme necessário
-                                    child: Center(
-                                      child: Text(
-                                        double.parse(widget.space.averageRating)
-                                            .toStringAsFixed(1),
-                                        style: const TextStyle(
-                                          color: Colors.white, // Cor do texto
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+                    options: CarouselOptions(
+                      autoPlay: true,
+                      viewportFraction: 1.0,
+                      enableInfiniteScroll: false,
                     ),
                   ),
-                )
-              : const Center(child: Text('Sem fotos')),
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      height: 35,
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(16.0),
+                          bottomRight: Radius.circular(16.0),
+                        ),
+                        color: const Color.fromARGB(125, 255, 255, 255),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            spreadRadius: 2,
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 15),
+                            child: Text(
+                              capitalizeTitle(widget.space.titulo),
+                              style: const TextStyle(
+                                fontFamily: 'RedHatDisplay',
+                                fontSize: 14,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 15),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: _getColor(
+                                  double.parse(widget.space.averageRating),
+                                ),
+                              ),
+                              height: y * 0.035, // Ajuste conforme necessário
+                              width: x * 0.07, // Ajuste conforme necessário
+                              child: Center(
+                                child: Text(
+                                  double.parse(widget.space.averageRating)
+                                      .toStringAsFixed(1),
+                                  style: const TextStyle(
+                                    color: Colors.white, // Cor do texto
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
         ],
       ),
     );

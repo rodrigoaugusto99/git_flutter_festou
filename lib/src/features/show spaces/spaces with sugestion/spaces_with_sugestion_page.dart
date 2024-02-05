@@ -47,8 +47,7 @@ class _SpacesWithSugestionPageState
           SliverAppBar(
             elevation: 0,
             foregroundColor: innerBoxIsScrolled ? Colors.black : Colors.white,
-            backgroundColor:
-                innerBoxIsScrolled ? Colors.white : Colors.deepPurple[700],
+            backgroundColor: innerBoxIsScrolled ? Colors.white : Colors.purple,
             snap: true,
             floating: true,
             pinned: false,
@@ -75,9 +74,8 @@ class _SpacesWithSugestionPageState
                         ))),
                 SliverToBoxAdapter(
                   child: Container(
-                    padding: EdgeInsets.only(
-                        left: x * 0.02, top: y * 0.02, bottom: y * 0.02),
-                    color: Color.fromARGB(255, 255, 255, 255),
+                    padding: EdgeInsets.only(left: x * 0.02, top: y * 0.02),
+                    color: const Color.fromARGB(255, 255, 255, 255),
                     child: const Text(
                       'Sugeridos pra você!',
                       style: TextStyle(
@@ -93,6 +91,40 @@ class _SpacesWithSugestionPageState
                   data: data,
                   spaces: sugestions,
                   x: true,
+                ),
+
+                SliverToBoxAdapter(
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    padding: const EdgeInsets.all(16.0),
+                    color: Colors.grey[200],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          children: [
+                            Text(
+                              'Festou!',
+                              style: TextStyle(
+                                  fontFamily: 'RedHatDisplay',
+                                  fontSize: 18,
+                                  color: Colors.blueGrey[500],
+                                  fontWeight: FontWeight.w900),
+                            ),
+                            const SizedBox(
+                                height: 2.0), // Espaçamento entre os textos
+                            Text(
+                              '${DateTime.now().year} - Todos os direitos reservados.',
+                              style: const TextStyle(
+                                fontSize: 14.0,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             );
