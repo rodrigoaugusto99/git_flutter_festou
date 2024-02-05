@@ -44,178 +44,159 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
 
     Widget myCarousel(bool isReview) {
       if (isReview == false) {
-        if (widget.space.imagesUrl.isNotEmpty) {
-          return Stack(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16.0),
-                child: CarouselSlider(
-                  items: widget.space.imagesUrl
-                      .map((imageUrl) => Image.network(
-                            imageUrl,
-                            fit: BoxFit.cover,
-                          ))
-                      .toList(),
-                  options: CarouselOptions(
-                    autoPlay: true,
-                    aspectRatio: 16 / 12,
-                    viewportFraction: 1.0,
-                    enableInfiniteScroll: true,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        _currentIndex = index;
+        return Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16.0),
+              child: CarouselSlider(
+                items: widget.space.imagesUrl
+                    .map((imageUrl) => Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                        ))
+                    .toList(),
+                options: CarouselOptions(
+                  autoPlay: true,
+                  aspectRatio: 16 / 12,
+                  viewportFraction: 1.0,
+                  enableInfiniteScroll: true,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      _currentIndex = index;
+                    });
+                  },
+                ),
+              ),
+            ),
+            if (widget.hasHeart)
+              if (showLottie)
+                Positioned(
+                  left: x * 0.14,
+                  child: Lottie.asset(
+                    'lib/assets/animations/heartBeats.json',
+                    repeat: false,
+                    width: x * 0.72,
+                    onLoaded: (composition) {
+                      Timer(const Duration(seconds: 2), () {
+                        setState(() {
+                          showLottie = false;
+                        });
                       });
                     },
                   ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: y * 0.46),
-                child: Positioned(
-                  bottom: 10.0,
-                  left: 0,
-                  right: 0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: widget.space.imagesUrl.map((url) {
-                      int index = widget.space.imagesUrl.indexOf(url);
-                      return Container(
-                        width: 8.0,
-                        height: 8.0,
-                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: _currentIndex == index
-                              ? Colors.deepPurple[700]
-                              : Colors.grey.shade300,
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ),
-              if (widget.hasHeart)
-                if (showLottie)
-                  Positioned(
-                    left: x * 0.14,
-                    child: Lottie.asset(
-                      'lib/assets/animations/heartBeats.json',
-                      repeat: false,
-                      width: x * 0.72,
-                      onLoaded: (composition) {
-                        Timer(const Duration(seconds: 2), () {
-                          setState(() {
-                            showLottie = false;
-                          });
-                        });
-                      },
-                    ),
-                  ),
-              if (widget.hasHeart)
-                Positioned(
-                  top: y * 0.009,
-                  left: x * 0.82,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Color.fromARGB(59, 255, 255, 255),
-                        borderRadius: BorderRadius.circular(25)),
-                    width: 50,
-                    height: 50,
-                    child: InkWell(
-                      onTap: toggle,
-                      child: Stack(
-                        children: [
-                          if (!widget.space.isFavorited)
-                            Lottie.asset(
-                              'lib/assets/animations/heartsFalling.json',
-                              height: y * 0.12,
-                            ),
-                          Positioned(
-                            top: y * 0.018,
-                            right: x * 0.035,
-                            child: widget.space.isFavorited
-                                ? GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        toggle();
-                                      });
-                                    },
-                                    child: const Icon(
-                                      Icons.favorite,
-                                      color: Colors.red,
-                                    ),
-                                  )
-                                : GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        toggle();
-                                        showLottie = true;
-                                      });
-                                    },
-                                    child: const Icon(
-                                      Icons.favorite_outline,
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-            ],
-          );
-        } else {
-          return Container();
-        }
-      } else {
-        if (widget.space.imagesUrl.isNotEmpty) {
-          return Stack(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16.0),
-                child: CarouselSlider(
-                  items: widget.space.imagesUrl
-                      .map((filePath) => Image.file(
-                            File(filePath),
-                            fit: BoxFit.cover,
-                          ))
-                      .toList(),
-                  options: CarouselOptions(
-                    autoPlay: true,
-                    aspectRatio: 16 / 12,
-                    viewportFraction: 1.0,
-                    enableInfiniteScroll: true,
-                  ),
-                ),
-              ),
+            if (widget.hasHeart)
               Positioned(
-                top: 20,
-                right: 20,
-                child: InkWell(
-                  onTap: toggle,
-                  child: widget.space.isFavorited
-                      ? const Icon(
-                          Icons.favorite,
-                          color: Colors.red,
-                        )
-                      : const Icon(
-                          Icons.favorite_outline,
-                          color: Colors.pink,
+                top: y * 0.009,
+                left: x * 0.82,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: const Color.fromARGB(59, 255, 255, 255),
+                      borderRadius: BorderRadius.circular(25)),
+                  width: 50,
+                  height: 50,
+                  child: InkWell(
+                    onTap: toggle,
+                    child: Stack(
+                      children: [
+                        if (!widget.space.isFavorited)
+                          Lottie.asset(
+                            'lib/assets/animations/heartsFalling.json',
+                            height: y * 0.12,
+                          ),
+                        Positioned(
+                          top: y * 0.018,
+                          right: x * 0.035,
+                          child: widget.space.isFavorited
+                              ? GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      toggle();
+                                    });
+                                  },
+                                  child: const Icon(
+                                    Icons.favorite,
+                                    color: Colors.red,
+                                  ),
+                                )
+                              : GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      toggle();
+                                      showLottie = true;
+                                    });
+                                  },
+                                  child: const Icon(
+                                    Icons.favorite_outline,
+                                    color: Colors.red,
+                                  ),
+                                ),
                         ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ],
-          );
-        } else {
-          return Container(
-            height: 100,
-            width: 200,
-            alignment: Alignment.center,
-            color: Colors.grey,
-            child: const Text('Sem fotos'),
-          );
-        }
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: widget.space.imagesUrl.map((url) {
+                  int index = widget.space.imagesUrl.indexOf(url);
+                  return Container(
+                    width: 8.0,
+                    height: 8.0,
+                    margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _currentIndex == index
+                          ? Colors.purple
+                          : Colors.grey.shade300,
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        );
+      } else {
+        return Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16.0),
+              child: CarouselSlider(
+                items: widget.space.imagesUrl
+                    .map((filePath) => Image.file(
+                          File(filePath),
+                          fit: BoxFit.cover,
+                        ))
+                    .toList(),
+                options: CarouselOptions(
+                  autoPlay: true,
+                  aspectRatio: 16 / 12,
+                  viewportFraction: 1.0,
+                  enableInfiniteScroll: true,
+                ),
+              ),
+            ),
+            Positioned(
+              top: 20,
+              right: 20,
+              child: InkWell(
+                onTap: toggle,
+                child: widget.space.isFavorited
+                    ? const Icon(
+                        Icons.favorite,
+                        color: Colors.red,
+                      )
+                    : const Icon(
+                        Icons.favorite_outline,
+                        color: Colors.pink,
+                      ),
+              ),
+            ),
+          ],
+        );
       }
     }
 
@@ -238,11 +219,10 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                   color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.5), // Cor do sombreado
-                      spreadRadius: 2, // Raio de propagação do sombreado
-                      blurRadius: 20, // Raio de desfoque do sombreado
-                      offset: const Offset(0,
-                          3), // Deslocamento do sombreado em relação ao Container
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 20,
+                      offset: const Offset(0, 3),
                     ),
                   ]),
               child: Column(
@@ -266,24 +246,14 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                   Padding(
                     padding: const EdgeInsets.only(left: 25),
                     child: Text(
-                      style: const TextStyle(
-                        color: Color.fromARGB(255, 156, 156, 156),
-                      ),
+                      style: TextStyle(color: Colors.blueGrey[500]),
                       capitalizeTitle(
                           "${widget.space.bairro}, ${widget.space.cidade}"),
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(
-                        left: 25, top: 5, right: 25, bottom: 10),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Color.fromARGB(255, 223, 223, 223),
-                          width: 2.0,
-                        ),
-                      ),
-                    ),
+                    margin: const EdgeInsets.only(left: 25, right: 25),
+                    child: const Divider(thickness: 0.4, color: Colors.purple),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 25),
@@ -298,23 +268,23 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                                 double.parse(widget.space.averageRating),
                               ),
                             ),
-                            height: y * 0.035, // Ajuste conforme necessário
-                            width: x * 0.07, // Ajuste conforme necessário
+                            height: y * 0.035,
+                            width: x * 0.07,
                             child: Center(
                               child: Text(
                                 double.parse(widget.space.averageRating)
                                     .toStringAsFixed(1),
                                 style: const TextStyle(
-                                  color: Colors.white, // Cor do texto
+                                  color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
                           ),
                         ),
-                        const Text(
+                        Text(
                             style: TextStyle(
-                              color: Color.fromARGB(255, 156, 156, 156),
+                              color: Colors.blueGrey[500],
                             ),
                             "(105)"),
                         Padding(
@@ -324,8 +294,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                               Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
-                                  color: Color.fromARGB(
-                                      255, 156, 156, 156), //Colors.deepPurple,
+                                  color: Colors.blueGrey[500],
                                 ),
                                 width: 20,
                                 height: 20,
@@ -338,11 +307,11 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                             ],
                           ),
                         ),
-                        const Padding(
-                          padding: EdgeInsets.only(left: 5),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5),
                           child: Text(
                             style: TextStyle(
-                              color: Color.fromARGB(255, 156, 156, 156),
+                              color: Colors.blueGrey[500],
                             ),
                             "R\$800,00/h",
                           ),
@@ -354,8 +323,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                               Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
-                                  color: Color.fromARGB(
-                                      255, 156, 156, 156), //Colors.deepPurple,
+                                  color: Colors.blueGrey[500],
                                 ),
                                 width: 20,
                                 height: 20,
@@ -368,9 +336,9 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                             ],
                           ),
                         ),
-                        const Text(
+                        Text(
                             style: TextStyle(
-                              color: Color.fromARGB(255, 156, 156, 156),
+                              color: Colors.blueGrey[500],
                             ),
                             "(598)"),
                       ],
