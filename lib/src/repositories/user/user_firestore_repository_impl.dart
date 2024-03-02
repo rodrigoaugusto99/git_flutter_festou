@@ -10,10 +10,10 @@ import './user_firestore_repository.dart';
 
 class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
   final ImagesStorageRepository imagesStorageRepository;
+  UserFirestoreRepositoryImpl({required this.imagesStorageRepository});
+
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
-
-  UserFirestoreRepositoryImpl({required this.imagesStorageRepository});
 
   /*@override
   Future<Either<RepositoryException, Nil>> saveUserWithGoogle() async {

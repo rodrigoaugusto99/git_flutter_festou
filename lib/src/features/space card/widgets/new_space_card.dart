@@ -104,9 +104,8 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                             'lib/assets/animations/heartsFalling.json',
                             height: y * 0.12,
                           ),
-                        Positioned(
-                          top: y * 0.018,
-                          right: x * 0.035,
+                        Align(
+                          alignment: Alignment.center,
                           child: widget.space.isFavorited
                               ? GestureDetector(
                                   onTap: () {
@@ -203,149 +202,162 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
     return Container(
       padding: const EdgeInsets.all(6),
       color: Colors.white,
-      width: 370,
       height: 380,
       child: Stack(
         children: [
           myCarousel(widget.isReview),
-          Positioned(
-            top: y * 0.3,
-            left: x * 0.062,
-            child: Container(
-              width: x * 0.84,
-              height: y * 0.14,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 20,
-                      offset: const Offset(0, 3),
-                    ),
-                  ]),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8, left: 25),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          capitalizeFirstLetter(widget.space.titulo),
-                          style: const TextStyle(
-                              fontFamily: 'RedHatDisplay',
-                              fontSize: 18,
-                              fontWeight: FontWeight.w900),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 25),
-                    child: Text(
-                      style: TextStyle(color: Colors.blueGrey[500]),
-                      capitalizeTitle(
-                          "${widget.space.bairro}, ${widget.space.cidade}"),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(left: 25, right: 25),
-                    child: const Divider(thickness: 0.4, color: Colors.purple),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 25),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: _getColor(
-                                double.parse(widget.space.averageRating),
-                              ),
+          Padding(
+            padding: EdgeInsets.only(bottom: y * 0.03),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: x * 0.84,
+                      height: 100,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 20,
+                              offset: const Offset(0, 3),
                             ),
-                            height: y * 0.035,
-                            width: x * 0.07,
-                            child: Center(
-                              child: Text(
-                                double.parse(widget.space.averageRating)
-                                    .toStringAsFixed(1),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                          ]),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8, left: 25),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  capitalizeFirstLetter(widget.space.titulo),
+                                  style: const TextStyle(
+                                      fontFamily: 'RedHatDisplay',
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w900),
                                 ),
-                              ),
+                              ],
                             ),
                           ),
-                        ),
-                        Text(
-                            style: TextStyle(
-                              color: Colors.blueGrey[500],
+                          Padding(
+                            padding: const EdgeInsets.only(left: 25),
+                            child: Text(
+                              style: TextStyle(color: Colors.blueGrey[500]),
+                              capitalizeTitle(
+                                  "${widget.space.bairro}, ${widget.space.cidade}"),
                             ),
-                            "(105)"),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20),
-                          child: Row(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.blueGrey[500],
-                                ),
-                                width: 20,
-                                height: 20,
-                                child: const Icon(
-                                  Icons.attach_money,
-                                  size: 15,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 5),
-                          child: Text(
-                            style: TextStyle(
-                              color: Colors.blueGrey[500],
+                          Container(
+                            margin: const EdgeInsets.only(left: 25, right: 25),
+                            child: const Divider(
+                                thickness: 0.4, color: Colors.purple),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 25),
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 5),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: _getColor(
+                                        double.parse(
+                                            widget.space.averageRating),
+                                      ),
+                                    ),
+                                    height: y * 0.035,
+                                    width: x * 0.07,
+                                    child: Center(
+                                      child: Text(
+                                        double.parse(widget.space.averageRating)
+                                            .toStringAsFixed(1),
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                    style: TextStyle(
+                                      color: Colors.blueGrey[500],
+                                    ),
+                                    "(105)"),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 20),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          color: Colors.blueGrey[500],
+                                        ),
+                                        width: 20,
+                                        height: 20,
+                                        child: const Icon(
+                                          Icons.attach_money,
+                                          size: 15,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 5),
+                                  child: Text(
+                                    style: TextStyle(
+                                      color: Colors.blueGrey[500],
+                                    ),
+                                    "R\$800,00/h",
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 20, right: 5),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          color: Colors.blueGrey[500],
+                                        ),
+                                        width: 20,
+                                        height: 20,
+                                        child: const Icon(
+                                          Icons.favorite,
+                                          size: 15,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Text(
+                                    style: TextStyle(
+                                      color: Colors.blueGrey[500],
+                                    ),
+                                    "(598)"),
+                              ],
                             ),
-                            "R\$800,00/h",
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20, right: 5),
-                          child: Row(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.blueGrey[500],
-                                ),
-                                width: 20,
-                                height: 20,
-                                child: const Icon(
-                                  Icons.favorite,
-                                  size: 15,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Text(
-                            style: TextStyle(
-                              color: Colors.blueGrey[500],
-                            ),
-                            "(598)"),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              ],
             ),
           )
         ],
