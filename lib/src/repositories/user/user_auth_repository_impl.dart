@@ -6,13 +6,12 @@ import 'package:git_flutter_festou/src/core/fp/nil.dart';
 
 import 'package:git_flutter_festou/src/features/login/login_vm.dart';
 
-
 import 'user_auth_repository.dart';
 
 class UserAuthRepositoryImpl implements UserAuthRepository {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-//todo: mensagens de erro especificar p cada erro
+//todo: especificar mensagens p cada erro
   UserAuthRepositoryImpl();
   @override
   Future<Either<AuthException, Nil>> login(
