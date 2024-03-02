@@ -2,6 +2,7 @@ class UserModel {
   final String id;
   final String email;
   final String name;
+  final String cpf;
   final String cep;
   final String logradouro;
   final String telefone;
@@ -14,6 +15,7 @@ class UserModel {
   UserModel(
     this.email,
     this.name,
+    this.cpf,
     this.cep,
     this.logradouro,
     this.telefone,

@@ -43,12 +43,16 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       ({
         String id,
         String email,
+        String name,
+        String cpf,
       }) userData) async {
     try {
 // Crie um novo usuario com os dados fornecidos
       Map<String, dynamic> newUser = {
         'uid': userData.id,
         'email': userData.email,
+        'name': userData.name,
+        'cpf': userData.cpf,
         'userType': 'LOCATARIO',
         'nome': '',
         'telefone': '',
@@ -169,6 +173,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       final UserModel userModel = UserModel(
         userData['email'] ?? '',
         userData['nome'] ?? '',
+        userData['cpf'] ?? '',
         userData['user_address']['cep'] ?? '',
         userData['user_address']['logradouro'] ?? '',
         userData['telefone'] ?? '',
@@ -216,6 +221,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       final UserModel userModel = UserModel(
         userData['email'] ?? '',
         userData['nome'] ?? '',
+        userData['cpf'] ?? '',
         userData['user_address']['cep'] ?? '',
         userData['user_address']['logradouro'] ?? '',
         userData['telefone'] ?? '',

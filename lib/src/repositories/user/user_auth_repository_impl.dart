@@ -48,11 +48,14 @@ class UserAuthRepositoryImpl implements UserAuthRepository {
     }
   }*/
 
+//nao usamos name e cpf msm, mas tem q botar por motivos extracurriculares
   @override
   Future<Either<AuthException, UserCredential>> registerUser(
       ({
         String email,
         String password,
+        String name,
+        String cpf,
       }) userData) async {
     try {
       final userCredential = await auth.createUserWithEmailAndPassword(

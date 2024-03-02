@@ -8,10 +8,7 @@ import 'package:git_flutter_festou/src/models/user_model.dart';
 abstract interface class UserFirestoreRepository {
   //Future<Either<RepositoryException, Nil>> saveUserWithGoogle();
   Future<Either<RepositoryException, Nil>> saveUser(
-      ({
-        String id,
-        String email,
-      }) userData);
+      ({String id, String email, String name, String cpf}) userData);
 
   Future<Either<RepositoryException, Nil>> deleteUserDocument(User user);
   Future<Either<RepositoryException, Nil>> saveUserInfos(

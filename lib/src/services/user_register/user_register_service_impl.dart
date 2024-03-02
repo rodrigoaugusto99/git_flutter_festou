@@ -21,6 +21,8 @@ class UserRegisterServiceImpl implements UserRegisterService {
       ({
         String email,
         String password,
+        String name,
+        String cpf,
       }) userData) async {
     final registerAuthResult = await userAuthRepository.registerUser(userData);
 
@@ -34,6 +36,8 @@ class UserRegisterServiceImpl implements UserRegisterService {
         final userDataFirestore = (
           id: user.uid,
           email: userData.email,
+          name: userData.name,
+          cpf: userData.cpf,
         );
         //só salvar no firestore se salvar no auth
 
