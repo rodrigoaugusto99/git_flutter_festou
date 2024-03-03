@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/my%20favorite%20spaces%20mvvm/my_favorite_spaces_page.dart';
-
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/profile.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/search/search_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/home_page.dart';
@@ -43,6 +42,7 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       body: PageView.builder(
         physics: const NeverScrollableScrollPhysics(),
         controller: _pageController,
@@ -62,30 +62,48 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
           }
         },
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.orange,
-        unselectedItemColor: Colors.black,
-        currentIndex: _currentIndex,
-        onTap: _onTabTapped,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+      bottomNavigationBar: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(24.0),
+          topRight: Radius.circular(24.0),
+        ),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _currentIndex,
+          elevation: 4,
+          onTap: _onTabTapped,
+          selectedItemColor: const Color(0xff304571),
+          selectedLabelStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favorites',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
+          unselectedItemColor: const Color(0xff304571),
+          items: [
+            BottomNavigationBarItem(
+              icon: Image.asset(
+                'lib/assets/images/Ellipse 7casinha.png',
+              ),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Image.asset(
+                'lib/assets/images/Ellipse 8lupinha.png',
+              ),
+              label: 'Search',
+            ),
+            BottomNavigationBarItem(
+              icon: Image.asset(
+                'lib/assets/images/Ellipse 9documentozinho.png',
+              ),
+              label: 'Favorites',
+            ),
+            BottomNavigationBarItem(
+              icon: Image.asset(
+                'lib/assets/images/Ellipse 10pessoinha.png',
+              ),
+              label: 'Profile',
+            ),
+          ],
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Image.asset(
