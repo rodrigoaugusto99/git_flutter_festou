@@ -63,20 +63,57 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   SizedBox(
+                    width: screenWidth,
                     height: firstContainer,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Stack(
                       children: [
-                        Image.asset(
-                          ImageConstants.serpentinae,
+                        Positioned(
+                          left: 0,
+                          height: firstContainer,
+                          child: Image.asset(
+                            ImageConstants.serpentinae,
+                          ),
                         ),
-                        const Text('festou\ncadastro'),
-                        Image.asset(
-                          ImageConstants.serpentinad,
+                        Align(
+                          child: SizedBox(
+                            height: screenHeight * 0.12,
+                            child: Stack(
+                              children: [
+                                const Text(
+                                  'FESTOU',
+                                  style: TextStyle(
+                                    fontFamily: 'NerkoOne',
+                                    fontSize: 60,
+                                    color: Color.fromARGB(255, 13, 46, 89),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 0,
+                                  left: screenWidth * 0.11,
+                                  child: const Text(
+                                    'Cadastro',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontFamily: 'Marcellus',
+                                      color: Color.fromARGB(255, 13, 46, 89),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          right: 0,
+                          height: firstContainer,
+                          child: Image.asset(
+                            ImageConstants.serpentinad,
+                          ),
                         ),
                       ],
                     ),
                   ),
+                  const SizedBox(height: 50),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Column(
@@ -137,8 +174,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             onTap: passwordReset,
                             child: Container(
                               alignment: Alignment.center,
-                              width: enviarButtonWidth + 30,
-                              height: enviarButtonHeight,
+                              width: voltarButtonWidth,
+                              height: voltarButtonHeight,
                               decoration: BoxDecoration(
                                 color: const Color.fromARGB(255, 13, 46, 89),
                                 borderRadius: BorderRadius.circular(

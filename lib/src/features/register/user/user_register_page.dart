@@ -78,45 +78,58 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
               Column(
                 children: [
                   SizedBox(
+                    width: screenWidth,
                     height: firstContainer,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Stack(
                       children: [
-                        Image.asset(
-                          ImageConstants.serpentinae,
+                        Positioned(
+                          left: 0,
+                          height: firstContainer,
+                          child: Image.asset(
+                            ImageConstants.serpentinae,
+                          ),
                         ),
-                        SizedBox(
-                          height: screenHeight * 0.12,
-                          child: Stack(
-                            children: [
-                              const Text(
-                                'FESTOU',
-                                style: TextStyle(
-                                  fontFamily: 'NerkoOne',
-                                  fontSize: 60,
-                                  color: Color.fromARGB(255, 13, 46, 89),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                left: screenWidth * 0.11,
-                                child: const Text(
-                                  'Cadastro',
+                        Align(
+                          child: SizedBox(
+                            height: screenHeight * 0.12,
+                            child: Stack(
+                              children: [
+                                const Text(
+                                  'FESTOU',
                                   style: TextStyle(
-                                    fontSize: 20,
-                                    fontFamily: 'Marcellus',
+                                    fontFamily: 'NerkoOne',
+                                    fontSize: 60,
                                     color: Color.fromARGB(255, 13, 46, 89),
                                   ),
                                 ),
-                              ),
-                            ],
+                                Positioned(
+                                  bottom: 0,
+                                  left: screenWidth * 0.11,
+                                  child: const Text(
+                                    'Cadastro',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontFamily: 'Marcellus',
+                                      color: Color.fromARGB(255, 13, 46, 89),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                        Image.asset(
-                          ImageConstants.serpentinad,
+                        Positioned(
+                          right: 0,
+                          height: firstContainer,
+                          child: Image.asset(
+                            ImageConstants.serpentinad,
+                          ),
                         ),
                       ],
                     ),
+                  ),
+                  const SizedBox(
+                    height: 20,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),

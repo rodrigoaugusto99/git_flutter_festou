@@ -102,16 +102,52 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
           child: Column(
             children: [
               SizedBox(
+                width: screenWidth,
                 height: firstContainer,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Stack(
                   children: [
-                    Image.asset(
-                      ImageConstants.serpentinae,
+                    Positioned(
+                      left: 0,
+                      height: firstContainer,
+                      child: Image.asset(
+                        ImageConstants.serpentinae,
+                      ),
                     ),
-                    const Text('recuperar\nconta'),
-                    Image.asset(
-                      ImageConstants.serpentinad,
+                    Align(
+                      child: SizedBox(
+                        height: screenHeight * 0.12,
+                        child: Stack(
+                          children: [
+                            const Text(
+                              'FESTOU',
+                              style: TextStyle(
+                                fontFamily: 'NerkoOne',
+                                fontSize: 60,
+                                color: Color.fromARGB(255, 13, 46, 89),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              left: screenWidth * 0.11,
+                              child: const Text(
+                                'Cadastro',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontFamily: 'Marcellus',
+                                  color: Color.fromARGB(255, 13, 46, 89),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      right: 0,
+                      height: firstContainer,
+                      child: Image.asset(
+                        ImageConstants.serpentinad,
+                      ),
                     ),
                   ],
                 ),
@@ -203,8 +239,8 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
                           },
                           child: Container(
                             alignment: Alignment.center,
-                            width: consultarButtonWidth + 10,
-                            height: consultarButtonHeight,
+                            width: voltarButtonWidth,
+                            height: voltarButtonHeight,
                             decoration: BoxDecoration(
                               color: const Color.fromARGB(255, 13, 46, 89),
                               borderRadius: BorderRadius.circular(
