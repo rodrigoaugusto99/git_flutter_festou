@@ -1,10 +1,9 @@
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class ForgotEmailPage extends StatefulWidget {
   const ForgotEmailPage({Key? key}) : super(key: key);
@@ -15,20 +14,54 @@ class ForgotEmailPage extends StatefulWidget {
 
 class _ForgotEmailPageState extends State<ForgotEmailPage> {
   final cpfCnpjEC = TextEditingController();
+  MaskTextInputFormatter mask = MaskTextInputFormatter(
+      mask: '###.###.###-##', filter: {"#": RegExp(r'[0-9]')});
+
   @override
   void dispose() {
     cpfCnpjEC.dispose();
     super.dispose();
   }
 
+  String formatCPF(String value) {
+    return '${value.substring(0, 3)}.${value.substring(3, 6)}.${value.substring(6, 9)}-${value.substring(9, 11)}';
+  }
+
+  String formatCNPJ(String value) {
+    return '${value.substring(0, 2)}.${value.substring(2, 5)}.${value.substring(5, 8)}/${value.substring(8, 12)}-${value.substring(12, 14)}';
+  }
+
+  int getNumericLength(String text) {
+    // Filtra apenas os caracteres numéricos
+    String numericText = text.replaceAll(RegExp(r'[^0-9]'), '');
+
+    // Retorna o comprimento dos caracteres numéricos
+    return numericText.length;
+  }
+
   String? meuEmail;
 
-  Future<String?> findEmailByCPF(String cpf) async {
+  List<String> errors = [
+    'erro - documento invalido',
+    'erro - nao encontrado',
+    'erro'
+  ];
+
+  String removeSpecialCharacters(String text) {
+    return text.replaceAll(
+        RegExp(r'[^0-9]'), ''); // Remove tudo que não for número
+  }
+
+  Future<String?> findEmailByCPFOrCNPJ(String cpfCnpj) async {
+    if (cpfCnpj.length != 11) {
+      return errors[0];
+    }
+
     try {
       // Consulte a coleção para encontrar documentos com o campo "cpf" correspondente
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('users')
-          .where('cpf', isEqualTo: cpf)
+          .where('cpf', isEqualTo: cpfCnpj)
           .get();
 
       // Verifique se há documentos correspondentes
@@ -43,13 +76,13 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
         return email;
       } else {
         // Documento não encontrado
-        log('Documento com CPF $cpf não encontrado.');
-        return 'erro-nao encontrado';
+        log('Documento com CPF/CNPJ $cpfCnpj não encontrado.');
+        return errors[1];
       }
     } catch (e) {
       // Trate erros durante a busca
       log('Erro ao buscar documento: $e');
-      return 'erro';
+      return errors[2];
     }
   }
 
@@ -106,6 +139,22 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
                             ),
                             TextFormField(
                               controller: cpfCnpjEC,
+                              keyboardType: TextInputType.number,
+                              onChanged: (value) {
+                                int numericLength = getNumericLength(value);
+
+                                if (numericLength == 11) {
+                                  setState(() {
+                                    cpfCnpjEC.text = formatCPF(value.replaceAll(
+                                        RegExp(r'[^0-9]'), ''));
+                                  });
+                                } else if (numericLength == 14) {
+                                  setState(() {
+                                    cpfCnpjEC.text = formatCNPJ(value
+                                        .replaceAll(RegExp(r'[^0-9]'), ''));
+                                  });
+                                }
+                              },
                               decoration: const InputDecoration(
                                 contentPadding:
                                     EdgeInsets.symmetric(vertical: 2.0),
@@ -136,16 +185,19 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
                         bottom: 380,
                         child: InkWell(
                           onTap: () async {
-                            meuEmail = await findEmailByCPF(cpfCnpjEC.text);
+                            meuEmail = await findEmailByCPFOrCNPJ(
+                                removeSpecialCharacters(cpfCnpjEC.text));
                             /*fica aqui fora pois como o findEmailByCpf eh assincrona,
                             precisa esperar, coisa que o setState nao faz.*/
                             setState(() {});
-                            if (meuEmail == 'erro-nao encontrado') {
+                            if (meuEmail == errors[0]) {
                               Messages.showError(
-                                  'Nao ha um e-mail com esse CPF cadastrado.',
+                                  'Formato de CPF ou CNPJ inválido', context);
+                            } else if (meuEmail == errors[1]) {
+                              Messages.showError(
+                                  'Não há um e-mail com esse CPF/CNPJ cadastrado',
                                   context);
-                            }
-                            if (meuEmail == 'erro') {
+                            } else if (meuEmail == errors[2]) {
                               Messages.showError(
                                   'Erro ao buscar e-mail', context);
                             }
@@ -173,23 +225,25 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
                           ),
                         ),
                       ),
-                      Positioned(
-                        bottom: 230,
-                        left: 0,
-                        right: 0,
-                        child: Column(
-                          children: [
-                            const Text('Seu e-mail é:'),
-                            Container(
-                                alignment: Alignment.center,
-                                padding: const EdgeInsets.all(7),
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        width: 2, color: Colors.red)),
-                                child: Text(meuEmail ?? '')),
-                          ],
-                        ),
-                      ),
+                      meuEmail != null && !errors.contains(meuEmail)
+                          ? Positioned(
+                              bottom: 230,
+                              left: 0,
+                              right: 0,
+                              child: Column(
+                                children: [
+                                  const Text('Seu e-mail é:'),
+                                  Container(
+                                      alignment: Alignment.center,
+                                      padding: const EdgeInsets.all(7),
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 2, color: Colors.red)),
+                                      child: Text(meuEmail!)),
+                                ],
+                              ),
+                            )
+                          : Container(),
                       Positioned(
                         bottom: 70,
                         child: InkWell(
