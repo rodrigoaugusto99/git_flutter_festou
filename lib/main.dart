@@ -79,10 +79,8 @@ class MyApp extends StatelessWidget {
         return null;
       },*/
       theme: ThemeData(
-        bottomNavigationBarTheme:
-            const BottomNavigationBarThemeData(backgroundColor: Colors.grey),
         appBarTheme: const AppBarTheme(color: Colors.purple),
-        scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),
+        scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
         fontFamily: 'inter',
         primarySwatch: Colors.purple,
         dialogTheme: DialogTheme(

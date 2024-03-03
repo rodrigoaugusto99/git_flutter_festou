@@ -74,31 +74,31 @@ class _HomePageState extends ConsumerState<HomePage> {
                   data: data,
                   spaces: allSpaces,
                 )),
-                SliverToBoxAdapter(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('GIFS'),
-                      SizedBox(
-                        height: y * 0.31,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 5,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                color: Colors.grey,
-                                width: 300,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                // SliverToBoxAdapter(
+                //   child: Column(
+                //     crossAxisAlignment: CrossAxisAlignment.start,
+                //     children: [
+                //       const Text('GIFS'),
+                //       SizedBox(
+                //         height: y * 0.31,
+                //         child: ListView.builder(
+                //           shrinkWrap: true,
+                //           scrollDirection: Axis.horizontal,
+                //           itemCount: 5,
+                //           itemBuilder: (context, index) {
+                //             return Padding(
+                //               padding: const EdgeInsets.all(8.0),
+                //               child: Container(
+                //                 color: Colors.grey,
+                //                 width: 300,
+                //               ),
+                //             );
+                //           },
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 SliverToBoxAdapter(
                   child: InkWell(
                     onTap: () {
@@ -109,22 +109,15 @@ class _HomePageState extends ConsumerState<HomePage> {
                         ),
                       );
                     },
-                    child: ClipRect(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: SizedBox(
-                          height: 200, // Altura desejada
-                          width: double
-                              .infinity, // Ocupa toda a largura disponível
-                          child: Transform.scale(
-                            scale:
-                                3, // Ajuste o fator de escala conforme necessário
-                            child: Lottie.asset(
-                              'lib/assets/animations/earth1.json',
-                              fit: BoxFit.cover,
-                              animate: false,
-                            ),
-                          ),
+                    child: SizedBox(
+                      height: 200, // Altura desejada
+
+                      child: Transform.scale(
+                        scale: 3,
+                        child: Lottie.asset(
+                          'lib/assets/animations/earth1.json',
+                          fit: BoxFit.cover,
+                          animate: false,
                         ),
                       ),
                     ),
