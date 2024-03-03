@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class ForgotEmailPage extends StatefulWidget {
   const ForgotEmailPage({Key? key}) : super(key: key);
@@ -14,8 +13,6 @@ class ForgotEmailPage extends StatefulWidget {
 
 class _ForgotEmailPageState extends State<ForgotEmailPage> {
   final cpfCnpjEC = TextEditingController();
-  MaskTextInputFormatter mask = MaskTextInputFormatter(
-      mask: '###.###.###-##', filter: {"#": RegExp(r'[0-9]')});
 
   @override
   void dispose() {
@@ -140,6 +137,8 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
                             TextFormField(
                               controller: cpfCnpjEC,
                               keyboardType: TextInputType.number,
+                              onTapOutside: (event) =>
+                                  {FocusScope.of(context).unfocus()},
                               onChanged: (value) {
                                 int numericLength = getNumericLength(value);
 
