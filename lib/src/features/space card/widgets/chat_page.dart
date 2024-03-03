@@ -44,7 +44,15 @@ class ChatPage extends StatelessWidget {
 
     final userData = userDocument.data() as Map<String, dynamic>;
 
-    return userData['nome'];
+    return userData['name'];
+  }
+
+  Future<String> getAvatarById(String id) async {
+    final userDocument = await getUserDocumentById(id);
+
+    final userData = userDocument.data() as Map<String, dynamic>;
+
+    return userData['avatar_url'];
   }
 
   @override
@@ -53,6 +61,31 @@ class ChatPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: FutureBuilder<String>(
+          future: getAvatarById(receiverID),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return CircleAvatar(
+                radius: 60,
+                child: snapshot.data != ''
+                    ? CircleAvatar(
+                        backgroundImage: Image.network(
+                          snapshot.data!,
+                          fit: BoxFit.cover,
+                        ).image,
+                        radius: 100,
+                      )
+                    : const Icon(
+                        Icons.person,
+                        size: 90,
+                      ),
+              );
+            } else {
+              return const Text(
+                  'Carregando...'); // ou outro indicador de carregamento
+            }
+          },
+        ),
         title: FutureBuilder<String>(
           future: getNameById(receiverID),
           builder: (context, snapshot) {

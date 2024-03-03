@@ -199,7 +199,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                   onSave: (value) async {
                     log('Salvar: $value no campo nome');
                     if (isEditingName == true) {
-                      await informacoesPessoaisVm.updateInfo('nome', value);
+                      await informacoesPessoaisVm.updateInfo('name', value);
                       //nameEC.text = await informacoesPessoaisVm.getInfo('nome');
                       isEditingName = !isEditingName;
                     } else {

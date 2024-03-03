@@ -42,20 +42,6 @@ class _HomePageState extends ConsumerState<HomePage> {
         : Duration.zero;
     return Scaffold(
         backgroundColor: Colors.white,
-        floatingActionButton: FloatingActionButton(
-          shape: const CircleBorder(),
-          backgroundColor: Colors.brown,
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) {
-                  return const EspacoRegisterPage(); // Substitua NovaPagina com o widget da sua nova tela
-                },
-              ),
-            );
-          },
-          child: const Icon(Icons.add),
-        ),
         body: allSpaces.when(
           data: (AllSpaceState data) {
             return CustomScrollView(

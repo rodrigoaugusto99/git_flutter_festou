@@ -336,7 +336,7 @@ p decidir o isFavorited*/
         await usersCollection.where('uid', isEqualTo: userId).get();
 
     if (userDocument.docs.isNotEmpty) {
-      String locadorName = userDocument.docs.first['nome'];
+      String locadorName = userDocument.docs.first['name'];
       return locadorName;
     }
 

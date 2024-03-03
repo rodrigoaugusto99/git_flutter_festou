@@ -51,7 +51,7 @@ class _MensagensState extends State<Mensagens> {
 
     final userData = userDocument.data() as Map<String, dynamic>;
 
-    return userData['nome'];
+    return userData['name'];
   }
 
   @override
@@ -60,30 +60,25 @@ class _MensagensState extends State<Mensagens> {
       appBar: AppBar(
         title: const Text('Mensagens'),
       ),
-      body: Column(
-        children: [
-          const Text('Mensagens de clientes, suporte, equipe Festou, etc'),
-          // Utiliza FutureBuilder para lidar com o estado assíncrono
-          FutureBuilder<QuerySnapshot>(
-            future: chatsFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                return const Text('Erro ao carregar os dados');
-              } else {
-                // Atualiza o estado e renderiza a lista
-                return Expanded(child: buildChatRoomList(snapshot.data!));
-              }
-            },
-          ),
-        ],
+      body: FutureBuilder<QuerySnapshot>(
+        future: chatsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return const Text('Erro ao carregar os dados');
+          } else {
+            // Atualiza o estado e renderiza a lista
+            return buildChatRoomList(snapshot.data!);
+          }
+        },
       ),
     );
   }
 
   Widget buildChatRoomList(QuerySnapshot chats) {
     return ListView.builder(
+      padding: const EdgeInsets.all(20),
       itemCount: chats.docs.length,
       itemBuilder: (context, index) {
         final chatRoom = chats.docs[index].data() as Map<String, dynamic>;
@@ -130,9 +125,15 @@ class _MensagensState extends State<Mensagens> {
                   ),
                 );
               },
-              child: ListTile(
-                title: Text(name),
-                // Adicione mais detalhes ou ações conforme necessário
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  color: Colors.purple[200],
+                ),
+                child: ListTile(
+                  title: Text(name),
+                  // Adicione mais detalhes ou ações conforme necessário
+                ),
               ),
             );
           },

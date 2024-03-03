@@ -54,7 +54,6 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         'name': userData.name,
         'cpf': userData.cpf,
         'userType': 'LOCATARIO',
-        'nome': '',
         'telefone': '',
         'user_address': {
           'cep': '',
@@ -104,7 +103,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
             'bairro': userData.bairro,
             'cidade': userData.cidade,
           },
-          'nome': userData.name,
+          'name': userData.name,
           'telefone': userData.telefone,
         };
 
@@ -172,7 +171,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       final user = FirebaseAuth.instance.currentUser!;
       final UserModel userModel = UserModel(
         userData['email'] ?? '',
-        userData['nome'] ?? '',
+        userData['name'] ?? '',
         userData['cpf'] ?? '',
         userData['user_address']['cep'] ?? '',
         userData['user_address']['logradouro'] ?? '',
@@ -220,7 +219,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
 
       final UserModel userModel = UserModel(
         userData['email'] ?? '',
-        userData['nome'] ?? '',
+        userData['name'] ?? '',
         userData['cpf'] ?? '',
         userData['user_address']['cep'] ?? '',
         userData['user_address']['logradouro'] ?? '',
@@ -294,10 +293,10 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
     try {
       final userDocument = await getUserDocument();
 
-      if (text == 'nome') {
+      if (text == 'name') {
         // Atualize o campo 'nome' com o novo valor 'newText'
         await userDocument.reference.update({
-          'nome': newText,
+          'name': newText,
         });
       } else if (text == 'telefone') {
         // Lógica para atualizar o campo 'telefone'
