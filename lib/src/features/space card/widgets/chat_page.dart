@@ -66,18 +66,16 @@ class ChatPage extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return CircleAvatar(
-                radius: 60,
                 child: snapshot.data != ''
-                    ? CircleAvatar(
-                        backgroundImage: Image.network(
-                          snapshot.data!,
-                          fit: BoxFit.cover,
-                        ).image,
-                        radius: 100,
+                    ? Image.network(
+                        snapshot.data!,
+                        fit: BoxFit.cover,
+                        width: 60, // ajuste conforme necessário
+                        height: 60, // ajuste conforme necessário
                       )
                     : const Icon(
                         Icons.person,
-                        size: 90,
+                        size: 60,
                       ),
               );
             } else {
@@ -144,21 +142,39 @@ class ChatPage extends StatelessWidget {
   }
 
   Widget _buildUserInput() {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            controller: messageEC,
-            decoration: const InputDecoration(
-              hintText: 'type a message',
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                color: Colors.grey,
+              ),
+              child: TextField(
+                controller: messageEC,
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                  hintText: 'Mensagem',
+                ),
+              ),
             ),
           ),
-        ),
-        IconButton(
-          onPressed: sendMessage,
-          icon: const Icon(Icons.arrow_upward),
-        ),
-      ],
+          const SizedBox(
+            width: 10,
+          ),
+          Container(
+            decoration: BoxDecoration(
+                shape: BoxShape.circle, color: Colors.purple[400]),
+            child: IconButton(
+              onPressed: sendMessage,
+              icon: const Icon(Icons.arrow_upward),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

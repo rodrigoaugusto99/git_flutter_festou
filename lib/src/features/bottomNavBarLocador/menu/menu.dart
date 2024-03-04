@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/impostos.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais.dart';
@@ -7,15 +9,15 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagam
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/pages/configuracoes.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 
-class Menu extends StatefulWidget {
+class Menu extends ConsumerStatefulWidget {
   final UserModel userModel;
   const Menu({super.key, required this.userModel});
 
   @override
-  State<Menu> createState() => _MenuState();
+  ConsumerState<Menu> createState() => _MenuState();
 }
 
-class _MenuState extends State<Menu> {
+class _MenuState extends ConsumerState<Menu> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,29 +30,6 @@ class _MenuState extends State<Menu> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Menu',
-                style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              const Divider(
-                thickness: 1.5,
-              ),
-              const SizedBox(height: 10),
-              MyText(text: 'Hospedagem'),
-              const SizedBox(height: 25),
-              MyRow(
-                text: 'Meus espaços',
-                icon: const Icon(Icons.abc),
-                onTap: () {},
-              ),
-              MyRow(
-                text: 'Crie um novo espaço',
-                icon: const Icon(Icons.abc),
-                onTap: () {},
-              ),
-              MyText(text: 'Conta'),
-              const SizedBox(height: 25),
               MyRow(
                 text: 'Seu perfil',
                 icon: const Icon(Icons.abc),
@@ -101,7 +80,11 @@ class _MenuState extends State<Menu> {
                     child: const Text('Quero viajar'),
                   ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      ref.invalidate(userFirestoreRepositoryProvider);
+                      ref.invalidate(userAuthRepositoryProvider);
+                      ref.read(logoutProvider.future);
+                    },
                     child: const Text('Sair da conta'),
                   ),
                 ],

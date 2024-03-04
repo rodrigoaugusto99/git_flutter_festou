@@ -366,6 +366,8 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
 
                     if (user != null) {
                       // Mostra um diálogo de confirmação antes de excluir a conta
+                      Navigator.of(context).pop();
+                      await Future.delayed(Duration.zero);
                       await showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -393,15 +395,13 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                             actions: <Widget>[
                               TextButton(
                                 onPressed: () {
-                                  Navigator.of(context)
-                                      .pop(); // Fecha o diálogo
+                                  Navigator.of(context).pop();
                                 },
                                 child: const Text('Cancelar'),
                               ),
                               TextButton(
                                 onPressed: () async {
-                                  Navigator.of(context)
-                                      .pop(); // Fecha o diálogo
+                                  Navigator.of(context).pop();
 
                                   try {
                                     // Reautentica o usuário antes de excluir a conta
