@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/my%20favorite%20spaces%20mvvm/my_favorite_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/my%20favorite%20spaces%20mvvm/my_favorite_spaces_vm.dart';
+import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/my_sliver_list_to_card_info.dart';
 
 class MyFavoriteSpacePage extends ConsumerStatefulWidget {
@@ -48,14 +49,12 @@ class _MyFavoriteSpacePageState extends ConsumerState<MyFavoriteSpacePage> {
         },
         error: (Object error, StackTrace stackTrace) {
           return const Stack(children: [
-            Center(child: Text('Inserir imagem melhor papai')),
             Center(child: Icon(Icons.error)),
           ]);
         },
         loading: () {
           return const Stack(children: [
-            Center(child: Text('Inserir carregamento Personalizado papai')),
-            Center(child: CircularProgressIndicator()),
+            Center(child: CustomLoadingIndicator()),
           ]);
         },
       ),

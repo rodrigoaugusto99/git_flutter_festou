@@ -4,6 +4,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/c
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/calendario_vm.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/show_my_reservations.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/show_upcoming_reservations.dart';
+import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 
 import 'show_my_today_reservations.dart';
 
@@ -36,14 +37,12 @@ class _CalendarioState extends ConsumerState<Calendario> {
           },
           error: (Object error, StackTrace stackTrace) {
             return const Stack(children: [
-              Center(child: Text('Inserir imagem melhor papai')),
               Center(child: Icon(Icons.error)),
             ]);
           },
           loading: () {
             return const Stack(children: [
-              Center(child: Text('Inserir carregamento Personalizado papai')),
-              Center(child: CircularProgressIndicator()),
+              Center(child: CustomLoadingIndicator()),
             ]);
           },
         ),

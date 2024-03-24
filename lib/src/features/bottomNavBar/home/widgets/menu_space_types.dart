@@ -63,9 +63,15 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
           SizedBox(
             width: 185,
             child: ElevatedButton(
-              onPressed: () => Navigator.of(context).pushNamed(
-                  '/spaces/spaces_by_types',
-                  arguments: ['Casamento']),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const SpacesByTypePage(
+                      type: ['Casamento'],
+                    ); // Substitua NovaPagina com o widget da sua nova tela
+                  },
+                ),
+              ),
               style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[100],
                   shape: RoundedRectangleBorder(
@@ -127,9 +133,15 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
           SizedBox(
             width: 170,
             child: ElevatedButton(
-              onPressed: () => Navigator.of(context).pushNamed(
-                  '/spaces/spaces_by_types',
-                  arguments: ['Religioso']),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const SpacesByTypePage(
+                      type: ['Religioso'],
+                    ); // Substitua NovaPagina com o widget da sua nova tela
+                  },
+                ),
+              ),
               style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[100],
                   shape: RoundedRectangleBorder(
@@ -156,8 +168,15 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
           SizedBox(
             width: 170,
             child: ElevatedButton(
-              onPressed: () => Navigator.of(context)
-                  .pushNamed('/spaces/spaces_by_types', arguments: ['Cha']),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const SpacesByTypePage(
+                      type: ['Cha'],
+                    ); // Substitua NovaPagina com o widget da sua nova tela
+                  },
+                ),
+              ),
               style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[100],
                   shape: RoundedRectangleBorder(
@@ -184,8 +203,15 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
           SizedBox(
             width: 170,
             child: ElevatedButton(
-              onPressed: () => Navigator.of(context)
-                  .pushNamed('/spaces/spaces_by_types', arguments: ['Reuniao']),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const SpacesByTypePage(
+                      type: ['Reuniao'],
+                    ); // Substitua NovaPagina com o widget da sua nova tela
+                  },
+                ),
+              ),
               style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[100],
                   shape: RoundedRectangleBorder(
@@ -212,8 +238,15 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
           SizedBox(
             width: 170,
             child: ElevatedButton(
-              onPressed: () => Navigator.of(context)
-                  .pushNamed('/spaces/spaces_by_types', arguments: ['Outros']),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const SpacesByTypePage(
+                      type: ['Outros'],
+                    ); // Substitua NovaPagina com o widget da sua nova tela
+                  },
+                ),
+              ),
               style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[100],
                   shape: RoundedRectangleBorder(

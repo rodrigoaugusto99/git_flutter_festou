@@ -5,6 +5,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/all_sp
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/app_bar_home.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/menu_space_types.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/search_button.dart';
+import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
@@ -60,31 +61,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                   data: data,
                   spaces: allSpaces,
                 )),
-                // SliverToBoxAdapter(
-                //   child: Column(
-                //     crossAxisAlignment: CrossAxisAlignment.start,
-                //     children: [
-                //       const Text('GIFS'),
-                //       SizedBox(
-                //         height: y * 0.31,
-                //         child: ListView.builder(
-                //           shrinkWrap: true,
-                //           scrollDirection: Axis.horizontal,
-                //           itemCount: 5,
-                //           itemBuilder: (context, index) {
-                //             return Padding(
-                //               padding: const EdgeInsets.all(8.0),
-                //               child: Container(
-                //                 color: Colors.grey,
-                //                 width: 300,
-                //               ),
-                //             );
-                //           },
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
                 SliverToBoxAdapter(
                   child: InkWell(
                     onTap: () {
@@ -114,14 +90,12 @@ class _HomePageState extends ConsumerState<HomePage> {
           },
           error: (Object error, StackTrace stackTrace) {
             return const Stack(children: [
-              Center(child: Text('ish deu erro')),
               Center(child: Icon(Icons.error)),
             ]);
           },
           loading: () {
             return const Stack(children: [
-              Center(child: Text('Inserir carregamento Personalizado papai')),
-              Center(child: CircularProgressIndicator()),
+              Center(child: CustomLoadingIndicator()),
             ]);
           },
         ));

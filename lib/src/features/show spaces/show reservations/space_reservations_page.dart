@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/show%20reservations/space_reservations_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/show%20reservations/space_reservations_vm.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/show%20reservations/widgets/show_reservations.dart';
@@ -39,14 +40,13 @@ class _SpaceReservationsPageState extends ConsumerState<SpaceReservationsPage> {
         );
       },
       error: (Object error, StackTrace stackTrace) {
-        return const Center(
-          child: Text('Erro'),
-        );
+        return const Stack(children: [
+          Center(child: Icon(Icons.error)),
+        ]);
       },
       loading: () {
         return const Stack(children: [
-          Center(child: Text('Inserir carregamento Personalizado papai')),
-          Center(child: CircularProgressIndicator()),
+          Center(child: CustomLoadingIndicator()),
         ]);
       },
     );

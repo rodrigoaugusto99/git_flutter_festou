@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/minhas%20reservas/minhas_reservas_state.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/minhas%20reservas/minhas_reservas_vm.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/minhas%20reservas/reservas_widget.dart';
+import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 
 class MinhasReservasPage extends ConsumerStatefulWidget {
@@ -25,14 +26,13 @@ class _MinhasReservasPageState extends ConsumerState<MinhasReservasPage> {
         );
       },
       error: (Object error, StackTrace stackTrace) {
-        return const Center(
-          child: Text('Erro'),
-        );
+        return const Stack(children: [
+          Center(child: Icon(Icons.error)),
+        ]);
       },
       loading: () {
         return const Stack(children: [
-          Center(child: Text('Inserir carregamento Personalizado papai')),
-          Center(child: CircularProgressIndicator()),
+          Center(child: CustomLoadingIndicator()),
         ]);
       },
     );
