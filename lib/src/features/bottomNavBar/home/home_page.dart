@@ -41,63 +41,68 @@ class _HomePageState extends ConsumerState<HomePage> {
     final fadeInDuration = (widget.previousRoute == '/home/search_page')
         ? const Duration(milliseconds: 400)
         : Duration.zero;
-    return Scaffold(
-        backgroundColor: Colors.white,
-        body: allSpaces.when(
-          data: (AllSpaceState data) {
-            return CustomScrollView(
-              slivers: [
-                const AppBarHome(),
-                const SliverToBoxAdapter(
-                  child: MenuSpaceTypes(),
-                ),
-                SliverToBoxAdapter(
-                  child: SearchButton(
-                    fadeInDuration: fadeInDuration,
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+          backgroundColor: Colors.white,
+          body: allSpaces.when(
+            data: (AllSpaceState data) {
+              return CustomScrollView(
+                slivers: [
+                  const AppBarHome(),
+                  const SliverToBoxAdapter(
+                    child: MenuSpaceTypes(),
                   ),
-                ),
-                SliverToBoxAdapter(
-                    child: MyLastSeenSpaces(
-                  data: data,
-                  spaces: allSpaces,
-                )),
-                SliverToBoxAdapter(
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SurroundingSpacesPage(),
-                        ),
-                      );
-                    },
-                    child: SizedBox(
-                      height: 200, // Altura desejada
+                  SliverToBoxAdapter(
+                    child: SearchButton(
+                      fadeInDuration: fadeInDuration,
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                      child: MyLastSeenSpaces(
+                    data: data,
+                    spaces: allSpaces,
+                  )),
+                  SliverToBoxAdapter(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SurroundingSpacesPage(),
+                          ),
+                        );
+                      },
+                      child: SizedBox(
+                        height: 200, // Altura desejada
 
-                      child: Transform.scale(
-                        scale: 3,
-                        child: Lottie.asset(
-                          'lib/assets/animations/earth1.json',
-                          fit: BoxFit.cover,
-                          animate: false,
+                        child: Transform.scale(
+                          scale: 3,
+                          child: Lottie.asset(
+                            'lib/assets/animations/earth1.json',
+                            fit: BoxFit.cover,
+                            animate: false,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            );
-          },
-          error: (Object error, StackTrace stackTrace) {
-            return const Stack(children: [
-              Center(child: Icon(Icons.error)),
-            ]);
-          },
-          loading: () {
-            return const Stack(children: [
-              Center(child: CustomLoadingIndicator()),
-            ]);
-          },
-        ));
+                ],
+              );
+            },
+            error: (Object error, StackTrace stackTrace) {
+              return const Stack(children: [
+                Center(child: Icon(Icons.error)),
+              ]);
+            },
+            loading: () {
+              return const Stack(children: [
+                Center(child: CustomLoadingIndicator()),
+              ]);
+            },
+          )),
+    );
   }
 }

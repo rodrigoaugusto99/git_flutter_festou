@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/my%20favorite%20spaces%20mvvm/my_favorite_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/my%20favorite%20spaces%20mvvm/my_favorite_spaces_vm.dart';
+import 'package:git_flutter_festou/src/features/custom_app_bar.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/my_sliver_list_to_card_info.dart';
 
@@ -29,9 +30,10 @@ class _MyFavoriteSpacePageState extends ConsumerState<MyFavoriteSpacePage> {
     });
 
     return Scaffold(
-      appBar: AppBar(
-          title: Text(
-              'Logged in as: ${FirebaseAuth.instance.currentUser!.email}')),
+      appBar: CustomAppBar(
+        onTap: () {},
+        title: 'Meus espacos favoritos',
+      ),
       body: favSpaces.when(
         data: (MyFavoriteSpacesState data) {
           return CustomScrollView(
