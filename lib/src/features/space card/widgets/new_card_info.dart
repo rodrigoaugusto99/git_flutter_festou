@@ -18,7 +18,9 @@ import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_disponibilidade.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_todas_comodidades.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:social_share/social_share.dart';
+import 'package:svg_flutter/svg.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class NewCardInfo extends ConsumerStatefulWidget {
@@ -38,6 +40,20 @@ bool scrollingUp = false;
 
 class _NewCardInfoState extends ConsumerState<NewCardInfo>
     with SingleTickerProviderStateMixin {
+  late TabController tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    tabController = TabController(length: 3, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    tabController.dispose();
+    super.dispose();
+  }
+
   void showRatingDialog(SpaceModel space) {
     showDialog(
       context: context,
@@ -264,6 +280,132 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
           widget.space.spaceId, widget.space.isFavorited);
     }
 
+    final x = MediaQuery.of(context).size.width;
+    final y = MediaQuery.of(context).size.height;
+
+    Widget myFirstWidget() {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Visão geral',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: Text(
+              widget.space.descricao,
+              style: const TextStyle(fontSize: 12),
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'Localização',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ShowNewMap(
+                      space: widget.space,
+                    ),
+                  ),
+                );
+              },
+              child: AbsorbPointer(
+                absorbing: true,
+                child: ShowMap(
+                  space: widget.space,
+                  scrollGesturesEnabled: false,
+                  zoomControlsEnabled: false,
+                  zoomGesturesEnabled: false,
+                  height: 200,
+                  width: double.infinity,
+                  x: true,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'Agente Locador',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Row(
+            children: [
+              widget.space.locadorAvatarUrl != ''
+                  ? CircleAvatar(
+                      backgroundImage: Image.network(
+                        widget.space.locadorAvatarUrl,
+                        fit: BoxFit.cover,
+                      ).image,
+                      radius: 20,
+                    )
+                  : const CircleAvatar(
+                      radius: 20,
+                      child: Icon(
+                        Icons.person,
+                        color: Colors.black,
+                      ),
+                    ),
+              const SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.space.locadorName,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  InkWell(
+                    child: const Text(
+                      'Fale com o locador',
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChatPage(
+                            receiverID: widget.space.userId,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      );
+    }
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -338,7 +480,6 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                     setState(() {
                       isCarouselVisible = info.visibleFraction > 0.0;
                     });
-                    log(isCarouselVisible.toString());
                   },
                   child: CarouselSlider(
                     items: widget.space.imagesUrl
@@ -359,238 +500,231 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                     ),
                   ),
                 ),
-                Positioned(
-                  bottom: 20.0,
-                  right: 20.0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.7),
-                        borderRadius: BorderRadius.circular(10)),
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
-                    child: Text(
-                      '${_currentSlide + 1}/${widget.space.imagesUrl.length}',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
-                      ),
-                    ),
-                  ),
-                )
               ],
             ),
-            ElevatedButton(
-              onPressed: () => showRatingDialog(widget.space),
-              child: const Text('Avalie'),
+            // ElevatedButton(
+            //   onPressed: () => showRatingDialog(widget.space),
+            //   child: const Text('Avalie'),
+            // ),
+            const SizedBox(
+              height: 10,
             ),
-            /*
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        SpaceReservationsPage(space: widget.space),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: widget.space.imagesUrl.map((url) {
+                int index = widget.space.imagesUrl.indexOf(url);
+                return Container(
+                  width: 8.0,
+                  height: 8.0,
+                  margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _currentSlide == index
+                        ? const Color(0xff9747FF)
+                        : Colors.grey.shade300,
                   ),
                 );
-              },
-              child: const Text('ver reservas'),
+              }).toList(),
             ),
-            ElevatedButton(
-              onPressed: () => showDateDialog(widget.space),
-              child: const Text('Reserve'),
-            ),
-            ElevatedButton(
-              onPressed: () => showRateHostDialog(widget.space),
-              child: const Text('Avalie o anfitrião'),
-            ),*/
             Padding(
               padding: const EdgeInsets.all(18.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    //widget.space.titulo,
-                    'Cabana dos Alpes',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  boolComments('Ainda não tem avaliações.'),
-                  Text(
-                    //mostrar bairro(localizacao mais precisa) apenas se o locador permitir
-                    /*${widget.space.bairro}*/
-                    //'${widget.space.cidade}, ${widget.space.city}',
-                    '${widget.space.cidade}, Brasil',
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  const SizedBox(height: 10),
-                  const Divider(thickness: 0.4, color: Colors.purple),
-                  const SizedBox(height: 10),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          _showBottomSheet(context);
-                        },
-                        child: const Text('Ver descrição'),
+                      const Text(
+                        //widget.space.titulo,
+                        'Cabana dos Alpes',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(
-                        width: 10,
+                        width: 7,
                       ),
-                      ElevatedButton(
-                        onPressed: () {
-                          _showBottomSheet2(context);
-                        },
-                        child: const Text('Comodidades'),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  const Divider(thickness: 0.4, color: Colors.purple),
-                  const SizedBox(height: 10),
-                  const Text(
-                    'Onde você estará',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ShowNewMap(
-                            space: widget.space,
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: _getColor(
+                              double.parse(widget.space.averageRating),
+                            ),
+                          ),
+                          height: 20,
+                          width: 20,
+                          child: Center(
+                            child: Text(
+                              double.parse(widget.space.averageRating)
+                                  .toStringAsFixed(1),
+                              style: const TextStyle(
+                                fontSize: 8,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
-                      );
-                    },
-                    child: AbsorbPointer(
-                      absorbing: true,
-                      child: ShowMap(
-                        space: widget.space,
-                        scrollGesturesEnabled: false,
-                        zoomControlsEnabled: false,
-                        zoomGesturesEnabled: false,
-                        height: 200,
-                        width: double.infinity,
-                        x: true,
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  const Divider(thickness: 0.4, color: Colors.purple),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 60,
-                        child: widget.space.locadorAvatarUrl != ''
-                            ? CircleAvatar(
-                                backgroundImage: Image.network(
-                                  widget.space.locadorAvatarUrl,
-                                  fit: BoxFit.cover,
-                                ).image,
-                                radius: 100,
-                              )
-                            : const Icon(
-                                Icons.person,
-                                size: 90,
-                              ),
-                      ),
-                      const SizedBox(width: 10),
-                      Column(
+                      const Spacer(),
+                      const Column(
                         children: [
                           Text(
-                            'Locador: ${widget.space.locadorName}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: TextStyle(
+                                color: Color(0xff9747FF),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700),
+                            "R\$800",
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          InkWell(
-                            child: const Align(
-                              alignment: Alignment.center,
-                              child: Text(
-                                'Fale com o locador',
-                                style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ChatPage(
-                                    //receiverName: widget.space.locadorName,
-                                    receiverID: widget.space.userId,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
+                          Text('Por hora'),
                         ],
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
-                  const Divider(thickness: 0.4, color: Colors.purple),
+                  //boolComments('Ainda não tem avaliações.'),
+                  Row(
+                    children: [
+                      const SizedBox(width: 10),
+                      SvgPicture.asset('lib/assets/images/Vectorcheck.svg'),
+                      const SizedBox(width: 7),
+                      Text(
+                        '${widget.space.cidade}, Brasil',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TabBar(
+                        controller: tabController,
+                        indicatorColor: const Color(0xff9747FF),
+                        labelPadding: const EdgeInsets.only(bottom: 15),
+                        tabs: const [
+                          Text(
+                            'Sobre',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 12,
+                            ),
+                          ),
+                          Text(
+                            'Galeria',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 12,
+                            ),
+                          ),
+                          Text(
+                            'Avaliação',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        height: 500,
+                        child: TabBarView(
+                          controller: tabController,
+                          //physics: const NeverScrollableScrollPhysics(),
+                          children: [
+                            myFirstWidget(),
+                            Container(
+                              height: 100,
+                              width: 100,
+                              color: Colors.green,
+                            ),
+                            Container(
+                              height: 100,
+                              width: 100,
+                              color: Colors.purple,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // const SizedBox(height: 10),
+                  // const Divider(thickness: 0.4, color: Colors.purple),
+                  // const SizedBox(height: 10),
+
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //   children: [
+                  //     ElevatedButton(
+                  //       onPressed: () {
+                  //         _showBottomSheet(context);
+                  //       },
+                  //       child: const Text('Ver descrição'),
+                  //     ),
+                  //     const SizedBox(
+                  //       width: 10,
+                  //     ),
+                  //     ElevatedButton(
+                  //       onPressed: () {
+                  //         _showBottomSheet2(context);
+                  //       },
+                  //       child: const Text('Comodidades'),
+                  //     ),
+                  //   ],
+                  // ),
+
+                  // myFirstWidget(),
                 ],
               ),
             ),
-            const Align(
-              alignment: Alignment.center,
-              child: Text(
-                'Avaliações dos hóspedes',
-                style: TextStyle(fontSize: 23),
-              ),
-            ),
-            const SizedBox(height: 10),
-            SpaceFeedbacksPageLimited(
-              x: 3,
-              space: widget.space,
-            ),
-            InkWell(
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                  child: const Text(
-                    'Ver tudo',
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        SpaceFeedbacksPageAll(space: widget.space),
-                  ),
-                );
-              },
-            ),
+            // const Align(
+            //   alignment: Alignment.center,
+            //   child: Text(
+            //     'Avaliações dos hóspedes',
+            //     style: TextStyle(fontSize: 23),
+            //   ),
+            // ),
+            // const SizedBox(height: 10),
+            // SpaceFeedbacksPageLimited(
+            //   x: 3,
+            //   space: widget.space,
+            // ),
+            // InkWell(
+            //   child: Align(
+            //     alignment: Alignment.centerRight,
+            //     child: Container(
+            //       margin:
+            //           const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            //       child: const Text(
+            //         'Ver tudo',
+            //         style: TextStyle(
+            //           decoration: TextDecoration.underline,
+            //           fontWeight: FontWeight.bold,
+            //           fontSize: 18,
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) =>
+            //             SpaceFeedbacksPageAll(space: widget.space),
+            //       ),
+            //     );
+            //   },
+            // ),
           ],
         ),
       ),
