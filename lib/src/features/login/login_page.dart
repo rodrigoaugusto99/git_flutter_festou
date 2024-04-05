@@ -258,8 +258,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
                                   colors: [
-                                    Color.fromRGBO(9, 41, 84, 1),
-                                    Color.fromRGBO(29, 63, 111, 1)
+                                    Color(0xff9747FF),
+                                    Color(0xff4300B1),
                                   ],
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
@@ -302,7 +302,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                   style: TextStyle(
                                     fontSize: 11,
                                     fontWeight: FontWeight.w400,
-                                    color: Color.fromARGB(255, 250, 0, 255),
+                                    color: Color(0xffC08FFF),
                                   ),
                                 ),
                               ),
@@ -349,7 +349,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               width: googleLoginButtonWidth,
                               height: googleLoginButtonHeight,
                               decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 13, 46, 89),
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xff9747FF),
+                                    Color(0xff4300B1),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ),
                                 borderRadius: BorderRadius.circular(
                                     10), // Borda arredondada
                               ),
