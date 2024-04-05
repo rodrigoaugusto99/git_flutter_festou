@@ -78,10 +78,10 @@ class _SpacesWithSugestionPageState
                     padding: EdgeInsets.only(left: x * 0.02, top: y * 0.02),
                     color: const Color.fromARGB(255, 255, 255, 255),
                     child: const Text(
-                      'Sugeridos pra você!',
+                      'Sugeridos para você!',
                       style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
                         color: Color.fromARGB(255, 0, 0, 0),
                       ),
                     ),

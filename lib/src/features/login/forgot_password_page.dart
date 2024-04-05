@@ -84,7 +84,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                   style: TextStyle(
                                     fontFamily: 'NerkoOne',
                                     fontSize: 60,
-                                    color: Color.fromARGB(255, 13, 46, 89),
+                                    color: Color(0xff9747FF),
                                   ),
                                 ),
                                 Positioned(
@@ -95,7 +95,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontFamily: 'Marcellus',
-                                      color: Color.fromARGB(255, 13, 46, 89),
+                                      color: Color(0xff000000),
                                     ),
                                   ),
                                 ),
@@ -164,7 +164,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             },
                             child: const Text(
                               'Esqueci meu e-mail',
-                              style: TextStyle(fontSize: 11),
+                              style: TextStyle(
+                                  fontSize: 11, color: Color(0xff000000)),
                             ),
                           ),
                         ),
@@ -177,7 +178,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                               width: voltarButtonWidth,
                               height: voltarButtonHeight,
                               decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 13, 46, 89),
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xff9747FF),
+                                    Color(0xff4300B1),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ),
                                 borderRadius: BorderRadius.circular(
                                     50), // Borda arredondada
                               ),
@@ -212,7 +220,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   width: voltarButtonWidth,
                   height: voltarButtonHeight,
                   decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 13, 46, 89),
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xff9747FF),
+                        Color(0xff4300B1),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
                     borderRadius:
                         BorderRadius.circular(10), // Borda arredondada
                   ),

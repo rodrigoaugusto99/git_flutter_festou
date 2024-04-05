@@ -99,7 +99,7 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                                   style: TextStyle(
                                     fontFamily: 'NerkoOne',
                                     fontSize: 60,
-                                    color: Color.fromARGB(255, 13, 46, 89),
+                                    color: Color(0xff9747FF),
                                   ),
                                 ),
                                 Positioned(
@@ -110,7 +110,7 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontFamily: 'Marcellus',
-                                      color: Color.fromARGB(255, 13, 46, 89),
+                                      color: Color(0xff000000),
                                     ),
                                   ),
                                 ),
@@ -322,7 +322,14 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                               width: googleLoginButtonWidth,
                               height: googleLoginButtonHeight,
                               decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 13, 46, 89),
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xff9747FF),
+                                    Color(0xff4300B1),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ),
 
                                 borderRadius: BorderRadius.circular(
                                     10), // Borda arredondada
@@ -348,7 +355,14 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                               width: googleLoginButtonWidth,
                               height: googleLoginButtonHeight,
                               decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 13, 46, 89),
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xff9747FF),
+                                    Color(0xff4300B1),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ),
                                 borderRadius: BorderRadius.circular(
                                     10), // Borda arredondada
                               ),

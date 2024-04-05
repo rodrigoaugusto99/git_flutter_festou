@@ -123,7 +123,7 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
                               style: TextStyle(
                                 fontFamily: 'NerkoOne',
                                 fontSize: 60,
-                                color: Color.fromARGB(255, 13, 46, 89),
+                                color: Color(0xff9747FF),
                               ),
                             ),
                             Positioned(
@@ -242,7 +242,14 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
                             width: voltarButtonWidth,
                             height: voltarButtonHeight,
                             decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 13, 46, 89),
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color(0xff9747FF),
+                                  Color(0xff4300B1),
+                                ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                              ),
                               borderRadius: BorderRadius.circular(
                                   50), // Borda arredondada
                             ),
@@ -288,7 +295,14 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
                             width: voltarButtonWidth,
                             height: voltarButtonHeight,
                             decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 13, 46, 89),
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color(0xff9747FF),
+                                  Color(0xff4300B1),
+                                ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                              ),
                               borderRadius: BorderRadius.circular(
                                   10), // Borda arredondada
                             ),
