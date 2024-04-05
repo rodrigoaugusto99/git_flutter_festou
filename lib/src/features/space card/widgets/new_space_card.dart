@@ -149,7 +149,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: _currentIndex == index
-                          ? Colors.purple
+                          ? const Color(0xff9747FF)
                           : Colors.grey.shade300,
                     ),
                   );
@@ -257,11 +257,14 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                           Container(
                             margin: const EdgeInsets.only(left: 25, right: 25),
                             child: const Divider(
-                                thickness: 0.4, color: Colors.purple),
+                              thickness: 0.8,
+                              color: Color(0xff9747FF),
+                            ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 25),
+                            padding: const EdgeInsets.only(left: 25, right: 30),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.only(right: 5),
@@ -287,9 +290,9 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                                     ),
                                   ),
                                 ),
-                                Text(
+                                const Text(
                                     style: TextStyle(
-                                      color: Colors.blueGrey[500],
+                                      color: Color(0xff5E5E5E),
                                     ),
                                     "(105)"),
                                 Padding(
@@ -300,7 +303,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(5),
-                                          color: Colors.blueGrey[500],
+                                          color: const Color(0xff9747FF),
                                         ),
                                         width: 20,
                                         height: 20,
@@ -313,42 +316,33 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                                     ],
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 5),
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 5),
                                   child: Text(
                                     style: TextStyle(
-                                      color: Colors.blueGrey[500],
-                                    ),
+                                        color: Color(0xff9747FF),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700),
                                     "R\$800,00/h",
                                   ),
                                 ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.only(left: 20, right: 5),
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 20, right: 0),
                                   child: Row(
                                     children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          color: Colors.blueGrey[500],
-                                        ),
-                                        width: 20,
-                                        height: 20,
-                                        child: const Icon(
-                                          Icons.favorite,
-                                          size: 15,
-                                          color: Colors.white,
-                                        ),
+                                      Icon(
+                                        Icons.favorite,
+                                        size: 20,
+                                        color: Color(0xff9747FF),
                                       ),
+                                      Text(
+                                          style: TextStyle(
+                                            color: Color(0xff5E5E5E),
+                                          ),
+                                          "(598)"),
                                     ],
                                   ),
                                 ),
-                                Text(
-                                    style: TextStyle(
-                                      color: Colors.blueGrey[500],
-                                    ),
-                                    "(598)"),
                               ],
                             ),
                           ),
