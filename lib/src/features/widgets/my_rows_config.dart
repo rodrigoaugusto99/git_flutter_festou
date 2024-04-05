@@ -56,36 +56,6 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
           ),
         ),
         MyRow(
-          text: 'Impostos',
-          icon: const Icon(Icons.abc),
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const Impostos(),
-            ),
-          ),
-        ),
-        MyRow(
-          text: 'Tradução',
-          icon: const Icon(Icons.abc),
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const Traducao(),
-            ),
-          ),
-        ),
-        MyRow(
-          text: 'Notificações',
-          icon: const Icon(Icons.abc),
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const Notificacoes(),
-            ),
-          ),
-        ),
-        MyRow(
           text: 'Minhas atividades/Histórico',
           icon: const Icon(Icons.abc),
           onTap: () => Navigator.push(

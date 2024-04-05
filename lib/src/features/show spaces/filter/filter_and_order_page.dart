@@ -69,14 +69,14 @@ class _FilterAndOrderPageState extends ConsumerState<FilterAndOrderPage> {
                     },
                     selectedServices: selectedServices,
                   ),
-                  TypePanel(
-                    text: 'TIPO de espaço',
-                    onTypePressed: (value) {
-                      //log('onTypePressed: $value');
-                      filterAnOrderVm.addOrRemoveType(value);
-                    },
-                    selectedTypes: selectedTypes,
-                  ),
+                  // TypePanel(
+                  //   text: 'TIPO de espaço',
+                  //   onTypePressed: (value) {
+                  //     //log('onTypePressed: $value');
+                  //     filterAnOrderVm.addOrRemoveType(value);
+                  //   },
+                  //   selectedTypes: selectedTypes,
+                  // ),
                   WeekDaysPanel(
                     text: 'dias disponiveis',
                     onDayPressed: (value) {
@@ -127,16 +127,6 @@ class _FilterAndOrderPageState extends ConsumerState<FilterAndOrderPage> {
                       fontSize: 16,
                       fontWeight: FontWeight.bold),
                 ),
-              ),
-              const SizedBox(
-                width: 30,
-              ),
-              const Text(
-                'ordenar',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold),
               ),
             ],
           ),

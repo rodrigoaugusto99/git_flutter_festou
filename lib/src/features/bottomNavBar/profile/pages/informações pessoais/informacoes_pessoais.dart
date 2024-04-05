@@ -95,9 +95,6 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
     //todo: vm - build {}, page .when, :loading em cada textfield quando atualizar? ou stream logo
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('x'),
-      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(17.0),

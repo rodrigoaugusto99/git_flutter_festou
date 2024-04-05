@@ -30,17 +30,13 @@ class _MyFavoriteSpacePageState extends ConsumerState<MyFavoriteSpacePage> {
     });
 
     return Scaffold(
-      appBar: CustomAppBar(
-        onTap: () {},
-        title: 'Meus espacos favoritos',
+      appBar: AppBar(
+        title: const Text('Meus espacos favoritos'),
       ),
       body: favSpaces.when(
         data: (MyFavoriteSpacesState data) {
           return CustomScrollView(
             slivers: [
-              const SliverToBoxAdapter(
-                child: Text('MY FAVORITE SPACES'),
-              ),
               MySliverListToCardInfo(
                 data: data,
                 spaces: favSpaces,

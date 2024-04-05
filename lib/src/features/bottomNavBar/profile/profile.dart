@@ -21,9 +21,6 @@ class _ProfileState extends ConsumerState<Profile> {
     final profileVm = ref.watch(profileVMProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(''),
-      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(18.0),
@@ -49,7 +46,6 @@ class _ProfileState extends ConsumerState<Profile> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text('Nome'),
-                              Text('Mostrar perfil'),
                             ],
                           ),
                         ],
