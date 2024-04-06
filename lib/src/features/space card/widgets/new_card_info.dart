@@ -283,6 +283,250 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
     final x = MediaQuery.of(context).size.width;
     final y = MediaQuery.of(context).size.height;
 
+    Widget myThirdWidget() {
+      return Column(
+        children: [
+          //botao
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () => showRatingDialog(widget.space),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: const Color(0xffF0F0F0),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              child: Row(
+                children: [
+                  Image.asset('lib/assets/images/Pencilpencil.png'),
+                  const SizedBox(width: 17),
+                  const Text(
+                    'Deixe sua avaliação!',
+                    style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xff848484)),
+                  ),
+                  const Spacer(),
+                  const Text(
+                    '0/256',
+                    style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xff848484)),
+                  )
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 17),
+          const Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                'Avaliações ',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                ),
+              ),
+              Text(
+                '(200 avaliações)',
+                style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12,
+                  color: Color(0xff5E5E5E),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Expanded(
+            child: ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              itemCount: 3,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    padding: const EdgeInsets.only(
+                        left: 27, top: 19, bottom: 7, right: 27),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 3,
+                          blurRadius: 6,
+
+                          offset:
+                              const Offset(0, 7), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 30,
+                              backgroundColor: Colors.blue,
+                            ),
+                            SizedBox(width: 10),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Emília Souza',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff000000),
+                                  ),
+                                ),
+                                Text(
+                                  '2 dias atrás',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Color(0xff5E5E5E),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Spacer(),
+                            Icon(Icons.info),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
+                          'Pellentesque ac urna sed elit consectetur ullamcorper. '
+                          'Suspendisse potenti. Sed a urna vel est aliquet rhoncus ut eget nunc. '
+                          'Pellentesque a felis enim. Nulla facilisi. Vivamus ac eros dui. '
+                          'Nam vel pulvinar elit, vel interdum libero.',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.check_circle),
+                                SizedBox(width: 5),
+                                Text('(200)'),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Icon(Icons.thumb_down),
+                                SizedBox(width: 5),
+                                Text('(0)'),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      );
+    }
+
+    Widget mySecondWidget() {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                'Fotos ',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                ),
+              ),
+              Text(
+                '(6 fotos)',
+                style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12,
+                  color: Color(0xff5E5E5E),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 13),
+          GridView.builder(
+              padding: EdgeInsets.zero,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                mainAxisSpacing: 13,
+                crossAxisSpacing: 13,
+                crossAxisCount: 3,
+              ),
+              itemCount: widget.space.imagesUrl.length > 6
+                  ? 6
+                  : widget.space.imagesUrl.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                        widget.space.imagesUrl[index].toString(),
+                        fit: BoxFit.cover));
+              }),
+          const SizedBox(height: 26),
+          const Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                'Videos ',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                ),
+              ),
+              Text(
+                '(3 videos)',
+                style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12,
+                  color: Color(0xff5E5E5E),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 13),
+          GridView.builder(
+            padding: EdgeInsets.zero,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+            ),
+            itemCount: 3,
+            itemBuilder: (BuildContext context, int index) {
+              return Container(
+                height: 100,
+                width: 100,
+                color: Colors.green, // Cor de exemplo
+                margin: const EdgeInsets.all(8.0),
+              );
+            },
+          ),
+        ],
+      );
+    }
+
     Widget myFirstWidget() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,67 +582,67 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
               ),
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 15),
           const Text(
             'Agente Locador',
             style: TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w700,
             ),
           ),
+          const SizedBox(height: 15),
           Row(
             children: [
               widget.space.locadorAvatarUrl != ''
                   ? CircleAvatar(
+                      backgroundColor: const Color(0xffF3F3F3),
                       backgroundImage: Image.network(
                         widget.space.locadorAvatarUrl,
                         fit: BoxFit.cover,
                       ).image,
-                      radius: 20,
+                      radius: 25,
                     )
                   : const CircleAvatar(
-                      radius: 20,
+                      backgroundColor: Color(0xffF3F3F3),
+                      radius: 25,
                       child: Icon(
                         Icons.person,
                         color: Colors.black,
                       ),
                     ),
               const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.space.locadorName,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+              Text(
+                widget.space.locadorName,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black,
+                ),
+              ),
+              const Spacer(),
+              InkWell(
+                child: Container(
+                  padding: const EdgeInsets.all(7),
+                  //alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                    color: Color(0xffF3F3F3),
+                    shape: BoxShape.circle,
                   ),
-                  const SizedBox(
-                    height: 10,
+                  child: const Icon(
+                    Icons.chat_bubble,
+                    color: Color(0xff9747FF),
                   ),
-                  InkWell(
-                    child: const Text(
-                      'Fale com o locador',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChatPage(
+                        receiverID: widget.space.userId,
                       ),
                     ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ChatPage(
-                            receiverID: widget.space.userId,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ],
+                  );
+                },
               ),
             ],
           ),
@@ -502,10 +746,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                 ),
               ],
             ),
-            // ElevatedButton(
-            //   onPressed: () => showRatingDialog(widget.space),
-            //   child: const Text('Avalie'),
-            // ),
+
             const SizedBox(
               height: 10,
             ),
@@ -527,27 +768,27 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
               }).toList(),
             ),
             Padding(
-              padding: const EdgeInsets.all(18.0),
+              padding: const EdgeInsets.symmetric(vertical: 18),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        //widget.space.titulo,
-                        'Cabana dos Alpes',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          //widget.space.titulo,
+                          'Cabana dos Alpes',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        width: 7,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5),
-                        child: Container(
+                        const SizedBox(
+                          width: 7,
+                        ),
+                        Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
                             color: _getColor(
@@ -568,94 +809,100 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                             ),
                           ),
                         ),
-                      ),
-                      const Spacer(),
-                      const Column(
-                        children: [
-                          Text(
-                            style: TextStyle(
-                                color: Color(0xff9747FF),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700),
-                            "R\$800",
-                          ),
-                          Text('Por hora'),
-                        ],
-                      ),
-                    ],
-                  ),
-                  //boolComments('Ainda não tem avaliações.'),
-                  Row(
-                    children: [
-                      const SizedBox(width: 10),
-                      SvgPicture.asset('lib/assets/images/Vectorcheck.svg'),
-                      const SizedBox(width: 7),
-                      Text(
-                        '${widget.space.cidade}, Brasil',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TabBar(
-                        controller: tabController,
-                        indicatorColor: const Color(0xff9747FF),
-                        labelPadding: const EdgeInsets.only(bottom: 15),
-                        tabs: const [
-                          Text(
-                            'Sobre',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 12,
-                            ),
-                          ),
-                          Text(
-                            'Galeria',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 12,
-                            ),
-                          ),
-                          Text(
-                            'Avaliação',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      SizedBox(
-                        height: 500,
-                        child: TabBarView(
-                          controller: tabController,
-                          //physics: const NeverScrollableScrollPhysics(),
+                        const Spacer(),
+                        const Column(
                           children: [
-                            myFirstWidget(),
-                            Container(
-                              height: 100,
-                              width: 100,
-                              color: Colors.green,
+                            Text(
+                              style: TextStyle(
+                                  color: Color(0xff9747FF),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700),
+                              "R\$800",
                             ),
-                            Container(
-                              height: 100,
-                              width: 100,
-                              color: Colors.purple,
-                            ),
+                            Text('Por hora'),
                           ],
                         ),
+                      ],
+                    ),
+                  ),
+                  //boolComments('Ainda não tem avaliações.'),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 10),
+                        SvgPicture.asset('lib/assets/images/Vectorcheck.svg'),
+                        const SizedBox(width: 7),
+                        Text(
+                          '${widget.space.cidade}, Brasil',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Color(0xffE4E4E4),
+                          width: 1.2,
+                        ),
                       ),
-                    ],
+                    ),
+                    child: TabBar(
+                      dividerColor: Colors.green,
+                      indicatorPadding:
+                          const EdgeInsets.symmetric(horizontal: 15),
+                      controller: tabController,
+                      indicatorColor: const Color(0xff9747FF),
+                      labelPadding: const EdgeInsets.only(bottom: 15),
+                      tabs: const [
+                        Text(
+                          'Sobre',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 12,
+                          ),
+                        ),
+                        Text(
+                          'Galeria',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 12,
+                          ),
+                        ),
+                        Text(
+                          'Avaliação',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: SizedBox(
+                      height: 800,
+                      child: TabBarView(
+                        controller: tabController,
+                        //physics: const NeverScrollableScrollPhysics(),
+                        children: [
+                          myFirstWidget(),
+                          mySecondWidget(),
+                          myThirdWidget(),
+                        ],
+                      ),
+                    ),
                   ),
 
                   // const SizedBox(height: 10),
@@ -727,6 +974,20 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
             // ),
           ],
         ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+        child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            decoration: BoxDecoration(
+                color: const Color(0xff9747FF),
+                borderRadius: BorderRadius.circular(50)),
+            child: const Text(
+              'Alugar',
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+              textAlign: TextAlign.center,
+            )),
       ),
     );
   }
