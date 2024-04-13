@@ -75,7 +75,7 @@ class _BottomNavBarPageLocadorState extends State<BottomNavBarPageLocador> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_filled),
-            label: 'Meus espaços',
+            label: 'Espaços',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_month),

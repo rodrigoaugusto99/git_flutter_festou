@@ -5,6 +5,7 @@ import 'package:git_flutter_festou/src/core/providers/application_providers.dart
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/my%20reservations%20info/guest%20feedback/guest_feedback_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/my%20reservations%20info/show_my_reservations_info_state.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/my%20reservations%20info/show_my_reservations_info_vm.dart';
+import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/models/reservation_model.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
@@ -155,14 +156,12 @@ class _ShowMyReservationsInfosState
           },
           error: (Object error, StackTrace stackTrace) {
             return const Stack(children: [
-              Center(child: Text('Inserir imagem melhor papai')),
               Center(child: Icon(Icons.error)),
             ]);
           },
           loading: () {
             return const Stack(children: [
-              Center(child: Text('Inserir carregamento Personalizado papai')),
-              Center(child: CircularProgressIndicator()),
+              Center(child: CustomLoadingIndicator()),
             ]);
           },
         ));

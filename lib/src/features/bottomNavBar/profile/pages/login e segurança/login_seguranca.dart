@@ -80,12 +80,15 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
       children: [
         Row(
           children: [
-            const Text("Google"),
             Image.asset(
               'lib/assets/images/google.png',
               width: 24, // Ajuste conforme necessário
               height: 24,
             ),
+            const SizedBox(
+              width: 10,
+            ),
+            const Text("Google"),
           ],
         ),
         InkWell(
@@ -108,12 +111,12 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
       children: [
         Row(
           children: [
-            const Text("Facebook"),
             Image.asset(
               'lib/assets/images/Facebook_icon.svg.png.png',
               width: 24, // Ajuste conforme necessário
               height: 24,
             ),
+            const Text("Facebook"),
           ],
         ),
         InkWell(
@@ -247,8 +250,8 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                 style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
               ),
               MyRow(
-                title: 'Senha',
-                subtitle: 'Ultima atualização há \$x dias',
+                title: '',
+                subtitle: 'Senha',
                 textButton: !isUpdatingPassword ? 'Atualizar' : 'Cancelar',
                 onTap: () {
                   setState(() {
@@ -306,42 +309,66 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
               providers.contains("google.com")
                   ? Column(
                       children: [
-                        buildGoogleWidget(),
-                        ElevatedButton(
-                          onPressed: () async {
-                            final user = FirebaseAuth.instance.currentUser;
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(
+                                  'lib/assets/images/google.png',
+                                  width: 24, // Ajuste conforme necessário
+                                  height: 24,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                const Text("Google"),
+                              ],
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                final user = FirebaseAuth.instance.currentUser;
 
-                            if (user != null) {
-                              try {
-                                // Verifica se o usuário está vinculado ao provedor do Google
-                                if (user.providerData.any((info) =>
-                                    info.providerId == "google.com")) {
-                                  if (user.providerData.any((info) =>
-                                      info.providerId != "password")) {
-                                    //se desvincular, deve deletar o usuario, pois só há google como provedor.
+                                if (user != null) {
+                                  try {
+                                    // Verifica se o usuário está vinculado ao provedor do Google
+                                    if (user.providerData.any((info) =>
+                                        info.providerId == "google.com")) {
+                                      if (user.providerData.any((info) =>
+                                          info.providerId != "password")) {
+                                        //se desvincular, deve deletar o usuario, pois só há google como provedor.
 
-                                    await areYouSureOnlyGoogle();
-                                  } else {
-                                    // Desvincula a conta do Google
-                                    await user.unlink("google.com");
+                                        await areYouSureOnlyGoogle();
+                                      } else {
+                                        // Desvincula a conta do Google
+                                        await user.unlink("google.com");
+                                      }
+                                    } else {
+                                      // Caso o usuário não esteja vinculado ao provedor do Google
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Usuário não está vinculado ao Google.'),
+                                        ),
+                                      );
+                                    }
+                                  } on FirebaseAuthException catch (e) {
+                                    // Trata exceções específicas, se necessário
+                                    log('Erro ao desvincular conta do Google, usuario nao autenticado: ${e.message}');
                                   }
-                                } else {
-                                  // Caso o usuário não esteja vinculado ao provedor do Google
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                          'Usuário não está vinculado ao Google.'),
-                                    ),
-                                  );
                                 }
-                              } on FirebaseAuthException catch (e) {
-                                // Trata exceções específicas, se necessário
-                                log('Erro ao desvincular conta do Google, usuario nao autenticado: ${e.message}');
-                              }
-                            }
-                          },
-                          child: const Text('Desvincular Conta do Google'),
-                        )
+                              },
+                              child: const Text(
+                                'Desconectar',
+                                style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     )
                   : Container(),
@@ -366,6 +393,8 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
 
                     if (user != null) {
                       // Mostra um diálogo de confirmação antes de excluir a conta
+                      Navigator.of(context).pop();
+                      await Future.delayed(Duration.zero);
                       await showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -393,15 +422,13 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                             actions: <Widget>[
                               TextButton(
                                 onPressed: () {
-                                  Navigator.of(context)
-                                      .pop(); // Fecha o diálogo
+                                  Navigator.of(context).pop();
                                 },
                                 child: const Text('Cancelar'),
                               ),
                               TextButton(
                                 onPressed: () async {
-                                  Navigator.of(context)
-                                      .pop(); // Fecha o diálogo
+                                  Navigator.of(context).pop();
 
                                   try {
                                     // Reautentica o usuário antes de excluir a conta

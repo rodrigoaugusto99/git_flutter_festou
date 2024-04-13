@@ -440,7 +440,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
     final userDocument = await getUserDocument();
     if (userDocument.exists) {
       final userData = userDocument.data() as Map<String, dynamic>;
-      final name = userData['nome'];
+      final name = userData['name'];
 
       return name.toString();
     }

@@ -9,35 +9,43 @@ class MySliverListToCardInfo extends StatelessWidget {
   final bool x;
 
   const MySliverListToCardInfo({
-    super.key,
+    Key? key,
     required this.data,
     required this.spaces,
     required this.x,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final y = MediaQuery.of(context).size.height;
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-          (context, index) => InkWell(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        NewCardInfo(space: data.spaces[index]),
-                  ),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.only(top: y * 0.03),
-                  child: NewSpaceCard(
-                    hasHeart: x,
-                    space: data.spaces[index],
-                    isReview: false,
-                  ),
+        (context, index) {
+          if (index >= 0 && index < data.spaces.length) {
+            // Verifique se o índice é válido antes de acessar a lista
+            return InkWell(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NewCardInfo(space: data.spaces[index]),
                 ),
               ),
-          childCount: data.spaces.length),
+              child: Padding(
+                padding: EdgeInsets.only(top: y * 0.03),
+                child: NewSpaceCard(
+                  hasHeart: x,
+                  space: data.spaces[index],
+                  isReview: false,
+                ),
+              ),
+            );
+          } else {
+            // Índice inválido, retorne um widget vazio ou de carregamento, conforme necessário
+            return Container();
+          }
+        },
+        childCount: data.spaces.length,
+      ),
     );
   }
 }

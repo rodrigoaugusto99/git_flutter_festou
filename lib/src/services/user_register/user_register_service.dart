@@ -4,5 +4,5 @@ import 'package:git_flutter_festou/src/core/fp/nil.dart';
 
 abstract interface class UserRegisterService {
   Future<Either<ServiceException, Nil>> execute(
-      ({String email, String password}) userData);
+      ({String email, String password, String name, String cpf}) userData);
 }

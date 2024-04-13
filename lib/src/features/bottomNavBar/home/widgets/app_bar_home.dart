@@ -13,17 +13,6 @@ class AppBarHome extends ConsumerStatefulWidget {
 class _AppBarMenuSpaceTypesState extends ConsumerState<AppBarHome> {
   final user = FirebaseAuth.instance.currentUser!;
 
-  String formatString(String input) {
-    // TODO: Apagar este método ao adicionar a busca do nome do usuário no banco
-    if (input.isEmpty) return '';
-
-    // Limita a string a 6 caracteres
-    String truncated = input.length > 6 ? input.substring(0, 6) : input;
-
-    // Converte a primeira letra para maiúscula e o restante para minúscula
-    return truncated[0].toUpperCase() + truncated.substring(1).toLowerCase();
-  }
-
   @override
   Widget build(BuildContext context) {
     final x = MediaQuery.of(context).size.width;
@@ -38,7 +27,7 @@ class _AppBarMenuSpaceTypesState extends ConsumerState<AppBarHome> {
                 children: [
                   Expanded(
                     child: Text(
-                      'Olá, ${formatString(user.email!)}! Festou?', // TODO: Buscar o nome do usuário direto de users/
+                      'Olá, ${user.displayName}! Festou?',
                       // user_infos no banco
                       style: const TextStyle(
                           color: Colors.black,

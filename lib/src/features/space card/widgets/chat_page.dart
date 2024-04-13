@@ -44,7 +44,15 @@ class ChatPage extends StatelessWidget {
 
     final userData = userDocument.data() as Map<String, dynamic>;
 
-    return userData['nome'];
+    return userData['name'];
+  }
+
+  Future<String> getAvatarById(String id) async {
+    final userDocument = await getUserDocumentById(id);
+
+    final userData = userDocument.data() as Map<String, dynamic>;
+
+    return userData['avatar_url'];
   }
 
   @override
@@ -53,6 +61,29 @@ class ChatPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: FutureBuilder<String>(
+          future: getAvatarById(receiverID),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return CircleAvatar(
+                child: snapshot.data != ''
+                    ? Image.network(
+                        snapshot.data!,
+                        fit: BoxFit.cover,
+                        width: 60, // ajuste conforme necessário
+                        height: 60, // ajuste conforme necessário
+                      )
+                    : const Icon(
+                        Icons.person,
+                        size: 60,
+                      ),
+              );
+            } else {
+              return const Text(
+                  'Carregando...'); // ou outro indicador de carregamento
+            }
+          },
+        ),
         title: FutureBuilder<String>(
           future: getNameById(receiverID),
           builder: (context, snapshot) {
@@ -111,21 +142,39 @@ class ChatPage extends StatelessWidget {
   }
 
   Widget _buildUserInput() {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            controller: messageEC,
-            decoration: const InputDecoration(
-              hintText: 'type a message',
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                color: Colors.grey,
+              ),
+              child: TextField(
+                controller: messageEC,
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                  hintText: 'Mensagem',
+                ),
+              ),
             ),
           ),
-        ),
-        IconButton(
-          onPressed: sendMessage,
-          icon: const Icon(Icons.arrow_upward),
-        ),
-      ],
+          const SizedBox(
+            width: 10,
+          ),
+          Container(
+            decoration: BoxDecoration(
+                shape: BoxShape.circle, color: Colors.purple[400]),
+            child: IconButton(
+              onPressed: sendMessage,
+              icon: const Icon(Icons.arrow_upward),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

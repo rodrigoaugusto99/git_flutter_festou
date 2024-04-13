@@ -6,13 +6,12 @@ import 'package:git_flutter_festou/src/core/fp/nil.dart';
 
 import 'package:git_flutter_festou/src/features/login/login_vm.dart';
 
-
 import 'user_auth_repository.dart';
 
 class UserAuthRepositoryImpl implements UserAuthRepository {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-//todo: mensagens de erro especificar p cada erro
+//todo: especificar mensagens p cada erro
   UserAuthRepositoryImpl();
   @override
   Future<Either<AuthException, Nil>> login(
@@ -49,11 +48,14 @@ class UserAuthRepositoryImpl implements UserAuthRepository {
     }
   }*/
 
+//nao usamos name e cpf msm, mas tem q botar por motivos extracurriculares
   @override
   Future<Either<AuthException, UserCredential>> registerUser(
       ({
         String email,
         String password,
+        String name,
+        String cpf,
       }) userData) async {
     try {
       final userCredential = await auth.createUserWithEmailAndPassword(

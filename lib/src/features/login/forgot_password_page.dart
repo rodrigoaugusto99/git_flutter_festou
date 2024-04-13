@@ -56,105 +56,191 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       body: SingleChildScrollView(
         child: Stack(
           children: [
-            Column(
-              children: [
-                SizedBox(
-                  height: firstContainer,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Image.asset(
-                        ImageConstants.serpentinae,
-                      ),
-                      const Text('festou\ncadastro'),
-                      Image.asset(
-                        ImageConstants.serpentinad,
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          hintText: 'Email',
+            SizedBox(
+              width: screenWidth,
+              height: screenHeight,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: screenWidth,
+                    height: firstContainer,
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          left: 0,
+                          height: firstContainer,
+                          child: Image.asset(
+                            ImageConstants.serpentinae,
+                          ),
                         ),
-                        controller: emailEC,
-                        obscureText: false,
-                      ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return const ForgotEmailPage();
-                                },
-                              ),
-                            );
-                          },
-                          child: const Text(
-                            'Esqueci meu e-mail',
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold,
+                        Align(
+                          child: SizedBox(
+                            height: screenHeight * 0.12,
+                            child: Stack(
+                              children: [
+                                const Text(
+                                  'FESTOU',
+                                  style: TextStyle(
+                                    fontFamily: 'NerkoOne',
+                                    fontSize: 60,
+                                    color: Color(0xff9747FF),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 0,
+                                  left: screenWidth * 0.11,
+                                  child: const Text(
+                                    'Cadastro',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontFamily: 'Marcellus',
+                                      color: Color(0xff000000),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      ),
-                      InkWell(
-                        onTap: passwordReset,
-                        child: Container(
-                          alignment: Alignment.center,
-                          width: enviarButtonWidth,
-                          height: enviarButtonHeight,
-                          decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 13, 46, 89),
-                            borderRadius:
-                                BorderRadius.circular(50), // Borda arredondada
+                        Positioned(
+                          right: 0,
+                          height: firstContainer,
+                          child: Image.asset(
+                            ImageConstants.serpentinad,
                           ),
-                          child: const Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              'enviar código',
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 50),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'E-mail:',
+                          style: TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.w500),
+                        ),
+                        TextFormField(
+                          controller: emailEC,
+                          decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(vertical: 2.0),
+                            hintText: 'Digite aqui seu e-mail',
+                            hintStyle:
+                                TextStyle(color: Colors.black, fontSize: 9),
+                            //border: InputBorder.none,
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.black, width: 1),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.black, width: 1),
+                            ),
+                            errorBorder: InputBorder.none,
+                            focusedErrorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                            isDense: true,
+                          ),
+                          style: const TextStyle(
+                              fontSize: 14.0, color: Colors.black),
+                        ),
+                        const SizedBox(height: 10),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return const ForgotEmailPage();
+                                  },
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              'Esqueci meu e-mail',
                               style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w400,
+                                  fontSize: 11, color: Color(0xff000000)),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Align(
+                          child: InkWell(
+                            onTap: passwordReset,
+                            child: Container(
+                              alignment: Alignment.center,
+                              width: voltarButtonWidth,
+                              height: voltarButtonHeight,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xff9747FF),
+                                    Color(0xff4300B1),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                    50), // Borda arredondada
+                              ),
+                              child: const Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  'Enviar código',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      InkWell(
-                        onTap: () => Navigator.of(context).pop(),
-                        child: Container(
-                          alignment: Alignment.center,
-                          width: voltarButtonWidth,
-                          height: voltarButtonHeight,
-                          decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 13, 46, 89),
-                            borderRadius:
-                                BorderRadius.circular(10), // Borda arredondada
-                          ),
-                          child: const Text(
-                            'VOLTAR',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              left: 100,
+              right: 100,
+              bottom: 100,
+              child: InkWell(
+                onTap: () => Navigator.of(context).pop(),
+                child: Container(
+                  alignment: Alignment.center,
+                  width: voltarButtonWidth,
+                  height: voltarButtonHeight,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xff9747FF),
+                        Color(0xff4300B1),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                    borderRadius:
+                        BorderRadius.circular(10), // Borda arredondada
+                  ),
+                  child: const Text(
+                    'VOLTAR',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                 ),
-              ],
+              ),
             ),
           ],
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_feedback_widget_all.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_vm.dart';
@@ -93,14 +94,13 @@ class _SpaceFeedbacksPageAllState extends ConsumerState<SpaceFeedbacksPageAll> {
         );
       },
       error: (Object error, StackTrace stackTrace) {
-        return const Center(
-          child: Text('Erro'),
-        );
+        return const Stack(children: [
+          Center(child: Icon(Icons.error)),
+        ]);
       },
       loading: () {
         return const Stack(children: [
-          Center(child: Text('Inserir carregamento Personalizado papai')),
-          Center(child: CircularProgressIndicator()),
+          Center(child: CustomLoadingIndicator()),
         ]);
       },
     );

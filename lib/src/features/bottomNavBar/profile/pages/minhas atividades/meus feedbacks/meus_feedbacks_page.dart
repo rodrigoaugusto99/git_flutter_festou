@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/meus%20feedbacks/feedbacks_widgets.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/meus%20feedbacks/meus_feedbacks_state.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/meus%20feedbacks/meus_feedbacks_vm.dart';
+import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
 
 class MeusFeedbacksPage extends ConsumerStatefulWidget {
@@ -25,14 +26,13 @@ class _MeusFeedbacksPageState extends ConsumerState<MeusFeedbacksPage> {
         );
       },
       error: (Object error, StackTrace stackTrace) {
-        return const Center(
-          child: Text('Erro'),
-        );
+        return const Stack(children: [
+          Center(child: Icon(Icons.error)),
+        ]);
       },
       loading: () {
         return const Stack(children: [
-          Center(child: Text('Inserir carregamento Personalizado papai')),
-          Center(child: CircularProgressIndicator()),
+          Center(child: CustomLoadingIndicator()),
         ]);
       },
     );

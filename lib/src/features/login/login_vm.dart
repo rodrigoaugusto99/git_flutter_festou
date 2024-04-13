@@ -103,6 +103,10 @@ class LoginVM extends _$LoginVM {
           final dto = (
             id: user.uid.toString(),
             email: user.email.toString(),
+            /*logando com google, nao sera colocado name e cpf. 
+            no futuro sera pedido caso precise */
+            name: '',
+            cpf: '',
           );
           await useFirestoreRepository.saveUser(dto);
         } else {

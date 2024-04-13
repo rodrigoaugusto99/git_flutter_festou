@@ -95,9 +95,6 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
     //todo: vm - build {}, page .when, :loading em cada textfield quando atualizar? ou stream logo
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('x'),
-      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(17.0),
@@ -199,7 +196,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                   onSave: (value) async {
                     log('Salvar: $value no campo nome');
                     if (isEditingName == true) {
-                      await informacoesPessoaisVm.updateInfo('nome', value);
+                      await informacoesPessoaisVm.updateInfo('name', value);
                       //nameEC.text = await informacoesPessoaisVm.getInfo('nome');
                       isEditingName = !isEditingName;
                     } else {

@@ -5,6 +5,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/profile/profile_sta
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/profile_vm.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarPageLocador.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
+import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/widgets/my_rows_config.dart';
 
 class Profile extends ConsumerStatefulWidget {
@@ -20,9 +21,6 @@ class _ProfileState extends ConsumerState<Profile> {
     final profileVm = ref.watch(profileVMProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(''),
-      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(18.0),
@@ -48,7 +46,6 @@ class _ProfileState extends ConsumerState<Profile> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text('Nome'),
-                              Text('Mostrar perfil'),
                             ],
                           ),
                         ],
@@ -115,14 +112,12 @@ class _ProfileState extends ConsumerState<Profile> {
             },
             error: (Object error, StackTrace stackTrace) {
               return const Stack(children: [
-                Center(child: Text('Inserir imagem melhor papai')),
                 Center(child: Icon(Icons.error)),
               ]);
             },
             loading: () {
               return const Stack(children: [
-                Center(child: Text('Inserir carregamento Personalizado papai')),
-                Center(child: CircularProgressIndicator()),
+                Center(child: CustomLoadingIndicator()),
               ]);
             },
           ),

@@ -56,6 +56,7 @@ class SpacesByTypeVmFamily extends Family<AsyncValue<SpacesByTypeState>> {
     );
   }
 
+  @visibleForOverriding
   @override
   SpacesByTypeVmProvider getProviderOverride(
     covariant SpacesByTypeVmProvider provider,
@@ -138,6 +139,11 @@ class SpacesByTypeVmProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 
   @override
+  (List<String>,) get argument {
+    return (type,);
+  }
+
+  @override
   AutoDisposeAsyncNotifierProviderElement<SpacesByTypeVm, SpacesByTypeState>
       createElement() {
     return _SpacesByTypeVmProviderElement(this);
@@ -172,4 +178,4 @@ class _SpacesByTypeVmProviderElement
   List<String> get type => (origin as SpacesByTypeVmProvider).type;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

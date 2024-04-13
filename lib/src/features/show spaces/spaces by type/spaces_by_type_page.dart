@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
+import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/my_sliver_list_to_card_info.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/filter/filter_and_order_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/spaces%20by%20type/spaces_by_type_state.dart';
@@ -50,14 +51,13 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
         },
         error: (Object error, StackTrace stackTrace) {
           return const Stack(children: [
-            Center(child: Text('Inserir imagem melhor papai')),
+            Center(child: CustomLoadingIndicator()),
             Center(child: Icon(Icons.error)),
           ]);
         },
         loading: () {
           return const Stack(children: [
-            Center(child: Text('Inserir carregamento Personalizado papai')),
-            Center(child: CircularProgressIndicator()),
+            Center(child: CustomLoadingIndicator()),
           ]);
         },
       ),

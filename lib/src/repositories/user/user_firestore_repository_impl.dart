@@ -10,10 +10,10 @@ import './user_firestore_repository.dart';
 
 class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
   final ImagesStorageRepository imagesStorageRepository;
+  UserFirestoreRepositoryImpl({required this.imagesStorageRepository});
+
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
-
-  UserFirestoreRepositoryImpl({required this.imagesStorageRepository});
 
   /*@override
   Future<Either<RepositoryException, Nil>> saveUserWithGoogle() async {
@@ -43,14 +43,17 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       ({
         String id,
         String email,
+        String name,
+        String cpf,
       }) userData) async {
     try {
 // Crie um novo usuario com os dados fornecidos
       Map<String, dynamic> newUser = {
         'uid': userData.id,
         'email': userData.email,
+        'name': userData.name,
+        'cpf': userData.cpf,
         'userType': 'LOCATARIO',
-        'nome': '',
         'telefone': '',
         'user_address': {
           'cep': '',
@@ -100,7 +103,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
             'bairro': userData.bairro,
             'cidade': userData.cidade,
           },
-          'nome': userData.name,
+          'name': userData.name,
           'telefone': userData.telefone,
         };
 
@@ -168,7 +171,8 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       final user = FirebaseAuth.instance.currentUser!;
       final UserModel userModel = UserModel(
         userData['email'] ?? '',
-        userData['nome'] ?? '',
+        userData['name'] ?? '',
+        userData['cpf'] ?? '',
         userData['user_address']['cep'] ?? '',
         userData['user_address']['logradouro'] ?? '',
         userData['telefone'] ?? '',
@@ -215,7 +219,8 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
 
       final UserModel userModel = UserModel(
         userData['email'] ?? '',
-        userData['nome'] ?? '',
+        userData['name'] ?? '',
+        userData['cpf'] ?? '',
         userData['user_address']['cep'] ?? '',
         userData['user_address']['logradouro'] ?? '',
         userData['telefone'] ?? '',
@@ -288,10 +293,10 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
     try {
       final userDocument = await getUserDocument();
 
-      if (text == 'nome') {
+      if (text == 'name') {
         // Atualize o campo 'nome' com o novo valor 'newText'
         await userDocument.reference.update({
-          'nome': newText,
+          'name': newText,
         });
       } else if (text == 'telefone') {
         // Lógica para atualizar o campo 'telefone'

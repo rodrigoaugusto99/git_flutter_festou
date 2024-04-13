@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/my%20favorite%20spaces%20mvvm/my_favorite_spaces_page.dart';
-
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/profile.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/search/search_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/home_page.dart';
@@ -42,56 +41,80 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: PageView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        controller: _pageController,
-        onPageChanged: _onPageChanged,
-        itemBuilder: (context, index) {
-          switch (index) {
-            case 0:
-              return const HomePage();
-            case 1:
-              return const SearchPage();
-            case 2:
-              return const MyFavoriteSpacePage();
-            case 3:
-              return const Profile();
-            default:
-              return Container(); // Lida com índices fora do alcance, se aplicável
-          }
-        },
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.orange,
-        unselectedItemColor: Colors.black,
-        currentIndex: _currentIndex,
-        onTap: _onTabTapped,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        extendBody: true,
+        body: PageView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: _pageController,
+          onPageChanged: _onPageChanged,
+          itemBuilder: (context, index) {
+            switch (index) {
+              case 0:
+                return const HomePage();
+              case 1:
+                return const SearchPage();
+              case 2:
+                return const MyFavoriteSpacePage();
+              case 3:
+                return const Profile();
+              default:
+                return Container(); // Lida com índices fora do alcance, se aplicável
+            }
+          },
+        ),
+        bottomNavigationBar: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(24.0),
+            topRight: Radius.circular(24.0),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
+          child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            currentIndex: _currentIndex,
+            elevation: 4,
+            onTap: _onTabTapped,
+            selectedItemColor: const Color(0xff304571),
+            selectedLabelStyle: const TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+            unselectedItemColor: const Color(0xff304571),
+            items: [
+              BottomNavigationBarItem(
+                icon: Image.asset(
+                  'lib/assets/images/Ellipse 7casinha.png',
+                ),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Image.asset(
+                  'lib/assets/images/Ellipse 8lupinha.png',
+                ),
+                label: 'Search',
+              ),
+              BottomNavigationBarItem(
+                icon: Image.asset(
+                  'lib/assets/images/Ellipse 9documentozinho.png',
+                ),
+                label: 'Favorites',
+              ),
+              BottomNavigationBarItem(
+                icon: Image.asset(
+                  'lib/assets/images/Ellipse 10pessoinha.png',
+                ),
+                label: 'Profile',
+              ),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favorites',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Image.asset(
-        'lib/assets/images/festou-logo.png',
-        scale: 5,
-        fit: BoxFit.cover,
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: Image.asset(
+          'lib/assets/images/festou-logo.png',
+          scale: 5,
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }
