@@ -54,6 +54,39 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        actions: <Widget>[
+          Container(
+            margin: const EdgeInsets.only(right: 18),
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.7),
+              shape: BoxShape.circle,
+            ),
+            child: InkWell(
+              onTap: canRefresh != false
+                  ? () async {
+                      LatLngBounds visibleRegion =
+                          await mapController!.getVisibleRegion();
+                      /*eu estava em duvida em sincronizar o initialCameraPosition
+                        com o rioDeJaneiroBounds (visao inicial p carregar o espaços).
+                        então, printei o valor da regiao visivel logo quando entra no mapa,
+                        ou seja, quando é o initialCameraPosition.*/
+                      log('Visible Region: $visibleRegion');
+
+                      setState(() {
+                        rioDeJaneiroBounds = visibleRegion;
+                      });
+                      canRefresh = false;
+                    }
+                  : null,
+              child: const Icon(
+                Icons.sync,
+                color: Colors.black,
+              ),
+            ),
+          ),
+          // Outras ações podem ser adicionadas aqui, se necessário
+        ],
         leading: Padding(
           padding: const EdgeInsets.only(left: 18.0),
           child: Container(
@@ -88,7 +121,6 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
         },
         error: (Object error, StackTrace stackTrace) {
           return const Stack(children: [
-            Center(child: Text('Inserir imagem melhor papai')),
             Center(child: Icon(Icons.error)),
           ]);
         },
@@ -188,29 +220,6 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
               position: LatLng(space.latitude, space.longitude),
             );
           }).toSet(),
-        ),
-        Positioned(
-          width: 230,
-          top: 200,
-          child: ElevatedButton(
-            onPressed: canRefresh != false
-                ? () async {
-                    LatLngBounds visibleRegion =
-                        await mapController!.getVisibleRegion();
-                    /*eu estava em duvida em sincronizar o initialCameraPosition
-                        com o rioDeJaneiroBounds (visao inicial p carregar o espaços).
-                        então, printei o valor da regiao visivel logo quando entra no mapa,
-                        ou seja, quando é o initialCameraPosition.*/
-                    log('Visible Region: $visibleRegion');
-
-                    setState(() {
-                      rioDeJaneiroBounds = visibleRegion;
-                    });
-                    canRefresh = false;
-                  }
-                : null,
-            child: const Text('Carregar espaços nessa área'),
-          ),
         ),
         Positioned(
           top: 95,
