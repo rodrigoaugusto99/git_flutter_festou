@@ -12,11 +12,13 @@ class NewSpaceCard extends ConsumerStatefulWidget {
   final SpaceModel space;
   final bool isReview;
   final bool hasHeart;
+  final bool smallOne;
   const NewSpaceCard({
     super.key,
     required this.space,
     required this.isReview,
     required this.hasHeart,
+    this.smallOne = false,
   });
 
   @override

@@ -8,9 +8,11 @@ import 'package:glassmorphism/glassmorphism.dart';
 
 class SmallSpaceCard extends ConsumerStatefulWidget {
   final SpaceModel space;
+  final bool onMap;
   const SmallSpaceCard({
     super.key,
     required this.space,
+    this.onMap = false,
   });
 
   @override
@@ -51,6 +53,7 @@ class _SmallSpaceCardState extends ConsumerState<SmallSpaceCard> {
     return Container(
       padding: const EdgeInsets.only(left: 10, right: 10),
       width: x * 0.7,
+      height: widget.onMap ? y * 0.22 : null,
       child: Column(
         children: [
           Expanded(
