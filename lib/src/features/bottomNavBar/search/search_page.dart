@@ -20,9 +20,10 @@ class _SearchPageState extends State<SearchPage> {
   SearchViewModel searchViewModel = SearchViewModel();
   @override
   void initState() {
-    super.initState();
     searchViewModel.init();
+
     _controller.addListener(_onTextChanged);
+    super.initState();
   }
 
   @override
@@ -144,50 +145,57 @@ class _SearchPageState extends State<SearchPage> {
                         : Container(
                             height: 0,
                           ),
-                    Row(
+                    Column(
                       children: [
-                        Expanded(
-                          child: TextField(
-                            onChanged: (value) =>
-                                searchViewModel.onChangedSearch(value),
-                            controller: _controller,
-                            onSubmitted: (value) {
-                              if (value.trim().isNotEmpty) {
-                                searchViewModel.onClick(true);
-                                _addSearchToHistory(value.trim());
-                                // _controller.clear();
-                              }
-                            },
-                            autofocus: true,
-                            decoration: const InputDecoration(
-                              hintText: 'Buscar no Festou',
-                              hintStyle: TextStyle(color: Colors.transparent),
-                              border: InputBorder.none,
-                              isDense: true,
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 0),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                onChanged: (value) {
+                                  searchViewModel.onChangedSearch(value);
+                                },
+                                controller: _controller,
+                                onSubmitted: (value) {
+                                  if (value.trim().isNotEmpty) {
+                                    searchViewModel.onClick(true);
+                                    _addSearchToHistory(value.trim());
+
+                                    // _controller.clear();
+                                  }
+                                },
+                                autofocus: true,
+                                decoration: const InputDecoration(
+                                  hintText: 'Buscar no Festou',
+                                  hintStyle:
+                                      TextStyle(color: Colors.transparent),
+                                  border: InputBorder.none,
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 0, horizontal: 0),
+                                ),
+                                style: TextStyle(
+                                    color: Colors.blueGrey[900], fontSize: 12),
+                                cursorColor: Colors.blueGrey[900],
+                              ),
                             ),
-                            style: TextStyle(
-                                color: Colors.blueGrey[900], fontSize: 12),
-                            cursorColor: Colors.blueGrey[900],
-                          ),
-                        ),
-                        Visibility(
-                          visible: _controller.text.isNotEmpty,
-                          child: InkWell(
-                            onTap: () {
-                              _controller.clear();
-                              searchViewModel.onClick(false);
-                            },
-                            child: Icon(
-                              Icons.clear,
-                              color: Colors.blueGrey[900],
-                              size: 14,
+                            Visibility(
+                              visible: _controller.text.isNotEmpty,
+                              child: InkWell(
+                                onTap: () {
+                                  _controller.clear();
+                                  searchViewModel.onClick(false);
+                                },
+                                child: Icon(
+                                  Icons.clear,
+                                  color: Colors.blueGrey[900],
+                                  size: 14,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 20,
+                            const SizedBox(
+                              width: 20,
+                            ),
+                          ],
                         ),
                       ],
                     ),

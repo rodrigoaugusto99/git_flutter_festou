@@ -3,36 +3,47 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SearchViewModel extends ChangeNotifier {
   final CollectionReference spacesCollection =
       FirebaseFirestore.instance.collection('spaces');
+
   List<SpaceModel> _filteredList = [];
+  final List<String> _searchHistory = [];
 
   bool _isShowing = false;
 
   bool getIsShowingBool() => _isShowing;
   List<SpaceModel> getSpaces() => _filteredList;
+  List<String> getHistoric() => _searchHistory;
 
   List<SpaceModel> _allSpaces = [];
 
-  void init() async {
+  Future init() async {
     _allSpaces = await getAllSpaces();
+
+    notifyListeners();
   }
 
   void onClick(bool thisBool) {
     _isShowing = thisBool;
+
     notifyListeners();
   }
 
   void onChangedSearch(String value) {
-    log('entrou');
+    if (value == '') {
+      _isShowing = false;
+      notifyListeners();
+    }
     String searchValue = value.toLowerCase();
 
     _filteredList = _allSpaces
         .where((project) => project.titulo.toLowerCase().contains(searchValue))
         .toList();
     notifyListeners();
+    // Adicionando a busca ao histórico
   }
 
   Future<List<SpaceModel>> getAllSpaces() async {
