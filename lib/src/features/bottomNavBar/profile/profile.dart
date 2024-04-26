@@ -5,8 +5,10 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/profile/profile_sta
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/profile_vm.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarPageLocador.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
+import 'package:git_flutter_festou/src/features/custom_app_bar.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/widgets/my_rows_config.dart';
+import 'package:svg_flutter/svg.dart';
 
 class Profile extends ConsumerStatefulWidget {
   const Profile({super.key});
@@ -21,52 +23,107 @@ class _ProfileState extends ConsumerState<Profile> {
     final profileVm = ref.watch(profileVMProvider);
 
     return Scaffold(
+      backgroundColor: const Color(0xffF8F8F8),
+      appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 18.0),
+          child: Container(
+            decoration: BoxDecoration(
+              //color: Colors.white.withOpacity(0.7),
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: const Offset(0, 2), // changes position of shadow
+                ),
+              ],
+            ),
+            child: InkWell(
+              onTap: () => Navigator.of(context).pop(),
+              child: const Icon(
+                Icons.arrow_back,
+                color: Colors.black,
+              ),
+            ),
+          ),
+        ),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        title: const Text(
+          'Perfil',
+          style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.white,
+      ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(18.0),
+          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 30),
           child: profileVm.when(
             data: (ProfileState data) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Perfil',
-                    style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
-                  ),
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          CircleAvatar(),
-                          SizedBox(
-                            width: 5,
+                  //avatar
+                  data.userModel!.avatarUrl != ''
+                      ? Align(
+                          child: CircleAvatar(
+                            backgroundImage: Image.network(
+                              data.userModel!.avatarUrl,
+                              fit: BoxFit.cover,
+                            ).image,
+                            radius: 50,
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Nome'),
-                            ],
+                        )
+                      : const CircleAvatar(
+                          radius: 100,
+                          child: Icon(
+                            Icons.person,
                           ),
-                        ],
-                      ),
-                      Icon(Icons.fork_right),
-                    ],
+                        ),
+                  //nome
+                  const SizedBox(height: 15),
+                  Align(
+                    child: Column(
+                      children: [
+                        Text(
+                          data.userModel!.name,
+                          style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              height: 1.2),
+                        ),
+                        Align(
+                          //alignment: Alignment.topCenter,
+                          child: Text(
+                            data.userModel!.email,
+                            style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
+
                   const SizedBox(height: 10),
-                  const Divider(
-                    thickness: 1.5,
-                  ),
-                  const SizedBox(height: 10),
+
                   MyText(text: 'Configurações'),
                   const SizedBox(height: 25),
                   MyRowsConfig(userModel: data.userModel!),
                   const SizedBox(height: 10),
-                  MyText(text: 'Alocar'),
+                  MyText(text: 'Locação'),
                   const SizedBox(height: 25),
                   MyRow(
-                    text: 'Quero alocar',
-                    icon: const Icon(Icons.abc),
+                    text: 'Quero disponibilizar um espaço',
+                    icon1: Image.asset(
+                      'lib/assets/images/Icon Disponibilizarcasinha.png',
+                    ),
                     onTap: () => Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -81,32 +138,33 @@ class _ProfileState extends ConsumerState<Profile> {
                   const SizedBox(height: 25),
                   MyRow(
                     text: 'Central de Ajuda',
-                    icon: const Icon(Icons.abc),
+                    icon1: Image.asset(
+                      'lib/assets/images/Icon Atendimentocentral.png',
+                    ),
                     onTap: () {},
                   ),
-                  MyRow(
-                    text: 'Como funciona o Festou',
-                    icon: const Icon(Icons.abc),
-                    onTap: () {},
-                  ),
-                  MyRow(
-                    text: 'Envie-nos seu feedback',
-                    icon: const Icon(Icons.abc),
-                    onTap: () {},
-                  ),
+
                   const SizedBox(height: 10),
                   MyText(text: 'Jurídico'),
                   const SizedBox(height: 25),
                   MyRow(
                     text: 'Termos de Serviço',
-                    icon: const Icon(Icons.abc),
+                    icon1: Image.asset(
+                      'lib/assets/images/Icon Termosjuridic.png',
+                    ),
                     onTap: () {},
                   ),
+                  const SizedBox(height: 10),
+                  MyText(text: 'Outros'),
+                  const SizedBox(height: 25),
                   MyRow(
-                    text: 'Política de Privacidade',
-                    icon: const Icon(Icons.abc),
+                    text: 'Termos de Serviço',
+                    icon1: Image.asset(
+                      'lib/assets/images/Icon Sairsairdofestoyu.png',
+                    ),
                     onTap: () {},
                   ),
+                  const SizedBox(height: 70),
                 ],
               );
             },
@@ -130,6 +188,6 @@ class _ProfileState extends ConsumerState<Profile> {
 Widget MyText({required String text}) {
   return Text(
     text,
-    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
   );
 }

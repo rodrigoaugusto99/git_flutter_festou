@@ -531,6 +531,25 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(
+            height: 60,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: widget.space.selectedServices.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  constraints: BoxConstraints(minWidth: x / 3.5),
+                  child: Row(
+                    children: [
+                      //SvgPicture.asset('assetName'),
+                      Icon(Icons.align_vertical_top_sharp),
+                      Text(widget.space.selectedServices[index]),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
           const Text(
             'Visão geral',
             style: TextStyle(
