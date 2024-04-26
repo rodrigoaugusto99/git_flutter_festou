@@ -52,7 +52,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
         ),
         const SizedBox(height: 10),
         MyRow(
-          text: 'Pagamentos',
+          text: 'Métodos de Pagamento',
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
@@ -65,7 +65,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
         ),
         const SizedBox(height: 10),
         MyRow(
-          text: 'Minhas atividades/Histórico',
+          text: 'Minhas atividades / Histórico',
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(

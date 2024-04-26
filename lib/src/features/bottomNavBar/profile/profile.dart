@@ -62,7 +62,7 @@ class _ProfileState extends ConsumerState<Profile> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(18.0),
+          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 30),
           child: profileVm.when(
             data: (ProfileState data) {
               return Column(
@@ -117,10 +117,10 @@ class _ProfileState extends ConsumerState<Profile> {
                   const SizedBox(height: 25),
                   MyRowsConfig(userModel: data.userModel!),
                   const SizedBox(height: 10),
-                  MyText(text: 'Alocar'),
+                  MyText(text: 'Locação'),
                   const SizedBox(height: 25),
                   MyRow(
-                    text: 'Quero alocar',
+                    text: 'Quero disponibilizar um espaço',
                     icon1: Image.asset(
                       'lib/assets/images/Icon Disponibilizarcasinha.png',
                     ),
@@ -154,13 +154,17 @@ class _ProfileState extends ConsumerState<Profile> {
                     ),
                     onTap: () {},
                   ),
+                  const SizedBox(height: 10),
+                  MyText(text: 'Outros'),
+                  const SizedBox(height: 25),
                   MyRow(
-                    text: 'Política de Privacidade',
+                    text: 'Termos de Serviço',
                     icon1: Image.asset(
-                      'lib/assets/images/Icon Termosjuridic.png',
+                      'lib/assets/images/Icon Sairsairdofestoyu.png',
                     ),
                     onTap: () {},
                   ),
+                  const SizedBox(height: 70),
                 ],
               );
             },
@@ -184,6 +188,6 @@ class _ProfileState extends ConsumerState<Profile> {
 Widget MyText({required String text}) {
   return Text(
     text,
-    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
   );
 }

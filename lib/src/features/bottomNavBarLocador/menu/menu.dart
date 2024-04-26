@@ -109,26 +109,23 @@ Widget MyRow(
     {required String text, required Widget icon1, required Function()? onTap}) {
   return InkWell(
     onTap: onTap,
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14.0),
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10), color: Colors.white),
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Container(
-                    height: 20, width: 20, color: Colors.white, child: icon1),
-                const SizedBox(width: 10),
-                Text(text),
-              ],
-            ),
-            SvgPicture.asset('lib/assets/images/_sfaxx.svg'),
-          ],
-        ),
+    child: Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10), color: Colors.white),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Container(
+                  height: 20, width: 20, color: Colors.white, child: icon1),
+              const SizedBox(width: 10),
+              Text(text),
+            ],
+          ),
+          SvgPicture.asset('lib/assets/images/_sfaxx.svg'),
+        ],
       ),
     ),
   );
