@@ -8,6 +8,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/pages/configuracoes.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:svg_flutter/svg.dart';
 
 class Menu extends ConsumerStatefulWidget {
   final UserModel userModel;
@@ -32,12 +33,12 @@ class _MenuState extends ConsumerState<Menu> {
             children: [
               MyRow(
                 text: 'Seu perfil',
-                icon: const Icon(Icons.abc),
+                icon1: SvgPicture.asset('lib/assets/images/_sfaxx.svg'),
                 onTap: () => {},
               ),
               MyRow(
                 text: 'Configurações',
-                icon: const Icon(Icons.abc),
+                icon1: SvgPicture.asset('lib/assets/images/_sfaxx.svg'),
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -49,7 +50,7 @@ class _MenuState extends ConsumerState<Menu> {
               ),
               MyRow(
                 text: 'Central de Ajuda',
-                icon: const Icon(Icons.abc),
+                icon1: SvgPicture.asset('lib/assets/images/_sfaxx.svg'),
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -59,7 +60,7 @@ class _MenuState extends ConsumerState<Menu> {
               ),
               MyRow(
                 text: 'Envie-nos seu feedback',
-                icon: const Icon(Icons.abc),
+                icon1: SvgPicture.asset('lib/assets/images/_sfaxx.svg'),
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -105,26 +106,30 @@ Widget MyText({required String text}) {
 }
 
 Widget MyRow(
-    {required String text, required Icon icon, required Function()? onTap}) {
+    {required String text, required Widget icon1, required Function()? onTap}) {
   return InkWell(
     onTap: onTap,
-    child: Column(
-      children: [
-        const SizedBox(height: 10),
-        Row(
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14.0),
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10), color: Colors.white),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               children: [
-                const Icon(Icons.icecream),
+                Container(
+                    height: 20, width: 20, color: Colors.white, child: icon1),
+                const SizedBox(width: 10),
                 Text(text),
               ],
             ),
-            const Icon(Icons.arrow_circle_right_rounded),
+            SvgPicture.asset('lib/assets/images/_sfaxx.svg'),
           ],
         ),
-        const SizedBox(height: 10),
-      ],
+      ),
     ),
   );
 }
