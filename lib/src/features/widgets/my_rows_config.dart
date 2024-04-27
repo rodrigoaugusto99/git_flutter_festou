@@ -10,6 +10,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagam
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/traducao.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:svg_flutter/svg.dart';
 
 class MyRowsConfig extends StatefulWidget {
   final UserModel userModel;
@@ -26,7 +27,6 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
       children: [
         MyRow(
           text: 'Informaçoes pessoais',
-          icon: const Icon(Icons.abc),
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
@@ -34,36 +34,47 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
                   InformacoesPessoais(userModel: widget.userModel),
             ),
           ),
+          icon1: Image.asset(
+            'lib/assets/images/Icon Personinformacoespessoais.png',
+          ),
         ),
+        const SizedBox(height: 10),
         MyRow(
           text: 'Login e Segurança',
-          icon: const Icon(Icons.abc),
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => const LoginSeguranca(),
             ),
           ),
+          icon1: Image.asset(
+              'lib/assets/images/Icon Segurançalogineseguranca.png'),
         ),
+        const SizedBox(height: 10),
         MyRow(
-          text: 'Pagamentos',
-          icon: const Icon(Icons.abc),
+          text: 'Métodos de Pagamento',
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => const Pagamentos(),
             ),
           ),
+          icon1: Image.asset(
+            'lib/assets/images/Icon Pagamentometodosdepagamento.png',
+          ),
         ),
+        const SizedBox(height: 10),
         MyRow(
-          text: 'Minhas atividades/Histórico',
-          icon: const Icon(Icons.abc),
+          text: 'Minhas atividades / Histórico',
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) =>
                   MinhasAtividadesPage(userId: widget.userModel.id),
             ),
+          ),
+          icon1: Image.asset(
+            'lib/assets/images/Icon Históricominhnasatividades.png',
           ),
         ),
       ],
