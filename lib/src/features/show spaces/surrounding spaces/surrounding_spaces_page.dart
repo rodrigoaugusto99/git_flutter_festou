@@ -54,37 +54,7 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        actions: <Widget>[
-          Container(
-            margin: const EdgeInsets.only(right: 18),
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.7),
-              shape: BoxShape.circle,
-            ),
-            child: InkWell(
-              onTap: canRefresh != false
-                  ? () async {
-                      LatLngBounds visibleRegion =
-                          await mapController!.getVisibleRegion();
-                      /*eu estava em duvida em sincronizar o initialCameraPosition
-                        com o rioDeJaneiroBounds (visao inicial p carregar o espaços).
-                        então, printei o valor da regiao visivel logo quando entra no mapa,
-                        ou seja, quando é o initialCameraPosition.*/
-                      log('Visible Region: $visibleRegion');
-
-                      setState(() {
-                        rioDeJaneiroBounds = visibleRegion;
-                      });
-                      canRefresh = false;
-                    }
-                  : null,
-              child: const Icon(
-                Icons.sync,
-                color: Colors.black,
-              ),
-            ),
-          ),
+        actions: const <Widget>[
           // Outras ações podem ser adicionadas aqui, se necessário
         ],
         leading: Padding(
@@ -248,6 +218,44 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
                   ),
                 ),
               ],
+            ),
+          ),
+        ),
+        Positioned(
+          top: 150,
+          left: 60,
+          right: 60,
+          child: GestureDetector(
+            onTap: canRefresh != false
+                ? () async {
+                    LatLngBounds visibleRegion =
+                        await mapController!.getVisibleRegion();
+                    /*eu estava em duvida em sincronizar o initialCameraPosition
+                        com o rioDeJaneiroBounds (visao inicial p carregar o espaços).
+                        então, printei o valor da regiao visivel logo quando entra no mapa,
+                        ou seja, quando é o initialCameraPosition.*/
+                    log('Visible Region: $visibleRegion');
+
+                    setState(() {
+                      rioDeJaneiroBounds = visibleRegion;
+                    });
+                    canRefresh = false;
+                  }
+                : null,
+            child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.purple.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Text(
+                'Atualizar espaços',
+                style: TextStyle(
+                    fontSize: 22,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w900),
+              ),
             ),
           ),
         ),
