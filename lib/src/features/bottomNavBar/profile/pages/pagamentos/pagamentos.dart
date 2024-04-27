@@ -12,56 +12,74 @@ class _PagamentosState extends State<Pagamentos> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(''),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 18.0),
+          child: Container(
+            decoration: BoxDecoration(
+              //color: Colors.white.withOpacity(0.7),
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: const Offset(0, 2), // changes position of shadow
+                ),
+              ],
+            ),
+            child: InkWell(
+              onTap: () => Navigator.of(context).pop(),
+              child: const Icon(
+                Icons.arrow_back,
+                color: Colors.black,
+              ),
+            ),
+          ),
+        ),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        title: const Text(
+          'Metodos de Pagamento',
+          style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.white,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(17.0),
+        padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 40),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Pagamentos',
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-              ),
+            MyRow(
+              text: 'Pix',
+              icon: Image.asset('lib/assets/images/Pix Imagepix.png'),
+              onTap: () {},
             ),
-            const Text(
-              'Viagem',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            const SizedBox(height: 15),
             MyRow(
-                text: 'Formas de pagamento',
-                icon: const Icon(Icons.data_array),
+                color: const Color(0xff9747FF),
+                text: 'Cartao de crédito',
+                icon: Image.asset('lib/assets/images/image 4carotn.png'),
                 onTap: () {}),
+            const SizedBox(height: 15),
             MyRow(
-                text: 'Seus pagamentos',
-                icon: const Icon(Icons.data_array),
+                color: const Color(0xff9747FF),
+                text: 'Cartão Master',
+                icon: Image.asset('lib/assets/images/image 4carotn.png'),
                 onTap: () {}),
+            const SizedBox(height: 15),
             MyRow(
-                text: 'Créditos e cupons pagamentos',
-                icon: const Icon(Icons.data_array),
+                text: 'Cartão Visa',
+                icon: Image.asset('lib/assets/images/image 4carotn.png'),
                 onTap: () {}),
-            const Text(
-              'Hospedagem',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            const SizedBox(height: 15),
             MyRow(
-                text: 'Formas de pagamento',
-                icon: const Icon(Icons.data_array),
+                text: 'Adicionar novo cartão de crédito',
+                icon: Image.asset('lib/assets/images/image 4xxdfad.png'),
                 onTap: () {}),
-            MyRow(
-                text: 'Historico de transações',
-                icon: const Icon(Icons.data_array),
-                onTap: () {}),
-            MyRow(
-                text: 'Doações',
-                icon: const Icon(Icons.data_array),
-                onTap: () {}),
+            const SizedBox(height: 15),
           ],
         ),
       ),
@@ -69,27 +87,60 @@ class _PagamentosState extends State<Pagamentos> {
   }
 
   Widget MyRow(
-      {required String text, required Icon icon, required Function()? onTap}) {
-    return InkWell(
-      onTap: onTap,
-      child: Column(
+      {required String text,
+      required Widget icon,
+      required Function()? onTap,
+      Color? color}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: color ?? Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 6),
+            ),
+          ]),
+      child: Row(
         children: [
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  const Icon(Icons.icecream),
-                  Text(text),
-                ],
-              ),
-              const Icon(Icons.arrow_circle_right_rounded),
-            ],
+          icon,
+          const SizedBox(
+            width: 10,
           ),
-          const SizedBox(height: 10),
+          Text(text),
         ],
       ),
     );
   }
 }
+
+
+/*
+SizedBox(
+      height: 50,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          foregroundColor: Colors.black,
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          backgroundColor: color ?? Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          elevation: 5,
+        ),
+        onPressed: onTap,
+        child: Row(
+          children: [
+            icon,
+            const SizedBox(
+              width: 10,
+            ),
+            Text(text),
+          ],
+        ),
+      ),
+    );
+     */
