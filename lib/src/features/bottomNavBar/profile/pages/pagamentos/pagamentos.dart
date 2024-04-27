@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/new_card_view.dart';
 
 class Pagamentos extends StatefulWidget {
   const Pagamentos({super.key});
@@ -76,9 +77,15 @@ class _PagamentosState extends State<Pagamentos> {
                 onTap: () {}),
             const SizedBox(height: 15),
             MyRow(
-                text: 'Adicionar novo cartão de crédito',
-                icon: Image.asset('lib/assets/images/image 4xxdfad.png'),
-                onTap: () {}),
+              text: 'Adicionar novo cartão de crédito',
+              icon: Image.asset('lib/assets/images/image 4xxdfad.png'),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NewCardView(),
+                ),
+              ),
+            ),
             const SizedBox(height: 15),
           ],
         ),
@@ -91,27 +98,31 @@ class _PagamentosState extends State<Pagamentos> {
       required Widget icon,
       required Function()? onTap,
       Color? color}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: color ?? Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: const Offset(0, 6),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 50,
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: color ?? Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                spreadRadius: 2,
+                blurRadius: 5,
+                offset: const Offset(0, 6),
+              ),
+            ]),
+        child: Row(
+          children: [
+            icon,
+            const SizedBox(
+              width: 10,
             ),
-          ]),
-      child: Row(
-        children: [
-          icon,
-          const SizedBox(
-            width: 10,
-          ),
-          Text(text),
-        ],
+            Text(text),
+          ],
+        ),
       ),
     );
   }
