@@ -8,6 +8,7 @@ import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_page.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:git_flutter_festou/src/repositories/feedback/feedback_firestore_repository.dart';
 import 'package:git_flutter_festou/src/repositories/images/images_storage_repository.dart';
 import 'package:git_flutter_festou/src/repositories/space/space_firestore_repository.dart';
@@ -75,6 +76,33 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
         switch (spaceResult) {
           case Success(value: final imagesData):
             final locadorName = await getLocadorName(spaceData.userId);
+            final locadorAvatar = await getLocadorAvatar(spaceData.userId);
+            final locadorModel = await getLocadorModel(spaceData.userId);
+            if (locadorModel != null) {
+              log('entrou no localModel != dd d dd');
+              Map<String, dynamic> newSpace = {
+                'space_id': spaceData.spaceId,
+                'user_id': locadorModel.id,
+                'titulo': spaceData.titulo,
+                'cep': spaceData.cep,
+                'logradouro': spaceData.logradouro,
+                'numero': spaceData.numero,
+                'bairro': spaceData.bairro,
+                'cidade': spaceData.cidade,
+                'selectedTypes': spaceData.selectedTypes,
+                'selectedServices': spaceData.selectedServices,
+                'average_rating': '0',
+                'num_comments': '0',
+                'locador_name': locadorModel.name,
+                'descricao': spaceData.descricao,
+                'city': spaceData.city,
+                'images_url': imagesData,
+                'latitude': spaceData.latitude,
+                'longitude': spaceData.longitude,
+                'locadorAvatarUrl': locadorModel.avatarUrl
+              };
+              await spacesCollection.add(newSpace);
+            }
 
             Map<String, dynamic> newSpace = {
               'space_id': spaceData.spaceId,
@@ -95,7 +123,7 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
               'images_url': imagesData,
               'latitude': spaceData.latitude,
               'longitude': spaceData.longitude,
-              'locadorAvatarUrl': ''
+              'locadorAvatarUrl': locadorAvatar
             };
             await spacesCollection.add(newSpace);
 
@@ -342,6 +370,59 @@ p decidir o isFavorited*/
 
     // Trate o caso em que nenhum espaço foi encontrado.
     throw Exception("Espaço não encontrado");
+  }
+
+  Future<String> getLocadorAvatar(String userId) async {
+    final userDocument =
+        await usersCollection.where('uid', isEqualTo: userId).get();
+
+    if (userDocument.docs.isNotEmpty) {
+      String locadorAvatar = userDocument.docs.first['avatar_url'];
+      return locadorAvatar;
+    }
+
+    // Trate o caso em que nenhum espaço foi encontrado.
+    throw Exception("Espaço não encontrado");
+  }
+
+  Future<UserModel?> getLocadorModel(String userId) async {
+    final userDocument =
+        await usersCollection.where('uid', isEqualTo: userId).get();
+
+    if (userDocument.docs.isNotEmpty) {
+      final data = userDocument.docs.first.data();
+
+      if (data is Map<String, dynamic>) {
+        UserModel userModel = UserModel(
+          data['email'] ?? '',
+          data['name'] ?? '',
+          data['cpf'] ?? '',
+          data['user_address'] != null ? data['user_address']['cep'] ?? '' : '',
+          data['user_address'] != null
+              ? data['user_address']['logradouro'] ?? ''
+              : '',
+          data['telefone'] ?? '',
+          data['user_address'] != null
+              ? data['user_address']['bairro'] ?? ''
+              : '',
+          data['user_address'] != null
+              ? data['user_address']['cidade'] ?? ''
+              : '',
+          userId,
+          data['doc1_url'] ?? '',
+          data['doc2_url'] ?? '',
+          data['avatar_url'] ?? '',
+        );
+
+        return userModel;
+      } else {
+        return null;
+      }
+    }
+
+    // Trate o caso em que nenhum documento foi encontrado.
+    // throw Exception("Documento não encontrado");
+    return null;
   }
 
   Future<String> getAverageRating(String spaceId) async {

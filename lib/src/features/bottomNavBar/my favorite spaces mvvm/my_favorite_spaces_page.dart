@@ -31,7 +31,14 @@ class _MyFavoriteSpacePageState extends ConsumerState<MyFavoriteSpacePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Meus espacos favoritos'),
+        centerTitle: true,
+        title: const Text(
+          'Meus favoritos',
+          style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.white,
       ),
       body: favSpaces.when(
         data: (MyFavoriteSpacesState data) {

@@ -320,10 +320,10 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
             ),
           ),
           const SizedBox(height: 17),
-          const Row(
+          Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
+              const Text(
                 'Avaliações ',
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
@@ -331,8 +331,8 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                 ),
               ),
               Text(
-                '(200 avaliações)',
-                style: TextStyle(
+                '(${widget.space.numComments} avaliações)',
+                style: const TextStyle(
                   fontWeight: FontWeight.w400,
                   fontSize: 12,
                   color: Color(0xff5E5E5E),
@@ -340,100 +340,9 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
               ),
             ],
           ),
-          const SizedBox(height: 20),
-          Expanded(
-            child: ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.zero,
-              itemCount: 3,
-              itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    padding: const EdgeInsets.only(
-                        left: 27, top: 19, bottom: 7, right: 27),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 3,
-                          blurRadius: 6,
-
-                          offset:
-                              const Offset(0, 7), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 30,
-                              backgroundColor: Colors.blue,
-                            ),
-                            SizedBox(width: 10),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Emília Souza',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xff000000),
-                                  ),
-                                ),
-                                Text(
-                                  '2 dias atrás',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Color(0xff5E5E5E),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Spacer(),
-                            Icon(Icons.info),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
-                          'Pellentesque ac urna sed elit consectetur ullamcorper. '
-                          'Suspendisse potenti. Sed a urna vel est aliquet rhoncus ut eget nunc. '
-                          'Pellentesque a felis enim. Nulla facilisi. Vivamus ac eros dui. '
-                          'Nam vel pulvinar elit, vel interdum libero.',
-                          style: TextStyle(fontSize: 14),
-                        ),
-                        SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Row(
-                              children: [
-                                Icon(Icons.check_circle),
-                                SizedBox(width: 5),
-                                Text('(200)'),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Icon(Icons.thumb_down),
-                                SizedBox(width: 5),
-                                Text('(0)'),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+          SpaceFeedbacksPageLimited(
+            x: 2,
+            space: widget.space,
           ),
         ],
       );
@@ -485,44 +394,6 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                         fit: BoxFit.cover));
               }),
           const SizedBox(height: 26),
-          const Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                'Videos ',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14,
-                ),
-              ),
-              Text(
-                '(3 videos)',
-                style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12,
-                  color: Color(0xff5E5E5E),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 13),
-          GridView.builder(
-            padding: EdgeInsets.zero,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-            ),
-            itemCount: 3,
-            itemBuilder: (BuildContext context, int index) {
-              return Container(
-                height: 100,
-                width: 100,
-                color: Colors.green, // Cor de exemplo
-                margin: const EdgeInsets.all(8.0),
-              );
-            },
-          ),
         ],
       );
     }
@@ -542,7 +413,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                   child: Row(
                     children: [
                       //SvgPicture.asset('assetName'),
-                      Icon(Icons.align_vertical_top_sharp),
+                      const Icon(Icons.align_vertical_top_sharp),
                       Text(widget.space.selectedServices[index]),
                     ],
                   ),
@@ -693,6 +564,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
           Padding(
             padding: const EdgeInsets.only(right: 18.0),
             child: Container(
+              padding: const EdgeInsets.all(5),
               width: 40,
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.7),
@@ -707,6 +579,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
           Padding(
             padding: const EdgeInsets.only(right: 18.0),
             child: Container(
+              padding: const EdgeInsets.all(5),
               width: 40,
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.7),
@@ -873,9 +746,6 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                       ),
                     ),
                     child: TabBar(
-                      dividerColor: Colors.green,
-                      indicatorPadding:
-                          const EdgeInsets.symmetric(horizontal: 15),
                       controller: tabController,
                       indicatorColor: const Color(0xff9747FF),
                       labelPadding: const EdgeInsets.only(bottom: 15),
@@ -911,7 +781,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: SizedBox(
-                      height: 800,
+                      height: 500,
                       child: TabBarView(
                         controller: tabController,
                         //physics: const NeverScrollableScrollPhysics(),

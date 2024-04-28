@@ -22,68 +22,37 @@ class NewFeedbackWidgetLimited extends StatefulWidget {
 class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      height: 230,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: widget.data.feedbacks.length > 3
-            ? widget.x
-            : widget.data.feedbacks.length,
-        itemBuilder: (BuildContext context, int index) {
-          final feedback = widget.data.feedbacks[index];
-          return Container(
-            width: 240,
-            margin: const EdgeInsets.all(10.0),
-            padding: const EdgeInsets.all(16.0),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            padding:
+                const EdgeInsets.only(left: 27, top: 19, bottom: 7, right: 27),
             decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.grey, // Cor da borda
-                width: 1.0, // Largura da borda em pixels
-              ),
               color: Colors.white,
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 3,
+                  blurRadius: 6,
+
+                  offset: const Offset(0, 7), // changes position of shadow
+                ),
+              ],
             ),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            ...buildStarIcons(feedback.rating),
-                          ],
-                        ),
-                        Text(
-                          feedback.date,
-                          style: const TextStyle(
-                            color: Colors.grey,
-                            fontSize: 12.0,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      feedback.content.toString(),
-                      style: const TextStyle(
-                        fontSize: 16.0,
-                      ),
-                    ),
-                  ],
-                ),
                 Row(
                   children: [
                     CircleAvatar(
                       radius: 20,
-                      child: feedback.avatar != ''
+                      child: widget.data.feedbacks[0].avatar != ''
                           ? CircleAvatar(
                               backgroundImage: Image.network(
-                                feedback.avatar,
+                                widget.data.feedbacks[0].avatar,
                                 fit: BoxFit.cover,
                               ).image,
                               radius: 100,
@@ -93,23 +62,157 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
                               size: 90,
                             ),
                     ),
-                    const SizedBox(
-                      width: 10,
+                    const SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.data.feedbacks[0].userName,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xff000000),
+                          ),
+                        ),
+                        Text(
+                          widget.data.feedbacks[0].date,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xff5E5E5E),
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      feedback.userName,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                      ),
+                    const Spacer(),
+                    Row(
+                      children: [
+                        ...buildStarIcons(widget.data.feedbacks[0].rating),
+                      ],
                     ),
                   ],
                 ),
+                const SizedBox(height: 10),
+                Text(
+                  widget.data.feedbacks[0].content.toString(),
+                ),
+                const SizedBox(height: 10),
+                // const Row(
+                //   children: [
+                //     Row(
+                //       children: [
+                //         Icon(Icons.check_circle),
+                //         SizedBox(width: 5),
+                //         Text('(200)'),
+                //       ],
+                //     ),
+                //     Row(
+                //       children: [
+                //         Icon(Icons.thumb_down),
+                //         SizedBox(width: 5),
+                //         Text('(0)'),
+                //       ],
+                //     ),
+                //   ],
+                // ),
               ],
             ),
-          );
-        },
-      ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            padding:
+                const EdgeInsets.only(left: 27, top: 19, bottom: 7, right: 27),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 3,
+                  blurRadius: 6,
+
+                  offset: const Offset(0, 7), // changes position of shadow
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      child: widget.data.feedbacks[1].avatar != ''
+                          ? CircleAvatar(
+                              backgroundImage: Image.network(
+                                widget.data.feedbacks[1].avatar,
+                                fit: BoxFit.cover,
+                              ).image,
+                              radius: 100,
+                            )
+                          : const Icon(
+                              Icons.person,
+                              size: 90,
+                            ),
+                    ),
+                    const SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.data.feedbacks[1].userName,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xff000000),
+                          ),
+                        ),
+                        Text(
+                          widget.data.feedbacks[1].date,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xff5E5E5E),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    Row(
+                      children: [
+                        ...buildStarIcons(widget.data.feedbacks[1].rating),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  widget.data.feedbacks[1].content.toString(),
+                ),
+                const SizedBox(height: 10),
+                // const Row(
+                //   children: [
+                //     Row(
+                //       children: [
+                //         Icon(Icons.check_circle),
+                //         SizedBox(width: 5),
+                //         Text('(200)'),
+                //       ],
+                //     ),
+                //     Row(
+                //       children: [
+                //         Icon(Icons.thumb_down),
+                //         SizedBox(width: 5),
+                //         Text('(0)'),
+                //       ],
+                //     ),
+                //   ],
+                // ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
