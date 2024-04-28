@@ -54,9 +54,6 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        actions: const <Widget>[
-          // Outras ações podem ser adicionadas aqui, se necessário
-        ],
         leading: Padding(
           padding: const EdgeInsets.only(left: 18.0),
           child: Container(

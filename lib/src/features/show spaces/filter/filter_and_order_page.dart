@@ -111,29 +111,68 @@ class _FilterAndOrderPageState extends ConsumerState<FilterAndOrderPage> {
 
     final x = MediaQuery.of(context).size.width;
     return SliverAppBar(
-      automaticallyImplyLeading: true,
-      flexibleSpace: FlexibleSpaceBar(
-        background: Padding(
-          padding: EdgeInsets.symmetric(horizontal: x * 0.03),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              InkWell(
-                onTap: () => showFilterModal(context),
-                child: const Text(
-                  'filtrar',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 18.0),
+          child: Container(
+            padding: const EdgeInsets.all(7),
+            decoration: BoxDecoration(
+              //color: Colors.white.withOpacity(0.7),
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: const Offset(0, 2), // changes position of shadow
                 ),
+              ],
+            ),
+            child: InkWell(
+              onTap: () => Navigator.of(context).pop(),
+              child: const Icon(
+                Icons.notifications_outlined,
+                color: Colors.black,
+              ),
+            ),
+          ),
+        ),
+      ],
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 18.0),
+        child: Container(
+          decoration: BoxDecoration(
+            //color: Colors.white.withOpacity(0.7),
+            color: Colors.white,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 2,
+                blurRadius: 5,
+                offset: const Offset(0, 2), // changes position of shadow
               ),
             ],
           ),
+          child: InkWell(
+            onTap: () => Navigator.of(context).pop(),
+            child: const Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
+          ),
         ),
       ),
+      centerTitle: true,
+      title: const Text(
+        'Espaços filtrados',
+        style: TextStyle(
+            fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+      ),
+      elevation: 0,
+      backgroundColor: Colors.white,
       foregroundColor: Colors.black,
-      backgroundColor: Colors.blueGrey,
       pinned: false,
     );
   }

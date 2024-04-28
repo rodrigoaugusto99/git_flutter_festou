@@ -17,9 +17,6 @@ class NewPageFiltered extends ConsumerWidget {
         slivers: [
           //AppBar com botao p/ filtrar
           const FilterAndOrderPage(),
-          const SliverToBoxAdapter(
-            child: Text('SPACES FILTERED'),
-          ),
           MySliverListFiltered(spaces: spaces),
         ],
       ),
