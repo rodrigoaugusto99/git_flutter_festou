@@ -118,100 +118,101 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            padding:
-                const EdgeInsets.only(left: 27, top: 19, bottom: 7, right: 27),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 3,
-                  blurRadius: 6,
+        if (widget.x! < 2)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              padding: const EdgeInsets.only(
+                  left: 27, top: 19, bottom: 7, right: 27),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 3,
+                    blurRadius: 6,
 
-                  offset: const Offset(0, 7), // changes position of shadow
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 20,
-                      child: widget.data.feedbacks[1].avatar != ''
-                          ? CircleAvatar(
-                              backgroundImage: Image.network(
-                                widget.data.feedbacks[1].avatar,
-                                fit: BoxFit.cover,
-                              ).image,
-                              radius: 100,
-                            )
-                          : const Icon(
-                              Icons.person,
-                              size: 90,
+                    offset: const Offset(0, 7), // changes position of shadow
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 20,
+                        child: widget.data.feedbacks[1].avatar != ''
+                            ? CircleAvatar(
+                                backgroundImage: Image.network(
+                                  widget.data.feedbacks[1].avatar,
+                                  fit: BoxFit.cover,
+                                ).image,
+                                radius: 100,
+                              )
+                            : const Icon(
+                                Icons.person,
+                                size: 90,
+                              ),
+                      ),
+                      const SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.data.feedbacks[1].userName,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xff000000),
                             ),
-                    ),
-                    const SizedBox(width: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.data.feedbacks[1].userName,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xff000000),
                           ),
-                        ),
-                        Text(
-                          widget.data.feedbacks[1].date,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Color(0xff5E5E5E),
+                          Text(
+                            widget.data.feedbacks[1].date,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Color(0xff5E5E5E),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const Spacer(),
-                    Row(
-                      children: [
-                        ...buildStarIcons(widget.data.feedbacks[1].rating),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  widget.data.feedbacks[1].content.toString(),
-                ),
-                const SizedBox(height: 10),
-                // const Row(
-                //   children: [
-                //     Row(
-                //       children: [
-                //         Icon(Icons.check_circle),
-                //         SizedBox(width: 5),
-                //         Text('(200)'),
-                //       ],
-                //     ),
-                //     Row(
-                //       children: [
-                //         Icon(Icons.thumb_down),
-                //         SizedBox(width: 5),
-                //         Text('(0)'),
-                //       ],
-                //     ),
-                //   ],
-                // ),
-              ],
+                        ],
+                      ),
+                      const Spacer(),
+                      Row(
+                        children: [
+                          ...buildStarIcons(widget.data.feedbacks[1].rating),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    widget.data.feedbacks[1].content.toString(),
+                  ),
+                  const SizedBox(height: 10),
+                  // const Row(
+                  //   children: [
+                  //     Row(
+                  //       children: [
+                  //         Icon(Icons.check_circle),
+                  //         SizedBox(width: 5),
+                  //         Text('(200)'),
+                  //       ],
+                  //     ),
+                  //     Row(
+                  //       children: [
+                  //         Icon(Icons.thumb_down),
+                  //         SizedBox(width: 5),
+                  //         Text('(0)'),
+                  //       ],
+                  //     ),
+                  //   ],
+                  // ),
+                ],
+              ),
             ),
           ),
-        ),
       ],
     );
   }

@@ -280,6 +280,20 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
           widget.space.spaceId, widget.space.isFavorited);
     }
 
+    String getIconPath(String service) {
+      if (service == 'Cozinha') 'path';
+      if (service == 'Estacionamento') 'path';
+      if (service == 'Segurança') 'path';
+      if (service == 'Limpeza ') 'path';
+      if (service == 'Decoração') 'path';
+      if (service == 'Bar') 'path';
+      if (service == 'Garçons') 'path';
+      if (service == 'Ar-condicionado') 'path';
+      if (service == 'Banheiros') 'path';
+      if (service == 'Som e iluminação') 'path';
+      return 'defaultPath';
+    }
+
     final x = MediaQuery.of(context).size.width;
     final y = MediaQuery.of(context).size.height;
 
@@ -320,30 +334,59 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
             ),
           ),
           const SizedBox(height: 17),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              const Text(
-                'Avaliações ',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14,
+          if (widget.space.numComments != '0')
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                const Text(
+                  'Avaliações ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  '(${widget.space.numComments} avaliações)',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                    color: Color(0xff5E5E5E),
+                  ),
+                ),
+              ],
+            ),
+          if (widget.space.numComments != '0')
+            SpaceFeedbacksPageLimited(
+              x: 2,
+              space: widget.space,
+            ),
+          if (widget.space.numComments != '0')
+            InkWell(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  child: const Text(
+                    'Ver tudo',
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
                 ),
               ),
-              Text(
-                '(${widget.space.numComments} avaliações)',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12,
-                  color: Color(0xff5E5E5E),
-                ),
-              ),
-            ],
-          ),
-          SpaceFeedbacksPageLimited(
-            x: 2,
-            space: widget.space,
-          ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        SpaceFeedbacksPageAll(space: widget.space),
+                  ),
+                );
+              },
+            ),
         ],
       );
     }
@@ -413,6 +456,8 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                   child: Row(
                     children: [
                       //SvgPicture.asset('assetName'),
+                      //todo:
+                      //getIcon(widget.space.selectedServices[index]),
                       const Icon(Icons.align_vertical_top_sharp),
                       Text(widget.space.selectedServices[index]),
                     ],

@@ -18,7 +18,7 @@ class NewFeedbackWidgetAll extends StatefulWidget {
 }
 
 String formatFeedbackDate(String date) {
-  final formatter = DateFormat('MM/yyyy'); // Use o formato correto
+  final formatter = DateFormat('dd/MM/yyyy');
   final feedbackDateTime = formatter.parse(date);
   final now = DateTime.now();
   final difference = now.difference(feedbackDateTime);
