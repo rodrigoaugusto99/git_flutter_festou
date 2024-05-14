@@ -242,7 +242,6 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                       return const Text('Nenhum documento encontrado.');
                     }
                   }),
-
               myRow(
                 label: 'Nome civil',
                 controller: nameEC,
@@ -255,14 +254,10 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 label: 'E-mail',
                 controller: emailEC,
               ),
-
-              //endereço
-
               myRow(
                 label: 'CEP',
                 controller: cepEC,
               ),
-
               myRow(
                 label: 'Logradouro',
                 controller: logradourolEC,
