@@ -4,10 +4,12 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/calendario.dart';
 import 'package:git_flutter_festou/src/features/register/host%20feedback/host_feedback_register_page.dart';
 import 'package:git_flutter_festou/src/features/register/reserva/reserva_register_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/show%20reservations/space_reservations_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_descricao.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/calendar_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/descricao_teste.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_new_map.dart';
@@ -911,17 +913,25 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-        child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            decoration: BoxDecoration(
-                color: const Color(0xff9747FF),
-                borderRadius: BorderRadius.circular(50)),
-            child: const Text(
-              'Alugar',
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-              textAlign: TextAlign.center,
-            )),
+        child: GestureDetector(
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const Calendario(),
+            ),
+          ),
+          child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              decoration: BoxDecoration(
+                  color: const Color(0xff9747FF),
+                  borderRadius: BorderRadius.circular(50)),
+              child: const Text(
+                'Alugar',
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                textAlign: TextAlign.center,
+              )),
+        ),
       ),
     );
   }
