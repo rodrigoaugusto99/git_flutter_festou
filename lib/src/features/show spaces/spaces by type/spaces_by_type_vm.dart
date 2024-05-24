@@ -147,6 +147,9 @@ class SpacesByTypeVm extends ChangeNotifier {
       spaceDocument['latitude'] ?? '',
       spaceDocument['longitude'] ?? '',
       spaceDocument['locadorAvatarUrl'] ?? '',
+      spaceDocument['startTime'] ?? '',
+      spaceDocument['endTime'] ?? '',
+      spaceDocument['days'] ?? [],
     );
   }
 

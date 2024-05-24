@@ -917,7 +917,9 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const Calendario(),
+              builder: (context) => CalendarPage(
+                space: widget.space,
+              ),
             ),
           ),
           child: Container(

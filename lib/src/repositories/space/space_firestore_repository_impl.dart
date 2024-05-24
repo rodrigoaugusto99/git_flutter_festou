@@ -46,9 +46,12 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
         List<String> selectedServices,
         List<File> imageFiles,
         String descricao,
-        String city,
+        //String city,
         double latitude,
         double longitude,
+        String startTime,
+        String endTime,
+        List<String> days,
       }) spaceData) async {
     try {
       // Crie um novo espaço com os dados fornecidos
@@ -95,11 +98,14 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
                 'num_comments': '0',
                 'locador_name': locadorModel.name,
                 'descricao': spaceData.descricao,
-                'city': spaceData.city,
+                'city': 'xxxx',
                 'images_url': imagesData,
                 'latitude': spaceData.latitude,
                 'longitude': spaceData.longitude,
-                'locadorAvatarUrl': locadorModel.avatarUrl
+                'locadorAvatarUrl': locadorModel.avatarUrl,
+                'startTime': spaceData.startTime,
+                'endTime': spaceData.endTime,
+                'days': spaceData.days,
               };
               await spacesCollection.add(newSpace);
             }
@@ -119,17 +125,20 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
               'num_comments': '0',
               'locador_name': locadorName,
               'descricao': spaceData.descricao,
-              'city': spaceData.city,
+              'city': 'xxx',
               'images_url': imagesData,
               'latitude': spaceData.latitude,
               'longitude': spaceData.longitude,
-              'locadorAvatarUrl': locadorAvatar
+              'locadorAvatarUrl': locadorAvatar,
+              'startTime': spaceData.startTime,
+              'endTime': spaceData.endTime,
+              'days': spaceData.days,
             };
             await spacesCollection.add(newSpace);
 
           case Failure():
-            return Failure(
-                RepositoryException(message: 'Esse espaço já existe'));
+            return Failure(RepositoryException(
+                message: 'Nao foi possivel recuperar as imagens'));
         }
 
         log('Informações de espaço adicionadas com sucesso!');
@@ -356,6 +365,9 @@ p decidir o isFavorited*/
       spaceDocument['latitude'] ?? '',
       spaceDocument['longitude'] ?? '',
       spaceDocument['locadorAvatarUrl'] ?? '',
+      spaceDocument['startTime'] ?? '',
+      spaceDocument['endTime'] ?? '',
+      spaceDocument['days'] ?? [],
     );
   }
 

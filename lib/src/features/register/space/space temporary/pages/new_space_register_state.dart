@@ -16,8 +16,13 @@ class NewSpaceRegisterState {
   final String numero;
   final String bairro;
   final String cidade;
+  final String preco;
+
   final List<File> imageFiles;
   final String? errorMessage;
+  final String startTime;
+  final String endTime;
+  final List<String> days;
 
   NewSpaceRegisterState.initial()
       : this(
@@ -32,6 +37,10 @@ class NewSpaceRegisterState {
           numero: '',
           bairro: '',
           cidade: '',
+          preco: '',
+          startTime: '',
+          endTime: '',
+          days: [],
         );
 
   NewSpaceRegisterState(
@@ -46,6 +55,10 @@ class NewSpaceRegisterState {
       required this.bairro,
       required this.cidade,
       required this.imageFiles,
+      required this.preco,
+      required this.startTime,
+      required this.endTime,
+      required this.days,
       this.errorMessage});
 
   NewSpaceRegisterState copyWith(
@@ -59,21 +72,29 @@ class NewSpaceRegisterState {
       String? numero,
       String? bairro,
       String? cidade,
+      String? preco,
+      String? startTime,
+      String? endTime,
+      List<String>? days,
       List<File>? imageFiles,
       ValueGetter<String?>? errorMessage}) {
     return NewSpaceRegisterState(
-        status: status ?? this.status,
-        selectedTypes: selectedTypes ?? this.selectedTypes,
-        selectedServices: selectedServices ?? this.selectedServices,
-        titulo: titulo ?? this.titulo,
-        descricao: descricao ?? this.descricao,
-        cep: cep ?? this.cep,
-        logradouro: logradouro ?? this.logradouro,
-        numero: numero ?? this.numero,
-        bairro: bairro ?? this.bairro,
-        cidade: cidade ?? this.cidade,
-        imageFiles: imageFiles ?? this.imageFiles,
-        errorMessage:
-            errorMessage != null ? errorMessage() : this.errorMessage);
+      status: status ?? this.status,
+      selectedTypes: selectedTypes ?? this.selectedTypes,
+      selectedServices: selectedServices ?? this.selectedServices,
+      titulo: titulo ?? this.titulo,
+      descricao: descricao ?? this.descricao,
+      cep: cep ?? this.cep,
+      logradouro: logradouro ?? this.logradouro,
+      numero: numero ?? this.numero,
+      bairro: bairro ?? this.bairro,
+      cidade: cidade ?? this.cidade,
+      imageFiles: imageFiles ?? this.imageFiles,
+      errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
+      preco: preco ?? this.preco,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      days: days ?? this.days,
+    );
   }
 }

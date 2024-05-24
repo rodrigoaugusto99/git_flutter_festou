@@ -70,149 +70,153 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
     final spaceRegister = ref.watch(newSpaceRegisterVmProvider.notifier);
 
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(25.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                InkWell(
-                  onTap: () {},
-                  child: Container(
-                    padding: const EdgeInsets.all(7.0),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(20)),
-                    child: const Text(
-                      'Salvar e sair',
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {},
-                  child: Container(
-                    padding: const EdgeInsets.all(7.0),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(20)),
-                    child: const Text(
-                      'Dúvidas?',
-                    ),
-                  ),
+      appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 18.0),
+          child: Container(
+            decoration: BoxDecoration(
+              //color: Colors.white.withOpacity(0.7),
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
-          ),
-          Form(
-            key: formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Onde fica seu espaço?',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                ),
-                const Text(
-                    'Seu endereço só é compartilhado com os hospedes depois que a reserva é confirmada'),
-                TextFormField(
-                  controller: cepEC,
-                  validator: spaceRegister.validateCEP(),
-                  decoration: const InputDecoration(
-                    hintText: 'CEP',
-                  ),
-                  onChanged: onChangedCep,
-                ),
-                TextFormField(
-                  //enabled: !isCepAutoCompleted,
-                  controller: logradouroEC,
-                  validator: spaceRegister.validateLogradouro(),
-                  decoration: const InputDecoration(
-                    hintText: 'Logradouro',
-                  ),
-                ),
-                TextFormField(
-                  controller: numeroEC,
-                  validator: spaceRegister.validateNumero(),
-                  decoration: const InputDecoration(
-                    hintText: 'Número',
-                  ),
-                ),
-                TextFormField(
-                  //enabled: !isCepAutoCompleted,
-                  controller: bairroEC,
-                  validator: spaceRegister.validateBairro(),
-                  decoration: const InputDecoration(
-                    hintText: 'Bairro',
-                  ),
-                ),
-                TextFormField(
-                  enabled: !isCepAutoCompleted,
-                  controller: cidadeEC,
-                  validator: spaceRegister.validateCidade(),
-                  decoration: const InputDecoration(
-                    hintText: 'Cidade',
-                  ),
-                ),
-              ],
+            child: InkWell(
+              onTap: () => Navigator.of(context).pop(),
+              child: const Icon(
+                Icons.arrow_back,
+                color: Colors.black,
+              ),
             ),
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                InkWell(
-                  onTap: () => Navigator.pop(context),
-                  child: const Text(
-                    'Voltar',
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
+        ),
+        centerTitle: true,
+        title: const Text(
+          'Cadastro de espaço',
+          style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.white,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Form(
+              key: formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Onde fica seu espaço?',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                  const Text(
+                      'Seu endereço só é compartilhado com os hospedes depois que a reserva é confirmada'),
+                  TextFormField(
+                    controller: cepEC,
+                    validator: spaceRegister.validateCEP(),
+                    decoration: const InputDecoration(
+                      hintText: 'CEP',
+                    ),
+                    onChanged: onChangedCep,
+                  ),
+                  TextFormField(
+                    //enabled: !isCepAutoCompleted,
+                    controller: logradouroEC,
+                    validator: spaceRegister.validateLogradouro(),
+                    decoration: const InputDecoration(
+                      hintText: 'Logradouro',
                     ),
                   ),
-                ),
-                InkWell(
-                  onTap: () async {
-                    await spaceRegister.validateForm(
-                      context,
-                      formKey,
-                      cepEC,
-                      logradouroEC,
-                      numeroEC,
-                      bairroEC,
-                      cidadeEC,
-                    );
-
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ServicosAcomodacoes(),
+                  TextFormField(
+                    controller: numeroEC,
+                    validator: spaceRegister.validateNumero(),
+                    decoration: const InputDecoration(
+                      hintText: 'Número',
+                    ),
+                  ),
+                  TextFormField(
+                    //enabled: !isCepAutoCompleted,
+                    controller: bairroEC,
+                    validator: spaceRegister.validateBairro(),
+                    decoration: const InputDecoration(
+                      hintText: 'Bairro',
+                    ),
+                  ),
+                  TextFormField(
+                    enabled: !isCepAutoCompleted,
+                    controller: cidadeEC,
+                    validator: spaceRegister.validateCidade(),
+                    decoration: const InputDecoration(
+                      hintText: 'Cidade',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: const Text(
+                      'Voltar',
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
                       ),
-                    );
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.black,
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(10)),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 10),
-                    child: const Text(
-                      'Avançar',
-                      style: TextStyle(color: Colors.white),
                     ),
                   ),
-                )
-              ],
+                  InkWell(
+                    onTap: () async {
+                      await spaceRegister.validateForm(
+                        context,
+                        formKey,
+                        cepEC,
+                        logradouroEC,
+                        numeroEC,
+                        bairroEC,
+                        cidadeEC,
+                      );
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ServicosAcomodacoes(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.black,
+                          border: Border.all(),
+                          borderRadius: BorderRadius.circular(10)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 10),
+                      child: const Text(
+                        'Avançar',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

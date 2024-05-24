@@ -429,7 +429,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
 
                     if (user != null) {
                       // Mostra um diálogo de confirmação antes de excluir a conta
-                      Navigator.of(context).pop();
+
                       await Future.delayed(Duration.zero);
                       await showDialog(
                         context: context,

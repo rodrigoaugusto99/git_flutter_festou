@@ -23,6 +23,10 @@ class SpaceModel {
   final double longitude;
 
   final String locadorAvatarUrl;
+  final String startTime;
+  final String endTime;
+  final List<String> days;
+  //final List<>
 
   SpaceModel(
     this.isFavorited,
@@ -45,5 +49,8 @@ class SpaceModel {
     this.latitude,
     this.longitude,
     this.locadorAvatarUrl,
+    this.startTime,
+    this.endTime,
+    this.days,
   );
 }

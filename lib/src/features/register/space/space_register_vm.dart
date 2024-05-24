@@ -194,19 +194,19 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
 
     final spaceFirestoreRepository = ref.read(spaceFirestoreRepositoryProvider);
 
-    final registerResultSpace =
-        await spaceFirestoreRepository.saveSpace(spaceData);
+    // final registerResultSpace =
+    //     await spaceFirestoreRepository.saveSpace(spaceData);
 
-    switch (registerResultSpace) {
-      case Success():
-        state = state.copyWith(status: SpaceRegisterStateStatus.success);
-        log('state: $state');
-        break;
-      case Failure(exception: RepositoryException(:final message)):
-        state = state.copyWith(
-          status: SpaceRegisterStateStatus.error,
-          errorMessage: () => message,
-        );
-    }
+    // switch (registerResultSpace) {
+    //   case Success():
+    //     state = state.copyWith(status: SpaceRegisterStateStatus.success);
+    //     log('state: $state');
+    //     break;
+    //   case Failure(exception: RepositoryException(:final message)):
+    //     state = state.copyWith(
+    //       status: SpaceRegisterStateStatus.error,
+    //       errorMessage: () => message,
+    //     );
+    // }
   }
 }

@@ -17,7 +17,7 @@ class _RevisaoState extends ConsumerState<Revisao> {
   Widget build(BuildContext context) {
     final newSpaceRegister = ref.watch(newSpaceRegisterVmProvider.notifier);
 
-    ref.listen(spaceRegisterVmProvider, (_, state) {
+    ref.listen(newSpaceRegisterVmProvider, (_, state) {
       switch (state) {
         case SpaceRegisterState(status: SpaceRegisterStateStatus.initial):
           break;
@@ -32,122 +32,100 @@ class _RevisaoState extends ConsumerState<Revisao> {
           Messages.showError(errorMessage, context);
       }
     });
+    final spaceRegisterState = ref.watch(newSpaceRegisterVmProvider);
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(25.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                InkWell(
-                  onTap: () {},
-                  child: Container(
-                    padding: const EdgeInsets.all(7.0),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(20)),
-                    child: const Text(
-                      'Salvar e sair',
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {},
-                  child: Container(
-                    padding: const EdgeInsets.all(7.0),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(20)),
-                    child: const Text(
-                      'Dúvidas?',
-                    ),
-                  ),
+      appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 18.0),
+          child: Container(
+            decoration: BoxDecoration(
+              //color: Colors.white.withOpacity(0.7),
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
-          ),
-          Expanded(
-            child: ListView(
-              children: [
-                const Text(
-                  'Revise seu anuncio',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                ),
-                const Text(
-                    'Confira o que mostraremos aos hospedes.\nCertifique-se de que está tudo certo'),
-                Container(
-                  color: Colors.grey,
-                  height: 300,
-                  width: 300,
-                ),
-                const Text(
-                  'Proximo passo?',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const Text(
-                  'Confirme as informacoes e publique o anuncio',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const Text(
-                  'Entraremos em contato se voce precisar verificar sua idenmtidade ou se registrar junto ao governo local',
-                ),
-                const Text(
-                  'Configure o calendario',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const Text(
-                  'Escolha as datas em que sua acomodacao está disponivel. O anuncio fcará visaivel por 24 hortas depois da publicacao',
-                ),
-                const Text(
-                  'Ajuste as configuraçao',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const Text(
-                  'Defina as regras de segurança da casa, selecione uma politica de cancelmaento, esoclha como os hospedes podem reservar e muito mais',
-                ),
-              ],
+            child: InkWell(
+              onTap: () => Navigator.of(context).pop(),
+              child: const Icon(
+                Icons.arrow_back,
+                color: Colors.black,
+              ),
             ),
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                InkWell(
-                  onTap: () => Navigator.pop(context),
-                  child: const Text(
-                    'Voltar',
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () => newSpaceRegister.register(),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.black,
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(10)),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 10),
+        ),
+        centerTitle: true,
+        title: const Text(
+          'Cadastro de espaço',
+          style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.white,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(
+              height: 20,
+            ),
+            Text('Days: ${spaceRegisterState.days.toString()}'),
+            Text(
+                'Selected Services: ${spaceRegisterState.selectedServices.toString()}'),
+            Text(
+                'Selected Types: ${spaceRegisterState.selectedTypes.toString()}'),
+            Text('Bairro: ${spaceRegisterState.bairro}'),
+            Text('CEP: ${spaceRegisterState.cep}'),
+            Text('Cidade: ${spaceRegisterState.cidade}'),
+            Text('Descrição: ${spaceRegisterState.descricao}'),
+            Text('Logradouro: ${spaceRegisterState.logradouro}'),
+            Text('Número: ${spaceRegisterState.numero}'),
+            Text('Preço: ${spaceRegisterState.preco}'),
+            Text('Título: ${spaceRegisterState.titulo}'),
+            Text('Start Time: ${spaceRegisterState.startTime}'),
+            Text('End Time: ${spaceRegisterState.endTime}'),
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
                     child: const Text(
-                      'Avançar',
-                      style: TextStyle(color: Colors.white),
+                      'Voltar',
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
-                )
-              ],
+                  InkWell(
+                    onTap: () => newSpaceRegister.register(),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.black,
+                          border: Border.all(),
+                          borderRadius: BorderRadius.circular(10)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 10),
+                      child: const Text(
+                        'Avançar',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
