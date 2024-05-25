@@ -14,11 +14,25 @@ class InformacoesPessoaisVM extends _$InformacoesPessoaisVM {
   @override
   InformacoesPessoaisState build() => InformacoesPessoaisState.initial();
 
-  Future<void> updateInfo(String text, String newText) async {
+  Future<void> updateInfo({
+    required String cidade,
+    required String name,
+    required String cep,
+    required String email,
+    required String telefone,
+    required String logradouro,
+    required String bairro,
+  }) async {
     final usersRepository = ref.watch(userFirestoreRepositoryProvider);
 
-    final result = await usersRepository.updatetUser(text, newText);
-    switch (result) {
+    final a = await usersRepository.updatetUser('cidade', cidade);
+    final b = await usersRepository.updatetUser('name', name);
+    final c = await usersRepository.updatetUser('cep', cep);
+    final d = await usersRepository.updatetUser('email', email);
+    final e = await usersRepository.updatetUser('telefone', telefone);
+    final f = await usersRepository.updatetUser('logradouro', logradouro);
+    final g = await usersRepository.updatetUser('bairro', bairro);
+    switch (a) {
       case Success():
         state = state.copyWith(
           status: InformacoesPessoaisStateStatus.success,
@@ -29,66 +43,6 @@ class InformacoesPessoaisVM extends _$InformacoesPessoaisVM {
           status: InformacoesPessoaisStateStatus.error,
           errorMessage: () => message,
         );
-    }
-  }
-
-  void pickImage1() async {
-    final imagePicker = ImagePicker();
-    final XFile? image =
-        await imagePicker.pickImage(source: ImageSource.gallery);
-
-    if (image != null) {
-      final File imageFile = File(image.path);
-      state = state.copyWith(
-        image1: imageFile,
-        status: InformacoesPessoaisStateStatus.success,
-      );
-    } else {
-      // O usuário cancelou a seleção de imagem.
-      // Adicione tratamento de acordo com suas necessidades.
-    }
-  }
-
-  void pickImage2() async {
-    final imagePicker = ImagePicker();
-    final XFile? image =
-        await imagePicker.pickImage(source: ImageSource.gallery);
-
-    if (image != null) {
-      final File imageFile = File(image.path);
-      state = state.copyWith(
-        image2: imageFile,
-        status: InformacoesPessoaisStateStatus.success,
-      );
-    } else {
-      // O usuário cancelou a seleção de imagem.
-      // Adicione tratamento de acordo com suas necessidades.
-    }
-  }
-
-  Future<bool> uploadNewImages(String userId) async {
-    final InformacoesPessoaisState(:image1, :image2) = state;
-
-    final imageStorageRepository = ref.watch(imagesStorageRepositoryProvider);
-    state = state.copyWith(imageFiles: [image1, image2]);
-    List<File> allImages = state.imageFiles;
-
-    final result2 = await imageStorageRepository.uploadDocImages(
-        imageFiles: allImages, userId: userId);
-
-    switch (result2) {
-      case Success():
-        state = state.copyWith(
-          status: InformacoesPessoaisStateStatus.success,
-        );
-        return true;
-
-      case Failure(exception: RepositoryException(:final message)):
-        state = state.copyWith(
-          status: InformacoesPessoaisStateStatus.error,
-          errorMessage: () => message,
-        );
-        return false;
     }
   }
 

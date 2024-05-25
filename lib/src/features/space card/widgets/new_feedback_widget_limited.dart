@@ -47,21 +47,21 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
               children: [
                 Row(
                   children: [
-                    CircleAvatar(
-                      radius: 20,
-                      child: widget.data.feedbacks[0].avatar != ''
-                          ? CircleAvatar(
-                              backgroundImage: Image.network(
-                                widget.data.feedbacks[0].avatar,
-                                fit: BoxFit.cover,
-                              ).image,
-                              radius: 100,
-                            )
-                          : const Icon(
-                              Icons.person,
-                              size: 90,
-                            ),
-                    ),
+                    if (widget.data.feedbacks[0].avatar == '')
+                      const CircleAvatar(
+                        radius: 20,
+                        child: Icon(
+                          Icons.person,
+                        ),
+                      ),
+                    if (widget.data.feedbacks[0].avatar != '')
+                      CircleAvatar(
+                        backgroundImage: Image.network(
+                          widget.data.feedbacks[0].avatar,
+                          fit: BoxFit.cover,
+                        ).image,
+                        radius: 20,
+                      ),
                     const SizedBox(width: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

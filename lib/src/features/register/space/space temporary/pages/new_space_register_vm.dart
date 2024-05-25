@@ -90,13 +90,66 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
     }
   }
 
+  bool validatePreco(String preco) {
+    if (preco.isEmpty) {
+      return false;
+    } else {
+      state = state.copyWith(
+        status: NewSpaceRegisterStateStatus.success,
+        preco: preco,
+      );
+      log('----state atualizado----');
+      log('${state.selectedTypes}');
+      log('${state.selectedServices}');
+      log(state.cep);
+      log(state.logradouro);
+      log(state.numero);
+      log(state.bairro);
+      log(state.cidade);
+      log(state.titulo);
+      log(state.preco);
+      return true;
+    }
+  }
+
+  bool validateDiaEHoras({
+    required List<String> days,
+    required String startTime,
+    required String endTime,
+  }) {
+    if (days.isEmpty || startTime == '' || endTime == '') {
+      return false;
+    } else {
+      state = state.copyWith(
+        status: NewSpaceRegisterStateStatus.success,
+        startTime: startTime,
+        endTime: endTime,
+        days: days,
+      );
+      log('----state atualizado----');
+      log('${state.selectedTypes}');
+      log('${state.selectedServices}');
+      log(state.cep, name: 'cpf');
+      log(state.logradouro, name: 'logradouro');
+      log(state.numero, name: 'numero');
+      log(state.bairro, name: 'bairro');
+      log(state.cidade, name: 'cidade');
+      log(state.titulo, name: 'titulo');
+      log(state.preco, name: 'preco');
+      log(state.startTime, name: 'startTime');
+      log(state.endTime, name: 'endTime');
+      log(state.days.toString(), name: 'days');
+      return true;
+    }
+  }
+
   bool validateDescricao(String descricao) {
     if (descricao.isEmpty) {
       return false;
     } else {
       state = state.copyWith(
         status: NewSpaceRegisterStateStatus.success,
-        titulo: descricao,
+        descricao: descricao,
       );
       log('----state atualizado----');
       log('${state.selectedTypes}');
@@ -231,6 +284,11 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
       :numero,
       :bairro,
       :cidade,
+      :startTime,
+      :endTime,
+      :days,
+      :descricao,
+      :titulo,
     ) = state;
 
     final spaceId = uuid.v4();
@@ -242,7 +300,7 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
     final spaceData = (
       spaceId: spaceId,
       userId: userId,
-      titulo: 'teste',
+      titulo: titulo,
       cep: cep,
       logradouro: logradouro,
       numero: numero,
@@ -251,8 +309,11 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
       selectedTypes: selectedTypes,
       selectedServices: selectedServices,
       imageFiles: imageFiles,
-      descricao: 'teste',
-      city: 'teste',
+      descricao: descricao,
+      startTime: startTime,
+      endTime: endTime,
+      days: days,
+      //city: 'teste',
       latitude: latLng.latitude,
       longitude: latLng.longitude,
     );

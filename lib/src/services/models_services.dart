@@ -85,6 +85,9 @@ class ModelsServices {
           spaceDocument['latitude'] ?? '',
           spaceDocument['longitude'] ?? '',
           spaceDocument['locadorAvatarUrl'] ?? '',
+          spaceDocument['startTime'] ?? '',
+          spaceDocument['endTime'] ?? '',
+          spaceDocument['days'] ?? [],
         );
 
         return spaceModel;

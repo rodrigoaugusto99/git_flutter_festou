@@ -78,6 +78,7 @@ dependencies:
   loading_indicator: ^3.1.1
   svg_flutter: ^0.0.1
   shared_preferences: ^2.2.3
+  calendar_date_picker2: ^1.0.2
 
 dev_dependencies:
   flutter_test:

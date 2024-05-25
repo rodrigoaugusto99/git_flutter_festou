@@ -14,16 +14,23 @@ class FeedbacksWidget extends StatefulWidget {
 }
 
 class _FeedbacksWidgetState extends State<FeedbacksWidget> {
-  //? aqui é do "meus feedbacks"
   List<Icon> buildStarIcons(int rating) {
-    return List.generate(
-      rating,
-      (index) => const Icon(
+    final List<Icon> stars = List.generate(
+      5,
+      (index) => Icon(
         Icons.star,
-        color: Colors.yellow,
-        size: 24.0,
+        color: index < rating
+            ? rating == 1 || rating == 2
+                ? Colors.red
+                : rating == 3
+                    ? Colors.orange
+                    : Colors.green
+            : Colors.grey[300], // Cinza claro para estrelas não atingidas
+        size: 14.0,
       ),
     );
+
+    return stars;
   }
 
   @override
@@ -38,61 +45,82 @@ class _FeedbacksWidgetState extends State<FeedbacksWidget> {
           itemBuilder: (BuildContext context, int index) {
             final feedback = widget.data.feedbacks[index];
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 4),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 10),
-                  padding: const EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            feedback.userName,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.0,
-                            ),
-                          ),
-                          Text(
-                            feedback.date,
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 12.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Text('Avaliação:'),
-                          const SizedBox(width: 8.0),
-                          ...buildStarIcons(feedback.rating),
-                        ],
-                      ),
-                      Text(
-                        'Avaliação: ${feedback.rating}',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14.0,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    padding: const EdgeInsets.only(
+                        left: 27, top: 19, bottom: 7, right: 27),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 3,
+                          blurRadius: 6,
+
+                          offset:
+                              const Offset(0, 7), // changes position of shadow
                         ),
-                      ),
-                      const SizedBox(height: 5),
-                      const Text('Comentário:'),
-                      Text(
-                        feedback.content.toString(),
-                        style: const TextStyle(
-                          fontSize: 16.0,
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            if (feedback.avatar == '')
+                              const CircleAvatar(
+                                radius: 20,
+                                child: Icon(
+                                  Icons.person,
+                                ),
+                              ),
+                            if (feedback.avatar != '')
+                              CircleAvatar(
+                                backgroundImage: Image.network(
+                                  feedback.avatar,
+                                  fit: BoxFit.cover,
+                                ).image,
+                                radius: 20,
+                              ),
+                            const SizedBox(width: 10),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  feedback.userName,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff000000),
+                                  ),
+                                ),
+                                Text(
+                                  feedback.date,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Color(0xff5E5E5E),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Spacer(),
+                            Row(
+                              children: [
+                                ...buildStarIcons(feedback.rating),
+                              ],
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 10),
+                        Text(
+                          feedback.content.toString(),
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
                   ),
                 ),
               ],

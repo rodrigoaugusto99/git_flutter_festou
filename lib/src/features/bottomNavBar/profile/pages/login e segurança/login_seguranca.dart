@@ -228,8 +228,41 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 250, 247, 247),
       appBar: AppBar(
-        title: const Text(''),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 18.0),
+          child: Container(
+            decoration: BoxDecoration(
+              //color: Colors.white.withOpacity(0.7),
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: const Offset(0, 2), // changes position of shadow
+                ),
+              ],
+            ),
+            child: InkWell(
+              onTap: () => Navigator.of(context).pop(),
+              child: const Icon(
+                Icons.arrow_back,
+                color: Colors.black,
+              ),
+            ),
+          ),
+        ),
+        centerTitle: true,
+        title: const Text(
+          'Login e segurança',
+          style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -237,20 +270,13 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Login e Segurança',
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
               const SizedBox(height: 50),
               const Text(
                 'Login',
-                style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
               MyRow(
-                title: '',
+                widget: const Icon(Icons.password),
                 subtitle: 'Senha',
                 textButton: !isUpdatingPassword ? 'Atualizar' : 'Cancelar',
                 onTap: () {
@@ -304,70 +330,80 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
               const SizedBox(height: 30),
               const Text(
                 'Contas sociais',
-                style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
+              const SizedBox(height: 5),
               providers.contains("google.com")
                   ? Column(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Image.asset(
-                                  'lib/assets/images/google.png',
-                                  width: 24, // Ajuste conforme necessário
-                                  height: 24,
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                const Text("Google"),
-                              ],
-                            ),
-                            InkWell(
-                              onTap: () async {
-                                final user = FirebaseAuth.instance.currentUser;
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 14),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Image.asset(
+                                    'lib/assets/images/google.png',
+                                    width: 24, // Ajuste conforme necessário
+                                    height: 24,
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  const Text("Google"),
+                                ],
+                              ),
+                              InkWell(
+                                onTap: () async {
+                                  final user =
+                                      FirebaseAuth.instance.currentUser;
 
-                                if (user != null) {
-                                  try {
-                                    // Verifica se o usuário está vinculado ao provedor do Google
-                                    if (user.providerData.any((info) =>
-                                        info.providerId == "google.com")) {
+                                  if (user != null) {
+                                    try {
+                                      // Verifica se o usuário está vinculado ao provedor do Google
                                       if (user.providerData.any((info) =>
-                                          info.providerId != "password")) {
-                                        //se desvincular, deve deletar o usuario, pois só há google como provedor.
+                                          info.providerId == "google.com")) {
+                                        if (user.providerData.any((info) =>
+                                            info.providerId != "password")) {
+                                          //se desvincular, deve deletar o usuario, pois só há google como provedor.
 
-                                        await areYouSureOnlyGoogle();
+                                          await areYouSureOnlyGoogle();
+                                        } else {
+                                          // Desvincula a conta do Google
+                                          await user.unlink("google.com");
+                                        }
                                       } else {
-                                        // Desvincula a conta do Google
-                                        await user.unlink("google.com");
+                                        // Caso o usuário não esteja vinculado ao provedor do Google
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                'Usuário não está vinculado ao Google.'),
+                                          ),
+                                        );
                                       }
-                                    } else {
-                                      // Caso o usuário não esteja vinculado ao provedor do Google
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                              'Usuário não está vinculado ao Google.'),
-                                        ),
-                                      );
+                                    } on FirebaseAuthException catch (e) {
+                                      // Trata exceções específicas, se necessário
+                                      log('Erro ao desvincular conta do Google, usuario nao autenticado: ${e.message}');
                                     }
-                                  } on FirebaseAuthException catch (e) {
-                                    // Trata exceções específicas, se necessário
-                                    log('Erro ao desvincular conta do Google, usuario nao autenticado: ${e.message}');
                                   }
-                                }
-                              },
-                              child: const Text(
-                                'Desconectar',
-                                style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  fontWeight: FontWeight.bold,
+                                },
+                                child: const Text(
+                                  'Desconectar',
+                                  style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     )
@@ -382,18 +418,18 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
               const SizedBox(height: 30),
               const Text(
                 'Conta',
-                style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
               MyRow(
-                  title: 'Desativar sua conta',
-                  subtitle: '',
+                  widget: const Icon(Icons.person),
+                  subtitle: 'Desativar sua conta',
                   textButton: 'Desativar',
                   onTap: () async {
                     final user = FirebaseAuth.instance.currentUser;
 
                     if (user != null) {
                       // Mostra um diálogo de confirmação antes de excluir a conta
-                      Navigator.of(context).pop();
+
                       await Future.delayed(Duration.zero);
                       await showDialog(
                         context: context,
@@ -476,34 +512,44 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
   }
 
   Widget MyRow({
-    required String title,
     required String subtitle,
     required String textButton,
+    Widget? widget,
     required final VoidCallback onTap,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title),
-              Text(subtitle),
-            ],
-          ),
-          InkWell(
-            onTap: onTap,
-            child: Text(
-              textButton,
-              style: const TextStyle(
-                decoration: TextDecoration.underline,
-                fontWeight: FontWeight.bold,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+        child: Row(
+          children: [
+            if (widget != null)
+              Row(
+                children: [
+                  widget,
+                  const SizedBox(
+                    width: 10,
+                  ),
+                ],
+              ),
+            Text(subtitle),
+            const Spacer(),
+            InkWell(
+              onTap: onTap,
+              child: Text(
+                textButton,
+                style: const TextStyle(
+                  decoration: TextDecoration.underline,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

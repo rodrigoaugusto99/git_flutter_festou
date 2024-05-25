@@ -144,6 +144,9 @@ p decidir o isFavorited*/
       spaceDocument['latitude'] ?? '',
       spaceDocument['longitude'] ?? '',
       spaceDocument['locadorAvatarUrl'] ?? '',
+      spaceDocument['startTime'] ?? '',
+      spaceDocument['endTime'] ?? '',
+      spaceDocument['days'] ?? [],
     );
   }
 
