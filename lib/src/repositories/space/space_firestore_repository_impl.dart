@@ -334,6 +334,7 @@ p decidir o isFavorited*/
         List<String>.from(spaceDocument['selectedServices'] ?? []);
     List<String> imagesUrl =
         List<String>.from(spaceDocument['images_url'] ?? []);
+    List<String> days = List<String>.from(spaceDocument['days'] ?? []);
 
     String spaceId = spaceDocument.get('space_id');
     //String userId = spaceDocument.get('user_id');
@@ -367,7 +368,7 @@ p decidir o isFavorited*/
       spaceDocument['locadorAvatarUrl'] ?? '',
       spaceDocument['startTime'] ?? '',
       spaceDocument['endTime'] ?? '',
-      spaceDocument['days'] ?? [],
+      days,
     );
   }
 
