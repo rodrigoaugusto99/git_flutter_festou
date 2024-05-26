@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -244,12 +246,28 @@ class _CalendarPageState extends State<CalendarPage> {
               borderRadius: BorderRadius.circular(20), // Bordas arredondadas
             ),
           ),
+          /*
+          DateTime? _selectedDate;
+
+  int? checkInTime;
+  int? checkOutTime; */
           onPressed: () {
+            if (_selectedDate == null ||
+                checkInTime == null ||
+                checkOutTime == null) {
+              log('ha variaveis nulas');
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text('Selecione uma data e horarios')));
+              return;
+            }
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => ResumoReservaPage(
                   spaceModel: widget.space,
+                  selectedDate: _selectedDate!,
+                  checkInTime: checkInTime!,
+                  checkOutTime: checkOutTime!,
                 ),
               ),
             );

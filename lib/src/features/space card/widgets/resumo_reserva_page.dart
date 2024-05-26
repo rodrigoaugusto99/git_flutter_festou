@@ -1,12 +1,23 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:svg_flutter/svg_flutter.dart';
 
 class ResumoReservaPage extends StatefulWidget {
+  final DateTime selectedDate;
   final SpaceModel spaceModel;
-  const ResumoReservaPage({super.key, required this.spaceModel});
+  final int checkInTime;
+  final int checkOutTime;
+  const ResumoReservaPage({
+    super.key,
+    required this.spaceModel,
+    required this.selectedDate,
+    required this.checkInTime,
+    required this.checkOutTime,
+  });
 
   @override
   State<ResumoReservaPage> createState() => _ResumoReservaPageState();
@@ -434,22 +445,39 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
               'Contrato',
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SvgPicture.asset('lib/assets/images/image 18cupm_prefix.png'),
-                  const Text(
-                    'Ler e assinar contrato',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ContratoPage(
+                      spaceModel: widget.spaceModel,
+                      selectedDate: widget.selectedDate,
+                      checkInTime: widget.checkInTime,
+                      checkOutTime: widget.checkOutTime,
+                    ),
                   ),
-                  const Icon(Icons.arrow_forward_ios_outlined),
-                ],
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SvgPicture.asset(
+                        'lib/assets/images/image 18cupm_prefix.png'),
+                    const Text(
+                      'Ler e assinar contrato',
+                      style:
+                          TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                    ),
+                    const Icon(Icons.arrow_forward_ios_outlined),
+                  ],
+                ),
               ),
             ),
           ],
@@ -467,14 +495,18 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
             ),
           ),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ResumoReservaPage(
-                  spaceModel: widget.spaceModel,
-                ),
-              ),
-            );
+            //todo: if(canReserve)
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) => ContratoPage(
+            //       spaceModel: widget.spaceModel,
+            //       selectedDate: widget.selectedDate,
+            //       checkInTime: widget.checkInTime,
+            //       checkOutTime: widget.checkOutTime,
+            //     ),
+            //   ),
+            // );
           },
           child: const Text('Reservar'),
         ),
