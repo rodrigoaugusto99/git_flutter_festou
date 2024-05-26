@@ -80,6 +80,7 @@ dependencies:
   shared_preferences: ^2.2.3
   calendar_date_picker2: ^1.0.2
   flutter_html: ^3.0.0-beta.2
+  qr_flutter: ^4.1.0
 
 dev_dependencies:
   flutter_test:
