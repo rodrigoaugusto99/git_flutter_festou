@@ -2,6 +2,7 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/resumo_reserva_page.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class CalendarPage extends StatefulWidget {
@@ -244,7 +245,14 @@ class _CalendarPageState extends State<CalendarPage> {
             ),
           ),
           onPressed: () {
-            // Ação do botão
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ResumoReservaPage(
+                  spaceModel: widget.space,
+                ),
+              ),
+            );
           },
           child: const Text('Prosseguir'),
         ),
