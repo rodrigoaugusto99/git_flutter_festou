@@ -17,6 +17,7 @@ import 'package:git_flutter_festou/src/features/register/user/user_register_page
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/pix_page.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/pix_page2.dart';
 import 'package:git_flutter_festou/src/features/splash/splash_page.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -91,7 +92,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const PixPage(),
+      home: const PixPage2(),
     );
   }
 }
