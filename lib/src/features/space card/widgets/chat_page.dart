@@ -23,6 +23,8 @@ class _ChatPageState extends State<ChatPage> {
   Set<String> selectedMessageIds = {};
   final CollectionReference chatRoomsCollection =
       FirebaseFirestore.instance.collection('chat_rooms');
+  bool onLongPressSelected = false;
+  int selectionCounter = 0;
 
   void sendMessage() async {
     if (messageEC.text.isNotEmpty) {
@@ -34,8 +36,13 @@ class _ChatPageState extends State<ChatPage> {
   void selectMessage(String messageId) {
     setState(() {
       if (selectedMessageIds.contains(messageId)) {
+        selectionCounter--;
         selectedMessageIds.remove(messageId);
+        if (selectionCounter == 0) {
+          deselectAllMessages();
+        }
       } else {
+        selectionCounter++;
         selectedMessageIds.add(messageId);
       }
     });
@@ -44,6 +51,8 @@ class _ChatPageState extends State<ChatPage> {
   void deselectAllMessages() {
     setState(() {
       selectedMessageIds.clear();
+      onLongPressSelected = false;
+      selectionCounter = 0;
     });
   }
 
@@ -71,6 +80,7 @@ class _ChatPageState extends State<ChatPage> {
         SnackBar(content: Text('Mensagem excluída')),
       );
     } catch (e) {
+      deselectAllMessages();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro ao excluir mensagem: $e')),
       );
@@ -219,10 +229,15 @@ class _ChatPageState extends State<ChatPage> {
 
     return GestureDetector(
       onLongPress: () {
-        selectMessage(messageId);
+        if (!onLongPressSelected) {
+          selectMessage(messageId);
+          onLongPressSelected = true;
+        }
       },
       onTap: () {
-        selectMessage(messageId);
+        if (onLongPressSelected) {
+          selectMessage(messageId);
+        }
       },
       child: Column(
         crossAxisAlignment:
