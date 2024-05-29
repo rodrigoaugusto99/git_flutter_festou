@@ -6,6 +6,7 @@ import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
 import 'package:git_flutter_festou/src/models/feedback_model.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 import './feedback_firestore_repository.dart';
 
 class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
@@ -24,6 +25,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
       FirebaseFirestore.instance.collection('spaces');
 
   final user = FirebaseAuth.instance.currentUser!;
+  final uuid = const Uuid();
 
   @override
   Future<Either<RepositoryException, Nil>> saveFeedback(
@@ -45,7 +47,9 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
     final formattedDateTime = dateFormat.format(currentDateTime);
     log(formattedDateTime.toString());
     try {
+      final id = uuid.v1();
       Map<String, dynamic> newFeedback = {
+        'id': id,
         'space_id': feedbackData.spaceId,
         'user_id': feedbackData.userId,
         'rating': feedbackData.rating,
@@ -53,6 +57,8 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
         'user_name': userName,
         'date': formattedDateTime,
         'avatar': userAvatar,
+        'likes': [],
+        'dislikes': [],
       };
       log('ntrou');
       await feedbacksCollection.add(newFeedback);
@@ -64,6 +70,118 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
     } catch (e) {
       log('Erro ao avaliar espaço: $e');
       return Failure(RepositoryException(message: 'Erro ao avaliar espaço'));
+    }
+  }
+
+  Future toggleLikeFeedback(String feedbackId) async {
+    try {
+      // Obtenha o documento específico pelo feedbackId
+      QuerySnapshot querySnapshot =
+          await feedbacksCollection.where("id", isEqualTo: feedbackId).get();
+
+      if (querySnapshot.docs.length == 1) {
+        final userDocument = querySnapshot.docs.first;
+        final currentLikes = List<String>.from(userDocument['likes'] ?? []);
+        final currentDislikes =
+            List<String>.from(userDocument['dislikes'] ?? []);
+
+        // Remova o dislike se o usuário já deu dislike
+        if (currentDislikes.contains(user.uid)) {
+          userDocument.reference.update({
+            'dislikes': FieldValue.arrayRemove([user.uid]),
+          });
+          log('Dislike removido ao dar like');
+        }
+
+        if (currentLikes.contains(user.uid)) {
+          // Se o user.uid já está presente, removê-lo do array
+          userDocument.reference.update({
+            'likes': FieldValue.arrayRemove([user.uid]),
+          });
+          log('Like removido com sucesso');
+        } else {
+          // Se o user.uid não está presente, adicioná-lo ao array
+          userDocument.reference.update({
+            'likes': FieldValue.arrayUnion([user.uid]),
+          });
+          log('Like adicionado com sucesso');
+        }
+      } else {
+        log('Nenhum documento desse feedback foi encontrado, ou mais de 1 foram encontrados.');
+      }
+    } catch (e) {
+      log('Erro ao alternar o like: $e');
+    }
+  }
+
+  Future toggleDislikeFeedback(String feedbackId) async {
+    try {
+      // Obtenha o documento específico pelo feedbackId
+      QuerySnapshot querySnapshot =
+          await feedbacksCollection.where("id", isEqualTo: feedbackId).get();
+
+      if (querySnapshot.docs.length == 1) {
+        final userDocument = querySnapshot.docs.first;
+        final currentLikes = List<String>.from(userDocument['likes'] ?? []);
+        final currentDislikes =
+            List<String>.from(userDocument['dislikes'] ?? []);
+
+        // Remova o like se o usuário já deu like
+        if (currentLikes.contains(user.uid)) {
+          userDocument.reference.update({
+            'likes': FieldValue.arrayRemove([user.uid]),
+          });
+          log('Like removido ao dar dislike');
+        }
+
+        if (currentDislikes.contains(user.uid)) {
+          // Se o user.uid já está presente, removê-lo do array
+          userDocument.reference.update({
+            'dislikes': FieldValue.arrayRemove([user.uid]),
+          });
+          log('Dislike removido com sucesso');
+        } else {
+          // Se o user.uid não está presente, adicioná-lo ao array
+          userDocument.reference.update({
+            'dislikes': FieldValue.arrayUnion([user.uid]),
+          });
+          log('Dislike adicionado com sucesso');
+        }
+      } else {
+        log('Nenhum documento desse feedback foi encontrado, ou mais de 1 foram encontrados.');
+      }
+    } catch (e) {
+      log('Erro ao alternar o dislike: $e');
+    }
+  }
+
+  Future<String> checkUserReaction(String feedbackId) async {
+    try {
+      // Obtenha o documento específico pelo feedbackId
+      QuerySnapshot querySnapshot =
+          await feedbacksCollection.where("id", isEqualTo: feedbackId).get();
+
+      if (querySnapshot.docs.length == 1) {
+        final userDocument = querySnapshot.docs.first;
+        final currentLikes = List<String>.from(userDocument['likes'] ?? []);
+        final currentDislikes =
+            List<String>.from(userDocument['dislikes'] ?? []);
+
+        // Verifique se o user.uid está presente nos likes ou dislikes
+        if (currentLikes.contains(user.uid)) {
+          return 'isLiked';
+        } else if (currentDislikes.contains(user.uid)) {
+          return 'isDisliked';
+        } else {
+          return '';
+        }
+      } else {
+        log('Nenhum documento desse feedback foi encontrado, ou mais de 1 foram encontrados.');
+        return '';
+      }
+    } catch (e) {
+      log('Erro ao verificar a reação do usuário: $e');
+      return '';
     }
   }
 
@@ -428,6 +546,9 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
 
   FeedbackModel mapFeedbackDocumentToModel(
       QueryDocumentSnapshot feedbackDocument) {
+    List<String> likes = List<String>.from(feedbackDocument['likes'] ?? []);
+    List<String> dislikes =
+        List<String>.from(feedbackDocument['dislikes'] ?? []);
     return FeedbackModel(
       spaceId: feedbackDocument['space_id'] ?? '',
       userId: feedbackDocument['user_id'] ?? '',
@@ -436,6 +557,9 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
       userName: feedbackDocument['user_name'] ?? '',
       date: feedbackDocument['date'] ?? '',
       avatar: feedbackDocument['avatar'] ?? '',
+      likes: likes,
+      dislikes: dislikes,
+      id: feedbackDocument['id'] ?? '',
     );
   }
 
