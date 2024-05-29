@@ -3,7 +3,6 @@ import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/c
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_page.dart';
-import 'package:git_flutter_festou/src/models/user_model.dart';
 
 class BottomNavBarPageLocador extends StatefulWidget {
   final int initialIndex;
@@ -63,36 +62,59 @@ class _BottomNavBarPageLocadorState extends State<BottomNavBarPageLocador> {
           }
         },
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.purple,
-        unselectedItemColor: Colors.black,
-        currentIndex: _currentIndex,
-        onTap: _onTabTapped,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_filled),
-            label: 'Espaços',
+      bottomNavigationBar: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            selectedItemColor: Colors.purple,
+            unselectedItemColor: Colors.black,
+            currentIndex: _currentIndex,
+            onTap: _onTabTapped,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home_filled),
+                label: 'Espaços',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_month),
+                label: 'Calendário',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.chat),
+                label: 'Mensagens',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.menu),
+                label: 'Menu',
+              ),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month),
-            label: 'Calendário',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: 'Mensagens',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu),
-            label: 'Menu',
+          Positioned(
+            width: 70,
+            height: 70,
+            top:
+                -35, // Ajuste este valor conforme necessário para posicionar corretamente o botão flutuante
+            left: MediaQuery.of(context).size.width / 2 - 35,
+            child: FloatingActionButton(
+              onPressed: () {},
+              disabledElevation: 0,
+              elevation: 0,
+              focusElevation: 0,
+              highlightElevation: 0,
+              hoverColor: Colors.transparent,
+              hoverElevation: 0,
+              splashColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              foregroundColor: Colors.transparent,
+              backgroundColor: Colors.transparent,
+              child: Image.asset(
+                'lib/assets/images/festou-logo.png',
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
         ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Image.asset(
-        'lib/assets/images/festou-logo.png',
-        scale: 5,
-        fit: BoxFit.cover,
       ),
     );
   }

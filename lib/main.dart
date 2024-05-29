@@ -18,9 +18,7 @@ import 'package:git_flutter_festou/src/features/register/user%20infos/user_regis
 import 'package:git_flutter_festou/src/features/register/user/user_register_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_page.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_page.dart';
 import 'package:git_flutter_festou/src/features/splash/splash_page.dart';
-import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 Future<void> main() async {
@@ -42,13 +40,11 @@ class MyApp extends StatelessWidget {
       navigatorKey: FestouNavGlobalKey.instance.navKey,
       routes: {
         '/home': (_) => const BottomNavBarPage(),
-        //'/home2': (_) => const BottomNavBarPageLocador(),
         '/emailVerification': (_) => const VerifyEmailPage(),
         '/auth': (_) => const AuthPage(),
         '/login': (_) => const LoginPage(),
         '/register/user': (_) => const UserRegisterPage(),
         '/register/space': (_) => const EspacoRegisterPage(),
-        //'/register/space/review': (_) =>  SpaceRegisterReviewPage(),
         '/register/user/infos': (_) => const UserRegisterInfosPage(),
         '/account/help': (_) => const HelpPage(),
         '/account/locador': (_) => QueroSerLocadorPage(),

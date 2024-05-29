@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Para copiar ao clipboard
+import 'package:flutter/services.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_bubble.dart';
 import 'package:git_flutter_festou/src/services/chat_services.dart';
 
@@ -133,7 +133,7 @@ class _ChatPageState extends State<ChatPage> {
             Navigator.of(context).pushNamedAndRemoveUntil(
               '/home2',
               (Route<dynamic> route) => false,
-              arguments: 2, // Passando o índice da página de mensagens
+              arguments: 2,
             );
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Conversa apagada')),
