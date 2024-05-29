@@ -8,6 +8,7 @@ import 'package:git_flutter_festou/src/core/fp/either.dart';
 
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
 import 'package:git_flutter_festou/src/models/reservation_model.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:intl/intl.dart';
 
 import './reservation_firestore_repository.dart';
@@ -140,6 +141,150 @@ class ReservationFirestoreRepositoryImpl
       log('Erro ao recuperar as reservas que eu fiz do firestore: $e');
       return Failure(
           RepositoryException(message: 'Erro ao carregar as minhas reservas'));
+    }
+  }
+
+  Future<DocumentSnapshot> getUserDocument() async {
+    final userDocument =
+        await usersCollection.where('uid', isEqualTo: user.uid).get();
+
+    if (userDocument.docs.isNotEmpty) {
+      return userDocument.docs[0]; // Retorna o primeiro documento encontrado.
+    }
+
+    // Trate o caso em que nenhum usuário foi encontrado.
+    //se esse erro ocorrer la numm metodo que chama getUsrDocument, o (e) do catch vai ter essa msg
+    throw Exception("Usuário n encontrado");
+  }
+
+  Future<List<String>?> getUserFavoriteSpaces() async {
+    final userDocument = await getUserDocument();
+
+    final userData = userDocument.data() as Map<String, dynamic>;
+
+    if (userData.containsKey('spaces_favorite')) {
+      return List<String>.from(userData['spaces_favorite'] ?? []);
+    }
+
+    return null;
+  }
+
+  Future<List<ReservationModel>?> getMyReservations2(String userId) async {
+    try {
+      final allReservationsDocuments =
+          await reservationCollection.where('user_id', isEqualTo: userId).get();
+
+      List<ReservationModel> reservationModels =
+          allReservationsDocuments.docs.map((reservationModels) {
+        return mapReservationDocumentToModel(reservationModels);
+      }).toList();
+      return reservationModels;
+    } catch (e) {
+      log('Erro ao recuperar as reservas que eu fiz do firestore: $e');
+      return null;
+    }
+  }
+
+  Future<String> getAverageRating(String spaceId) async {
+    final spaceDocument =
+        await spacesCollection.where('space_id', isEqualTo: spaceId).get();
+
+    if (spaceDocument.docs.isNotEmpty) {
+      String averageRatingValue = spaceDocument.docs.first['average_rating'];
+      return averageRatingValue;
+    }
+
+    // Trate o caso em que nenhum espaço foi encontrado.
+    throw Exception("Espaço não encontrado");
+  }
+
+  Future<String> getNumComments(String spaceId) async {
+    final spaceDocument =
+        await spacesCollection.where('space_id', isEqualTo: spaceId).get();
+
+    if (spaceDocument.docs.isNotEmpty) {
+      String numComments = spaceDocument.docs.first['num_comments'];
+      return numComments;
+    }
+
+    // Trate o caso em que nenhum espaço foi encontrado.
+    throw Exception("Espaço não encontrado");
+  }
+
+  //todo: buildar levando em conta espaços e lista de favoritos
+  Future<SpaceModel> mapSpaceDocumentToModel(
+    QueryDocumentSnapshot spaceDocument,
+    bool isFavorited,
+  ) async {
+    //pegando os dados necssarios antes de crior o card
+    List<String> selectedTypes =
+        List<String>.from(spaceDocument['selectedTypes'] ?? []);
+    List<String> selectedServices =
+        List<String>.from(spaceDocument['selectedServices'] ?? []);
+    List<String> imagesUrl =
+        List<String>.from(spaceDocument['images_url'] ?? []);
+    List<String> days = List<String>.from(spaceDocument['days'] ?? []);
+
+    String spaceId = spaceDocument.get('space_id');
+    //String userId = spaceDocument.get('user_id');
+    final averageRating = await getAverageRating(spaceId);
+    final numComments = await getNumComments(spaceId);
+    //final locadorName = await getLocadorName(userId);
+
+//?função para capturar a lista de imagens desse espaço
+
+    return SpaceModel(
+      isFavorited,
+      spaceDocument['space_id'] ?? '',
+      spaceDocument['user_id'] ?? '',
+      spaceDocument['titulo'] ?? '',
+      spaceDocument['cep'] ?? '',
+      spaceDocument['logradouro'] ?? '',
+      spaceDocument['numero'] ?? '',
+      spaceDocument['bairro'] ?? '',
+      spaceDocument['cidade'] ?? '',
+      selectedTypes,
+      selectedServices,
+      averageRating,
+      numComments,
+      spaceDocument['locador_name'] ?? '',
+      spaceDocument['descricao'] ?? '',
+      spaceDocument['city'] ?? '',
+      //imagesData,
+      imagesUrl,
+      spaceDocument['latitude'] ?? '',
+      spaceDocument['longitude'] ?? '',
+      spaceDocument['locadorAvatarUrl'] ?? '',
+      spaceDocument['startTime'] ?? '',
+      spaceDocument['endTime'] ?? '',
+      days,
+    );
+  }
+
+  Future<SpaceModel?> getSpaceById(String id) async {
+    try {
+      // Consulta espaços onde o campo "selectedTypes" contenha pelo menos um dos tipos da lista.
+      final spaceDocuments =
+          await spacesCollection.where('space_id', isEqualTo: id).get();
+
+      final userSpacesFavorite = await getUserFavoriteSpaces();
+
+      // Mapeia os documentos de espaço para objetos SpaceModel.
+      List<SpaceModel> spaceModels =
+          await Future.wait(spaceDocuments.docs.map((spaceDocument) {
+        final isFavorited =
+            userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
+
+        return mapSpaceDocumentToModel(
+          spaceDocument,
+          isFavorited,
+        );
+      }).toList());
+
+      return spaceModels.first;
+    } catch (e) {
+      log('Erro ao recuperar espaços por tipo: $e');
+      return null;
     }
   }
 }
