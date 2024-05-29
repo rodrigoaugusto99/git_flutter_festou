@@ -27,12 +27,6 @@ class _ChatPageState extends State<ChatPage> {
   int counterSelection = 0;
   String userID = FirebaseAuth.instance.currentUser!.uid;
 
-  @override
-  void initState() {
-    super.initState();
-    _markMessagesAsSeen();
-  }
-
   Future<void> _markMessagesAsSeen() async {
     await _chatServices.markMessagesAsSeen(widget.receiverID);
   }
@@ -294,6 +288,11 @@ class _ChatPageState extends State<ChatPage> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Text("Loading");
               }
+
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                _markMessagesAsSeen();
+              });
+
               return Expanded(
                 child: ListView.builder(
                   reverse: true,

@@ -52,8 +52,8 @@ class ChatBubble extends StatelessWidget {
                       isSeen
                           ? 'lib/assets/images/double-check-chat.png'
                           : 'lib/assets/images/check-chat.png',
-                      width: 12,
-                      height: 12,
+                      width: 16,
+                      height: 16,
                     ),
                   ],
                 ],
