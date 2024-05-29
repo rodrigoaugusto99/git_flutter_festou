@@ -17,6 +17,7 @@ class _MinhasAtividadesPageState extends State<MinhasAtividadesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xffF8F8F8),
       appBar: AppBar(
         leading: Padding(
           padding: const EdgeInsets.only(left: 18.0),
@@ -52,15 +53,44 @@ class _MinhasAtividadesPageState extends State<MinhasAtividadesPage> {
         elevation: 0,
         backgroundColor: Colors.white,
       ),
-      body: Column(
-        children: [
-          MinhasReservasPage(
-            userId: widget.userId,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Histórico de reservas',
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              MinhasReservasPage(
+                userId: widget.userId,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              const Text(
+                'Feedbacks',
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              MeusFeedbacksPage(
+                userId: widget.userId,
+              ),
+            ],
           ),
-          MeusFeedbacksPage(
-            userId: widget.userId,
-          ),
-        ],
+        ),
       ),
     );
   }
