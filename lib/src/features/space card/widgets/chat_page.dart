@@ -8,7 +8,7 @@ import 'package:git_flutter_festou/src/services/chat_services.dart';
 
 class ChatPage extends StatefulWidget {
   final String receiverID;
-  ChatPage({
+  const ChatPage({
     super.key,
     required this.receiverID,
   });
@@ -23,8 +23,8 @@ class _ChatPageState extends State<ChatPage> {
   Set<String> selectedMessageIds = {};
   final CollectionReference chatRoomsCollection =
       FirebaseFirestore.instance.collection('chat_rooms');
-  bool onLongPressSelected = false;
-  int selectionCounter = 0;
+  bool onLongPressSelection = false;
+  String userID = FirebaseAuth.instance.currentUser!.uid;
 
   void sendMessage() async {
     if (messageEC.text.isNotEmpty) {
@@ -36,13 +36,8 @@ class _ChatPageState extends State<ChatPage> {
   void selectMessage(String messageId) {
     setState(() {
       if (selectedMessageIds.contains(messageId)) {
-        selectionCounter--;
         selectedMessageIds.remove(messageId);
-        if (selectionCounter == 0) {
-          deselectAllMessages();
-        }
       } else {
-        selectionCounter++;
         selectedMessageIds.add(messageId);
       }
     });
@@ -51,8 +46,7 @@ class _ChatPageState extends State<ChatPage> {
   void deselectAllMessages() {
     setState(() {
       selectedMessageIds.clear();
-      onLongPressSelected = false;
-      selectionCounter = 0;
+      onLongPressSelection = false;
     });
   }
 
@@ -60,31 +54,109 @@ class _ChatPageState extends State<ChatPage> {
     Clipboard.setData(ClipboardData(text: message));
     deselectAllMessages();
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Mensagem copiada')),
+      const SnackBar(content: Text('Mensagem copiada')),
     );
   }
 
-  void deleteMessage(String messageId) async {
-    String senderID = FirebaseAuth.instance.currentUser!.uid;
-    String chatRoomId = widget.receiverID + "_" + senderID;
+  Future<void> deleteMessage(
+      Set<String> messagesIds, int messagesToDelete) async {
+    final chatRoomId = getChatRoomId();
+    final messageCollection =
+        chatRoomsCollection.doc(chatRoomId).collection('messages');
+    final context = this.context;
+    final remainingMessages = await messageCollection.get();
+    final totalRemainingMessages = remainingMessages.size - messagesToDelete;
 
     try {
-      await chatRoomsCollection
-          .doc(
-              chatRoomId) // Usando a combinação de senderID e receiverID como ID do documento da sala de chat
-          .collection('messages')
-          .doc(messageId)
-          .delete();
-      deselectAllMessages();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Mensagem excluída')),
+      bool? confirmDeletionMessage = await showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Confirmar Exclusão'),
+            content: messagesToDelete > 1
+                ? const Text('Tem certeza que deseja apagar as mensagens?')
+                : const Text('Tem certeza que deseja apagar a mensagem?'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Cancelar'),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              TextButton(
+                child: const Text('Confirmar'),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+            ],
+          );
+        },
       );
+
+      if (confirmDeletionMessage == true) {
+        for (var messageId in messagesIds) {
+          await messageCollection.doc(messageId).delete();
+        }
+      }
+
+      if (totalRemainingMessages == 0) {
+        bool? confirmDeletionChat = await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Confirmar Exclusão'),
+              content: const Text(
+                  'Não há mais mensagens no chat, deseja apagar a conversa?'),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Cancelar'),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+                TextButton(
+                  child: const Text('Confirmar'),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+              ],
+            );
+          },
+        );
+
+        if (confirmDeletionChat == true) {
+          await chatRoomsCollection.doc(chatRoomId).delete();
+
+          if (mounted) {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              '/home2',
+              (Route<dynamic> route) => false,
+              arguments: 2, // Passando o índice da página de mensagens
+            );
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Conversa apagada')),
+            );
+          }
+        }
+      } else {
+        deselectAllMessages();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Mensagem excluída')),
+        );
+      }
     } catch (e) {
-      deselectAllMessages();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro ao excluir mensagem: $e')),
       );
     }
+  }
+
+  String getChatRoomId() {
+    List<String> ids = [userID, widget.receiverID];
+    ids.sort();
+    return ids.join('_');
   }
 
   final CollectionReference usersCollection =
@@ -116,9 +188,6 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    String senderID = FirebaseAuth.instance.currentUser!.uid;
-    String chatRoomId = senderID + "_" + widget.receiverID;
-
     return Scaffold(
       appBar: AppBar(
         leading: selectedMessageIds.isEmpty
@@ -146,7 +215,7 @@ class _ChatPageState extends State<ChatPage> {
                 },
               )
             : IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 onPressed: deselectAllMessages,
               ),
         title: selectedMessageIds.isEmpty
@@ -161,33 +230,37 @@ class _ChatPageState extends State<ChatPage> {
                   }
                 },
               )
-            : Text("Selecionado"),
+            : const Text("Selecionado"),
         actions: selectedMessageIds.isEmpty
             ? []
             : [
                 IconButton(
-                  icon: Icon(Icons.copy),
+                  icon: const Icon(Icons.copy),
                   onPressed: () {
                     // Obter a mensagem específica para copiar
                     for (var messageId in selectedMessageIds) {
                       DocumentReference docRef = chatRoomsCollection
-                          .doc(chatRoomId)
+                          .doc(getChatRoomId())
                           .collection('messages')
                           .doc(messageId);
                       docRef.get().then((DocumentSnapshot doc) {
-                        String message =
-                            (doc.data() as Map<String, dynamic>)['message'];
-                        copyMessage(message);
+                        if (doc.exists) {
+                          Map<String, dynamic>? data =
+                              doc.data() as Map<String, dynamic>?;
+                          if (data != null) {
+                            String message = data['message'];
+                            copyMessage(message);
+                          }
+                        }
                       });
                     }
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.delete),
+                  icon: const Icon(Icons.delete),
                   onPressed: () {
-                    for (var messageId in selectedMessageIds) {
-                      deleteMessage(messageId);
-                    }
+                    deleteMessage(
+                        selectedMessageIds, selectedMessageIds.length);
                   },
                 ),
               ],
@@ -195,7 +268,7 @@ class _ChatPageState extends State<ChatPage> {
       body: Column(
         children: [
           StreamBuilder(
-            stream: _chatServices.getMessages(senderID, widget.receiverID),
+            stream: _chatServices.getMessages(userID, widget.receiverID),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return const Text("Error");
@@ -229,14 +302,16 @@ class _ChatPageState extends State<ChatPage> {
 
     return GestureDetector(
       onLongPress: () {
-        if (!onLongPressSelected) {
+        if (!onLongPressSelection) {
           selectMessage(messageId);
-          onLongPressSelected = true;
+          onLongPressSelection = true;
         }
       },
       onTap: () {
-        if (onLongPressSelected) {
+        if (onLongPressSelection) {
           selectMessage(messageId);
+        } else {
+          // Aqui você pode colocar a lógica de onTap normal
         }
       },
       child: Column(
@@ -296,7 +371,8 @@ class ExpandableMessage extends StatefulWidget {
   final bool isCurrentUser;
   final bool isSelected;
 
-  ExpandableMessage({
+  const ExpandableMessage({
+    super.key,
     required this.message,
     required this.isCurrentUser,
     required this.isSelected,
@@ -323,11 +399,12 @@ class _ExpandableMessageState extends State<ExpandableMessage> {
       return RichText(
         text: TextSpan(
           text: message.substring(0, maxLength),
-          style: TextStyle(color: Colors.black), // Estilo da mensagem
+          style: const TextStyle(color: Colors.black), // Estilo da mensagem
           children: [
             TextSpan(
               text: "...ver mais",
-              style: TextStyle(color: Colors.blue), // Estilo do link "ver mais"
+              style: const TextStyle(
+                  color: Colors.blue), // Estilo do link "ver mais"
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
                   setState(() {

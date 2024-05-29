@@ -101,9 +101,7 @@ class _ProfileState extends ConsumerState<Profile> {
                     onTap: () => Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => BottomNavBarPageLocador(
-                          userModel: data.userModel!,
-                        ),
+                        builder: (context) => const BottomNavBarPageLocador(),
                       ),
                     ),
                   ),

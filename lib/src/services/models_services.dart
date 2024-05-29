@@ -21,24 +21,18 @@ class ModelsServices {
 
       if (data is Map<String, dynamic>) {
         UserModel userModel = UserModel(
-          data['email'] ?? '',
-          data['name'] ?? '',
-          data['cpf'] ?? '',
-          data['user_address'] != null ? data['user_address']['cep'] ?? '' : '',
-          data['user_address'] != null
-              ? data['user_address']['logradouro'] ?? ''
-              : '',
-          data['telefone'] ?? '',
-          data['user_address'] != null
-              ? data['user_address']['bairro'] ?? ''
-              : '',
-          data['user_address'] != null
-              ? data['user_address']['cidade'] ?? ''
-              : '',
-          userId,
-          data['doc1_url'] ?? '',
-          data['doc2_url'] ?? '',
-          data['avatar_url'] ?? '',
+          email: data['email'] ?? '',
+          name: data['name'] ?? '',
+          cpf: data['cpf'] ?? '',
+          cep: data['user_address']?['cep'] ?? '',
+          logradouro: data['user_address']?['logradouro'] ?? '',
+          telefone: data['telefone'] ?? '',
+          bairro: data['user_address']?['bairro'] ?? '',
+          cidade: data['user_address']?['cidade'] ?? '',
+          id: userId,
+          doc1Url: data['doc1_url'] ?? '',
+          doc2Url: data['doc2_url'] ?? '',
+          avatarUrl: data['avatar_url'] ?? '',
         );
 
         return userModel;

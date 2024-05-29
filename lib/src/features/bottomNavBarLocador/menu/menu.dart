@@ -3,16 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/impostos.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/login_seguranca.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/pages/configuracoes.dart';
-import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:svg_flutter/svg.dart';
 
 class Menu extends ConsumerStatefulWidget {
-  final UserModel userModel;
-  const Menu({super.key, required this.userModel});
+  const Menu({super.key});
 
   @override
   ConsumerState<Menu> createState() => _MenuState();
@@ -42,9 +38,7 @@ class _MenuState extends ConsumerState<Menu> {
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Configuracoes(
-                      userModel: widget.userModel,
-                    ),
+                    builder: (context) => const Configuracoes(),
                   ),
                 ),
               ),

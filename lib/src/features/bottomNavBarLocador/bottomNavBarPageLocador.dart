@@ -6,8 +6,8 @@ import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/
 import 'package:git_flutter_festou/src/models/user_model.dart';
 
 class BottomNavBarPageLocador extends StatefulWidget {
-  final UserModel userModel;
-  const BottomNavBarPageLocador({super.key, required this.userModel});
+  final int initialIndex;
+  const BottomNavBarPageLocador({super.key, this.initialIndex = 0});
 
   @override
   _BottomNavBarPageLocadorState createState() =>
@@ -21,6 +21,7 @@ class _BottomNavBarPageLocadorState extends State<BottomNavBarPageLocador> {
   @override
   void initState() {
     super.initState();
+    _currentIndex = widget.initialIndex;
     _pageController = PageController(initialPage: _currentIndex);
   }
 
@@ -37,9 +38,7 @@ class _BottomNavBarPageLocadorState extends State<BottomNavBarPageLocador> {
   }
 
   void _onTabTapped(int index) {
-    _pageController.jumpToPage(
-      index,
-    );
+    _pageController.jumpToPage(index);
   }
 
   @override
@@ -58,9 +57,7 @@ class _BottomNavBarPageLocadorState extends State<BottomNavBarPageLocador> {
             case 2:
               return const Mensagens();
             case 3:
-              return Menu(
-                userModel: widget.userModel,
-              );
+              return const Menu();
             default:
               return Container(); // Lida com índices fora do alcance, se aplicável
           }
@@ -68,7 +65,7 @@ class _BottomNavBarPageLocadorState extends State<BottomNavBarPageLocador> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.orange,
+        selectedItemColor: Colors.purple,
         unselectedItemColor: Colors.black,
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
