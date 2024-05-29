@@ -27,6 +27,16 @@ class _ChatPageState extends State<ChatPage> {
   int counterSelection = 0;
   String userID = FirebaseAuth.instance.currentUser!.uid;
 
+  @override
+  void initState() {
+    super.initState();
+    _markMessagesAsSeen();
+  }
+
+  Future<void> _markMessagesAsSeen() async {
+    await _chatServices.markMessagesAsSeen(widget.receiverID);
+  }
+
   void sendMessage() async {
     if (messageEC.text.isNotEmpty) {
       await _chatServices.sendMessage(widget.receiverID, messageEC.text);
@@ -75,7 +85,6 @@ class _ChatPageState extends State<ChatPage> {
     final totalRemainingMessages = remainingMessages.size - messagesToDelete;
 
     try {
-      // ignore: use_build_context_synchronously
       bool? confirmDeletionMessage = await showDialog<bool>(
         context: context,
         builder: (BuildContext context) {
@@ -109,7 +118,6 @@ class _ChatPageState extends State<ChatPage> {
         }
 
         if (totalRemainingMessages == 0) {
-          // ignore: use_build_context_synchronously
           bool? confirmDeletionChat = await showDialog<bool>(
             context: context,
             builder: (BuildContext context) {
@@ -248,7 +256,6 @@ class _ChatPageState extends State<ChatPage> {
                 IconButton(
                   icon: const Icon(Icons.copy),
                   onPressed: () {
-                    // Obter a mensagem específica para copiar
                     for (var messageId in selectedMessageIds) {
                       DocumentReference docRef = chatRoomsCollection
                           .doc(getChatRoomId())
@@ -321,6 +328,9 @@ class _ChatPageState extends State<ChatPage> {
 
     double marginBottom = isSameUserAsNext ? 2 : 16;
 
+    Timestamp timestamp = data['timestamp'] as Timestamp;
+    bool isSeen = data['isSeen'] ?? false;
+
     return GestureDetector(
       onLongPress: () {
         if (!onLongPressSelection) {
@@ -339,9 +349,16 @@ class _ChatPageState extends State<ChatPage> {
           message: data['message'],
           isCurrentUser: isCurrentUser,
           isSelected: isSelected,
+          timestamp: formatTimestamp(timestamp),
+          isSeen: isSeen,
         ),
       ),
     );
+  }
+
+  String formatTimestamp(Timestamp timestamp) {
+    final DateTime dateTime = timestamp.toDate();
+    return "${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}";
   }
 
   Widget _buildUserInput() {
@@ -386,12 +403,16 @@ class ExpandableMessage extends StatefulWidget {
   final String message;
   final bool isCurrentUser;
   final bool isSelected;
+  final String timestamp;
+  final bool isSeen;
 
   const ExpandableMessage({
     super.key,
     required this.message,
     required this.isCurrentUser,
     required this.isSelected,
+    required this.timestamp,
+    required this.isSeen,
   });
 
   @override
@@ -399,7 +420,7 @@ class ExpandableMessage extends StatefulWidget {
 }
 
 class _ExpandableMessageState extends State<ExpandableMessage> {
-  int maxLength = 200;
+  int maxLength = 500;
 
   @override
   Widget build(BuildContext context) {
@@ -407,6 +428,8 @@ class _ExpandableMessageState extends State<ExpandableMessage> {
       message: _buildMessage(widget.message),
       isCurrentUser: widget.isCurrentUser,
       isSelected: widget.isSelected,
+      timestamp: widget.timestamp,
+      isSeen: widget.isSeen,
     );
   }
 

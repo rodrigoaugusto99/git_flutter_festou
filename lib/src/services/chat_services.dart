@@ -6,9 +6,8 @@ class ChatServices {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<void> sendMessage(String receiverID, message) async {
+  Future<void> sendMessage(String receiverID, String message) async {
     final String currentUserID = _auth.currentUser!.uid;
-
     final Timestamp timestamp = Timestamp.now();
 
     MessageModel newMessage = MessageModel(
@@ -16,10 +15,10 @@ class ChatServices {
       receiverID: receiverID,
       message: message,
       timestamp: timestamp,
+      isSeen: false, // Inicialmente, a mensagem não foi vista
     );
 
     List<String> ids = [currentUserID, receiverID];
-
     ids.sort();
     String chatRoomID = ids.join('_');
 
@@ -37,7 +36,7 @@ class ChatServices {
         .add(newMessage.toMap());
   }
 
-  Stream<QuerySnapshot> getMessages(String userID, otherUserID) {
+  Stream<QuerySnapshot> getMessages(String userID, String otherUserID) {
     List<String> ids = [userID, otherUserID];
     ids.sort();
     String chatRoomID = ids.join('_');
@@ -48,5 +47,25 @@ class ChatServices {
         .collection('messages')
         .orderBy('timestamp', descending: true)
         .snapshots();
+  }
+
+  Future<void> markMessagesAsSeen(String receiverID) async {
+    final String currentUserID = _auth.currentUser!.uid;
+
+    List<String> ids = [currentUserID, receiverID];
+    ids.sort();
+    String chatRoomID = ids.join('_');
+
+    QuerySnapshot messagesSnapshot = await _firestore
+        .collection('chat_rooms')
+        .doc(chatRoomID)
+        .collection('messages')
+        .where('receiverID', isEqualTo: currentUserID)
+        .where('isSeen', isEqualTo: false)
+        .get();
+
+    for (var doc in messagesSnapshot.docs) {
+      await doc.reference.update({'isSeen': true});
+    }
   }
 }
