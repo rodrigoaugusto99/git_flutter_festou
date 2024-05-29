@@ -24,6 +24,7 @@ class _ChatPageState extends State<ChatPage> {
   final CollectionReference chatRoomsCollection =
       FirebaseFirestore.instance.collection('chat_rooms');
   bool onLongPressSelection = false;
+  int counterSelection = 0;
   String userID = FirebaseAuth.instance.currentUser!.uid;
 
   void sendMessage() async {
@@ -37,8 +38,13 @@ class _ChatPageState extends State<ChatPage> {
     setState(() {
       if (selectedMessageIds.contains(messageId)) {
         selectedMessageIds.remove(messageId);
+        counterSelection--;
+        if (counterSelection == 0) {
+          onLongPressSelection = false;
+        }
       } else {
         selectedMessageIds.add(messageId);
+        counterSelection++;
       }
     });
   }
@@ -47,6 +53,7 @@ class _ChatPageState extends State<ChatPage> {
     setState(() {
       selectedMessageIds.clear();
       onLongPressSelection = false;
+      counterSelection = 0;
     });
   }
 
@@ -68,6 +75,7 @@ class _ChatPageState extends State<ChatPage> {
     final totalRemainingMessages = remainingMessages.size - messagesToDelete;
 
     try {
+      // ignore: use_build_context_synchronously
       bool? confirmDeletionMessage = await showDialog<bool>(
         context: context,
         builder: (BuildContext context) {
@@ -81,6 +89,7 @@ class _ChatPageState extends State<ChatPage> {
                 child: const Text('Cancelar'),
                 onPressed: () {
                   Navigator.of(context).pop(false);
+                  deselectAllMessages();
                 },
               ),
               TextButton(
@@ -98,53 +107,55 @@ class _ChatPageState extends State<ChatPage> {
         for (var messageId in messagesIds) {
           await messageCollection.doc(messageId).delete();
         }
-      }
 
-      if (totalRemainingMessages == 0) {
-        bool? confirmDeletionChat = await showDialog<bool>(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Confirmar Exclusão'),
-              content: const Text(
-                  'Não há mais mensagens no chat, deseja apagar a conversa?'),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('Cancelar'),
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
-                ),
-                TextButton(
-                  child: const Text('Confirmar'),
-                  onPressed: () {
-                    Navigator.of(context).pop(true);
-                  },
-                ),
-              ],
-            );
-          },
-        );
+        if (totalRemainingMessages == 0) {
+          // ignore: use_build_context_synchronously
+          bool? confirmDeletionChat = await showDialog<bool>(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Confirmar Exclusão'),
+                content: const Text(
+                    'Não há mais mensagens no chat, deseja apagar a conversa?'),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text('Cancelar'),
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                      deselectAllMessages();
+                    },
+                  ),
+                  TextButton(
+                    child: const Text('Confirmar'),
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                  ),
+                ],
+              );
+            },
+          );
 
-        if (confirmDeletionChat == true) {
-          await chatRoomsCollection.doc(chatRoomId).delete();
+          if (confirmDeletionChat == true) {
+            await chatRoomsCollection.doc(chatRoomId).delete();
 
-          if (mounted) {
-            Navigator.of(context).pushNamedAndRemoveUntil(
-              '/home2',
-              (Route<dynamic> route) => false,
-              arguments: 2,
-            );
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Conversa apagada')),
-            );
+            if (mounted) {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                '/home2',
+                (Route<dynamic> route) => false,
+                arguments: 2,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Conversa apagada')),
+              );
+            }
           }
+        } else {
+          deselectAllMessages();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Mensagem excluída')),
+          );
         }
-      } else {
-        deselectAllMessages();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Mensagem excluída')),
-        );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -277,11 +288,15 @@ class _ChatPageState extends State<ChatPage> {
                 return const Text("Loading");
               }
               return Expanded(
-                child: ListView(
+                child: ListView.builder(
                   reverse: true,
-                  children: snapshot.data!.docs
-                      .map<Widget>((e) => _buildMessageItem(e))
-                      .toList(),
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot? nextDoc =
+                        index > 0 ? snapshot.data!.docs[index - 1] : null;
+                    return _buildMessageItem(
+                        snapshot.data!.docs[index], nextDoc);
+                  },
                 ),
               );
             },
@@ -292,13 +307,19 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget _buildMessageItem(DocumentSnapshot doc) {
+  Widget _buildMessageItem(DocumentSnapshot doc, DocumentSnapshot? nextDoc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    Map<String, dynamic>? nextData = nextDoc?.data() as Map<String, dynamic>?;
+
     final user = FirebaseAuth.instance.currentUser!;
     bool isCurrentUser = data['senderID'] == user.uid;
+    bool isSameUserAsNext =
+        nextData != null && data['senderID'] == nextData['senderID'];
     String messageId = doc.id;
 
     bool isSelected = selectedMessageIds.contains(messageId);
+
+    double marginBottom = isSameUserAsNext ? 2 : 16;
 
     return GestureDetector(
       onLongPress: () {
@@ -310,20 +331,15 @@ class _ChatPageState extends State<ChatPage> {
       onTap: () {
         if (onLongPressSelection) {
           selectMessage(messageId);
-        } else {
-          // Aqui você pode colocar a lógica de onTap normal
         }
       },
-      child: Column(
-        crossAxisAlignment:
-            isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: [
-          ExpandableMessage(
-            message: data['message'],
-            isCurrentUser: isCurrentUser,
-            isSelected: isSelected,
-          ),
-        ],
+      child: Container(
+        margin: EdgeInsets.only(bottom: marginBottom),
+        child: ExpandableMessage(
+          message: data['message'],
+          isCurrentUser: isCurrentUser,
+          isSelected: isSelected,
+        ),
       ),
     );
   }
@@ -398,13 +414,13 @@ class _ExpandableMessageState extends State<ExpandableMessage> {
     if (message.length > maxLength) {
       return RichText(
         text: TextSpan(
-          text: message.substring(0, maxLength),
-          style: const TextStyle(color: Colors.black), // Estilo da mensagem
+          text: message.substring(0, maxLength), // Estilo da mensagem
           children: [
             TextSpan(
-              text: "...ver mais",
+              text: "... ver mais",
               style: const TextStyle(
-                  color: Colors.blue), // Estilo do link "ver mais"
+                  color: Color.fromARGB(
+                      255, 64, 0, 167)), // Estilo do link "ver mais"
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
                   setState(() {
@@ -416,7 +432,12 @@ class _ExpandableMessageState extends State<ExpandableMessage> {
         ),
       );
     } else {
-      return Text(message);
+      return Text(
+        message,
+        style: TextStyle(
+            color: widget.isCurrentUser ? Colors.white : Colors.black,
+            fontFamily: 'Inter'),
+      );
     }
   }
 }
