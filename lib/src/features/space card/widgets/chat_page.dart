@@ -243,18 +243,18 @@ class _ChatPageState extends State<ChatPage> {
               child: FutureBuilder<String>(
                 future: getNameById(widget.receiverID),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text(
-                        snapshot.data ?? 'Usuário',
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    );
-                  } else {
+                  //if (snapshot.connectionState == ConnectionState.done) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      snapshot.data ?? 'Usuário',
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                  /*} else {
                     return const Text('Carregando...');
-                  }
+                  }*/
                 },
               ),
             ),
@@ -327,10 +327,10 @@ class _ChatPageState extends State<ChatPage> {
               if (snapshot.hasError) {
                 return const Text("Error");
               }
-              if (snapshot.connectionState == ConnectionState.waiting &&
+              /*if (snapshot.connectionState == ConnectionState.waiting &&
                   !notWait) {
                 return const Text("Loading");
-              }
+              }*/
               notWait = false;
 
               WidgetsBinding.instance.addPostFrameCallback((_) {
