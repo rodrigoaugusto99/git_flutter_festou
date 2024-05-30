@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_bubble.dart';
 import 'package:git_flutter_festou/src/services/chat_services.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:flutter_emoji/flutter_emoji.dart';
 
 class ChatPage extends StatefulWidget {
   final String receiverID;
@@ -18,6 +20,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  final FocusNode messageFocusNode = FocusNode();
   final messageEC = TextEditingController();
   final ChatServices _chatServices = ChatServices();
   Set<String> selectedMessageIds = {};
@@ -25,6 +28,8 @@ class _ChatPageState extends State<ChatPage> {
       FirebaseFirestore.instance.collection('chat_rooms');
   bool onLongPressSelection = false;
   int counterSelection = 0;
+  bool isEmojiVisible = false;
+  bool notWait = false;
   String userID = FirebaseAuth.instance.currentUser!.uid;
 
   Future<void> _markMessagesAsSeen() async {
@@ -237,45 +242,45 @@ class _ChatPageState extends State<ChatPage> {
               child: FutureBuilder<String>(
                 future: getNameById(widget.receiverID),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text(
-                        snapshot.data ?? 'Usuário',
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    );
-                  } else {
+                  //if (snapshot.connectionState == ConnectionState.done) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      snapshot.data ?? 'Usuário',
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                  /*} else {
                     return const Text('Carregando...');
-                  }
+                  }*/
                 },
               ),
             ),
             FutureBuilder<String>(
               future: getAvatarById(widget.receiverID),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colors.transparent,
-                    child: ClipOval(
-                      child: snapshot.data != ''
-                          ? Image.network(
-                              snapshot.data!,
-                              fit: BoxFit.cover,
-                              width: 40,
-                              height: 40,
-                            )
-                          : const Icon(Icons.person),
-                    ),
-                  );
-                } else {
+                //if (snapshot.connectionState == ConnectionState.done) {
+                return CircleAvatar(
+                  radius: 20,
+                  backgroundColor: Colors.transparent,
+                  child: ClipOval(
+                    child: snapshot.data != ''
+                        ? Image.network(
+                            snapshot.data!,
+                            fit: BoxFit.cover,
+                            width: 40,
+                            height: 40,
+                          )
+                        : const Icon(Icons.person),
+                  ),
+                );
+                /*} else {
                   return const CircleAvatar(
                     radius: 20,
                     child: Icon(Icons.person),
                   );
-                }
+                }*/
               },
             ),
           ],
@@ -321,9 +326,11 @@ class _ChatPageState extends State<ChatPage> {
               if (snapshot.hasError) {
                 return const Text("Error");
               }
-              if (snapshot.connectionState == ConnectionState.waiting) {
+              if (snapshot.connectionState == ConnectionState.waiting &&
+                  !notWait) {
                 return const Text("Loading");
               }
+              notWait = false;
 
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 _markMessagesAsSeen();
@@ -397,39 +404,127 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _buildUserInput() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
-                color: Colors.grey,
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 14, bottom: 4, right: 8),
+          child: Row(
+            children: [
+              Flexible(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24),
+                    color: Colors.grey[200],
+                  ),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: Image.asset(
+                          isEmojiVisible
+                              ? 'lib/assets/images/keyboard.png'
+                              : 'lib/assets/images/emoji.png',
+                          width: 25,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            if (isEmojiVisible) {
+                              isEmojiVisible = false;
+                              notWait = true;
+                              FocusScope.of(context)
+                                  .requestFocus(messageFocusNode);
+                            } else {
+                              isEmojiVisible = true;
+                              notWait = true;
+                              FocusScope.of(context).unfocus();
+                            }
+                          });
+                        },
+                      ),
+                      Expanded(
+                        child: TextField(
+                          focusNode: messageFocusNode,
+                          controller: messageEC,
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Mensagem',
+                          ),
+                          onTap: () {
+                            if (isEmojiVisible) {
+                              setState(() {
+                                isEmojiVisible = false;
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              child: TextField(
-                controller: messageEC,
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                  hintText: 'Mensagem',
+              IconButton(
+                onPressed: sendMessage,
+                icon: Image.asset('lib/assets/images/send.png', width: 45),
+              ),
+            ],
+          ),
+        ),
+        Offstage(
+          offstage: !isEmojiVisible,
+          child: SizedBox(
+            height: 250,
+            child: EmojiPicker(
+              onEmojiSelected: (category, emoji) {
+                setState(() {
+                  messageEC.text += emoji.emoji;
+                  notWait = true;
+                });
+              },
+              config: Config(
+                emojiViewConfig: const EmojiViewConfig(
+                  columns: 8,
+                  emojiSizeMax: 32.0,
+                  verticalSpacing: 0,
+                  horizontalSpacing: 0,
+                  gridPadding: EdgeInsets.zero,
+                  recentsLimit: 32,
+                  replaceEmojiOnLimitExceed: false,
+                  noRecents: DefaultNoRecentsWidget,
+                  buttonMode: ButtonMode.MATERIAL,
+                ),
+                bottomActionBarConfig: BottomActionBarConfig(
+                  showBackspaceButton: true,
+                  customBottomActionBar: (config, state, showSearchView) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.search,
+                              color: Color(0xFF9747FF)),
+                          onPressed: showSearchView,
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.backspace,
+                              color: Color(0xFF9747FF)),
+                          onPressed: () {
+                            setState(() {
+                              if (messageEC.text.isNotEmpty) {
+                                notWait = true;
+                                messageEC.text = messageEC.text.characters
+                                    .skipLast(1)
+                                    .toString();
+                              }
+                            });
+                          },
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),
           ),
-          const SizedBox(
-            width: 10,
-          ),
-          Container(
-            decoration: BoxDecoration(
-                shape: BoxShape.circle, color: Colors.purple[400]),
-            child: IconButton(
-              onPressed: sendMessage,
-              icon: const Icon(Icons.arrow_upward),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -468,17 +563,99 @@ class _ExpandableMessageState extends State<ExpandableMessage> {
     );
   }
 
+  bool isSingleEmoji(String message) {
+    RegExp singleEmojiRegex = RegExp(
+      r'^(?:'
+      r'[\u2700-\u27BF]|'
+      r'[\u1F300-\u1F5FF]|'
+      r'[\u1F600-\u1F64F]|'
+      r'[\u1F680-\u1F6FF]|'
+      r'[\u1F700-\u1F77F]|'
+      r'[\u1F780-\u1F7FF]|'
+      r'[\u1F800-\u1F8FF]|'
+      r'[\u1F900-\u1F9FF]|'
+      r'[\u1FA00-\u1FA6F]|'
+      r'[\u1FA70-\u1FAFF]|'
+      r'[\u1FB00-\u1FBFF]|'
+      r'[\u1FC00-\u1FCFF]|'
+      r'[\u1FD00-\u1FDFF]|'
+      r'[\u1FE00-\u1FEFF]|'
+      r'[\u1FF00-\u1FFFF]|'
+      r'[\u2600-\u26FF]|'
+      r'[\u2702-\u27B0]|'
+      r'[\u1F1E6-\u1F1FF]|'
+      r'\uD83C[\uDDE6-\uDDFF]|'
+      r'[\uD83D\uDC00-\uD83D\uDE4F]|'
+      r'[\uD83D\uDE80-\uD83D\uDEF6]|'
+      r'[\uD83E\uDD00-\uD83E\uDDFF]|'
+      r'[\uD83E\uDE00-\uD83E\uDE4F]|'
+      r'[\uD83E\uDE80-\uD83E\uDEFF]|'
+      r'[\uD83C\uDF00-\uD83D\uDDFF]|'
+      r'[\uD83C\uDDE6-\uD83C\uDDFF]{2}|'
+      r'\uD83C\uDFF3\uFE0F\u200D\uD83C\uDF08|'
+      r'\u261D|'
+      r'\u26F9|'
+      r'\u270A|'
+      r'\u270B|'
+      r'\u270C|'
+      r'\u270D|'
+      r'[\u2B05-\u2B07]|'
+      r'[\u2934-\u2935]|'
+      r'[\u2B06-\u2B07]|'
+      r'[\u3297-\u3299]|'
+      r'[\u25AA-\u25AB]|'
+      r'[\u25FB-\u25FE]'
+      r')$',
+      unicode: true,
+    );
+    return singleEmojiRegex.hasMatch(message);
+  }
+
+  List<InlineSpan> _parseMessage(String message) {
+    List<InlineSpan> spans = [];
+    RegExp emojiRegex = RegExp(
+      r'([\u2700-\u27BF]|[\u1F300-\u1F5FF]|[\u1F600-\u1F64F]|[\u1F680-\u1F6FF]|[\u1F700-\u1F77F]|[\u1F780-\u1F7FF]|[\u1F800-\u1F8FF]|[\u1F900-\u1F9FF]|[\u1FA00-\u1FA6F]|\u{1F1E6}-\u{1F1FF}|\u{1F3FB}-\u{1F3FF}|\u{1F3F4}-\u{1F3F4}\u{E0067}-\u{E007F}|\u{E0067}-\u{E007F}|[\u1F1E6-\u1F1FF])+',
+      unicode: true,
+    );
+
+    bool singleEmoji = isSingleEmoji(message);
+
+    message.splitMapJoin(
+      emojiRegex,
+      onMatch: (Match match) {
+        spans.add(TextSpan(
+          text: match.group(0),
+          style: TextStyle(
+              color: widget.isCurrentUser ? Colors.white : Colors.black,
+              fontSize: 16),
+        ));
+        return '';
+      },
+      onNonMatch: (String text) {
+        spans.add(TextSpan(
+          text: text,
+          style: TextStyle(
+            fontSize: singleEmoji ? 80 : 22,
+          ),
+        ));
+        return '';
+      },
+    );
+
+    return spans;
+  }
+
   Widget _buildMessage(String message) {
     if (message.length > maxLength) {
       return RichText(
         text: TextSpan(
-          text: message.substring(0, maxLength), // Estilo da mensagem
           children: [
+            ..._parseMessage(message.substring(0, maxLength)),
             TextSpan(
               text: "... ver mais",
               style: const TextStyle(
-                  color: Color.fromARGB(
-                      255, 64, 0, 167)), // Estilo do link "ver mais"
+                color: Color.fromARGB(255, 64, 0, 167),
+              ),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
                   setState(() {
@@ -490,11 +667,10 @@ class _ExpandableMessageState extends State<ExpandableMessage> {
         ),
       );
     } else {
-      return Text(
-        message,
-        style: TextStyle(
-            color: widget.isCurrentUser ? Colors.white : Colors.black,
-            fontFamily: 'Inter'),
+      return RichText(
+        text: TextSpan(
+          children: _parseMessage(message),
+        ),
       );
     }
   }
