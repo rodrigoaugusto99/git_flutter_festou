@@ -170,18 +170,18 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       final userData = userDocument.data() as Map<String, dynamic>;
       final user = FirebaseAuth.instance.currentUser!;
       final UserModel userModel = UserModel(
-        userData['email'] ?? '',
-        userData['name'] ?? '',
-        userData['cpf'] ?? '',
-        userData['user_address']['cep'] ?? '',
-        userData['user_address']['logradouro'] ?? '',
-        userData['telefone'] ?? '',
-        userData['user_address']['bairro'] ?? '',
-        userData['user_address']['cidade'] ?? '',
-        user.uid,
-        userData['doc1_url'] ?? '',
-        userData['doc2_url'] ?? '',
-        userData['avatar_url'] ?? '',
+        email: userData['email'] ?? '',
+        name: userData['name'] ?? '',
+        cpf: userData['cpf'] ?? '',
+        cep: userData['user_address']?['cep'] ?? '',
+        logradouro: userData['user_address']?['logradouro'] ?? '',
+        telefone: userData['telefone'] ?? '',
+        bairro: userData['user_address']?['bairro'] ?? '',
+        cidade: userData['user_address']?['cidade'] ?? '',
+        id: user.uid,
+        doc1Url: userData['doc1_url'] ?? '',
+        doc2Url: userData['doc2_url'] ?? '',
+        avatarUrl: userData['avatar_url'] ?? '',
       );
 
       return Success(userModel);
@@ -218,18 +218,18 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       final userData = userDocument.data() as Map<String, dynamic>;
 
       final UserModel userModel = UserModel(
-        userData['email'] ?? '',
-        userData['name'] ?? '',
-        userData['cpf'] ?? '',
-        userData['user_address']['cep'] ?? '',
-        userData['user_address']['logradouro'] ?? '',
-        userData['telefone'] ?? '',
-        userData['user_address']['bairro'] ?? '',
-        userData['user_address']['cidade'] ?? '',
-        userId,
-        userData['doc1_url'] ?? '',
-        userData['doc2_url'] ?? '',
-        userData['avatar_url'] ?? '',
+        email: userData['email'] ?? '',
+        name: userData['name'] ?? '',
+        cpf: userData['cpf'] ?? '',
+        cep: userData['user_address']?['cep'] ?? '',
+        logradouro: userData['user_address']?['logradouro'] ?? '',
+        telefone: userData['telefone'] ?? '',
+        bairro: userData['user_address']?['bairro'] ?? '',
+        cidade: userData['user_address']?['cidade'] ?? '',
+        id: userId,
+        doc1Url: userData['doc1_url'] ?? '',
+        doc2Url: userData['doc2_url'] ?? '',
+        avatarUrl: userData['avatar_url'] ?? '',
       );
 //gambiarra - colocando dados do firestore e do storage aqui
 //esses swqitchs sao pra pegar os storags(cada um)

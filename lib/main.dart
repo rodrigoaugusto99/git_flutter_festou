@@ -10,6 +10,8 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/my%20favorite%20spa
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/locador/quero_ser_locador.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/search/search_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/help/help_page.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarPageLocador.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
 import 'package:git_flutter_festou/src/features/register/user%20infos/user_register_infos_page.dart';
@@ -43,7 +45,6 @@ class MyApp extends StatelessWidget {
         '/login': (_) => const LoginPage(),
         '/register/user': (_) => const UserRegisterPage(),
         '/register/space': (_) => const EspacoRegisterPage(),
-        //'/register/space/review': (_) =>  SpaceRegisterReviewPage(),
         '/register/user/infos': (_) => const UserRegisterInfosPage(),
         '/account/help': (_) => const HelpPage(),
         '/account/locador': (_) => QueroSerLocadorPage(),
@@ -51,33 +52,18 @@ class MyApp extends StatelessWidget {
         '/home/my_spaces': (_) => const MySpacesPage(),
         '/home/all_spaces': (_) => const AllSpacesPage(),
         '/home/search_page': (_) => const SearchPage(),
+        '/mensagens': (_) => const Mensagens(),
       },
-      /*onGenerateRoute: (settings) {
-        if (settings.name == '/spaces/spaces_by_types') {
-          // Verifica se há argumentos na rota.
-          final type = settings.arguments as List<String>;
-
-          // Crie a página `SpacesByTypePage` e passe os argumentos, se houver, para ela.
+      onGenerateRoute: (settings) {
+        if (settings.name == '/home2') {
+          final initialIndex = settings.arguments as int? ?? 0;
           return MaterialPageRoute(
-            builder: (context) => SpacesByTypePage(type: type),
-          );
-        }
-        if (settings.name == '/spaces/spaces_with_sugestion') {
-          // Verifica se há argumentos na rota.
-          final space = settings.arguments as SpaceModel;
-
-          // Crie a página `SpacesByTypePage` e passe os argumentos, se houver, para ela.
-          return MaterialPageRoute(
-            builder: (context) => SpacesWithSugestionPage(space: space),
-          );
-        }
-        if (settings.name == '/register/space') {
-          return MaterialPageRoute(
-            builder: (context) => const EspacoRegisterPage(),
+            builder: (context) =>
+                BottomNavBarPageLocador(initialIndex: initialIndex),
           );
         }
         return null;
-      },*/
+      },
       theme: ThemeData(
         appBarTheme: const AppBarTheme(color: Colors.purple),
         scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
