@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_bubble.dart';
 import 'package:git_flutter_festou/src/services/chat_services.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
@@ -45,6 +46,7 @@ class _ChatPageState extends State<ChatPage> {
 
   void selectMessage(String messageId) {
     setState(() {
+      notWait = true;
       if (selectedMessageIds.contains(messageId)) {
         selectedMessageIds.remove(messageId);
         counterSelection--;
@@ -152,22 +154,20 @@ class _ChatPageState extends State<ChatPage> {
                 (Route<dynamic> route) => false,
                 arguments: 2,
               );
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Conversa apagada')),
-              );
+              Messages.showSuccess2('Conversa apagada', context);
             }
           }
         } else {
           deselectAllMessages();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Mensagem excluída')),
-          );
+          setState(() {
+            notWait = true;
+          });
+
+          Messages.showSuccess2('Mensagem excluída', context);
         }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao excluir mensagem: $e')),
-      );
+      Messages.showError('Erro ao excluir mensagem: $e', context);
     }
   }
 
@@ -367,10 +367,10 @@ class _ChatPageState extends State<ChatPage> {
               if (snapshot.hasError) {
                 return const Text("Error");
               }
-              /*if (snapshot.connectionState == ConnectionState.waiting &&
+              if (snapshot.connectionState == ConnectionState.waiting &&
                   !notWait) {
                 return const Text("Loading");
-              }*/
+              }
               notWait = false;
 
               WidgetsBinding.instance.addPostFrameCallback((_) {

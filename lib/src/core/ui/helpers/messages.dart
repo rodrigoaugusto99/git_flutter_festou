@@ -23,4 +23,13 @@ sealed class Messages {
       CustomSnackBar.success(message: message),
     );
   }
+
+  static void showSuccess2(String message, BuildContext context) {
+    showTopSnackBar(
+      dismissType: DismissType.onSwipe,
+      displayDuration: const Duration(milliseconds: 100),
+      Overlay.of(context),
+      CustomSnackBar.success(message: message),
+    );
+  }
 }
