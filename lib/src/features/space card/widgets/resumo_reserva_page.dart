@@ -6,6 +6,38 @@ import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_pa
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 
+class DialogBubble extends StatelessWidget {
+  final String text;
+
+  const DialogBubble({Key? key, required this.text}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8.0),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 4.0,
+            spreadRadius: 2.0,
+            offset: Offset(2, 2),
+          ),
+        ],
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.black,
+          fontSize: 12.0,
+        ),
+      ),
+    );
+  }
+}
+
 class ResumoReservaPage extends StatefulWidget {
   final DateTime? selectedDate;
   final SpaceModel? spaceModel;
@@ -26,6 +58,34 @@ class ResumoReservaPage extends StatefulWidget {
 }
 
 class _ResumoReservaPageState extends State<ResumoReservaPage> {
+  OverlayEntry? _overlayEntry;
+
+  void _showDialog(BuildContext context) {
+    if (_overlayEntry != null) {
+      _overlayEntry!.remove();
+      _overlayEntry = null;
+      return;
+    }
+
+    final renderBox = context.findRenderObject() as RenderBox;
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+    final size = renderBox.size;
+    final offset = renderBox.localToGlobal(Offset.zero);
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        left: offset.dx + size.width / 2 - 50,
+        top: offset.dy - 50,
+        child: const Material(
+          color: Colors.transparent,
+          child: DialogBubble(text: 'Informação do Concierge'),
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(_overlayEntry!);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -380,60 +440,71 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
               const Text('Você tem um cupom?'),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Row(
+                child: Column(
                   children: [
-                    Expanded(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            hintStyle: const TextStyle(fontSize: 12),
-                            filled: true,
-                            fillColor: Colors.white,
-                            prefixIcon: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Image.asset(
-                                'lib/assets/images/image 18cupm_prefix.png',
-                                height: 20,
-                                width: 20,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: TextField(
+                              decoration: InputDecoration(
+                                hintStyle: const TextStyle(fontSize: 12),
+                                filled: true,
+                                fillColor: Colors.white,
+                                prefixIcon: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Image.asset(
+                                    'lib/assets/images/image 18cupm_prefix.png',
+                                    height: 20,
+                                    width: 20,
+                                  ),
+                                ),
+                                hintText: 'Digite seu cupom aqui',
+                                border: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
                               ),
+                              style: const TextStyle(color: Colors.black),
                             ),
-                            hintText: 'Digite seu cupom aqui',
-                            border: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            focusedBorder: InputBorder.none,
                           ),
-                          style: const TextStyle(color: Colors.black),
                         ),
-                      ),
+                        const SizedBox(width: 10),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          alignment: Alignment.center,
+                          height: 47,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            gradient: const LinearGradient(
+                              colors: [
+                                Color(0xff9747FF),
+                                Color(0xff44300b1),
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
+                          ),
+                          child: GestureDetector(
+                            onTap: () {
+                              // Ação do botão
+                            },
+                            child: const Text(
+                              'Aplicar',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 10),
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      alignment: Alignment.center,
-                      height: 47,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color(0xff9747FF),
-                            Color(0xff44300b1),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                      ),
-                      child: GestureDetector(
-                        onTap: () {
-                          // Ação do botão
-                        },
-                        child: const Text(
-                          'Aplicar',
-                          style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white),
-                        ),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Cupom aplicado',
+                        style: TextStyle(fontSize: 9, color: Colors.red),
                       ),
                     ),
                   ],
@@ -441,18 +512,29 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50),
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 97, vertical: 14),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white,
-                  ),
-                  child: const Text(
-                    'FESTOU50!',
-                    style: TextStyle(fontSize: 12),
-                  ),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 97, vertical: 14),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                      ),
+                      child: const Text(
+                        'FESTOU50!',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ),
+                    const Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        'Remover',
+                        style: TextStyle(fontSize: 9, color: Colors.red),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(
@@ -476,6 +558,9 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                     const Text(
                       'Subtotal',
                       style: TextStyle(fontSize: 12),
+                    ),
+                    const SizedBox(
+                      height: 3,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 22),
@@ -534,18 +619,25 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                       ),
                     ),
                     const SizedBox(height: 15),
-                    const Row(
+                    Row(
                       children: [
-                        Text(
+                        const Text(
                           'Taxa Concierge',
                           style: TextStyle(fontSize: 12),
                         ),
-                        SizedBox(width: 5),
-                        Icon(
-                          Icons.help_outlined,
-                          color: Color(0xff595959),
+                        const SizedBox(width: 5),
+                        GestureDetector(
+                          onTap: () => _showDialog(context),
+                          child: const Icon(
+                            Icons.help_outlined,
+                            color: Color(0xff595959),
+                            size: 17,
+                          ),
                         ),
                       ],
+                    ),
+                    const SizedBox(
+                      height: 3,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 22),

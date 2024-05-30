@@ -114,7 +114,9 @@ class _ChatPageState extends State<ChatPage> {
             messages.map((message) => message['formattedMessage']).join('\n');
         Clipboard.setData(ClipboardData(text: combinedMessage));
         deselectAllMessages();
-        Messages.showSuccess2('Mensagens copiadas', context);
+        Messages.showSuccess2(
+            counterSelection > 1 ? 'Mensagens copiadas' : 'Mensagem copiada',
+            context);
       });
     }
   }
@@ -214,7 +216,11 @@ class _ChatPageState extends State<ChatPage> {
             notWait = true;
           });
 
-          Messages.showSuccess2('Mensagem excluída', context);
+          Messages.showSuccess2(
+              counterSelection > 1
+                  ? 'Mensagens excluídas'
+                  : 'Mensagem excluída',
+              context);
         }
       }
     } catch (e) {

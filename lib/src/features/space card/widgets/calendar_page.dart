@@ -170,11 +170,14 @@ class _CalendarPageState extends State<CalendarPage> {
                       ),
                     ),
                     const SizedBox(
-                      height: 20,
+                      height: 47,
                     ),
                     const Text(
                       'Selecione o horário',
                       style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 14,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -206,11 +209,17 @@ class _CalendarPageState extends State<CalendarPage> {
                           ),
                       ],
                     ),
+                    const SizedBox(
+                      height: 14,
+                    ),
                     Text(
                       _selectedDate != null
                           ? '      No dia ${DateFormat('d \'de\' MMMM \'de\' y', 'pt_BR').format(_selectedDate!)}:'
                           : '',
                       style: const TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                    const SizedBox(
+                      height: 8,
                     ),
                   ],
                 ),
