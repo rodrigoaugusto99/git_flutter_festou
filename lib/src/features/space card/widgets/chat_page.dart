@@ -7,7 +7,6 @@ import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_bubble.dart';
 import 'package:git_flutter_festou/src/services/chat_services.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
-import 'package:flutter_emoji/flutter_emoji.dart';
 
 class ChatPage extends StatefulWidget {
   final String receiverID;
@@ -68,12 +67,64 @@ class _ChatPageState extends State<ChatPage> {
     });
   }
 
-  void copyMessage(String message) {
-    Clipboard.setData(ClipboardData(text: message));
-    deselectAllMessages();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Mensagem copiada')),
-    );
+  void copyMessage() {
+    if (selectedMessageIds.isNotEmpty) {
+      List<Future<Map<String, dynamic>>> messageFutures = selectedMessageIds
+          .map((messageId) {
+            DocumentReference docRef = chatRoomsCollection
+                .doc(getChatRoomId())
+                .collection('messages')
+                .doc(messageId);
+            return docRef.get().then((DocumentSnapshot doc) async {
+              if (doc.exists) {
+                Map<String, dynamic>? data =
+                    doc.data() as Map<String, dynamic>?;
+                if (data != null) {
+                  String senderID = data['senderID'];
+                  String message = data['message'];
+                  Timestamp timestamp = data['timestamp'];
+                  String formattedDate = formatDate(timestamp.toDate());
+                  String formattedTime = formatTime(timestamp.toDate());
+                  String senderName;
+
+                  if (senderID == userID) {
+                    senderName = "Você";
+                  } else {
+                    senderName = await getNameById(senderID);
+                  }
+
+                  return {
+                    'formattedMessage':
+                        "$senderName diz em $formattedDate, $formattedTime: $message",
+                    'timestamp': timestamp
+                  };
+                }
+              }
+              return {'formattedMessage': '', 'timestamp': Timestamp.now()};
+            }).catchError((error) {
+              return {'formattedMessage': '', 'timestamp': Timestamp.now()};
+            });
+          })
+          .toList()
+          .cast<Future<Map<String, dynamic>>>();
+
+      Future.wait(messageFutures).then((List<Map<String, dynamic>> messages) {
+        messages.sort((a, b) => a['timestamp'].compareTo(b['timestamp']));
+        String combinedMessage =
+            messages.map((message) => message['formattedMessage']).join('\n');
+        Clipboard.setData(ClipboardData(text: combinedMessage));
+        deselectAllMessages();
+        Messages.showSuccess2('Mensagens copiadas', context);
+      });
+    }
+  }
+
+  String formatDate(DateTime date) {
+    return "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
+  }
+
+  String formatTime(DateTime date) {
+    return "${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}h";
   }
 
   Future<void> deleteMessage(
@@ -185,10 +236,9 @@ class _ChatPageState extends State<ChatPage> {
         await usersCollection.where('uid', isEqualTo: userId).get();
 
     if (userDocument.docs.isNotEmpty) {
-      return userDocument.docs[0]; // Retorna o primeiro documento encontrado.
+      return userDocument.docs[0];
     }
 
-    // Trate o caso em que nenhum usuário foi encontrado.
     throw Exception("Usuário não encontrado");
   }
 
@@ -243,7 +293,6 @@ class _ChatPageState extends State<ChatPage> {
               child: FutureBuilder<String>(
                 future: getNameById(widget.receiverID),
                 builder: (context, snapshot) {
-                  //if (snapshot.connectionState == ConnectionState.done) {
                   return Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Text(
@@ -252,16 +301,12 @@ class _ChatPageState extends State<ChatPage> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   );
-                  /*} else {
-                    return const Text('Carregando...');
-                  }*/
                 },
               ),
             ),
             FutureBuilder<String>(
               future: getAvatarById(widget.receiverID),
               builder: (context, snapshotPhoto) {
-                //if (snapshot.connectionState == ConnectionState.done) {
                 return GestureDetector(
                   onTap: () => Navigator.push(
                     context,
@@ -316,12 +361,6 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                   ),
                 );
-                /*} else {
-                  return const CircleAvatar(
-                    radius: 20,
-                    child: Icon(Icons.person),
-                  );
-                }*/
               },
             ),
           ],
@@ -331,24 +370,7 @@ class _ChatPageState extends State<ChatPage> {
             : [
                 IconButton(
                   icon: const Icon(Icons.copy),
-                  onPressed: () {
-                    for (var messageId in selectedMessageIds) {
-                      DocumentReference docRef = chatRoomsCollection
-                          .doc(getChatRoomId())
-                          .collection('messages')
-                          .doc(messageId);
-                      docRef.get().then((DocumentSnapshot doc) {
-                        if (doc.exists) {
-                          Map<String, dynamic>? data =
-                              doc.data() as Map<String, dynamic>?;
-                          if (data != null) {
-                            String message = data['message'];
-                            copyMessage(message);
-                          }
-                        }
-                      });
-                    }
-                  },
+                  onPressed: copyMessage,
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete),
@@ -497,6 +519,10 @@ class _ChatPageState extends State<ChatPage> {
                               });
                             }
                           },
+                          minLines: 1,
+                          maxLines: null,
+                          keyboardType: TextInputType.multiline,
+                          textInputAction: TextInputAction.newline,
                         ),
                       ),
                     ],
