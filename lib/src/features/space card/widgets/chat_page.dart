@@ -260,20 +260,60 @@ class _ChatPageState extends State<ChatPage> {
             ),
             FutureBuilder<String>(
               future: getAvatarById(widget.receiverID),
-              builder: (context, snapshot) {
+              builder: (context, snapshotPhoto) {
                 //if (snapshot.connectionState == ConnectionState.done) {
-                return CircleAvatar(
-                  radius: 20,
-                  backgroundColor: Colors.transparent,
-                  child: ClipOval(
-                    child: snapshot.data != null
-                        ? Image.network(
-                            snapshot.data!,
-                            fit: BoxFit.cover,
-                            width: 40,
-                            height: 40,
-                          )
-                        : const Icon(Icons.person),
+                return GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return FutureBuilder<String>(
+                            future: getNameById(widget.receiverID),
+                            builder: (context, snapshotName) {
+                              return Scaffold(
+                                appBar: AppBar(
+                                  title: Text(
+                                    snapshotName.data != null
+                                        ? "${snapshotName.data}"
+                                        : '',
+                                    style: const TextStyle(
+                                        overflow: TextOverflow.ellipsis),
+                                  ),
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 0,
+                                ),
+                                backgroundColor: Colors.black,
+                                body: AlertDialog(
+                                    contentPadding: EdgeInsetsDirectional.zero,
+                                    content: Hero(
+                                      tag: 'x',
+                                      child: Image.network(
+                                        snapshotPhoto.data!,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )),
+                              );
+                            });
+                      },
+                    ),
+                  ),
+                  child: CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Colors.transparent,
+                    child: ClipOval(
+                      child: snapshotPhoto.data != null
+                          ? Hero(
+                              tag: 'x',
+                              child: Image.network(
+                                snapshotPhoto.data!,
+                                fit: BoxFit.cover,
+                                width: 40,
+                                height: 40,
+                              ),
+                            )
+                          : const Icon(Icons.person),
+                    ),
                   ),
                 );
                 /*} else {
@@ -340,7 +380,8 @@ class _ChatPageState extends State<ChatPage> {
               return Expanded(
                 child: ListView.builder(
                   reverse: true,
-                  itemCount: snapshot.data!.docs.length,
+                  itemCount:
+                      snapshot.data == null ? 0 : snapshot.data!.docs.length,
                   itemBuilder: (context, index) {
                     DocumentSnapshot? nextDoc =
                         index > 0 ? snapshot.data!.docs[index - 1] : null;
@@ -636,6 +677,7 @@ class _ExpandableMessageState extends State<ExpandableMessage> {
         spans.add(TextSpan(
           text: text,
           style: TextStyle(
+            color: widget.isCurrentUser ? Colors.white : Colors.black,
             fontSize: singleEmoji ? 80 : 22,
           ),
         ));
@@ -647,32 +689,39 @@ class _ExpandableMessageState extends State<ExpandableMessage> {
   }
 
   Widget _buildMessage(String message) {
-    if (message.length > maxLength) {
-      return RichText(
-        text: TextSpan(
-          children: [
-            ..._parseMessage(message.substring(0, maxLength)),
-            TextSpan(
-              text: "... ver mais",
-              style: const TextStyle(
-                color: Color.fromARGB(255, 64, 0, 167),
-              ),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  setState(() {
-                    maxLength += 500;
-                  });
-                },
-            ),
-          ],
-        ),
-      );
+    if (message.startsWith('http') && (message.endsWith('.gif'))) {
+      return Image.network(message);
     } else {
-      return RichText(
-        text: TextSpan(
-          children: _parseMessage(message),
-        ),
-      );
+      if (message.length > maxLength) {
+        return RichText(
+          text: TextSpan(
+            children: [
+              ..._parseMessage(message.substring(0, maxLength)),
+              TextSpan(
+                text: "... ver mais",
+                style: TextStyle(
+                  color: widget.isCurrentUser ? Colors.white : Colors.black,
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    setState(() {
+                      maxLength += 500;
+                    });
+                  },
+              ),
+            ],
+          ),
+        );
+      } else {
+        return RichText(
+          text: TextSpan(
+            children: _parseMessage(message),
+            style: TextStyle(
+              color: widget.isCurrentUser ? Colors.white : Colors.black,
+            ),
+          ),
+        );
+      }
     }
   }
 }
