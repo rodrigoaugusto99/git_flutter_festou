@@ -69,7 +69,7 @@ class _ChatPageState extends State<ChatPage> {
 
   void copyMessage() {
     if (selectedMessageIds.isNotEmpty) {
-      List<Future<String>> messageFutures = selectedMessageIds
+      List<Future<Map<String, dynamic>>> messageFutures = selectedMessageIds
           .map((messageId) {
             DocumentReference docRef = chatRoomsCollection
                 .doc(getChatRoomId())
@@ -93,20 +93,25 @@ class _ChatPageState extends State<ChatPage> {
                     senderName = await getNameById(senderID);
                   }
 
-                  return "$senderName diz em $formattedDate, $formattedTime: $message";
+                  return {
+                    'formattedMessage':
+                        "$senderName diz em $formattedDate, $formattedTime: $message",
+                    'timestamp': timestamp
+                  };
                 }
               }
-              return '';
+              return {'formattedMessage': '', 'timestamp': Timestamp.now()};
             }).catchError((error) {
-              return '';
+              return {'formattedMessage': '', 'timestamp': Timestamp.now()};
             });
           })
           .toList()
-          .cast<Future<String>>();
+          .cast<Future<Map<String, dynamic>>>();
 
-      Future.wait(messageFutures).then((List<String> messages) {
-        messages = messages.reversed.toList();
-        String combinedMessage = messages.join('\n');
+      Future.wait(messageFutures).then((List<Map<String, dynamic>> messages) {
+        messages.sort((a, b) => a['timestamp'].compareTo(b['timestamp']));
+        String combinedMessage =
+            messages.map((message) => message['formattedMessage']).join('\n');
         Clipboard.setData(ClipboardData(text: combinedMessage));
         deselectAllMessages();
         Messages.showSuccess2('Mensagens copiadas', context);
@@ -356,12 +361,6 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                   ),
                 );
-                /*} else {
-                  return const CircleAvatar(
-                    radius: 20,
-                    child: Icon(Icons.person),
-                  );
-                }*/
               },
             ),
           ],
@@ -520,6 +519,10 @@ class _ChatPageState extends State<ChatPage> {
                               });
                             }
                           },
+                          minLines: 1,
+                          maxLines: null,
+                          keyboardType: TextInputType.multiline,
+                          textInputAction: TextInputAction.newline,
                         ),
                       ),
                     ],
