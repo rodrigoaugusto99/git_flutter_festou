@@ -1,12 +1,10 @@
-import 'dart:developer';
-
 import 'package:carousel_slider/carousel_slider.dart';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
-import 'package:svg_flutter/svg_flutter.dart';
 
 class ResumoReservaPage extends StatefulWidget {
   final DateTime? selectedDate;
@@ -68,7 +66,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -76,212 +74,308 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                 'Resumo do evento',
                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
               ),
+              const SizedBox(
+                height: 20,
+              ),
               Container(
+                // padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.white,
                 ),
-                child: Column(
-                  children: [
-                    const Text('Seu evento acontecerá em:'),
-                    SizedBox(
-                      width: 300,
-                      height: 260,
-                      child: Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(16.0),
-                            child: CarouselSlider(
-                              items: widget.spaceModel!.imagesUrl
-                                  .map((imageUrl) => Image.network(
-                                        imageUrl,
-                                        fit: BoxFit.cover,
-                                      ))
-                                  .toList(),
-                              options: CarouselOptions(
-                                autoPlay: true,
-                                aspectRatio: 16 / 12,
-                                viewportFraction: 1.0,
-                                enableInfiniteScroll: true,
-                                // onPageChanged: (index, reason) {
-                                //   setState(() {
-                                //     _currentIndex = index;
-                                //   });
-                                // },
+                child: Padding(
+                  padding: const EdgeInsets.only(),
+                  child: Column(
+                    children: [
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 8, bottom: 8, left: 38),
+                          child: Text(
+                            'Seu evento acontecerá em:',
+                            style: TextStyle(
+                                fontSize: 12, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 300,
+                        height: 260,
+                        child: Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(16.0),
+                              child: CarouselSlider(
+                                items: widget.spaceModel!.imagesUrl
+                                    .map((imageUrl) => Image.network(
+                                          imageUrl,
+                                          fit: BoxFit.cover,
+                                        ))
+                                    .toList(),
+                                options: CarouselOptions(
+                                  autoPlay: true,
+                                  aspectRatio: 16 / 12,
+                                  viewportFraction: 1.0,
+                                  enableInfiniteScroll: true,
+                                  // onPageChanged: (index, reason) {
+                                  //   setState(() {
+                                  //     _currentIndex = index;
+                                  //   });
+                                  // },
+                                ),
                               ),
                             ),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            left: 20,
-                            right: 20,
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 250,
-                                      height: 80,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          color: Colors.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color:
-                                                  Colors.grey.withOpacity(0.5),
-                                              spreadRadius: 2,
-                                              blurRadius: 20,
-                                              offset: const Offset(0, 3),
-                                            ),
-                                          ]),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 8, left: 25),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  capitalizeFirstLetter(widget
-                                                      .spaceModel!.titulo),
-                                                  style: const TextStyle(
-                                                    fontFamily: 'RedHatDisplay',
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w900,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 25),
-                                            child: Text(
-                                              style: TextStyle(
-                                                  color: Colors.blueGrey[500],
-                                                  fontSize: 11),
-                                              capitalizeTitle(
-                                                  "${widget.spaceModel!.bairro}, ${widget.spaceModel!.cidade}"),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 25, right: 30),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                    color: _getColor(
-                                                      double.parse(widget
-                                                          .spaceModel!
-                                                          .averageRating),
-                                                    ),
-                                                  ),
-                                                  height: 20,
-                                                  width: 20,
-                                                  child: Center(
-                                                    child: Text(
-                                                      double.parse(widget
-                                                              .spaceModel!
-                                                              .averageRating)
-                                                          .toStringAsFixed(1),
-                                                      style: const TextStyle(
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 10),
-                                                    ),
-                                                  ),
-                                                ),
-                                                const Text(
-                                                    style: TextStyle(
-                                                      color: Color(0xff5E5E5E),
-                                                      fontSize: 10,
-                                                    ),
-                                                    "(105)"),
-                                                Row(
-                                                  children: [
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                        color: const Color(
-                                                            0xff9747FF),
-                                                      ),
-                                                      width: 20,
-                                                      height: 20,
-                                                      child: const Icon(
-                                                        Icons.attach_money,
-                                                        size: 15,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const Text(
-                                                  style: TextStyle(
-                                                      color: Color(0xff9747FF),
-                                                      fontSize: 10,
+                            Positioned(
+                              bottom: 0,
+                              left: 20,
+                              right: 20,
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: 250,
+                                        height: 80,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            color: Colors.white,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey
+                                                    .withOpacity(0.5),
+                                                spreadRadius: 2,
+                                                blurRadius: 20,
+                                                offset: const Offset(0, 3),
+                                              ),
+                                            ]),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 8, left: 25),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    capitalizeFirstLetter(widget
+                                                        .spaceModel!.titulo),
+                                                    style: const TextStyle(
+                                                      fontFamily:
+                                                          'RedHatDisplay',
+                                                      fontSize: 14,
                                                       fontWeight:
-                                                          FontWeight.w700),
-                                                  "R\$800,00/h",
-                                                ),
-                                                const Row(
-                                                  children: [
-                                                    Icon(
-                                                      Icons.favorite,
-                                                      size: 20,
-                                                      color: Color(0xff9747FF),
+                                                          FontWeight.w900,
                                                     ),
-                                                    Text(
-                                                        style: TextStyle(
-                                                          color:
-                                                              Color(0xff5E5E5E),
-                                                          fontSize: 10,
-                                                        ),
-                                                        "(598)"),
-                                                  ],
-                                                ),
-                                              ],
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 25),
+                                              child: Text(
+                                                style: TextStyle(
+                                                    color: Colors.blueGrey[500],
+                                                    fontSize: 11),
+                                                capitalizeTitle(
+                                                    "${widget.spaceModel!.bairro}, ${widget.spaceModel!.cidade}"),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 25, right: 30),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      color: _getColor(
+                                                        double.parse(widget
+                                                            .spaceModel!
+                                                            .averageRating),
+                                                      ),
+                                                    ),
+                                                    height: 20,
+                                                    width: 20,
+                                                    child: Center(
+                                                      child: Text(
+                                                        double.parse(widget
+                                                                .spaceModel!
+                                                                .averageRating)
+                                                            .toStringAsFixed(1),
+                                                        style: const TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 10),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const Text(
+                                                      style: TextStyle(
+                                                        color:
+                                                            Color(0xff5E5E5E),
+                                                        fontSize: 10,
+                                                      ),
+                                                      "(105)"),
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5),
+                                                          color: const Color(
+                                                              0xff9747FF),
+                                                        ),
+                                                        width: 20,
+                                                        height: 20,
+                                                        child: const Icon(
+                                                          Icons.attach_money,
+                                                          size: 15,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const Text(
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xff9747FF),
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w700),
+                                                    "R\$800,00/h",
+                                                  ),
+                                                  const Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.favorite,
+                                                        size: 20,
+                                                        color:
+                                                            Color(0xff9747FF),
+                                                      ),
+                                                      Text(
+                                                          style: TextStyle(
+                                                            color: Color(
+                                                                0xff5E5E5E),
+                                                            fontSize: 10,
+                                                          ),
+                                                          "(598)"),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 35,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 38),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Com início em:',
+                              style: TextStyle(fontSize: 12),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 15),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    '22:00h ',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                  Text('do dia ',
+                                      style: TextStyle(fontSize: 12)),
+                                  Text(
+                                    '03 de Agosto de 2021 ',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text(
+                              'Com término em:',
+                              style: TextStyle(fontSize: 12),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 15),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    '01:00h ',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                  Text('do dia ',
+                                      style: TextStyle(fontSize: 12)),
+                                  Text(
+                                    '04 de Agosto de 2021 ',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                Text('Totalizando ',
+                                    style: TextStyle(fontSize: 12)),
+                                Text(
+                                  '4 ',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700),
                                 ),
+                                Text('horas', style: TextStyle(fontSize: 12)),
                               ],
                             ),
-                          )
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    const Text('Com início em:'),
-                    const Text('xxxxx'),
-                    const Text('Com término em:'),
-                    const Text('yyyy'),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(
-                height: 20,
+                height: 32,
               ),
               const Text('Você tem um cupom?'),
               Padding(
@@ -289,104 +383,228 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: TextField(
-                        decoration: InputDecoration(
-                          prefixIcon: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Image.asset(
-                              'lib/assets/images/image 18cupm_prefix.png',
-                              height: 20,
-                              width: 20,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintStyle: const TextStyle(fontSize: 12),
+                            filled: true,
+                            fillColor: Colors.white,
+                            prefixIcon: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Image.asset(
+                                'lib/assets/images/image 18cupm_prefix.png',
+                                height: 20,
+                                width: 20,
+                              ),
                             ),
+                            hintText: 'Digite seu cupom aqui',
+                            border: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
                           ),
-                          hintText: 'Digite seu cupom aqui',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
+                          style: const TextStyle(color: Colors.black),
                         ),
                       ),
                     ),
                     const SizedBox(width: 10),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.purple,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      alignment: Alignment.center,
+                      height: 47,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xff9747FF),
+                            Color(0xff44300b1),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
                         ),
                       ),
-                      onPressed: () {
-                        // Ação do botão
-                      },
-                      child: const Text('Aplicar'),
+                      child: GestureDetector(
+                        onTap: () {
+                          // Ação do botão
+                        },
+                        child: const Text(
+                          'Aplicar',
+                          style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white),
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 50),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 97, vertical: 14),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                  ),
+                  child: const Text(
+                    'FESTOU50!',
+                    style: TextStyle(fontSize: 12),
+                  ),
                 ),
-                child: const Text(
-                  'nome do cupom',
-                  style: TextStyle(fontSize: 12),
-                ),
+              ),
+              const SizedBox(
+                height: 14,
               ),
               const Text(
                 'Resumo de valores',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
               ),
+              const SizedBox(
+                height: 14,
+              ),
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Colors.white,
                 ),
-                child: const Column(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Subtotal',
                       style: TextStyle(fontSize: 12),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '04 horas x R\$ 800,00',
-                          style: TextStyle(fontSize: 12),
-                        ),
-                        Text(
-                          'R\$ 3200,00',
-                          style: TextStyle(fontSize: 12),
-                        ),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.only(left: 22),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          RichText(
+                            text: const TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: '04 ',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: 'horas ',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: 'x ',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: 'R\$ ',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: '800,00',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Text(
+                            'R\$ 3200,00',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      ),
                     ),
-                    SizedBox(height: 15),
-                    Row(
+                    const SizedBox(height: 15),
+                    const Row(
                       children: [
                         Text(
                           'Taxa Concierge',
                           style: TextStyle(fontSize: 12),
                         ),
                         SizedBox(width: 5),
-                        Icon(Icons.question_mark)
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '3,5% x R\$ 3200,00',
-                          style: TextStyle(fontSize: 12),
-                        ),
-                        Text(
-                          'R\$ 112,00',
-                          style: TextStyle(fontSize: 12),
+                        Icon(
+                          Icons.help_outlined,
+                          color: Color(0xff595959),
                         ),
                       ],
                     ),
-                    SizedBox(height: 15),
-                    Row(
+                    Padding(
+                      padding: const EdgeInsets.only(left: 22),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          RichText(
+                            text: const TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: '3,5 ',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: '% ',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: 'x ',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: 'R\$ ',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: '3200,00',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Text(
+                            'R\$ 112,00',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -399,8 +617,8 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 40),
-                    Row(
+                    const SizedBox(height: 40),
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -409,7 +627,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                               fontSize: 12, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          '- R\$ 50,00',
+                          '- R\$ 3262,00',
                           style: TextStyle(
                               fontSize: 12, fontWeight: FontWeight.bold),
                         ),
@@ -425,6 +643,9 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                 'Selecionar método de pagamento',
                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
               ),
+              const SizedBox(
+                height: 15,
+              ),
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
@@ -435,6 +656,9 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Image.asset('lib/assets/images/image 4cartao_reserva.png'),
+                    const SizedBox(
+                      width: 5,
+                    ),
                     const Text(
                       'Cartão Master **** 2580',
                       style:
@@ -458,6 +682,9 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                 'Contrato',
                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
               ),
+              const SizedBox(
+                height: 15,
+              ),
               GestureDetector(
                 onTap: () async {
                   Navigator.push(
@@ -474,7 +701,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                 },
                 child: Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
@@ -488,7 +715,10 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                               style: TextStyle(
                                   fontSize: 12, fontWeight: FontWeight.bold),
                             ),
-                            Icon(Icons.arrow_forward_ios_outlined),
+                            Icon(
+                              Icons.arrow_forward_ios_outlined,
+                              size: 15,
+                            ),
                           ],
                         )
                       : const Text(
@@ -500,6 +730,13 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                         ),
                 ),
               ),
+              const SizedBox(
+                height: 3,
+              ),
+              const Text(
+                'É necessário assinar o contrato antes de finalizar a reserva',
+                style: TextStyle(fontSize: 9, color: Colors.red),
+              ),
             ],
           ),
         ),
@@ -507,24 +744,35 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
       backgroundColor: Colors.grey[100],
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white,
-            backgroundColor: widget.assinado
-                ? Colors.purple
-                : Colors.purple[100], // Cor do botão
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20), // Bordas arredondadas
-            ),
-          ),
-          onPressed: () {
+        child: GestureDetector(
+          onTap: () {
             if (widget.assinado) {
               //todo: pode reservar
             } else {
               //todo: nao pode reservar
             }
           },
-          child: const Text('Reservar'),
+          child: Container(
+              alignment: Alignment.center,
+              height: 35,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xff9747FF),
+                    Color(0xff44300b1),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+              child: const Text(
+                'Reservar',
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white),
+              )),
         ),
       ),
     );

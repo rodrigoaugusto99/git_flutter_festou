@@ -3,9 +3,11 @@ import 'dart:developer';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/resumo_reserva_page.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:intl/intl.dart';
 
 class CalendarPage extends StatefulWidget {
   final SpaceModel space;
@@ -20,16 +22,31 @@ class _CalendarPageState extends State<CalendarPage> {
 
   int? checkInTime;
   int? checkOutTime;
-
+  bool showWarning = false;
   void onSelectTime(int selectedTime) {
     setState(() {
-      if (checkInTime == null) {
+      if (checkInTime == selectedTime) {
+        checkInTime = checkOutTime;
+        checkOutTime = null;
+      } else if (checkOutTime == selectedTime) {
+        checkOutTime = null;
+      } else if (checkInTime == null) {
         checkInTime = selectedTime;
       } else if (checkOutTime == null) {
         checkOutTime = selectedTime;
       } else {
         checkInTime = selectedTime;
         checkOutTime = null;
+      }
+
+      showWarning = false;
+
+      if (checkInTime != null && checkOutTime != null) {
+        if (checkInTime! > checkOutTime!) {
+          int temp = checkInTime!;
+          checkInTime = checkOutTime;
+          checkOutTime = temp;
+        }
       }
     });
   }
@@ -91,9 +108,6 @@ class _CalendarPageState extends State<CalendarPage> {
                       'Selecione uma data',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    Text(
-                        'startTime e endTime desse espaco: ${widget.space.startTime} - ${widget.space.endTime}'),
-                    Text('dias disponiveis: ${widget.space.days}'),
                     const SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -162,14 +176,40 @@ class _CalendarPageState extends State<CalendarPage> {
                       'Selecione o horário',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    const Align(
-                      child: Text(
-                        'Tempo minimo de locação: 4h',
-                        style: TextStyle(fontSize: 12),
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (showWarning)
+                          const Icon(
+                            Icons.warning,
+                            color: Colors.red,
+                            size: 22,
+                          ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          'Tempo mínimo de locação: 4h',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: !showWarning ? Colors.black : Colors.red,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        if (showWarning)
+                          const Icon(
+                            Icons.warning,
+                            color: Colors.red,
+                            size: 22,
+                          ),
+                      ],
                     ),
                     Text(
-                      '      No dia $_selectedDate:',
+                      _selectedDate != null
+                          ? '      No dia ${DateFormat('d \'de\' MMMM \'de\' y', 'pt_BR').format(_selectedDate!)}:'
+                          : '',
                       style: const TextStyle(fontWeight: FontWeight.w500),
                     ),
                   ],
@@ -184,11 +224,38 @@ class _CalendarPageState extends State<CalendarPage> {
                     int hour = startHour + index;
                     bool isSelected =
                         (hour == checkInTime) || (hour == checkOutTime);
-                    return GestureDetector(
-                      onTap: () => onSelectTime(hour),
-                      child: CalendarWidget(
-                        hour: hour.toString().padLeft(2, '0'),
-                        isSelected: isSelected,
+                    if (index == 0) {
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: GestureDetector(
+                          onTap: () => onSelectTime(hour),
+                          child: CalendarWidget(
+                            hour: hour.toString().padLeft(2, '0'),
+                            isSelected: isSelected,
+                          ),
+                        ),
+                      );
+                    }
+                    if (index == itemCount - 1) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 20),
+                        child: GestureDetector(
+                          onTap: () => onSelectTime(hour),
+                          child: CalendarWidget(
+                            hour: hour.toString().padLeft(2, '0'),
+                            isSelected: isSelected,
+                          ),
+                        ),
+                      );
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: GestureDetector(
+                        onTap: () => onSelectTime(hour),
+                        child: CalendarWidget(
+                          hour: hour.toString().padLeft(2, '0'),
+                          isSelected: isSelected,
+                        ),
                       ),
                     );
                   },
@@ -209,15 +276,15 @@ class _CalendarPageState extends State<CalendarPage> {
                 ),
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 30),
                 child: RichText(
                   textAlign: TextAlign.start,
                   text: const TextSpan(
                     text: 'Lembre-se: ',
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontSize: 11),
                     children: <TextSpan>[
                       TextSpan(
                         text:
@@ -225,12 +292,14 @@ class _CalendarPageState extends State<CalendarPage> {
                             'Em caso de atraso serão cobradas horas adicionais e multa por atraso. '
                             'Os valores poderão ser consultados no contrato, na página seguinte.',
                         style: TextStyle(
-                          fontWeight: FontWeight.normal,
-                        ),
+                            fontWeight: FontWeight.normal, fontSize: 11),
                       ),
                     ],
                   ),
                 ),
+              ),
+              const SizedBox(
+                height: 20,
               ),
             ],
           ),
@@ -238,20 +307,8 @@ class _CalendarPageState extends State<CalendarPage> {
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white,
-            backgroundColor: Colors.purple, // Cor do botão
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20), // Bordas arredondadas
-            ),
-          ),
-          /*
-          DateTime? _selectedDate;
-
-  int? checkInTime;
-  int? checkOutTime; */
-          onPressed: () {
+        child: GestureDetector(
+          onTap: () {
             if (_selectedDate == null ||
                 checkInTime == null ||
                 checkOutTime == null) {
@@ -260,6 +317,14 @@ class _CalendarPageState extends State<CalendarPage> {
                   content: Text('Selecione uma data e horarios')));
               return;
             }
+
+            if ((checkOutTime! - checkInTime!) < 4) {
+              setState(() {
+                showWarning = true;
+              });
+              return;
+            }
+
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -272,7 +337,27 @@ class _CalendarPageState extends State<CalendarPage> {
               ),
             );
           },
-          child: const Text('Prosseguir'),
+          child: Container(
+              alignment: Alignment.center,
+              height: 35,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xff9747FF),
+                    Color(0xff44300b1),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+              child: const Text(
+                'Prosseguir',
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white),
+              )),
         ),
       ),
     );
@@ -290,10 +375,10 @@ class CalendarWidget extends StatelessWidget {
     return Container(
       alignment: Alignment.center,
       height: 30,
-      width: 70,
+      width: 74,
       decoration: BoxDecoration(
         color: isSelected
-            ? Colors.purple
+            ? const Color(0xff9747FF)
             : const Color.fromARGB(255, 202, 200, 200),
         borderRadius: BorderRadius.circular(20),
       ),
