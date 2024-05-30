@@ -208,52 +208,53 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 14.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 2,
-                  blurRadius: 5,
-                  offset: const Offset(0, 2),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: InkWell(
+                onTap: () => selectedMessageIds.isEmpty
+                    ? Navigator.of(context).pop()
+                    : deselectAllMessages(),
+                child: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.black,
                 ),
-              ],
-            ),
-            child: InkWell(
-              onTap: () => selectedMessageIds.isEmpty
-                  ? Navigator.of(context).pop()
-                  : deselectAllMessages(),
-              child: const Icon(
-                Icons.arrow_back,
-                color: Colors.black,
               ),
             ),
-          ),
-        ),
-        title: Row(
-          children: [
             Expanded(
               child: FutureBuilder<String>(
                 future: getNameById(widget.receiverID),
                 builder: (context, snapshot) {
-                  //if (snapshot.connectionState == ConnectionState.done) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Text(
-                      snapshot.data ?? 'Usuário',
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  );
-                  /*} else {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        snapshot.data ?? 'Usuário',
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    );
+                  } else {
                     return const Text('Carregando...');
-                  }*/
+                  }
                 },
               ),
             ),
@@ -265,7 +266,7 @@ class _ChatPageState extends State<ChatPage> {
                   radius: 20,
                   backgroundColor: Colors.transparent,
                   child: ClipOval(
-                    child: snapshot.data != ''
+                    child: snapshot.data != null
                         ? Image.network(
                             snapshot.data!,
                             fit: BoxFit.cover,
