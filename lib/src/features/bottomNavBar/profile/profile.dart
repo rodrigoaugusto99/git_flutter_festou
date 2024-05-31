@@ -32,7 +32,8 @@ class _ProfileState extends ConsumerState<Profile> {
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFF8F8F8),
+        surfaceTintColor: const Color(0xFFF8F8F8),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -85,14 +86,14 @@ class _ProfileState extends ConsumerState<Profile> {
                     ),
                   ),
 
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 25),
 
                   MyText(text: 'Configurações'),
-                  const SizedBox(height: 25),
+                  const SizedBox(height: 15),
                   MyRowsConfig(userModel: data.userModel!),
-                  const SizedBox(height: 10),
-                  MyText(text: 'Locação'),
                   const SizedBox(height: 25),
+                  MyText(text: 'Locação'),
+                  const SizedBox(height: 15),
                   MyRow(
                     text: 'Quero disponibilizar um espaço',
                     icon1: Image.asset(
@@ -105,9 +106,9 @@ class _ProfileState extends ConsumerState<Profile> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  MyText(text: 'Atendimento'),
                   const SizedBox(height: 25),
+                  MyText(text: 'Atendimento'),
+                  const SizedBox(height: 15),
                   MyRow(
                     text: 'Central de Ajuda',
                     icon1: Image.asset(
@@ -116,9 +117,9 @@ class _ProfileState extends ConsumerState<Profile> {
                     onTap: () {},
                   ),
 
-                  const SizedBox(height: 10),
-                  MyText(text: 'Jurídico'),
                   const SizedBox(height: 25),
+                  MyText(text: 'Jurídico'),
+                  const SizedBox(height: 15),
                   MyRow(
                     text: 'Termos de Serviço',
                     icon1: Image.asset(
@@ -126,9 +127,9 @@ class _ProfileState extends ConsumerState<Profile> {
                     ),
                     onTap: () {},
                   ),
-                  const SizedBox(height: 10),
-                  MyText(text: 'Outros'),
                   const SizedBox(height: 25),
+                  MyText(text: 'Outros'),
+                  const SizedBox(height: 15),
                   MyRow(
                     text: 'Termos de Serviço',
                     icon1: Image.asset(
@@ -136,7 +137,7 @@ class _ProfileState extends ConsumerState<Profile> {
                     ),
                     onTap: () {},
                   ),
-                  const SizedBox(height: 70),
+                  const SizedBox(height: 100),
                 ],
               );
             },

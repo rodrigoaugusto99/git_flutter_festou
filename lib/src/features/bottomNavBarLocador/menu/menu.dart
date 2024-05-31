@@ -100,27 +100,47 @@ Widget MyText({required String text}) {
 }
 
 Widget MyRow(
-    {required String text, required Widget icon1, required Function()? onTap}) {
+    {required String text,
+    required Widget icon1,
+    required Function()? onTap,
+    bool hasUnreadMessages = false}) {
   return InkWell(
     onTap: onTap,
-    child: Container(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), color: Colors.white),
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
+    child: Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10), color: Colors.white),
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                  height: 20, width: 20, color: Colors.white, child: icon1),
-              const SizedBox(width: 10),
-              Text(text),
+              Row(
+                children: [
+                  Container(
+                      height: 20, width: 20, color: Colors.white, child: icon1),
+                  const SizedBox(width: 10),
+                  Text(text),
+                ],
+              ),
+              SvgPicture.asset('lib/assets/images/_sfaxx.svg'),
             ],
           ),
-          SvgPicture.asset('lib/assets/images/_sfaxx.svg'),
-        ],
-      ),
+        ),
+        if (hasUnreadMessages)
+          Positioned(
+            top: 0,
+            right: 0,
+            child: Container(
+              width: 12,
+              height: 12,
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+      ],
     ),
   );
 }
