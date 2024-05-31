@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:intl/intl.dart';
 
 class DialogBubble extends StatelessWidget {
   final String text;
@@ -39,17 +42,17 @@ class DialogBubble extends StatelessWidget {
 }
 
 class ResumoReservaPage extends StatefulWidget {
-  final DateTime? selectedDate;
-  final SpaceModel? spaceModel;
-  final int? checkInTime;
-  final int? checkOutTime;
+  final DateTime selectedDate;
+  final SpaceModel spaceModel;
+  final int checkInTime;
+  final int checkOutTime;
   bool assinado;
   ResumoReservaPage({
     super.key,
-    this.spaceModel,
-    this.selectedDate,
-    this.checkInTime,
-    this.checkOutTime,
+    required this.spaceModel,
+    required this.selectedDate,
+    required this.checkInTime,
+    required this.checkOutTime,
     this.assinado = false,
   });
 
@@ -57,28 +60,99 @@ class ResumoReservaPage extends StatefulWidget {
   State<ResumoReservaPage> createState() => _ResumoReservaPageState();
 }
 
+class PointedTriangle extends StatelessWidget {
+  const PointedTriangle({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      bottom: -13,
+      left: -5,
+      child: Transform.rotate(
+        angle: pi / 0.378, // ângulo de rotação em radianos (90 graus)
+        child: CustomPaint(
+          size: const Size(40, 40),
+          painter: TrianglePainter(),
+        ),
+      ),
+    );
+  }
+}
+
+class TrianglePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = const Color(0xffD9D9D9)
+      ..style = PaintingStyle.fill;
+
+    final path = Path();
+    path.moveTo(size.width / 3, 0);
+    path.lineTo(size.width, size.height);
+    path.lineTo(1, size.height);
+    path.close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
+  }
+}
+
 class _ResumoReservaPageState extends State<ResumoReservaPage> {
   OverlayEntry? _overlayEntry;
 
-  void _showDialog(BuildContext context) {
+  void _showPopup(BuildContext context, Offset offset) {
     if (_overlayEntry != null) {
       _overlayEntry!.remove();
       _overlayEntry = null;
       return;
     }
 
-    final renderBox = context.findRenderObject() as RenderBox;
-    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
-    final size = renderBox.size;
-    final offset = renderBox.localToGlobal(Offset.zero);
+    final adjustedOffset = offset - const Offset(50, 50);
 
     _overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        left: offset.dx + size.width / 2 - 50,
-        top: offset.dy - 50,
-        child: const Material(
-          color: Colors.transparent,
-          child: DialogBubble(text: 'Informação do Concierge'),
+      // canSizeOverlay: true,
+      builder: (context) => GestureDetector(
+        onTap: () {},
+        child: Stack(
+          children: [
+            GestureDetector(
+              onTap: () => _removePopup(),
+              child: Container(
+                color: Colors.transparent,
+              ),
+            ),
+            Positioned(
+              left: adjustedOffset.dx + 85,
+              top: adjustedOffset.dy - 120,
+              child: Material(
+                color: Colors.transparent,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    const Positioned(
+                      bottom: -5,
+                      left: -5,
+                      child: PointedTriangle(),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: const Color(0xffD9D9D9),
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      child: const Text(
+                          'A Taxa Concierge é\ncobrada para manter\na aplicação no ar,\nsem ela não seria \npossível reunir-mos\nos melhores espaços\npara que o seu\nevento aconteça!'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -86,8 +160,54 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     Overlay.of(context).insert(_overlayEntry!);
   }
 
+  void _removePopup() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
+  void _handleTap(BuildContext context, TapDownDetails details) {
+    _showPopup(context, details.globalPosition);
+  }
+
   @override
   Widget build(BuildContext context) {
+    int cupom = 51;
+    int hoursDifference = widget.checkOutTime - widget.checkInTime;
+    if (hoursDifference < 0) {
+      hoursDifference += 24; // Adjust for crossing midnight
+    }
+    String formattedDate =
+        DateFormat("d 'de' MMMM 'de' y", 'pt_BR').format(widget.selectedDate);
+    String formattedCheckOutTime =
+        widget.checkOutTime.toString().padLeft(2, '0');
+    String dayLabel = (widget.checkOutTime >= 0 && widget.checkOutTime <= 6)
+        ? 'seguinte'
+        : formattedDate;
+
+    // Convert price string to double
+    double price = double.tryParse(widget.spaceModel.preco
+            .replaceAll(RegExp(r'[^0-9,]'), '')
+            .replaceAll(',', '.')) ??
+        0.0;
+    double totalPrice = hoursDifference * price;
+
+    // Calculate 3.5% of total price
+    double feePercentage = 3.5 / 100;
+    double feeAmount = totalPrice * feePercentage;
+
+    // Calculate final price after adding fee and subtracting cupom
+    int finalPrice = (totalPrice + feeAmount).round() - cupom;
+
+    // Format total price, fee amount, and final price as currency
+    String formattedTotalPrice =
+        NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$')
+            .format(totalPrice);
+    String formattedFeeAmount =
+        NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$').format(feeAmount);
+    String formattedFinalPrice =
+        NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$')
+            .format(finalPrice);
+
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
@@ -166,7 +286,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(16.0),
                               child: CarouselSlider(
-                                items: widget.spaceModel!.imagesUrl
+                                items: widget.spaceModel.imagesUrl
                                     .map((imageUrl) => Image.network(
                                           imageUrl,
                                           fit: BoxFit.cover,
@@ -224,7 +344,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                                 children: [
                                                   Text(
                                                     capitalizeFirstLetter(widget
-                                                        .spaceModel!.titulo),
+                                                        .spaceModel.titulo),
                                                     style: const TextStyle(
                                                       fontFamily:
                                                           'RedHatDisplay',
@@ -244,7 +364,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                                     color: Colors.blueGrey[500],
                                                     fontSize: 11),
                                                 capitalizeTitle(
-                                                    "${widget.spaceModel!.bairro}, ${widget.spaceModel!.cidade}"),
+                                                    "${widget.spaceModel.bairro}, ${widget.spaceModel.cidade}"),
                                               ),
                                             ),
                                             const SizedBox(
@@ -265,7 +385,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                                               5),
                                                       color: _getColor(
                                                         double.parse(widget
-                                                            .spaceModel!
+                                                            .spaceModel
                                                             .averageRating),
                                                       ),
                                                     ),
@@ -274,7 +394,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                                     child: Center(
                                                       child: Text(
                                                         double.parse(widget
-                                                                .spaceModel!
+                                                                .spaceModel
                                                                 .averageRating)
                                                             .toStringAsFixed(1),
                                                         style: const TextStyle(
@@ -356,75 +476,76 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                       const SizedBox(
                         height: 35,
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 38),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 38),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               'Com início em:',
                               style: TextStyle(fontSize: 12),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(left: 15),
+                              padding: const EdgeInsets.only(left: 15),
                               child: Row(
                                 children: [
                                   Text(
-                                    '22:00h ',
-                                    style: TextStyle(
+                                    '${widget.checkInTime}:00h ',
+                                    style: const TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w700),
                                   ),
-                                  Text('do dia ',
+                                  const Text('do dia ',
                                       style: TextStyle(fontSize: 12)),
                                   Text(
-                                    '03 de Agosto de 2021 ',
-                                    style: TextStyle(
+                                    '${DateFormat('d \'de\' MMMM \'de\' y', 'pt_BR').format(widget.selectedDate)}:',
+                                    style: const TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w700),
                                   ),
                                 ],
                               ),
                             ),
-                            Text(
+                            const Text(
                               'Com término em:',
                               style: TextStyle(fontSize: 12),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(left: 15),
+                              padding: const EdgeInsets.only(left: 15),
                               child: Row(
                                 children: [
                                   Text(
-                                    '01:00h ',
-                                    style: TextStyle(
+                                    '${widget.checkOutTime}:00h ',
+                                    style: const TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w700),
                                   ),
-                                  Text('do dia ',
+                                  const Text('do dia ',
                                       style: TextStyle(fontSize: 12)),
                                   Text(
-                                    '04 de Agosto de 2021 ',
-                                    style: TextStyle(
+                                    dayLabel,
+                                    style: const TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w700),
                                   ),
                                 ],
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             Row(
                               children: [
-                                Text('Totalizando ',
+                                const Text('Totalizando ',
                                     style: TextStyle(fontSize: 12)),
                                 Text(
-                                  '4 ',
-                                  style: TextStyle(
+                                  hoursDifference.toString(),
+                                  style: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w700),
                                 ),
-                                Text('horas', style: TextStyle(fontSize: 12)),
+                                const Text(' horas',
+                                    style: TextStyle(fontSize: 12)),
                               ],
                             ),
                           ],
@@ -568,9 +689,9 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           RichText(
-                            text: const TextSpan(
+                            text: TextSpan(
                               children: [
-                                TextSpan(
+                                const TextSpan(
                                   text: '04 ',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -578,14 +699,14 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                     color: Colors.black,
                                   ),
                                 ),
-                                TextSpan(
+                                const TextSpan(
                                   text: 'horas ',
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: Colors.black,
                                   ),
                                 ),
-                                TextSpan(
+                                const TextSpan(
                                   text: 'x ',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -593,7 +714,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                     color: Colors.black,
                                   ),
                                 ),
-                                TextSpan(
+                                const TextSpan(
                                   text: 'R\$ ',
                                   style: TextStyle(
                                     fontSize: 12,
@@ -601,8 +722,8 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                   ),
                                 ),
                                 TextSpan(
-                                  text: '800,00',
-                                  style: TextStyle(
+                                  text: '${widget.spaceModel.preco},00',
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 12,
                                     color: Colors.black,
@@ -611,9 +732,9 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                               ],
                             ),
                           ),
-                          const Text(
-                            'R\$ 3200,00',
-                            style: TextStyle(fontSize: 12),
+                          Text(
+                            formattedTotalPrice,
+                            style: const TextStyle(fontSize: 12),
                           ),
                         ],
                       ),
@@ -627,7 +748,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                         ),
                         const SizedBox(width: 5),
                         GestureDetector(
-                          onTap: () => _showDialog(context),
+                          onTapDown: (details) => _handleTap(context, details),
                           child: const Icon(
                             Icons.help_outlined,
                             color: Color(0xff595959),
@@ -645,9 +766,9 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           RichText(
-                            text: const TextSpan(
+                            text: TextSpan(
                               children: [
-                                TextSpan(
+                                const TextSpan(
                                   text: '3,5 ',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -655,14 +776,14 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                     color: Colors.black,
                                   ),
                                 ),
-                                TextSpan(
+                                const TextSpan(
                                   text: '% ',
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: Colors.black,
                                   ),
                                 ),
-                                TextSpan(
+                                const TextSpan(
                                   text: 'x ',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -670,7 +791,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                     color: Colors.black,
                                   ),
                                 ),
-                                TextSpan(
+                                const TextSpan(
                                   text: 'R\$ ',
                                   style: TextStyle(
                                     fontSize: 12,
@@ -678,8 +799,8 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                   ),
                                 ),
                                 TextSpan(
-                                  text: '3200,00',
-                                  style: TextStyle(
+                                  text: formattedTotalPrice,
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 12,
                                     color: Colors.black,
@@ -688,39 +809,39 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                               ],
                             ),
                           ),
-                          const Text(
-                            'R\$ 112,00',
-                            style: TextStyle(fontSize: 12),
+                          Text(
+                            formattedFeeAmount,
+                            style: const TextStyle(fontSize: 12),
                           ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 15),
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        const Text(
                           'Cupom adicionado',
                           style: TextStyle(fontSize: 12),
                         ),
                         Text(
-                          '- R\$ 50,00',
-                          style: TextStyle(fontSize: 12),
+                          '- R\$ $cupom,00',
+                          style: const TextStyle(fontSize: 12),
                         ),
                       ],
                     ),
                     const SizedBox(height: 40),
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        const Text(
                           'Total',
                           style: TextStyle(
                               fontSize: 12, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          '- R\$ 3262,00',
-                          style: TextStyle(
+                          formattedFinalPrice,
+                          style: const TextStyle(
                               fontSize: 12, fontWeight: FontWeight.bold),
                         ),
                       ],
@@ -783,10 +904,10 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ContratoPage(
-                        spaceModel: widget.spaceModel!,
-                        selectedDate: widget.selectedDate!,
-                        checkInTime: widget.checkInTime!,
-                        checkOutTime: widget.checkOutTime!,
+                        spaceModel: widget.spaceModel,
+                        selectedDate: widget.selectedDate,
+                        checkInTime: widget.checkInTime,
+                        checkOutTime: widget.checkOutTime,
                       ),
                     ),
                   );

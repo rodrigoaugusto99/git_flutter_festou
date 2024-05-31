@@ -26,7 +26,7 @@ class SpaceModel {
   final String startTime;
   final String endTime;
   final List<String> days;
-  //final List<>
+  final String preco;
 
   SpaceModel(
     this.isFavorited,
@@ -52,5 +52,6 @@ class SpaceModel {
     this.startTime,
     this.endTime,
     this.days,
+    this.preco,
   );
 }

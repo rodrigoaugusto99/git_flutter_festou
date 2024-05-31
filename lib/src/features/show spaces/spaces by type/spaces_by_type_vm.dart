@@ -150,6 +150,7 @@ class SpacesByTypeVm extends ChangeNotifier {
       spaceDocument['startTime'] ?? '',
       spaceDocument['endTime'] ?? '',
       spaceDocument['days'] ?? [],
+      spaceDocument['preco'] ?? '',
     );
   }
 

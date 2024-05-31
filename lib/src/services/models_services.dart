@@ -82,6 +82,7 @@ class ModelsServices {
           spaceDocument['startTime'] ?? '',
           spaceDocument['endTime'] ?? '',
           spaceDocument['days'] ?? [],
+          spaceDocument['preco'] ?? '',
         );
 
         return spaceModel;

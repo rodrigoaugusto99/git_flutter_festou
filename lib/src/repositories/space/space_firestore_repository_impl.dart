@@ -46,7 +46,7 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
         List<String> selectedServices,
         List<File> imageFiles,
         String descricao,
-        //String city,
+        String preco,
         double latitude,
         double longitude,
         String startTime,
@@ -106,6 +106,7 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
                 'startTime': spaceData.startTime,
                 'endTime': spaceData.endTime,
                 'days': spaceData.days,
+                'preco': spaceData.preco,
               };
               await spacesCollection.add(newSpace);
             }
@@ -133,6 +134,7 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
               'startTime': spaceData.startTime,
               'endTime': spaceData.endTime,
               'days': spaceData.days,
+              'preco': spaceData.preco,
             };
             await spacesCollection.add(newSpace);
 
@@ -369,6 +371,7 @@ p decidir o isFavorited*/
       spaceDocument['startTime'] ?? '',
       spaceDocument['endTime'] ?? '',
       days,
+      spaceDocument['preco'] ?? '',
     );
   }
 

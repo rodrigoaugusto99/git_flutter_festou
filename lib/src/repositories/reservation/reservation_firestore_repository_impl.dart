@@ -258,6 +258,7 @@ class ReservationFirestoreRepositoryImpl
       spaceDocument['startTime'] ?? '',
       spaceDocument['endTime'] ?? '',
       days,
+      spaceDocument['preco'] ?? '',
     );
   }
 

@@ -147,6 +147,7 @@ p decidir o isFavorited*/
       spaceDocument['startTime'] ?? '',
       spaceDocument['endTime'] ?? '',
       spaceDocument['days'] ?? [],
+      spaceDocument['preco'] ?? '',
     );
   }
 
