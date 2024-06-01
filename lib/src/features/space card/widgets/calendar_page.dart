@@ -5,7 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/constants2.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/resumo_reserva_page.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/summary_data.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:intl/intl.dart';
 
@@ -334,14 +336,32 @@ class _CalendarPageState extends State<CalendarPage> {
               return;
             }
 
+            SummaryData summaryData = SummaryData(
+              dataAtual: null,
+              selectedDate: _selectedDate!,
+              selectedFinalDate: null, //todo: arrumar
+              spaceModel: widget.space,
+              checkInTime: checkInTime!,
+              checkOutTime: checkOutTime!,
+              html: Constants2.html,
+              totalHours: null,
+              valorTotalDasHoras: null,
+              valorDaTaxaConcierge: null,
+              valorDoDesconto: null,
+              codigoDoCupom: null,
+              valorTotalAPagar: null,
+              valorDaMultaPorHoraExtrapolada: null,
+              nomeDoCliente: null,
+              cpfDoCliente: null,
+              nomeDoLocador: null,
+              cpfDoLocador: null,
+            );
+
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => ResumoReservaPage(
-                  spaceModel: widget.space,
-                  selectedDate: _selectedDate!,
-                  checkInTime: checkInTime!,
-                  checkOutTime: checkOutTime!,
+                  summaryData: summaryData,
                 ),
               ),
             );

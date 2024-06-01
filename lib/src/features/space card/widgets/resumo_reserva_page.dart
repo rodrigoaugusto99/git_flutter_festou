@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
+import 'dart:developer' as dev;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -9,7 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/summary_data.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:intl/intl.dart';
 
 class DialogBubble extends StatelessWidget {
@@ -45,17 +49,12 @@ class DialogBubble extends StatelessWidget {
 }
 
 class ResumoReservaPage extends StatefulWidget {
-  final DateTime selectedDate;
-  final SpaceModel spaceModel;
-  final int checkInTime;
-  final int checkOutTime;
+  SummaryData summaryData;
+
   bool assinado;
   ResumoReservaPage({
     super.key,
-    required this.spaceModel,
-    required this.selectedDate,
-    required this.checkInTime,
-    required this.checkOutTime,
+    required this.summaryData,
     this.assinado = false,
   });
 
@@ -69,8 +68,8 @@ class PointedTriangle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: -13,
-      left: -5,
+      bottom: -10,
+      left: -10,
       child: Transform.rotate(
         angle: pi / 0.378, // ângulo de rotação em radianos (90 graus)
         child: CustomPaint(
@@ -143,7 +142,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 5),
+                          horizontal: 20, vertical: 14),
                       decoration: BoxDecoration(
                         color: const Color(0xffD9D9D9),
                         borderRadius: BorderRadius.circular(20.0),
@@ -172,35 +171,121 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     _showPopup(context, details.globalPosition);
   }
 
-  Future replaceMarkers(
-      {required String html,
-      // required String cpf,
-      // required String name,
-      ui.Image? image}) async {
-    String modifiedHtml = html;
+  UserModel? userModel;
+  @override
+  void initState() {
+    getUser();
+    super.initState();
+  }
+
+  void getUser() async {
+    UserService userService = UserService();
+    userModel = await userService.getCurrentUserModel();
+  }
+
+  Future replaceMarkers({
+    // required String cpf,
+    // required String name,
+    required String valorTotalDasHoras,
+    required String valorDaTaxaConcierge,
+    required String valorDoDesconto,
+    required String codigoDoCupom,
+    required String valorTotalAPagar,
+    required String valorDaMultaPorHoraExtrapolada,
+    required String nomeDoCliente,
+    required String cpfDoCliente,
+    // required String nomeDoCliente,
+    // required String nomeDoCliente,
+    ui.Image? image,
+    required hoursDifference,
+  }) async {
+    if (userModel == null) {
+      dev.log('User is null');
+      return;
+    }
+    String modifiedHtml = widget.summaryData.html;
+
+    widget.summaryData.valorTotalDasHoras = valorTotalDasHoras;
+    widget.summaryData.valorDaTaxaConcierge = valorDaTaxaConcierge;
+    widget.summaryData.valorDoDesconto = valorDoDesconto;
+    widget.summaryData.codigoDoCupom = codigoDoCupom;
+    widget.summaryData.valorTotalAPagar = valorTotalAPagar;
+    widget.summaryData.valorDaMultaPorHoraExtrapolada =
+        valorDaMultaPorHoraExtrapolada;
+    widget.summaryData.nomeDoCliente = nomeDoCliente;
+    widget.summaryData.cpfDoCliente = cpfDoCliente;
+    widget.summaryData.nomeDoLocador = hoursDifference;
+    widget.summaryData.cpfDoLocador = hoursDifference;
 
 //todo: replace all markers
+    modifiedHtml = modifiedHtml.replaceAll('{Hora de Início do Evento}',
+        '<b>${widget.summaryData.checkInTime}:00h</b>');
+    modifiedHtml = modifiedHtml.replaceAll('{Hora de Término do Evento}',
+        '<b>${widget.summaryData.checkOutTime}:00h</b>');
+    modifiedHtml = modifiedHtml.replaceAll('{Data de Início do Evento}',
+        '<b>${DateFormat('d \'de\' MMMM \'de\' y', 'pt_BR').format(widget.summaryData.selectedDate)}</b>');
+    modifiedHtml =
+        modifiedHtml.replaceAll('{Número de Horas}', '<b>$hoursDifference</b>');
     modifiedHtml = modifiedHtml.replaceAll(
-        '{Data de Início do Evento}', '<b>${widget.checkInTime}</b>');
-    // modifiedHtml = modifiedHtml.replaceAll('{name}', '<b>$name</b>');
-    // modifiedHtml = modifiedHtml.replaceAll('{name}', '<b>$name</b>');
-    // modifiedHtml = modifiedHtml.replaceAll('{name}', '<b>$name</b>');
-    // modifiedHtml = modifiedHtml.replaceAll('{name}', '<b>$name</b>');
+        '{Valor por Hora}', '<b>${widget.summaryData.spaceModel.preco}</b>');
+    modifiedHtml = modifiedHtml.replaceAll('{Valor Total das Horas}',
+        '<b>${widget.summaryData.valorTotalDasHoras}</b>');
+    modifiedHtml = modifiedHtml.replaceAll('{Valor da Taxa Concierge}',
+        '<b>${widget.summaryData.valorDaTaxaConcierge}</b>');
+    modifiedHtml = modifiedHtml.replaceAll(
+        '{Valor do Desconto}', '<b>${widget.summaryData.valorDoDesconto}</b>');
+    modifiedHtml = modifiedHtml.replaceAll(
+        '{Código do Cupom}', '<b>${widget.summaryData.codigoDoCupom}</b>');
+    modifiedHtml = modifiedHtml.replaceAll('{Valor Total a Pagar}',
+        '<b>${widget.summaryData.valorTotalAPagar}</b>');
+    modifiedHtml = modifiedHtml.replaceAll(
+        '{Valor da Multa por Hora Extrapolada}',
+        '<b>${widget.summaryData.valorDaMultaPorHoraExtrapolada}</b>');
+    modifiedHtml = modifiedHtml.replaceAll(
+        '{Cidade}', '<b>${widget.summaryData.spaceModel.cidade}</b>');
 
+//todo: formatar
+    modifiedHtml =
+        modifiedHtml.replaceAll('{Data}', '<b>${DateTime.now()}</b>');
+
+    modifiedHtml = modifiedHtml.replaceAll('{Nome do responsável pelo espaço}',
+        '<b>${widget.summaryData.spaceModel.locadorName}</b>');
+
+    modifiedHtml = modifiedHtml.replaceAll(
+        '{Nome do Espaço}', '<b>${widget.summaryData.spaceModel.titulo}</b>');
+    //todo: municipio
+    modifiedHtml = modifiedHtml.replaceAll('{Bairro e Município do Espaço}',
+        '<b>${widget.summaryData.spaceModel.bairro}, ${widget.summaryData.spaceModel.cidade}</b>');
+    modifiedHtml = modifiedHtml.replaceAll(
+        '{Nome do Cliente}', '<b>${userModel!.name}</b>');
+    modifiedHtml =
+        modifiedHtml.replaceAll('{CPF do Cliente}', '<b>${userModel!.cpf}</b>');
+
+    //todo: no model
+    //modifiedHtml = modifiedHtml.replaceAll('{CPF do responsável pelo espaço}',
+    //     '<b>${widget.summaryData.spaceModel.locadorCpf}</b>');
+    //  modifiedHtml = modifiedHtml.replaceAll(
+    // '{Estado}', '<b>${widget.summaryData.spaceModel.estado}</b>');
+    // modifiedHtml = modifiedHtml.replaceAll(
+    //     '{Nome da Empresa Locadora}', '<b>${widget.summaryData.spaceModel.nomeEmpresaLocadora}</b>');
+    //     modifiedHtml = modifiedHtml.replaceAll(
+    //     '{CNPJ da Empresa Locadora}', '<b>${widget.summaryData.spaceModel.cnpjEmpresaLocadora}</b>');
+
+//todo: assinatura do locador vai ser salva no firestore como String
+//todo: no cadastro do espaco, pedir a assinatura e fzr esse imageToBase64
     String base64Image = '';
     if (image != null) {
       base64Image = await imageToBase64(image);
     }
     modifiedHtml += '<img src="$base64Image" alt="Descrição da imagem"/>';
-    await Navigator.pushReplacement(
+    widget.summaryData.html = modifiedHtml;
+    //widget.summaryData.totalHours = hoursDifference;
+
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ContratoPage(
-          html: modifiedHtml,
-          spaceModel: widget.spaceModel,
-          selectedDate: widget.selectedDate,
-          checkInTime: widget.checkInTime,
-          checkOutTime: widget.checkOutTime,
+          summaryData: widget.summaryData,
         ),
       ),
     );
@@ -217,20 +302,23 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
   @override
   Widget build(BuildContext context) {
     int cupom = 51;
-    int hoursDifference = widget.checkOutTime - widget.checkInTime;
+    String codigoDoCupom = 'c0d1g0d0cup0m';
+    int hoursDifference =
+        widget.summaryData.checkOutTime - widget.summaryData.checkInTime;
     if (hoursDifference < 0) {
       hoursDifference += 24; // Adjust for crossing midnight
     }
-    String formattedDate =
-        DateFormat("d 'de' MMMM 'de' y", 'pt_BR').format(widget.selectedDate);
+    String formattedDate = DateFormat("d 'de' MMMM 'de' y", 'pt_BR')
+        .format(widget.summaryData.selectedDate);
     String formattedCheckOutTime =
-        widget.checkOutTime.toString().padLeft(2, '0');
-    String dayLabel = (widget.checkOutTime >= 0 && widget.checkOutTime <= 6)
+        widget.summaryData.checkOutTime.toString().padLeft(2, '0');
+    String dayLabel = (widget.summaryData.checkOutTime >= 0 &&
+            widget.summaryData.checkOutTime <= 6)
         ? 'seguinte'
         : formattedDate;
 
     // Convert price string to double
-    double price = double.tryParse(widget.spaceModel.preco
+    double price = double.tryParse(widget.summaryData.spaceModel.preco
             .replaceAll(RegExp(r'[^0-9,]'), '')
             .replaceAll(',', '.')) ??
         0.0;
@@ -331,7 +419,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(16.0),
                               child: CarouselSlider(
-                                items: widget.spaceModel.imagesUrl
+                                items: widget.summaryData.spaceModel.imagesUrl
                                     .map((imageUrl) => Image.network(
                                           imageUrl,
                                           fit: BoxFit.cover,
@@ -389,7 +477,9 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                                 children: [
                                                   Text(
                                                     capitalizeFirstLetter(widget
-                                                        .spaceModel.titulo),
+                                                        .summaryData
+                                                        .spaceModel
+                                                        .titulo),
                                                     style: const TextStyle(
                                                       fontFamily:
                                                           'RedHatDisplay',
@@ -409,7 +499,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                                     color: Colors.blueGrey[500],
                                                     fontSize: 11),
                                                 capitalizeTitle(
-                                                    "${widget.spaceModel.bairro}, ${widget.spaceModel.cidade}"),
+                                                    "${widget.summaryData.spaceModel.bairro}, ${widget.summaryData.spaceModel.cidade}"),
                                               ),
                                             ),
                                             const SizedBox(
@@ -430,6 +520,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                                               5),
                                                       color: _getColor(
                                                         double.parse(widget
+                                                            .summaryData
                                                             .spaceModel
                                                             .averageRating),
                                                       ),
@@ -439,6 +530,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                                     child: Center(
                                                       child: Text(
                                                         double.parse(widget
+                                                                .summaryData
                                                                 .spaceModel
                                                                 .averageRating)
                                                             .toStringAsFixed(1),
@@ -535,7 +627,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                               child: Row(
                                 children: [
                                   Text(
-                                    '${widget.checkInTime}:00h ',
+                                    '${widget.summaryData.checkInTime}:00h ',
                                     style: const TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w700),
@@ -543,7 +635,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                   const Text('do dia ',
                                       style: TextStyle(fontSize: 12)),
                                   Text(
-                                    '${DateFormat('d \'de\' MMMM \'de\' y', 'pt_BR').format(widget.selectedDate)}:',
+                                    '${DateFormat('d \'de\' MMMM \'de\' y', 'pt_BR').format(widget.summaryData.selectedDate)}:',
                                     style: const TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w700),
@@ -560,7 +652,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                               child: Row(
                                 children: [
                                   Text(
-                                    '${widget.checkOutTime}:00h ',
+                                    '${widget.summaryData.checkOutTime}:00h ',
                                     style: const TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w700),
@@ -736,16 +828,16 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                           RichText(
                             text: TextSpan(
                               children: [
-                                const TextSpan(
-                                  text: '04 ',
-                                  style: TextStyle(
+                                TextSpan(
+                                  text: hoursDifference.toString(),
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 12,
                                     color: Colors.black,
                                   ),
                                 ),
                                 const TextSpan(
-                                  text: 'horas ',
+                                  text: ' horas ',
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: Colors.black,
@@ -767,7 +859,8 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                   ),
                                 ),
                                 TextSpan(
-                                  text: '${widget.spaceModel.preco},00',
+                                  text:
+                                      '${widget.summaryData.spaceModel.preco},00',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 12,
@@ -926,7 +1019,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                     const Text(
                       'Trocar',
                       style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 10,
                           fontWeight: FontWeight.bold,
                           decoration: TextDecoration.underline),
                     ),
@@ -946,9 +1039,17 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
               GestureDetector(
                 onTap: () async {
                   replaceMarkers(
-                      html:
-                          '<h1>CONTRATO DE LOCAÇÃO DE ESPAÇO PARA EVENTOS - FESTOU</h1><h2>IDENTIFICAÇÃO DAS PARTES CONTRATANTES</h2><p><strong>LOCADORA:</strong></p><p>Nome da Empresa: {Nome da Empresa Locadora}<br>CNPJ: {CNPJ da Empresa Locadora}</p><p><strong>LOCATÁRIO:</strong></p><p>Nome: {Nome do Cliente}<br>CPF: {CPF do Cliente}</p><h2>OBJETO DO CONTRATO</h2><p>O presente contrato tem como objeto a locação do espaço denominado {Nome do Espaço}, localizado em {Bairro e Município do Espaço}, para a realização de evento conforme os detalhes abaixo.</p><h2>DETALHES DO EVENTO</h2><p>Data de Início: {Data de Início do Evento}<br>Hora de Início: {Hora de Início do Evento}</p><p>Data de Término: {Data de Término do Evento}<br>Hora de Término: {Hora de Término do Evento}</p><h2>DURAÇÃO DA LOCAÇÃO</h2><p>Total de horas locadas: {Número de Horas}</p><h2>VALOR E FORMA DE PAGAMENTO</h2><p>O LOCATÁRIO pagará à LOCADORA o valor de R\$ {Valor por Hora} por hora de utilização do espaço, totalizando R\$ {Valor Total das Horas}.</p><p>Será cobrada uma Taxa Concierge de 3,5% sobre o valor total da locação, correspondendo a R\$ {Valor da Taxa Concierge}.</p><p>Desconto aplicado: R\$ {Valor do Desconto} (Cupom: {Código do Cupom})</p><p><strong>VALOR TOTAL A PAGAR:</strong> R\$ {Valor Total a Pagar}</p><h2>REGRAS DE TAXAS E MULTAS</h2><p><strong>Entrega do Espaço:</strong> O horário de fim de uso é o momento da entrega do espaço. Caso o LOCATÁRIO exceda o tempo contratado, será cobrada uma multa de R\$ {Valor da Multa por Hora Extrapolada} por hora adicional ou fração de hora.</p><p><strong>Pagamento:</strong> O pagamento é efetuado integralmente ao final do processo de reserva, via Pix (que gera uma chave para pagamento de até 5 minutos) ou cartão de crédito.</p><p><strong>Cancelamento:</strong> Em caso de cancelamento por parte do LOCATÁRIO, será aplicada uma taxa de cancelamento de 20% até antes de 48 horas do evento ou 50% em menos de 48 horas antes do evento, não sendo possível cancelar a reserva em menos de 24 horas antes do evento.</p><h2>OBRIGAÇÕES DO LOCATÁRIO</h2><p><strong>Uso Adequado:</strong> Utilizar o espaço de forma adequada, respeitando as regras estabelecidas pela LOCADORA e as normas vigentes.</p><p><strong>Limpeza e Conservação:</strong> Manter o espaço limpo e conservado, sendo responsável por quaisquer danos causados durante o período de locação.</p><p><strong>Segurança:</strong> Responsabilizar-se pela segurança de seus convidados e pelo cumprimento das normas de segurança do espaço.</p><h2>DISPOSIÇÕES GERAIS</h2><p><strong>Alterações:</strong> Qualquer alteração no presente contrato deverá ser feita por escrito e assinada por ambas as partes.</p><p><strong>Jurídico:</strong> Para dirimir quaisquer controvérsias oriundas do presente contrato, as partes elegem o foro da comarca de {Cidade}, estado de {Estado}.</p><h2>ASSINATURA</h2><p>Por estarem de acordo com todas as cláusulas e condições estabelecidas neste contrato, as partes assinam este documento em duas vias de igual teor e forma, juntamente com duas testemunhas.</p><p>{Cidade}, {Data}</p><p><strong>Locadora:</strong><br>[Assinatura registrada do responsável pelo espaço]<br>Responsável pelo espaço: {Nome do responsável pelo espaço}<br>CPF: {CPF do responsável pelo espaço}</p><p><strong>Locatário:</strong><br>[Assinatura do cliente]<br>Responsável pela locação: {Nome do Cliente}<br>CPF: {CPF do Cliente}</p>',
-                      image: null);
+                    hoursDifference: hoursDifference.toString(),
+                    image: null,
+                    valorTotalDasHoras: formattedTotalPrice,
+                    valorDoDesconto: cupom.toString(),
+                    valorDaTaxaConcierge: formattedFeeAmount,
+                    codigoDoCupom: codigoDoCupom,
+                    valorTotalAPagar: formattedFinalPrice,
+                    valorDaMultaPorHoraExtrapolada: '',
+                    nomeDoCliente: '',
+                    cpfDoCliente: '',
+                  );
                 },
                 child: Container(
                   padding:

@@ -28,6 +28,11 @@ class SpaceModel {
   final List<String> days;
   final String preco;
 
+  // final String cnpjEmpresaLocadora;
+  // final String estado;
+  // final String locadorCpf;
+  // final String nomeEmpresaLocadora;
+
   SpaceModel(
     this.isFavorited,
     this.spaceId,
@@ -53,5 +58,9 @@ class SpaceModel {
     this.endTime,
     this.days,
     this.preco,
+    // this.cnpjEmpresaLocadora,
+    // this.estado,
+    // this.locadorCpf,
+    // this.nomeEmpresaLocadora,
   );
 }

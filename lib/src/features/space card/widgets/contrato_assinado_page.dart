@@ -6,22 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/resumo_reserva_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/signature_dialog.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/summary_data.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class ContratoAssinadoPage extends StatefulWidget {
-  final String html;
-  final SpaceModel spaceModel;
-  final DateTime selectedDate;
-
-  final int checkInTime;
-  final int checkOutTime;
+  final SummaryData summaryData;
   const ContratoAssinadoPage({
     super.key,
-    required this.html,
-    required this.spaceModel,
-    required this.selectedDate,
-    required this.checkInTime,
-    required this.checkOutTime,
+    required this.summaryData,
   });
 
   @override
@@ -71,7 +63,7 @@ class _ContratoAssinadoPageState extends State<ContratoAssinadoPage> {
         decoration: const BoxDecoration(),
         child: SingleChildScrollView(
           child: Html(
-            data: widget.html,
+            data: widget.summaryData.html,
             style: {
               'body': Style(
                 fontSize: FontSize(12.0),
@@ -100,10 +92,9 @@ class _ContratoAssinadoPageState extends State<ContratoAssinadoPage> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
-                backgroundColor: Colors.purple, // Cor do botão
+                backgroundColor: Colors.purple,
                 shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(20), // Bordas arredondadas
+                  borderRadius: BorderRadius.circular(20),
                 ),
               ),
               onPressed: () {
@@ -112,10 +103,7 @@ class _ContratoAssinadoPageState extends State<ContratoAssinadoPage> {
                   MaterialPageRoute(
                     builder: (context) => ResumoReservaPage(
                       assinado: true,
-                      spaceModel: widget.spaceModel,
-                      selectedDate: widget.selectedDate,
-                      checkInTime: widget.checkInTime,
-                      checkOutTime: widget.checkOutTime,
+                      summaryData: widget.summaryData,
                     ),
                   ),
                 );
