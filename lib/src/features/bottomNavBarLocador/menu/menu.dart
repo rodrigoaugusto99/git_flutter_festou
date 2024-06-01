@@ -27,12 +27,12 @@ class _MenuState extends ConsumerState<Menu> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MyRow(
+              myRow(
                 text: 'Seu perfil',
                 icon1: SvgPicture.asset('lib/assets/images/_sfaxx.svg'),
                 onTap: () => {},
               ),
-              MyRow(
+              myRow(
                 text: 'Configurações',
                 icon1: SvgPicture.asset('lib/assets/images/_sfaxx.svg'),
                 onTap: () => Navigator.push(
@@ -42,7 +42,7 @@ class _MenuState extends ConsumerState<Menu> {
                   ),
                 ),
               ),
-              MyRow(
+              myRow(
                 text: 'Central de Ajuda',
                 icon1: SvgPicture.asset('lib/assets/images/_sfaxx.svg'),
                 onTap: () => Navigator.push(
@@ -52,7 +52,7 @@ class _MenuState extends ConsumerState<Menu> {
                   ),
                 ),
               ),
-              MyRow(
+              myRow(
                 text: 'Envie-nos seu feedback',
                 icon1: SvgPicture.asset('lib/assets/images/_sfaxx.svg'),
                 onTap: () => Navigator.push(
@@ -92,14 +92,14 @@ class _MenuState extends ConsumerState<Menu> {
   }
 }
 
-Widget MyText({required String text}) {
+Widget myText({required String text}) {
   return Text(
     text,
     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
   );
 }
 
-Widget MyRow(
+Widget myRow(
     {required String text,
     required Widget icon1,
     required Function()? onTap,

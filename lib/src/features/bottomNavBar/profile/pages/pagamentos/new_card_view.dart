@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:geolocator/geolocator.dart';
 
 class NewCardView extends StatelessWidget {
   const NewCardView({super.key});
@@ -200,13 +197,13 @@ class NewCardView extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 17),
               child: Column(
                 children: [
-                  MyRow(
+                  myRow(
                     text: 'Emília Faria M Souza',
                     icon: Image.asset('lib/assets/images/image 6pessoa.png'),
                     onTap: () {},
                   ),
                   const SizedBox(height: 15),
-                  MyRow(
+                  myRow(
                       text: '7894 1234 4568 2580',
                       icon: Image.asset('lib/assets/images/image 42card.png'),
                       onTap: () {}),
@@ -214,7 +211,7 @@ class NewCardView extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: MyRow(
+                        child: myRow(
                             text: '01/29',
                             icon: Image.asset(
                                 'lib/assets/images/image 4calendar.png'),
@@ -222,7 +219,7 @@ class NewCardView extends StatelessWidget {
                       ),
                       const SizedBox(width: 20),
                       Expanded(
-                        child: MyRow(
+                        child: myRow(
                             text: '100',
                             icon:
                                 Image.asset('lib/assets/images/image 5cvv.png'),
@@ -231,7 +228,7 @@ class NewCardView extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 15),
-                  MyRow(
+                  myRow(
                     text: 'Cartão Master 2',
                     icon: Image.asset('lib/assets/images/image 7master2.png'),
                     onTap: () => Navigator.push(
@@ -267,7 +264,7 @@ class NewCardView extends StatelessWidget {
     );
   }
 
-  Widget MyRow(
+  Widget myRow(
       {required String text,
       required Widget icon,
       required Function()? onTap,

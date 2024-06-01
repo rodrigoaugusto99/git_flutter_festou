@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_holo_date_picker_widget/date_picker.dart';
-import 'package:flutter_holo_date_picker_widget/i18n/date_picker_i18n.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';

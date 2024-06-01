@@ -4,7 +4,6 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minha
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/meus%20feedbacks/meus_feedbacks_state.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/meus%20feedbacks/meus_feedbacks_vm.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
-import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
 
 class MeusFeedbacksPage extends ConsumerStatefulWidget {
   final String userId;

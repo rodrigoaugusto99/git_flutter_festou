@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/models/reservation_model.dart';
 
 enum MinhasReservasStateStatus { success, error }

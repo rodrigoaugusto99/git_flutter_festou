@@ -4,7 +4,6 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minha
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/minhas%20reservas/minhas_reservas_vm.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/minhas%20reservas/reservas_widget.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
-import 'package:git_flutter_festou/src/models/user_model.dart';
 
 class MinhasReservasPage extends ConsumerStatefulWidget {
   final String userId;

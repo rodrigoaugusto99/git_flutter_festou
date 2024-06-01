@@ -1,12 +1,8 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/localizacao.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_state.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
-
 import 'package:git_flutter_festou/src/features/register/space/widgets/type_panel.dart';
 
 class TipoEspaco extends ConsumerStatefulWidget {

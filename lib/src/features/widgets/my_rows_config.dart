@@ -23,7 +23,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        MyRow(
+        myRow(
           text: 'Informações pessoais',
           onTap: () => Navigator.push(
             context,
@@ -38,7 +38,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
           ),
         ),
         const SizedBox(height: 16),
-        MyRow(
+        myRow(
           text: 'Login e Segurança',
           onTap: () => Navigator.push(
             context,
@@ -50,7 +50,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
               'lib/assets/images/Icon Segurançalogineseguranca.png'),
         ),
         const SizedBox(height: 16),
-        MyRow(
+        myRow(
           text: 'Métodos de Pagamento',
           onTap: () => Navigator.push(
             context,
@@ -63,7 +63,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
           ),
         ),
         const SizedBox(height: 16),
-        MyRow(
+        myRow(
           text: 'Minhas atividades / Histórico',
           onTap: () => Navigator.push(
             context,
@@ -105,7 +105,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
                 snapshot.data!
                     .any((querySnapshot) => querySnapshot.docs.isNotEmpty);
 
-            return MyRow(
+            return myRow(
               text: 'Mensagens',
               hasUnreadMessages: hasUnreadMessages,
               onTap: () => Navigator.push(

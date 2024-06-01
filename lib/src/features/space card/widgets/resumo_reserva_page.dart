@@ -1,12 +1,8 @@
-import 'dart:developer';
-
 import 'package:carousel_slider/carousel_slider.dart';
-
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
-import 'package:svg_flutter/svg_flutter.dart';
 
 class ResumoReservaPage extends StatefulWidget {
   final DateTime? selectedDate;

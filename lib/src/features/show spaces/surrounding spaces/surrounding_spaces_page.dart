@@ -1,13 +1,8 @@
 import 'dart:developer';
-import 'dart:typed_data';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/small_space_card.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/my_sliver_list_normal.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_vm.dart';
@@ -129,8 +124,6 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
   // Extrai o código do mapa para um método separado
   int _currentIndex = 0;
   Widget buildMap(SurroundingSpacesState data, BuildContext context) {
-    final x = MediaQuery.of(context).size.width;
-    final y = MediaQuery.of(context).size.height;
     return Stack(
       alignment: Alignment.topCenter,
       children: [

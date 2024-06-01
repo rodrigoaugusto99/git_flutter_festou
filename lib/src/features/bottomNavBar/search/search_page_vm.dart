@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SearchViewModel extends ChangeNotifier {
   final CollectionReference spacesCollection =

@@ -1,26 +1,17 @@
-import 'dart:developer';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/calendario.dart';
 import 'package:git_flutter_festou/src/features/register/host%20feedback/host_feedback_register_page.dart';
 import 'package:git_flutter_festou/src/features/register/reserva/reserva_register_page.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/show%20reservations/space_reservations_page.dart';
-import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_descricao.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/calendar_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_page.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/descricao_teste.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_new_map.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_map.dart';
 import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_limited.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_all.dart';
-import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_disponibilidade.dart';
-import 'package:git_flutter_festou/src/features/space%20card/pages/mostrar_todas_comodidades.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:social_share/social_share.dart';
 import 'package:svg_flutter/svg.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -297,7 +288,6 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
     }
 
     final x = MediaQuery.of(context).size.width;
-    final y = MediaQuery.of(context).size.height;
 
     Widget myThirdWidget() {
       return Column(

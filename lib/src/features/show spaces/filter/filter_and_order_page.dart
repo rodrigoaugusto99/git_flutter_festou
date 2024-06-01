@@ -6,7 +6,6 @@ import 'package:git_flutter_festou/src/features/show%20spaces/filter/filter_and_
 import 'package:git_flutter_festou/src/features/show%20spaces/filter/new_page_filtered.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/filter/widgets/feedbacks_panel.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/services_panel.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/type_panel.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/weekdays_panel.dart';
 
 class FilterAndOrderPage extends ConsumerStatefulWidget {
@@ -109,7 +108,6 @@ class _FilterAndOrderPageState extends ConsumerState<FilterAndOrderPage> {
       );
     }
 
-    final x = MediaQuery.of(context).size.width;
     return SliverAppBar(
       actions: [
         Padding(
