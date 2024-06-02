@@ -275,6 +275,7 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
     log(state.numero);
     log(state.bairro);
     log(state.cidade);
+    log(state.preco);
     final NewSpaceRegisterState(
       :selectedTypes,
       :selectedServices,
@@ -289,6 +290,7 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
       :days,
       :descricao,
       :titulo,
+      :preco,
     ) = state;
 
     final spaceId = uuid.v4();
@@ -316,6 +318,7 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
       //city: 'teste',
       latitude: latLng.latitude,
       longitude: latLng.longitude,
+      preco: preco
     );
 
     final spaceFirestoreRepository = ref.read(spaceFirestoreRepositoryProvider);

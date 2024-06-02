@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/resumo_reserva_page.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/summary_data.dart';
+import 'package:git_flutter_festou/src/models/cupom_model.dart';
+>>>>>>> origin/master
 import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class ContratoAssinadoPage extends StatefulWidget {
-  final String html;
-  final SpaceModel spaceModel;
-  final DateTime selectedDate;
-
-  final int checkInTime;
-  final int checkOutTime;
-  const ContratoAssinadoPage({
+  final SummaryData summaryData;
+  final CupomModel? cupomModel;
+  String? html;
+  ContratoAssinadoPage({
     super.key,
+    required this.summaryData,
+    required this.cupomModel,
     required this.html,
-    required this.spaceModel,
-    required this.selectedDate,
-    required this.checkInTime,
-    required this.checkOutTime,
   });
 
   @override
@@ -95,22 +93,20 @@ class _ContratoAssinadoPageState extends State<ContratoAssinadoPage> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
-                backgroundColor: Colors.purple, // Cor do botão
+                backgroundColor: Colors.purple,
                 shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(20), // Bordas arredondadas
+                  borderRadius: BorderRadius.circular(20),
                 ),
               ),
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (context) => ResumoReservaPage(
                       assinado: true,
-                      spaceModel: widget.spaceModel,
-                      selectedDate: widget.selectedDate,
-                      checkInTime: widget.checkInTime,
-                      checkOutTime: widget.checkOutTime,
+                      summaryData: widget.summaryData,
+                      cupomModel: widget.cupomModel,
+                      html: widget.html,
                     ),
                   ),
                 );

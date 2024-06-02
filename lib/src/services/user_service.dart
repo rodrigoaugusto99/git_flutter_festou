@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:git_flutter_festou/src/models/cupom_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 
 class UserService {
@@ -33,6 +34,26 @@ class UserService {
         );
       }
     }
+    return null;
+  }
+
+//pega os dados do cupom
+  Future<CupomModel?> getCupom(String codigo) async {
+    QuerySnapshot querySnapshot = await _firestore
+        .collection('cupons')
+        .where('codigo', isEqualTo: codigo)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      DocumentSnapshot userDoc = querySnapshot.docs.first;
+      final data = userDoc.data() as Map<String, dynamic>;
+      return CupomModel(
+        codigo: codigo,
+        validade: data['validade'] ?? '',
+        valorDesconto: data['valor_desconto'] ?? 0,
+      );
+    }
+
     return null;
   }
 }
