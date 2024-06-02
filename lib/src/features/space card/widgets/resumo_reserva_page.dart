@@ -55,7 +55,7 @@ class ResumoReservaPage extends StatefulWidget {
   SummaryData summaryData;
   CupomModel? cupomModel;
   bool assinado;
-  final String? html;
+  String? html;
   ResumoReservaPage({
     super.key,
     required this.summaryData,
@@ -221,7 +221,12 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     if (!widget.assinado && widget.html == null) {
       dev.log('nao ta assinado, n existe html');
     }
-    String modifiedHtml = Constants2.html;
+    String modifiedHtml = '';
+    if (cupomModel != null) {
+      modifiedHtml = Constants2.html;
+    } else {
+      modifiedHtml = Constants2.htmlSemCupom;
+    }
 
     widget.summaryData.valorTotalDasHoras = valorTotalDasHoras;
     widget.summaryData.valorDaTaxaConcierge = valorDaTaxaConcierge;
@@ -857,10 +862,36 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              setState(() {
-                                cupomModel = null;
-                                widget.cupomModel = null;
-                              });
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Remover Cupom'),
+                                    content: const Text(
+                                        'Você tem certeza que quer remover o cupom? Se fizer isso, você terá que refazer a assinatura.'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('Cancelar'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: const Text('Remover'),
+                                        onPressed: () {
+                                          setState(() {
+                                            cupomModel = null;
+                                            widget.cupomModel = null;
+                                            widget.assinado = false;
+                                            widget.html = null;
+                                          });
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
                             },
                             child: const Padding(
                               padding: EdgeInsets.only(right: 10.0),
