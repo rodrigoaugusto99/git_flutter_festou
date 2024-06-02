@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  void Function() onTap;
-  void Function()? onFilterTap;
+  final void Function() onTap;
+  final void Function()? onFilterTap;
 
-  CustomAppBar({
+  const CustomAppBar({
     super.key,
     required this.title,
     required this.onTap,

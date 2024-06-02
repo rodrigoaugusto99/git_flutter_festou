@@ -36,7 +36,7 @@ class _FilterAndOrderPageState extends ConsumerState<FilterAndOrderPage> {
     void showFilterModal(BuildContext context) {
       final selectedServices =
           ref.read(filterAndOrderVmProvider).selectedServices;
-      final selectedTypes = ref.read(filterAndOrderVmProvider).selectedTypes;
+      //final selectedTypes = ref.read(filterAndOrderVmProvider).selectedTypes;
       final availableDays = ref.read(filterAndOrderVmProvider).availableDays;
       showModalBottomSheet<void>(
         isScrollControlled: true,

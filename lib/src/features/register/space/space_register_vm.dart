@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_state.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -162,10 +161,10 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
     String descricao,
     String city,
   ) async {
-    final SpaceRegisterState(:selectedTypes, :selectedServices, :imageFiles) =
-        state;
+    //final SpaceRegisterState(:selectedTypes, :selectedServices, :imageFiles) =
+    state;
 
-    final LatLng latLng =
+    /*final LatLng latLng =
         await calculateLatLng(logradouro, numero, bairro, cidade, 'RJ');
 
     final spaceId = uuid.v4();
@@ -186,23 +185,6 @@ class SpaceRegisterVm extends _$SpaceRegisterVm {
       city: city,
       latitude: latLng.latitude,
       longitude: latLng.longitude,
-    );
-
-    final spaceFirestoreRepository = ref.read(spaceFirestoreRepositoryProvider);
-
-    // final registerResultSpace =
-    //     await spaceFirestoreRepository.saveSpace(spaceData);
-
-    // switch (registerResultSpace) {
-    //   case Success():
-    //     state = state.copyWith(status: SpaceRegisterStateStatus.success);
-    //     log('state: $state');
-    //     break;
-    //   case Failure(exception: RepositoryException(:final message)):
-    //     state = state.copyWith(
-    //       status: SpaceRegisterStateStatus.error,
-    //       errorMessage: () => message,
-    //     );
-    // }
+    );*/
   }
 }

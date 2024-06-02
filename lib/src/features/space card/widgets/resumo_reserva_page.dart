@@ -9,8 +9,9 @@ class ResumoReservaPage extends StatefulWidget {
   final SpaceModel? spaceModel;
   final int? checkInTime;
   final int? checkOutTime;
-  bool assinado;
-  ResumoReservaPage({
+  final bool assinado;
+
+  const ResumoReservaPage({
     super.key,
     this.spaceModel,
     this.selectedDate,

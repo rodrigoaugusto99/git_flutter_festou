@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 
@@ -97,7 +99,7 @@ class _QuickSearchScreenState extends State<QuickSearchScreen> {
       List<Location> locations = await locationFromAddress(query);
       return locations;
     } catch (e) {
-      print("Error getting location suggestions: $e");
+      log("Error getting location suggestions: $e");
       return [];
     }
   }

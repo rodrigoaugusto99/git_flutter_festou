@@ -122,7 +122,7 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
   }
 
   // Extrai o código do mapa para um método separado
-  int _currentIndex = 0;
+  int currentIndex = 0;
   Widget buildMap(SurroundingSpacesState data, BuildContext context) {
     return Stack(
       alignment: Alignment.topCenter,
@@ -275,7 +275,7 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
                           enableInfiniteScroll: true,
                           onPageChanged: (index, reason) {
                             setState(() {
-                              _currentIndex = index;
+                              currentIndex = index;
                             });
                           },
                         ),
