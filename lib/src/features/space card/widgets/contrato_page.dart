@@ -9,7 +9,6 @@ import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_as
 import 'package:git_flutter_festou/src/features/space%20card/widgets/signature_dialog.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/summary_data.dart';
 import 'package:git_flutter_festou/src/models/cupom_model.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class ContratoPage extends StatefulWidget {
   final SummaryData summaryData;
