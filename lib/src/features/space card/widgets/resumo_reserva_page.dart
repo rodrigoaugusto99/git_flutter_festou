@@ -11,6 +11,7 @@ import 'package:flutter/widgets.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/summary_data.dart';
+import 'package:git_flutter_festou/src/models/cupom_model.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
@@ -301,10 +302,35 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     return 'data:image/png;base64,$base64String';
   }
 
+  final TextEditingController cupomController = TextEditingController();
+
+  CupomModel? cupomModel;
+
+  void checkCupom() async {
+    //todo: ver se existe
+    UserService userService = UserService();
+    String codigo = cupomController.text;
+    final cupom = await userService.getCupom(codigo);
+    if (cupom == null) {
+      dev.log('Cupom nao existe');
+      return;
+    }
+    dev.log('Cupom existe!!');
+    //todo: ver se eh valido
+    DateTime cupomValidade = cupom.validade.toDate();
+    if (!cupomValidade.isAfter(DateTime.now())) {
+      dev.log('Cupom nao eh valido');
+    }
+    //todo: aplicar
+    dev.log('Cupom eh valido!!');
+    setState(() {
+      cupomController.text = '';
+      cupomModel = cupom;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    int cupom = 51;
-    String codigoDoCupom = 'c0d1g0d0cup0m';
     int hoursDifference =
         widget.summaryData.checkOutTime - widget.summaryData.checkInTime;
     if (hoursDifference < 0) {
@@ -331,7 +357,15 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     double feeAmount = totalPrice * feePercentage;
 
     // Calculate final price after adding fee and subtracting cupom
-    int finalPrice = (totalPrice + feeAmount).round() - cupom;
+    int? finalPrice;
+    if (cupomModel != null) {
+      setState(() {
+        finalPrice =
+            (totalPrice + feeAmount).round() - cupomModel!.valorDesconto;
+      });
+    } else {
+      finalPrice = (totalPrice + feeAmount).round();
+    }
 
     // Format total price, fee amount, and final price as currency
     String formattedTotalPrice =
@@ -708,6 +742,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: TextField(
+                              controller: cupomController,
                               decoration: InputDecoration(
                                 hintStyle: const TextStyle(fontSize: 12),
                                 filled: true,
@@ -746,9 +781,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                             ),
                           ),
                           child: GestureDetector(
-                            onTap: () {
-                              // Ação do botão
-                            },
+                            onTap: checkCupom,
                             child: const Text(
                               'Aplicar',
                               style: TextStyle(
@@ -760,16 +793,17 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                         ),
                       ],
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 10.0),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Cupom aplicado',
-                          style: TextStyle(fontSize: 10, color: Colors.red),
+                    if (cupomModel != null)
+                      const Padding(
+                        padding: EdgeInsets.only(left: 10.0),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Cupom aplicado',
+                            style: TextStyle(fontSize: 10, color: Colors.red),
+                          ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               ),
@@ -777,29 +811,42 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: Column(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 97, vertical: 14),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
+                    if (cupomModel != null)
+                      Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 97, vertical: 14),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white,
+                            ),
+                            child: Text(
+                              cupomModel!.codigo,
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                cupomModel = null;
+                              });
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.only(right: 10.0),
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  'Remover',
+                                  style: TextStyle(
+                                      fontSize: 10, color: Colors.red),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      child: const Text(
-                        'FESTOU50!',
-                        style: TextStyle(fontSize: 12),
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(right: 10.0),
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          'Remover',
-                          style: TextStyle(fontSize: 10, color: Colors.red),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -963,19 +1010,20 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                       ),
                     ),
                     const SizedBox(height: 15),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Cupom adicionado',
-                          style: TextStyle(fontSize: 12),
-                        ),
-                        Text(
-                          '- R\$ $cupom,00',
-                          style: const TextStyle(fontSize: 12),
-                        ),
-                      ],
-                    ),
+                    if (cupomModel != null)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Cupom adicionado',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                          Text(
+                            '- R\$ ${cupomModel!.valorDesconto},00',
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      ),
                     const SizedBox(height: 40),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1050,9 +1098,11 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                     hoursDifference: hoursDifference.toString(),
                     image: null,
                     valorTotalDasHoras: formattedTotalPrice,
-                    valorDoDesconto: cupom.toString(),
+                    valorDoDesconto: cupomModel != null
+                        ? cupomModel!.valorDesconto.toString()
+                        : '0',
                     valorDaTaxaConcierge: formattedFeeAmount,
-                    codigoDoCupom: codigoDoCupom,
+                    codigoDoCupom: cupomModel != null ? cupomModel!.codigo : '',
                     valorTotalAPagar: formattedFinalPrice,
                     valorDaMultaPorHoraExtrapolada: '',
                     nomeDoCliente: '',
