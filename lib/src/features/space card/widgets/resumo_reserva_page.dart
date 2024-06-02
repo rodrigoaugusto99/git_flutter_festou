@@ -51,11 +51,12 @@ class DialogBubble extends StatelessWidget {
 
 class ResumoReservaPage extends StatefulWidget {
   SummaryData summaryData;
-
+  CupomModel? cupomModel;
   bool assinado;
   ResumoReservaPage({
     super.key,
     required this.summaryData,
+    required this.cupomModel,
     this.assinado = false,
   });
 
@@ -189,8 +190,6 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     // required String name,
     required String valorTotalDasHoras,
     required String valorDaTaxaConcierge,
-    required String valorDoDesconto,
-    required String codigoDoCupom,
     required String valorTotalAPagar,
     required String valorDaMultaPorHoraExtrapolada,
     required String nomeDoCliente,
@@ -208,8 +207,11 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
 
     widget.summaryData.valorTotalDasHoras = valorTotalDasHoras;
     widget.summaryData.valorDaTaxaConcierge = valorDaTaxaConcierge;
-    widget.summaryData.valorDoDesconto = valorDoDesconto;
-    widget.summaryData.codigoDoCupom = codigoDoCupom;
+    // if (cupomModel != null) {
+    //   widget.summaryData.cupomModel.valorDesconto = int.parse(valorDoDesconto);
+    //   widget.summaryData.cupomModel.codigo = codigoDoCupom;
+    // }
+
     widget.summaryData.valorTotalAPagar = valorTotalAPagar;
     widget.summaryData.valorDaMultaPorHoraExtrapolada =
         valorDaMultaPorHoraExtrapolada;
@@ -233,10 +235,12 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
         '<b>${widget.summaryData.valorTotalDasHoras}</b>');
     modifiedHtml = modifiedHtml.replaceAll('{Valor da Taxa Concierge}',
         '<b>${widget.summaryData.valorDaTaxaConcierge}</b>');
-    modifiedHtml = modifiedHtml.replaceAll(
-        '{Valor do Desconto}', '<b>${widget.summaryData.valorDoDesconto}</b>');
-    modifiedHtml = modifiedHtml.replaceAll(
-        '{Código do Cupom}', '<b>${widget.summaryData.codigoDoCupom}</b>');
+    if (cupomModel != null) {
+      modifiedHtml = modifiedHtml.replaceAll(
+          '{Valor do Desconto}', '<b>${cupomModel!.valorDesconto}</b>');
+      modifiedHtml = modifiedHtml.replaceAll(
+          '{Código do Cupom}', '<b>${cupomModel!.codigo}</b>');
+    }
     modifiedHtml = modifiedHtml.replaceAll('{Valor Total a Pagar}',
         '<b>${widget.summaryData.valorTotalAPagar}</b>');
     modifiedHtml = modifiedHtml.replaceAll(
@@ -284,11 +288,12 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     widget.summaryData.html = modifiedHtml;
     //widget.summaryData.totalHours = hoursDifference;
 
-    await Navigator.push(
+    await Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => ContratoPage(
           summaryData: widget.summaryData,
+          cupomModel: cupomModel,
         ),
       ),
     );
@@ -331,6 +336,8 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
 
   @override
   Widget build(BuildContext context) {
+    //dev.log(name: 'widget.cupomModel!.codigo', widget.cupomModel!.codigo);
+    //dev.log(name: 'cupomModel!.codigo', cupomModel!.codigo);
     int hoursDifference =
         widget.summaryData.checkOutTime - widget.summaryData.checkInTime;
     if (hoursDifference < 0) {
@@ -793,7 +800,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                         ),
                       ],
                     ),
-                    if (cupomModel != null)
+                    if (cupomModel != null || widget.cupomModel != null)
                       const Padding(
                         padding: EdgeInsets.only(left: 10.0),
                         child: Align(
@@ -811,7 +818,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: Column(
                   children: [
-                    if (cupomModel != null)
+                    if (cupomModel != null || widget.cupomModel != null)
                       Column(
                         children: [
                           Container(
@@ -823,7 +830,9 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                               color: Colors.white,
                             ),
                             child: Text(
-                              cupomModel!.codigo,
+                              cupomModel != null
+                                  ? cupomModel!.codigo
+                                  : widget.cupomModel!.codigo,
                               style: const TextStyle(fontSize: 12),
                             ),
                           ),
@@ -1010,7 +1019,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                       ),
                     ),
                     const SizedBox(height: 15),
-                    if (cupomModel != null)
+                    if (cupomModel != null || widget.cupomModel != null)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -1019,7 +1028,9 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                             style: TextStyle(fontSize: 12),
                           ),
                           Text(
-                            '- R\$ ${cupomModel!.valorDesconto},00',
+                            cupomModel != null
+                                ? '- R\$ ${cupomModel!.valorDesconto},00'
+                                : '- R\$ ${widget.cupomModel!.valorDesconto},00',
                             style: const TextStyle(fontSize: 12),
                           ),
                         ],
@@ -1098,11 +1109,11 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                     hoursDifference: hoursDifference.toString(),
                     image: null,
                     valorTotalDasHoras: formattedTotalPrice,
-                    valorDoDesconto: cupomModel != null
-                        ? cupomModel!.valorDesconto.toString()
-                        : '0',
+                    // valorDoDesconto: cupomModel != null
+                    //     ? cupomModel!.valorDesconto.toString()
+                    //     : '0',
                     valorDaTaxaConcierge: formattedFeeAmount,
-                    codigoDoCupom: cupomModel != null ? cupomModel!.codigo : '',
+                    //codigoDoCupom: cupomModel != null ? cupomModel!.codigo : '',
                     valorTotalAPagar: formattedFinalPrice,
                     valorDaMultaPorHoraExtrapolada: '',
                     nomeDoCliente: '',
@@ -1143,13 +1154,14 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
               const SizedBox(
                 height: 3,
               ),
-              const Padding(
-                padding: EdgeInsets.only(left: 10.0),
-                child: Text(
-                  'É necessário assinar o contrato antes de finalizar a reserva',
-                  style: TextStyle(fontSize: 10, color: Colors.red),
+              if (widget.assinado == false)
+                const Padding(
+                  padding: EdgeInsets.only(left: 10.0),
+                  child: Text(
+                    'É necessário assinar o contrato antes de finalizar a reserva',
+                    style: TextStyle(fontSize: 10, color: Colors.red),
+                  ),
                 ),
-              ),
             ],
           ),
         ),

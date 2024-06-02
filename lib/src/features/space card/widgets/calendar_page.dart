@@ -347,8 +347,7 @@ class _CalendarPageState extends State<CalendarPage> {
               totalHours: null,
               valorTotalDasHoras: null,
               valorDaTaxaConcierge: null,
-              valorDoDesconto: null,
-              codigoDoCupom: null,
+
               valorTotalAPagar: null,
               valorDaMultaPorHoraExtrapolada: null,
               nomeDoCliente: null,
@@ -362,6 +361,7 @@ class _CalendarPageState extends State<CalendarPage> {
               MaterialPageRoute(
                 builder: (context) => ResumoReservaPage(
                   summaryData: summaryData,
+                  cupomModel: null,
                 ),
               ),
             );

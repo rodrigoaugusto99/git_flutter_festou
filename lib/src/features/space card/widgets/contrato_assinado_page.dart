@@ -7,13 +7,16 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/resumo_reserva_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/signature_dialog.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/summary_data.dart';
+import 'package:git_flutter_festou/src/models/cupom_model.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class ContratoAssinadoPage extends StatefulWidget {
   final SummaryData summaryData;
+  final CupomModel? cupomModel;
   const ContratoAssinadoPage({
     super.key,
     required this.summaryData,
+    required this.cupomModel,
   });
 
   @override
@@ -98,12 +101,13 @@ class _ContratoAssinadoPageState extends State<ContratoAssinadoPage> {
                 ),
               ),
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (context) => ResumoReservaPage(
                       assinado: true,
                       summaryData: widget.summaryData,
+                      cupomModel: widget.cupomModel,
                     ),
                   ),
                 );

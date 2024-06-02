@@ -2,9 +2,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CupomModel {
-  final String codigo;
-  final Timestamp validade;
-  final int valorDesconto;
+  String codigo;
+  Timestamp validade;
+  int valorDesconto;
   CupomModel({
     required this.codigo,
     required this.validade,
