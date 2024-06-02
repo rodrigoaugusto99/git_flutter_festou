@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/all_spaces_test.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/app_bar_home.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/menu_space_types.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/search_button.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
-import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/my_last_seen_spaces.dart';
@@ -34,9 +32,6 @@ class _HomePageState extends ConsumerState<HomePage> {
         Messages.showError(message, context);
       }
     });
-
-    //final x = MediaQuery.of(context).size.width;
-    final y = MediaQuery.of(context).size.height;
 
     final fadeInDuration = (widget.previousRoute == '/home/search_page')
         ? const Duration(milliseconds: 400)

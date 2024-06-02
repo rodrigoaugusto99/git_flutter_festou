@@ -48,8 +48,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     final double firstContainer = (179 / 732) * screenHeight;
     final double voltarButtonWidth = (202 / 412) * screenWidth;
     final double voltarButtonHeight = (37 / 732) * screenHeight;
-    final double enviarButtonWidth = (74 / 412) * screenWidth;
-    final double enviarButtonHeight = (30 / 732) * screenHeight;
+    /*final double enviarButtonWidth = (74 / 412) * screenWidth;
+    final double enviarButtonHeight = (30 / 732) * screenHeight;*/
 
     return Scaffold(
       backgroundColor: Colors.white,

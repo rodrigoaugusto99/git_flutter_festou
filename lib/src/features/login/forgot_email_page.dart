@@ -90,8 +90,8 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
     final double firstContainer = (179 / 732) * screenHeight;
     final double voltarButtonWidth = (202 / 412) * screenWidth;
     final double voltarButtonHeight = (37 / 732) * screenHeight;
-    final double consultarButtonWidth = (74 / 412) * screenWidth;
-    final double consultarButtonHeight = (30 / 732) * screenHeight;
+    /*final double consultarButtonWidth = (74 / 412) * screenWidth;
+    final double consultarButtonHeight = (30 / 732) * screenHeight;*/
 
     return Scaffold(
       backgroundColor: Colors.white,

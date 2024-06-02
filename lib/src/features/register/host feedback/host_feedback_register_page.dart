@@ -2,7 +2,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/host%20feedback/host_feedback_register_vm.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/calendario_state.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/my%20reservations%20info/show_my_reservations_infos.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/show%20reservations/space_reservations_state.dart';
 
 class ShowMyReservations extends StatefulWidget {
   final CalendarioReservationsState data;

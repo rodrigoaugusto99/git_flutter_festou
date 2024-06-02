@@ -1,13 +1,9 @@
-import 'dart:convert';
-import 'dart:typed_data';
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/resumo_reserva_page.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/signature_dialog.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/summary_data.dart';
 import 'package:git_flutter_festou/src/models/cupom_model.dart';
+>>>>>>> origin/master
 import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class ContratoAssinadoPage extends StatefulWidget {

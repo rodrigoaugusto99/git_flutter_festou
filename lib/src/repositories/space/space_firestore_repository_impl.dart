@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_page.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:git_flutter_festou/src/repositories/feedback/feedback_firestore_repository.dart';
@@ -276,7 +275,7 @@ p decidir o isFavorited*/
         List<SpaceModel> spaceModels = await Future.wait(
           favoriteSpaceDocuments.docs.map((spaceDocument) async {
             final isFavorited =
-                userSpacesFavorite.contains(spaceDocument['space_id']) ?? false;
+                userSpacesFavorite.contains(spaceDocument['space_id']);
             return await mapSpaceDocumentToModel(spaceDocument, isFavorited);
           }),
         );

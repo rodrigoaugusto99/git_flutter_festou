@@ -26,12 +26,14 @@ class InformacoesPessoaisVM extends _$InformacoesPessoaisVM {
     final usersRepository = ref.watch(userFirestoreRepositoryProvider);
 
     final a = await usersRepository.updatetUser('cidade', cidade);
-    final b = await usersRepository.updatetUser('name', name);
-    final c = await usersRepository.updatetUser('cep', cep);
-    final d = await usersRepository.updatetUser('email', email);
-    final e = await usersRepository.updatetUser('telefone', telefone);
-    final f = await usersRepository.updatetUser('logradouro', logradouro);
-    final g = await usersRepository.updatetUser('bairro', bairro);
+// ENTENDER O MOTIVO DESSE CODIGO E TER UM SWITCH APENAS PARA
+    await usersRepository.updatetUser('name', name);
+    await usersRepository.updatetUser('cep', cep);
+    await usersRepository.updatetUser('email', email);
+    await usersRepository.updatetUser('telefone', telefone);
+    await usersRepository.updatetUser('logradouro', logradouro);
+    await usersRepository.updatetUser('bairro', bairro);
+
     switch (a) {
       case Success():
         state = state.copyWith(

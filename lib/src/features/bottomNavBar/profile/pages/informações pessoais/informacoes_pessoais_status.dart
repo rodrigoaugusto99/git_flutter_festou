@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'dart:io';
-
-import 'package:image_cropper/image_cropper.dart';
 
 enum InformacoesPessoaisStateStatus { initial, success, error }
 

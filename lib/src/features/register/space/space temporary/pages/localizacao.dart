@@ -2,12 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_state.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/servicos_acomodacoes.dart';
-import 'package:git_flutter_festou/src/features/register/space/space_register_vm.dart';
-
-import 'package:git_flutter_festou/src/models/address_model.dart';
 import 'package:search_cep/search_cep.dart';
 
 class Localizacao extends ConsumerStatefulWidget {

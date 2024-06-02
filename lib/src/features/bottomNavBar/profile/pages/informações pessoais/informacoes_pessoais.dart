@@ -1,22 +1,10 @@
-import 'dart:developer';
-import 'dart:io';
-
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/image_grid.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais_status.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais_vm.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:svg_flutter/svg.dart';
 
 class InformacoesPessoais extends ConsumerStatefulWidget {
   final UserModel userModel;
@@ -76,22 +64,16 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
         ref.watch(informacoesPessoaisVMProvider.notifier);
 
     ref.listen(informacoesPessoaisVMProvider, (_, state) {
-      switch (state) {
-        case InformacoesPessoaisState(
-            status: InformacoesPessoaisStateStatus.success
-          ):
+      switch (state.status) {
+        case InformacoesPessoaisStateStatus.success:
           break;
-
-        case InformacoesPessoaisState(
-            status: InformacoesPessoaisStateStatus.error,
-            :final errorMessage?
-          ):
-          Messages.showError(errorMessage, context);
-
-        case InformacoesPessoaisState(
-            status: InformacoesPessoaisStateStatus.error
-          ):
-          Messages.showError('Erro ao alterar info', context);
+        case InformacoesPessoaisStateStatus.error:
+          if (state.errorMessage != null) {
+            Messages.showError(state.errorMessage!, context);
+          }
+          break;
+        default:
+          break;
       }
     });
 
@@ -102,7 +84,6 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
           padding: const EdgeInsets.only(left: 18.0),
           child: Container(
             decoration: BoxDecoration(
-              //color: Colors.white.withOpacity(0.7),
               color: Colors.white,
               shape: BoxShape.circle,
               boxShadow: [
@@ -158,39 +139,6 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                       String avatarUrl = userData['avatar_url'] ?? '';
 
                       return InkWell(
-                        // onLongPress: () {
-                        //   showDialog(
-                        //     context: context,
-                        //     builder: (BuildContext context) {
-                        //       return AlertDialog(
-                        //         title: const Text('Excluir avatar'),
-                        //         content: const Text(
-                        //             'Tem certeza de que deseja excluir seu avatar?'),
-                        //         actions: [
-                        //           TextButton(
-                        //             onPressed: () {
-                        //               Navigator.of(context)
-                        //                   .pop(); // Fecha o AlertDialog
-                        //             },
-                        //             child: const Text('Cancelar'),
-                        //           ),
-                        //           TextButton(
-                        //             onPressed: () async {
-                        //               informacoesPessoaisVm
-                        //                   .deleteImageFirestore('avatar_url',
-                        //                       widget.userModel.id);
-                        //               Navigator.of(context).pop();
-                        //             },
-                        //             child: const Text('Confirmar'),
-                        //           ),
-                        //         ],
-                        //       );
-                        //     },
-                        //   );
-                        // },
-                        // onTap: () {
-                        //   informacoesPessoaisVm.pickAvatar();
-                        // },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -203,7 +151,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                                   child: Container(
                                     decoration: const BoxDecoration(
                                         shape: BoxShape.circle),
-                                    child: avatarUrl != ''
+                                    child: avatarUrl.isNotEmpty
                                         ? CircleAvatar(
                                             backgroundImage: Image.network(
                                               avatarUrl,
@@ -288,7 +236,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                   if (bool2) {
                     Messages.showSuccess('Dados salvos com sucesso', context);
                   } else {
-                    Messages.showError('erro ao salvar dados', context);
+                    Messages.showError('Erro ao salvar dados', context);
                   }
                 },
                 child: Padding(
@@ -320,11 +268,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
   Widget myRow({
     required String label,
     required TextEditingController controller,
-
-    //required ValueChanged<String> onSave,
   }) {
-    //String textButton = isEditing ? 'Salvar' : 'Editar';
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

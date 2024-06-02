@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/titulo.dart';
-import 'package:git_flutter_festou/src/features/register/space/space_register_vm.dart';
 
 class AdicioneFotos extends ConsumerStatefulWidget {
   const AdicioneFotos({super.key});

@@ -84,6 +84,8 @@ dependencies:
   image_painter: ^0.7.1
   emoji_picker_flutter: ^2.1.1
   flutter_emoji: ^2.1.0
+  rxdart: ^0.27.7
+  firebase_messaging: ^14.7.19
  
 
 dev_dependencies:
@@ -133,6 +135,10 @@ flutter:
     - family: Inter
       fonts:
       - asset: lib/assets/fonts/Inter.ttf
+
+    - family: InterVariable
+      fonts:
+      - asset: lib/assets/fonts/InterVariable.ttf
 
     - family: NerkoOne
       fonts:

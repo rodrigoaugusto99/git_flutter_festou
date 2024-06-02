@@ -27,12 +27,12 @@ class _MenuState extends ConsumerState<Menu> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MyRow(
+              myRow(
                 text: 'Seu perfil',
                 icon1: SvgPicture.asset('lib/assets/images/_sfaxx.svg'),
                 onTap: () => {},
               ),
-              MyRow(
+              myRow(
                 text: 'Configurações',
                 icon1: SvgPicture.asset('lib/assets/images/_sfaxx.svg'),
                 onTap: () => Navigator.push(
@@ -42,7 +42,7 @@ class _MenuState extends ConsumerState<Menu> {
                   ),
                 ),
               ),
-              MyRow(
+              myRow(
                 text: 'Central de Ajuda',
                 icon1: SvgPicture.asset('lib/assets/images/_sfaxx.svg'),
                 onTap: () => Navigator.push(
@@ -52,7 +52,7 @@ class _MenuState extends ConsumerState<Menu> {
                   ),
                 ),
               ),
-              MyRow(
+              myRow(
                 text: 'Envie-nos seu feedback',
                 icon1: SvgPicture.asset('lib/assets/images/_sfaxx.svg'),
                 onTap: () => Navigator.push(
@@ -92,35 +92,55 @@ class _MenuState extends ConsumerState<Menu> {
   }
 }
 
-Widget MyText({required String text}) {
+Widget myText({required String text}) {
   return Text(
     text,
     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
   );
 }
 
-Widget MyRow(
-    {required String text, required Widget icon1, required Function()? onTap}) {
+Widget myRow(
+    {required String text,
+    required Widget icon1,
+    required Function()? onTap,
+    bool hasUnreadMessages = false}) {
   return InkWell(
     onTap: onTap,
-    child: Container(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), color: Colors.white),
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
+    child: Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10), color: Colors.white),
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                  height: 20, width: 20, color: Colors.white, child: icon1),
-              const SizedBox(width: 10),
-              Text(text),
+              Row(
+                children: [
+                  Container(
+                      height: 20, width: 20, color: Colors.white, child: icon1),
+                  const SizedBox(width: 10),
+                  Text(text),
+                ],
+              ),
+              SvgPicture.asset('lib/assets/images/_sfaxx.svg'),
             ],
           ),
-          SvgPicture.asset('lib/assets/images/_sfaxx.svg'),
-        ],
-      ),
+        ),
+        if (hasUnreadMessages)
+          Positioned(
+            top: 0,
+            right: 0,
+            child: Container(
+              width: 12,
+              height: 12,
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+      ],
     ),
   );
 }

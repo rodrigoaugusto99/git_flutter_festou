@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'package:git_flutter_festou/src/models/space_model.dart';
 
 enum SpaceRegisterStateStatus { initial, success, error, invalidForm }
 

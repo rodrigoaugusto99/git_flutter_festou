@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'dart:io';
 
 enum NewSpaceRegisterStateStatus { initial, success, error, invalidForm }
