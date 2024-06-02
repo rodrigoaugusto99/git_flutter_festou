@@ -50,11 +50,11 @@ class _SignatureDialogState extends State<SignatureDialog> {
     }
   }
 
-  @override
-  void dispose() {
-    imagePainterController!.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   imagePainterController!.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {

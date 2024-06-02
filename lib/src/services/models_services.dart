@@ -59,30 +59,35 @@ class ModelsServices {
             userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
 
         SpaceModel spaceModel = SpaceModel(
-          isFavorited,
-          spaceDocument['space_id'] ?? '',
-          spaceDocument['user_id'] ?? '',
-          spaceDocument['titulo'] ?? '',
-          spaceDocument['cep'] ?? '',
-          spaceDocument['logradouro'] ?? '',
-          spaceDocument['numero'] ?? '',
-          spaceDocument['bairro'] ?? '',
-          spaceDocument['cidade'] ?? '',
-          spaceDocument['selectedTypes'] ?? '',
-          spaceDocument['selectedServices'] ?? '',
-          spaceDocument['average_rating'] ?? '',
-          spaceDocument['num_comments'] ?? '',
-          spaceDocument['locador_name'] ?? '',
-          spaceDocument['descricao'] ?? '',
-          spaceDocument['city'] ?? '',
-          spaceDocument['images_url'] ?? '',
-          spaceDocument['latitude'] ?? '',
-          spaceDocument['longitude'] ?? '',
-          spaceDocument['locadorAvatarUrl'] ?? '',
-          spaceDocument['startTime'] ?? '',
-          spaceDocument['endTime'] ?? '',
-          spaceDocument['days'] ?? [],
-          spaceDocument['preco'] ?? '',
+          isFavorited: isFavorited,
+          spaceId: spaceDocument['space_id'] ?? '',
+          userId: spaceDocument['user_id'] ?? '',
+          titulo: spaceDocument['titulo'] ?? '',
+          cep: spaceDocument['cep'] ?? '',
+          logradouro: spaceDocument['logradouro'] ?? '',
+          numero: spaceDocument['numero'] ?? '',
+          bairro: spaceDocument['bairro'] ?? '',
+          cidade: spaceDocument['cidade'] ?? '',
+          selectedTypes: spaceDocument['selectedTypes'] ?? [],
+          selectedServices: spaceDocument['selectedServices'] ?? [],
+          averageRating: spaceDocument['average_rating'] ?? '',
+          numComments: spaceDocument['num_comments'] ?? '',
+          locadorName: spaceDocument['locador_name'] ?? '',
+          descricao: spaceDocument['descricao'] ?? '',
+          city: spaceDocument['city'] ?? '',
+          imagesUrl: List<String>.from(spaceDocument['images_url'] ?? []),
+          latitude: spaceDocument['latitude'] ?? 0.0,
+          longitude: spaceDocument['longitude'] ?? 0.0,
+          locadorAvatarUrl: spaceDocument['locadorAvatarUrl'] ?? '',
+          startTime: spaceDocument['startTime'] ?? '',
+          endTime: spaceDocument['endTime'] ?? '',
+          days: List<String>.from(spaceDocument['days'] ?? []),
+          preco: spaceDocument['preco'] ?? '',
+          cnpjEmpresaLocadora: spaceDocument['cnpj_empresa_locadora'] ?? '',
+          estado: spaceDocument['estado'] ?? '',
+          locadorCpf: spaceDocument['locador_cpf'] ?? '',
+          nomeEmpresaLocadora: spaceDocument['nome_empresa_locadora'] ?? '',
+          locadorAssinatura: spaceDocument['locador_assinatura'] ?? '',
         );
 
         return spaceModel;
@@ -92,7 +97,6 @@ class ModelsServices {
     }
 
     // Trate o caso em que nenhum documento foi encontrado.
-    // throw Exception("Documento não encontrado");
     return null;
   }
 

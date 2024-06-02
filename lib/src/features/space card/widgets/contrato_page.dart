@@ -30,19 +30,14 @@ class _ContratoPageState extends State<ContratoPage> {
       required ui.Image image}) async {
     String modifiedHtml = widget.summaryData.html;
 
-//todo: replace all markers
-    modifiedHtml = modifiedHtml.replaceAll('{Data de Início do Evento}',
-        '<b>${widget.summaryData.checkInTime}</b>');
-
-    modifiedHtml = modifiedHtml.replaceAll('{Data de Término do Evento}',
-        '<b>${widget.summaryData.checkOutTime}</b>');
-    // modifiedHtml = modifiedHtml.replaceAll('{name}', '<b>$name</b>');
-    // modifiedHtml = modifiedHtml.replaceAll('{name}', '<b>$name</b>');
-    // modifiedHtml = modifiedHtml.replaceAll('{name}', '<b>$name</b>');
-
     String base64Image = '';
     base64Image = await imageToBase64(image);
-    modifiedHtml += '<img src="$base64Image" alt="Descrição da imagem"/>';
+    log(base64Image);
+    modifiedHtml = modifiedHtml.replaceAll('[Assinatura do cliente]',
+        '<img src="$base64Image" alt="Descrição da imagem"/>');
+    // modifiedHtml += '<img src="$base64Image" alt="Descrição da imagem"/>';
+
+    widget.summaryData.html = modifiedHtml;
     await Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -58,6 +53,7 @@ class _ContratoPageState extends State<ContratoPage> {
         await image.toByteData(format: ui.ImageByteFormat.png);
     final Uint8List uint8List = byteData!.buffer.asUint8List();
     final String base64String = base64Encode(uint8List);
+
     return 'data:image/png;base64,$base64String';
   }
 
@@ -94,7 +90,7 @@ class _ContratoPageState extends State<ContratoPage> {
         ),
         centerTitle: true,
         title: const Text(
-          'Calendário',
+          'Contrato',
           style: TextStyle(
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),

@@ -244,9 +244,8 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     modifiedHtml = modifiedHtml.replaceAll(
         '{Cidade}', '<b>${widget.summaryData.spaceModel.cidade}</b>');
 
-//todo: formatar
-    modifiedHtml =
-        modifiedHtml.replaceAll('{Data}', '<b>${DateTime.now()}</b>');
+    modifiedHtml = modifiedHtml.replaceAll('{Data}',
+        '<b>${DateFormat("d 'de' MMMM 'de' y", 'pt_BR').format(DateTime.now())}</b>');
 
     modifiedHtml = modifiedHtml.replaceAll('{Nome do responsável pelo espaço}',
         '<b>${widget.summaryData.spaceModel.locadorName}</b>');
@@ -261,15 +260,18 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     modifiedHtml =
         modifiedHtml.replaceAll('{CPF do Cliente}', '<b>${userModel!.cpf}</b>');
 
-    //todo: no model
-    //modifiedHtml = modifiedHtml.replaceAll('{CPF do responsável pelo espaço}',
-    //     '<b>${widget.summaryData.spaceModel.locadorCpf}</b>');
-    //  modifiedHtml = modifiedHtml.replaceAll(
-    // '{Estado}', '<b>${widget.summaryData.spaceModel.estado}</b>');
-    // modifiedHtml = modifiedHtml.replaceAll(
-    //     '{Nome da Empresa Locadora}', '<b>${widget.summaryData.spaceModel.nomeEmpresaLocadora}</b>');
-    //     modifiedHtml = modifiedHtml.replaceAll(
-    //     '{CNPJ da Empresa Locadora}', '<b>${widget.summaryData.spaceModel.cnpjEmpresaLocadora}</b>');
+    modifiedHtml = modifiedHtml.replaceAll('{CPF do responsável pelo espaço}',
+        '<b>${widget.summaryData.spaceModel.locadorCpf}</b>');
+    modifiedHtml = modifiedHtml.replaceAll(
+        '{Estado}', '<b>${widget.summaryData.spaceModel.estado}</b>');
+    modifiedHtml = modifiedHtml.replaceAll('{Nome da Empresa Locadora}',
+        '<b>${widget.summaryData.spaceModel.nomeEmpresaLocadora}</b>');
+    modifiedHtml = modifiedHtml.replaceAll('{CNPJ da Empresa Locadora}',
+        '<b>${widget.summaryData.spaceModel.cnpjEmpresaLocadora}</b>');
+
+    modifiedHtml = modifiedHtml.replaceAll(
+        '[Assinatura registrada do responsável pelo espaço]',
+        '<img src="${widget.summaryData.spaceModel.locadorAssinatura}" alt="Descrição da imagem"/>');
 
 //todo: assinatura do locador vai ser salva no firestore como String
 //todo: no cadastro do espaco, pedir a assinatura e fzr esse imageToBase64
@@ -758,11 +760,14 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                         ),
                       ],
                     ),
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Cupom aplicado',
-                        style: TextStyle(fontSize: 9, color: Colors.red),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 10.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Cupom aplicado',
+                          style: TextStyle(fontSize: 10, color: Colors.red),
+                        ),
                       ),
                     ),
                   ],
@@ -785,11 +790,14 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                         style: TextStyle(fontSize: 12),
                       ),
                     ),
-                    const Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        'Remover',
-                        style: TextStyle(fontSize: 9, color: Colors.red),
+                    const Padding(
+                      padding: EdgeInsets.only(right: 10.0),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          'Remover',
+                          style: TextStyle(fontSize: 10, color: Colors.red),
+                        ),
                       ),
                     ),
                   ],
@@ -1085,9 +1093,12 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
               const SizedBox(
                 height: 3,
               ),
-              const Text(
-                'É necessário assinar o contrato antes de finalizar a reserva',
-                style: TextStyle(fontSize: 9, color: Colors.red),
+              const Padding(
+                padding: EdgeInsets.only(left: 10.0),
+                child: Text(
+                  'É necessário assinar o contrato antes de finalizar a reserva',
+                  style: TextStyle(fontSize: 10, color: Colors.red),
+                ),
               ),
             ],
           ),
