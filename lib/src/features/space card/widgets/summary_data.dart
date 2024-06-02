@@ -8,7 +8,7 @@ class SummaryData {
   SpaceModel spaceModel;
   int checkInTime;
   int checkOutTime;
-  String html;
+
   String? totalHours;
   String? valorTotalDasHoras;
   String? valorDaTaxaConcierge;
@@ -26,7 +26,6 @@ class SummaryData {
     required this.spaceModel,
     required this.checkInTime,
     required this.checkOutTime,
-    required this.html,
     required this.totalHours,
     required this.valorTotalDasHoras,
     required this.valorDaTaxaConcierge,

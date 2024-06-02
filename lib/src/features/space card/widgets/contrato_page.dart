@@ -14,10 +14,12 @@ import 'package:git_flutter_festou/src/models/space_model.dart';
 class ContratoPage extends StatefulWidget {
   final SummaryData summaryData;
   final CupomModel? cupomModel;
-  const ContratoPage({
+  String? html;
+  ContratoPage({
     super.key,
     required this.summaryData,
     required this.cupomModel,
+    required this.html,
   });
 
   @override
@@ -30,22 +32,22 @@ class _ContratoPageState extends State<ContratoPage> {
       // required String cpf,
       // required String name,
       required ui.Image image}) async {
-    String modifiedHtml = widget.summaryData.html;
+    String modifiedHtml = widget.html!;
 
     String base64Image = '';
     base64Image = await imageToBase64(image);
     log(base64Image);
     modifiedHtml = modifiedHtml.replaceAll('[Assinatura do cliente]',
         '<img src="$base64Image" alt="Descrição da imagem"/>');
-    // modifiedHtml += '<img src="$base64Image" alt="Descrição da imagem"/>';
 
-    widget.summaryData.html = modifiedHtml;
+    widget.html = modifiedHtml;
     await Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => ContratoAssinadoPage(
           summaryData: widget.summaryData,
           cupomModel: widget.cupomModel,
+          html: widget.html,
         ),
       ),
     );
@@ -104,7 +106,7 @@ class _ContratoPageState extends State<ContratoPage> {
         decoration: const BoxDecoration(),
         child: SingleChildScrollView(
           child: Html(
-            data: widget.summaryData.html,
+            data: widget.html,
             style: {
               'body': Style(
                 fontSize: FontSize(12.0),

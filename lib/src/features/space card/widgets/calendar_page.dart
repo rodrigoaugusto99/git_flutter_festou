@@ -343,7 +343,7 @@ class _CalendarPageState extends State<CalendarPage> {
               spaceModel: widget.space,
               checkInTime: checkInTime!,
               checkOutTime: checkOutTime!,
-              html: Constants2.html,
+
               totalHours: null,
               valorTotalDasHoras: null,
               valorDaTaxaConcierge: null,
@@ -362,6 +362,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 builder: (context) => ResumoReservaPage(
                   summaryData: summaryData,
                   cupomModel: null,
+                  html: null,
                 ),
               ),
             );

@@ -8,7 +8,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/constants2.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_page.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/html_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/summary_data.dart';
 import 'package:git_flutter_festou/src/models/cupom_model.dart';
@@ -53,10 +55,12 @@ class ResumoReservaPage extends StatefulWidget {
   SummaryData summaryData;
   CupomModel? cupomModel;
   bool assinado;
+  final String? html;
   ResumoReservaPage({
     super.key,
     required this.summaryData,
     required this.cupomModel,
+    required this.html,
     this.assinado = false,
   });
 
@@ -194,6 +198,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     required String valorDaMultaPorHoraExtrapolada,
     required String nomeDoCliente,
     required String cpfDoCliente,
+
     // required String nomeDoCliente,
     // required String nomeDoCliente,
     ui.Image? image,
@@ -203,7 +208,20 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
       dev.log('User is null');
       return;
     }
-    String modifiedHtml = widget.summaryData.html;
+
+    if (widget.html != null && widget.assinado) {
+      dev.log('tem um html assinado na memoria hein');
+    }
+    if (widget.html == null) {
+      dev.log('nao tem html');
+    }
+    if (!widget.assinado) {
+      dev.log('nao ta assinado');
+    }
+    if (!widget.assinado && widget.html == null) {
+      dev.log('nao ta assinado, n existe html');
+    }
+    String modifiedHtml = Constants2.html;
 
     widget.summaryData.valorTotalDasHoras = valorTotalDasHoras;
     widget.summaryData.valorDaTaxaConcierge = valorDaTaxaConcierge;
@@ -278,14 +296,14 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
         '[Assinatura registrada do responsável pelo espaço]',
         '<img src="${widget.summaryData.spaceModel.locadorAssinatura}" alt="Descrição da imagem"/>');
 
-//todo: assinatura do locador vai ser salva no firestore como String
-//todo: no cadastro do espaco, pedir a assinatura e fzr esse imageToBase64
-    String base64Image = '';
-    if (image != null) {
-      base64Image = await imageToBase64(image);
-    }
-    modifiedHtml += '<img src="$base64Image" alt="Descrição da imagem"/>';
-    widget.summaryData.html = modifiedHtml;
+// //todo: assinatura do locador vai ser salva no firestore como String
+// //todo: no cadastro do espaco, pedir a assinatura e fzr esse imageToBase64
+//     String base64Image = '';
+//     if (image != null) {
+//       base64Image = await imageToBase64(image);
+//     }
+//     modifiedHtml += '<img src="$base64Image" alt="Descrição da imagem"/>';
+//     widget.summaryData.html = modifiedHtml;
     //widget.summaryData.totalHours = hoursDifference;
 
     await Navigator.pushReplacement(
@@ -294,6 +312,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
         builder: (context) => ContratoPage(
           summaryData: widget.summaryData,
           cupomModel: cupomModel,
+          html: modifiedHtml,
         ),
       ),
     );
@@ -840,6 +859,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                             onTap: () {
                               setState(() {
                                 cupomModel = null;
+                                widget.cupomModel = null;
                               });
                             },
                             child: const Padding(
@@ -1045,7 +1065,12 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                               fontSize: 12, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          formattedFinalPrice,
+                          widget.cupomModel != null
+                              ? NumberFormat.currency(
+                                      locale: 'pt_BR', symbol: 'R\$')
+                                  .format(finalPrice! -
+                                      widget.cupomModel!.valorDesconto)
+                              : formattedFinalPrice,
                           style: const TextStyle(
                               fontSize: 12, fontWeight: FontWeight.bold),
                         ),
@@ -1105,20 +1130,56 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
               ),
               GestureDetector(
                 onTap: () async {
-                  replaceMarkers(
-                    hoursDifference: hoursDifference.toString(),
-                    image: null,
-                    valorTotalDasHoras: formattedTotalPrice,
-                    // valorDoDesconto: cupomModel != null
-                    //     ? cupomModel!.valorDesconto.toString()
-                    //     : '0',
-                    valorDaTaxaConcierge: formattedFeeAmount,
-                    //codigoDoCupom: cupomModel != null ? cupomModel!.codigo : '',
-                    valorTotalAPagar: formattedFinalPrice,
-                    valorDaMultaPorHoraExtrapolada: '',
-                    nomeDoCliente: '',
-                    cpfDoCliente: '',
-                  );
+                  //todo: ver contrato assinado
+                  //todo: la dentro perguntar se quer assinar de novo
+                  if (widget.html != null) {
+                    dev.log('nav to hjtml page');
+                    final response = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HtmlPage(
+                          html: widget.html!,
+                        ),
+                      ),
+                    );
+                    if (response == null) return;
+                    if (response) {
+                      replaceMarkers(
+                        hoursDifference: hoursDifference.toString(),
+                        image: null,
+                        valorTotalDasHoras: formattedTotalPrice,
+                        // valorDoDesconto: cupomModel != null
+                        //     ? cupomModel!.valorDesconto.toString()
+                        //     : '0',
+                        valorDaTaxaConcierge: formattedFeeAmount,
+                        //codigoDoCupom: cupomModel != null ? cupomModel!.codigo : '',
+                        valorTotalAPagar: formattedFinalPrice,
+                        valorDaMultaPorHoraExtrapolada: '',
+                        nomeDoCliente: '',
+                        cpfDoCliente: '',
+                      );
+                      return;
+                    } else {
+                      dev.log('usuario viu o html e nao quis trocar');
+                      return;
+                    }
+                  } else {
+                    dev.log('nav to contrato');
+                    replaceMarkers(
+                      hoursDifference: hoursDifference.toString(),
+                      image: null,
+                      valorTotalDasHoras: formattedTotalPrice,
+                      // valorDoDesconto: cupomModel != null
+                      //     ? cupomModel!.valorDesconto.toString()
+                      //     : '0',
+                      valorDaTaxaConcierge: formattedFeeAmount,
+                      //codigoDoCupom: cupomModel != null ? cupomModel!.codigo : '',
+                      valorTotalAPagar: formattedFinalPrice,
+                      valorDaMultaPorHoraExtrapolada: '',
+                      nomeDoCliente: '',
+                      cpfDoCliente: '',
+                    );
+                  }
                 },
                 child: Container(
                   padding:
@@ -1142,12 +1203,24 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                             ),
                           ],
                         )
-                      : const Text(
-                          'Contrato assinado',
-                          style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green),
+                      : const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Contrato assinado',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green),
+                            ),
+                            Text(
+                              'Assinar novamente?',
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          ],
                         ),
                 ),
               ),
@@ -1171,10 +1244,12 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: GestureDetector(
           onTap: () {
-            if (widget.assinado) {
+            if (widget.assinado && widget.html != null) {
               //todo: pode reservar
+              dev.log('Pode reservar.');
             } else {
               //todo: nao pode reservar
+              dev.log('NAO pode reservar.');
             }
           },
           child: Container(

@@ -13,10 +13,12 @@ import 'package:git_flutter_festou/src/models/space_model.dart';
 class ContratoAssinadoPage extends StatefulWidget {
   final SummaryData summaryData;
   final CupomModel? cupomModel;
-  const ContratoAssinadoPage({
+  String? html;
+  ContratoAssinadoPage({
     super.key,
     required this.summaryData,
     required this.cupomModel,
+    required this.html,
   });
 
   @override
@@ -66,7 +68,7 @@ class _ContratoAssinadoPageState extends State<ContratoAssinadoPage> {
         decoration: const BoxDecoration(),
         child: SingleChildScrollView(
           child: Html(
-            data: widget.summaryData.html,
+            data: widget.html,
             style: {
               'body': Style(
                 fontSize: FontSize(12.0),
@@ -108,6 +110,7 @@ class _ContratoAssinadoPageState extends State<ContratoAssinadoPage> {
                       assinado: true,
                       summaryData: widget.summaryData,
                       cupomModel: widget.cupomModel,
+                      html: widget.html,
                     ),
                   ),
                 );
