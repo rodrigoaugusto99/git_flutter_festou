@@ -26,31 +26,43 @@ class SpaceModel {
   final String startTime;
   final String endTime;
   final List<String> days;
-  //final List<>
+  final String preco;
 
-  SpaceModel(
-    this.isFavorited,
-    this.spaceId,
-    this.userId,
-    this.titulo,
-    this.cep,
-    this.logradouro,
-    this.numero,
-    this.bairro,
-    this.cidade,
-    this.selectedTypes,
-    this.selectedServices,
-    this.averageRating,
-    this.numComments,
-    this.locadorName,
-    this.descricao,
-    this.city,
-    this.imagesUrl,
-    this.latitude,
-    this.longitude,
-    this.locadorAvatarUrl,
-    this.startTime,
-    this.endTime,
-    this.days,
-  );
+  final String cnpjEmpresaLocadora;
+  final String estado;
+  final String locadorCpf;
+  final String nomeEmpresaLocadora;
+  final String locadorAssinatura;
+
+  SpaceModel({
+    required this.isFavorited,
+    required this.spaceId,
+    required this.userId,
+    required this.titulo,
+    required this.cep,
+    required this.logradouro,
+    required this.numero,
+    required this.bairro,
+    required this.cidade,
+    required this.selectedTypes,
+    required this.selectedServices,
+    required this.averageRating,
+    required this.numComments,
+    required this.locadorName,
+    required this.descricao,
+    required this.city,
+    required this.imagesUrl,
+    required this.latitude,
+    required this.longitude,
+    required this.locadorAvatarUrl,
+    required this.startTime,
+    required this.endTime,
+    required this.days,
+    required this.preco,
+    required this.cnpjEmpresaLocadora,
+    required this.estado,
+    required this.locadorCpf,
+    required this.nomeEmpresaLocadora,
+    required this.locadorAssinatura,
+  });
 }
