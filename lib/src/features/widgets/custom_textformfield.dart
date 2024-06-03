@@ -8,6 +8,8 @@ class CustomTextformfield extends StatefulWidget {
   final TextEditingController controller;
   final String? Function(String?)? validator;
   List<TextInputFormatter>? inputFormatters;
+  TextInputType? keyboardType;
+  Function(String)? onChanged;
   bool hasEye;
   CustomTextformfield({
     super.key,
@@ -16,6 +18,8 @@ class CustomTextformfield extends StatefulWidget {
     this.hasEye = false,
     required this.controller,
     this.validator,
+    this.onChanged,
+    this.keyboardType,
     this.enable = true,
     this.obscureText = false,
   });
@@ -32,10 +36,17 @@ class _CustomTextformfieldState extends State<CustomTextformfield> {
     return TextFormField(
       textInputAction: TextInputAction.done,
       inputFormatters: widget.inputFormatters,
-      obscureText: isVisible ? false : true,
+      obscureText: widget.obscureText == false
+          ? false
+          : isVisible
+              ? false
+              : true,
+      onChanged: widget.onChanged,
       enabled: widget.enable,
       controller: widget.controller,
       validator: widget.validator,
+      keyboardType: widget.keyboardType,
+      onTapOutside: (event) => {FocusScope.of(context).unfocus()},
       style: TextStyle(
           color: widget.enable ? Colors.black : Colors.grey,
           overflow: TextOverflow.ellipsis),

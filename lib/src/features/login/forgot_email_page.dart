@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
+import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class ForgotEmailPage extends StatefulWidget {
   const ForgotEmailPage({Key? key}) : super(key: key);
@@ -12,74 +14,36 @@ class ForgotEmailPage extends StatefulWidget {
 }
 
 class _ForgotEmailPageState extends State<ForgotEmailPage> {
-  final cpfCnpjEC = TextEditingController();
+  final cpfEC = TextEditingController();
 
   @override
   void dispose() {
-    cpfCnpjEC.dispose();
+    cpfEC.dispose();
     super.dispose();
   }
 
-  String formatCPF(String value) {
-    return '${value.substring(0, 3)}.${value.substring(3, 6)}.${value.substring(6, 9)}-${value.substring(9, 11)}';
-  }
+  String email = '';
 
-  String formatCNPJ(String value) {
-    return '${value.substring(0, 2)}.${value.substring(2, 5)}.${value.substring(5, 8)}/${value.substring(8, 12)}-${value.substring(12, 14)}';
-  }
-
-  int getNumericLength(String text) {
-    // Filtra apenas os caracteres numéricos
-    String numericText = text.replaceAll(RegExp(r'[^0-9]'), '');
-
-    // Retorna o comprimento dos caracteres numéricos
-    return numericText.length;
-  }
-
-  String? meuEmail;
-
-  List<String> errors = [
-    'erro - documento invalido',
-    'erro - nao encontrado',
-    'erro'
-  ];
-
-  String removeSpecialCharacters(String text) {
-    return text.replaceAll(
-        RegExp(r'[^0-9]'), ''); // Remove tudo que não for número
-  }
-
-  Future<String?> findEmailByCPFOrCNPJ(String cpfCnpj) async {
-    if (cpfCnpj.length != 11) {
-      return errors[0];
-    }
+  Future<int> checkIfCpfExists() async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
 
     try {
-      // Consulte a coleção para encontrar documentos com o campo "cpf" correspondente
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .where('cpf', isEqualTo: cpfCnpj)
-          .get();
+      QuerySnapshot querySnapshot =
+          await users.where('cpf', isEqualTo: cpfEC.text).get();
 
-      // Verifique se há documentos correspondentes
       if (querySnapshot.docs.isNotEmpty) {
-        // Obtenha o primeiro documento correspondente
-        DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
+        // Obter o campo "email" do primeiro documento encontrado
+        setState(() {
+          email = querySnapshot.docs.first.get('email');
+        });
 
-        // Obtenha o valor do campo "email" e retorne
-        Map<String, dynamic> data =
-            documentSnapshot.data() as Map<String, dynamic>;
-        String? email = data['email'];
-        return email;
+        return 0;
       } else {
-        // Documento não encontrado
-        log('Documento com CPF/CNPJ $cpfCnpj não encontrado.');
-        return errors[1];
+        return 1;
       }
     } catch (e) {
-      // Trate erros durante a busca
-      log('Erro ao buscar documento: $e');
-      return errors[2];
+      log('Erro ao buscar usuário por CPF: $e');
+      return 2;
     }
   }
 
@@ -117,24 +81,46 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
                       child: SizedBox(
                         height: screenHeight * 0.12,
                         child: Stack(
+                          alignment: Alignment.center,
+                          clipBehavior: Clip.none,
                           children: [
-                            const Text(
-                              'FESTOU',
-                              style: TextStyle(
-                                fontFamily: 'NerkoOne',
-                                fontSize: 60,
-                                color: Color(0xff9747FF),
+                            ShaderMask(
+                              shaderCallback: (bounds) {
+                                return const LinearGradient(
+                                  colors: [
+                                    Color(0xff9747FF),
+                                    Color(0xff5B2B99),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ).createShader(
+                                  Rect.fromLTWH(
+                                    0,
+                                    0,
+                                    bounds.width,
+                                    bounds.height,
+                                  ),
+                                );
+                              },
+                              child: const Text(
+                                'FESTOU',
+                                style: TextStyle(
+                                  fontFamily: 'NerkoOne',
+                                  fontSize: 60,
+                                  color: Colors
+                                      .white, // A cor branca será substituída pelo shader
+                                ),
                               ),
                             ),
-                            Positioned(
-                              bottom: 0,
-                              left: screenWidth * 0.11,
-                              child: const Text(
-                                'Cadastro',
+                            const Positioned(
+                              bottom: -10,
+                              child: Text(
+                                'Recuperar conta',
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontFamily: 'Marcellus',
-                                  color: Color.fromARGB(255, 13, 46, 89),
+                                  color: Color(0xff000000),
                                 ),
                               ),
                             ),
@@ -165,53 +151,17 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'CPF/CNPJ:',
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w500),
-                            ),
-                            TextFormField(
-                              controller: cpfCnpjEC,
+                            CustomTextformfield(
+                              label: 'CPF',
+                              controller: cpfEC,
                               keyboardType: TextInputType.number,
-                              onTapOutside: (event) =>
-                                  {FocusScope.of(context).unfocus()},
-                              onChanged: (value) {
-                                int numericLength = getNumericLength(value);
-
-                                if (numericLength == 11) {
-                                  setState(() {
-                                    cpfCnpjEC.text = formatCPF(value.replaceAll(
-                                        RegExp(r'[^0-9]'), ''));
-                                  });
-                                } else if (numericLength == 14) {
-                                  setState(() {
-                                    cpfCnpjEC.text = formatCNPJ(value
-                                        .replaceAll(RegExp(r'[^0-9]'), ''));
-                                  });
-                                }
-                              },
-                              decoration: const InputDecoration(
-                                contentPadding:
-                                    EdgeInsets.symmetric(vertical: 2.0),
-                                hintText: 'Digite aqui seu documento',
-                                hintStyle:
-                                    TextStyle(color: Colors.black, fontSize: 9),
-                                //border: InputBorder.none,
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.black, width: 1),
-                                ),
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.black, width: 1),
-                                ),
-                                errorBorder: InputBorder.none,
-                                focusedErrorBorder: InputBorder.none,
-                                disabledBorder: InputBorder.none,
-                                isDense: true,
-                              ),
-                              style: const TextStyle(
-                                  fontSize: 14.0, color: Colors.black),
+                              inputFormatters: [
+                                MaskTextInputFormatter(
+                                  mask: '###.###.###-##',
+                                  filter: {"#": RegExp(r'[0-9]')},
+                                  type: MaskAutoCompletionType.lazy,
+                                )
+                              ],
                             ),
                           ],
                         ),
@@ -219,44 +169,51 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
                       Positioned(
                         bottom: 380,
                         child: InkWell(
-                          onTap: () async {
-                            meuEmail = await findEmailByCPFOrCNPJ(
-                                removeSpecialCharacters(cpfCnpjEC.text));
-                            /*fica aqui fora pois como o findEmailByCpf eh assincrona,
-                            precisa esperar, coisa que o setState nao faz.*/
-                            setState(() {});
-                            if (meuEmail == errors[0]) {
-                              Messages.showError(
-                                  'Formato de CPF ou CNPJ inválido', context);
-                            } else if (meuEmail == errors[1]) {
-                              Messages.showError(
-                                  'Não há um e-mail com esse CPF/CNPJ cadastrado',
-                                  context);
-                            } else if (meuEmail == errors[2]) {
-                              Messages.showError(
-                                  'Erro ao buscar e-mail', context);
-                            }
-                          },
+                          onTap: cpfEC.text.length < 14
+                              ? () =>
+                                  Messages.showError('CPF inválido', context)
+                              : () async {
+                                  checkIfCpfExists().then((value) {
+                                    if (value == 1) {
+                                      Messages.showError(
+                                          'Não existe e-mail cadastrado com esse CPF',
+                                          context);
+                                    }
+                                    if (value == 2) {
+                                      Messages.showError(
+                                          'Erro ao buscar CPF', context);
+                                    }
+                                  });
+                                },
                           child: Container(
                             alignment: Alignment.center,
                             width: voltarButtonWidth,
                             height: voltarButtonHeight,
                             decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xff9747FF),
-                                  Color(0xff4300B1),
-                                ],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                              ),
+                              gradient: cpfEC.text.length < 14
+                                  ? const LinearGradient(
+                                      colors: [
+                                        Color(0xff9747FF),
+                                        Color(0xff4300B1),
+                                      ],
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                    )
+                                  : const LinearGradient(
+                                      colors: [
+                                        Colors.grey,
+                                        Colors.grey,
+                                      ],
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                    ),
                               borderRadius: BorderRadius.circular(
                                   50), // Borda arredondada
                             ),
                             child: const Align(
                               alignment: Alignment.center,
                               child: Text(
-                                'Consultar',
+                                'CONSULTAR',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 10,
@@ -267,21 +224,22 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
                           ),
                         ),
                       ),
-                      meuEmail != null && !errors.contains(meuEmail)
+                      email != ''
                           ? Positioned(
                               bottom: 230,
                               left: 0,
                               right: 0,
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const Text('Seu e-mail é:'),
                                   Container(
                                       alignment: Alignment.center,
-                                      padding: const EdgeInsets.all(7),
+                                      padding: const EdgeInsets.all(8),
                                       decoration: BoxDecoration(
                                           border: Border.all(
                                               width: 2, color: Colors.red)),
-                                      child: Text(meuEmail!)),
+                                      child: Text(email)),
                                 ],
                               ),
                             )
