@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/user/user_register_vm.dart';
+import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class UserRegisterPage extends ConsumerStatefulWidget {
   const UserRegisterPage({super.key});
@@ -67,7 +70,7 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
     final double firstContainer = (179 / 732) * screenHeight;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF8F8F8),
       body: Form(
         key: formKey,
         child: SingleChildScrollView(
@@ -91,21 +94,43 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                           child: SizedBox(
                             height: screenHeight * 0.12,
                             child: Stack(
+                              clipBehavior: Clip.none,
                               children: [
-                                const Text(
-                                  'FESTOU',
-                                  style: TextStyle(
-                                    fontFamily: 'NerkoOne',
-                                    fontSize: 60,
-                                    color: Color(0xff9747FF),
+                                ShaderMask(
+                                  shaderCallback: (bounds) {
+                                    return const LinearGradient(
+                                      colors: [
+                                        Color(0xff9747FF),
+                                        Color(0xff5B2B99),
+                                      ],
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                    ).createShader(
+                                      Rect.fromLTWH(
+                                        0,
+                                        0,
+                                        bounds.width,
+                                        bounds.height,
+                                      ),
+                                    );
+                                  },
+                                  child: const Text(
+                                    'FESTOU',
+                                    style: TextStyle(
+                                      fontFamily: 'NerkoOne',
+                                      fontSize: 60,
+                                      color: Colors
+                                          .white, // A cor branca será substituída pelo shader
+                                    ),
                                   ),
                                 ),
                                 Positioned(
-                                  bottom: 0,
+                                  bottom: -10,
                                   left: screenWidth * 0.11,
                                   child: const Text(
                                     'Cadastro',
                                     style: TextStyle(
+                                      fontWeight: FontWeight.w600,
                                       fontSize: 20,
                                       fontFamily: 'Marcellus',
                                       color: Color(0xff000000),
@@ -134,179 +159,45 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'CPF/CNPJ:',
-                          style: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.w500),
-                        ),
-                        TextFormField(
+                        CustomTextformfield(
+                          label: 'CPF',
                           controller: cpfEC,
                           validator: userRegisterVM.validateCpf(),
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(vertical: 2.0),
-                            hintText: 'Digite aqui seu documento',
-                            hintStyle:
-                                TextStyle(color: Colors.black, fontSize: 9),
-                            //border: InputBorder.none,
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 1),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 1),
-                            ),
-                            errorBorder: InputBorder.none,
-                            focusedErrorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                            isDense: true,
-                          ),
-                          style: const TextStyle(
-                              fontSize: 14.0, color: Colors.black),
+                          inputFormatters: [
+                            MaskTextInputFormatter(
+                              mask: '###.###.###-##',
+                              filter: {"#": RegExp(r'[0-9]')},
+                              type: MaskAutoCompletionType.lazy,
+                            )
+                          ],
                         ),
-                        const SizedBox(height: 10),
-                        const Text(
-                          'E-mail:',
-                          style: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.w500),
-                        ),
-                        TextFormField(
+                        const SizedBox(height: 15),
+                        CustomTextformfield(
+                          label: 'E-mail',
                           controller: emailEC,
                           validator: userRegisterVM.validateEmail(),
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(vertical: 2.0),
-                            hintText: 'Digite aqui seu e-mail',
-                            hintStyle:
-                                TextStyle(color: Colors.black, fontSize: 9),
-                            //border: InputBorder.none,
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 1),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 1),
-                            ),
-                            errorBorder: InputBorder.none,
-                            focusedErrorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                            isDense: true,
-                          ),
-                          style: const TextStyle(
-                              fontSize: 14.0, color: Colors.black),
                         ),
-                        const SizedBox(height: 10),
-                        const Text(
-                          'Nome:',
-                          style: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.w500),
-                        ),
-                        TextFormField(
+                        const SizedBox(height: 15),
+                        CustomTextformfield(
+                          label: 'Nome',
                           controller: nameEC,
                           validator: userRegisterVM.validateName(),
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(vertical: 2.0),
-                            hintText: 'Digite aqui seu nome',
-                            hintStyle:
-                                TextStyle(color: Colors.black, fontSize: 9),
-                            //border: InputBorder.none,
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 1),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 1),
-                            ),
-                            errorBorder: InputBorder.none,
-                            focusedErrorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                            isDense: true,
-                          ),
-                          style: const TextStyle(
-                              fontSize: 14.0, color: Colors.black),
                         ),
-                        const SizedBox(height: 10),
-                        const Text(
-                          'Senha:',
-                          style: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.w500),
-                        ),
-                        TextFormField(
+                        const SizedBox(height: 15),
+                        CustomTextformfield(
+                          hasEye: true,
+                          obscureText: true,
+                          label: 'Senha',
                           controller: passwordEC,
                           validator: userRegisterVM.validatePassword(),
-                          decoration: const InputDecoration(
-                            /*suffixIcon: GestureDetector(
-                              onTap: () => setState(
-                                () {
-                                  isVisible = !isVisible;
-                                },
-                              ),
-                              child: isVisible
-                                  ? const Icon(Icons.visibility)
-                                  : const Icon(Icons.visibility_off),
-                            ),*/
-                            contentPadding: EdgeInsets.symmetric(vertical: 2.0),
-                            hintText: 'Digite aqui sua senha',
-                            hintStyle:
-                                TextStyle(color: Colors.black, fontSize: 9),
-                            //border: InputBorder.none,
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 1),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 1),
-                            ),
-                            errorBorder: InputBorder.none,
-                            focusedErrorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                            isDense: true,
-                          ),
-                          style: const TextStyle(
-                              fontSize: 14.0, color: Colors.black),
                         ),
-                        const SizedBox(height: 10),
-                        const Text(
-                          'Confirme sua senha:',
-                          style: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.w500),
-                        ),
-                        TextFormField(
+                        const SizedBox(height: 15),
+                        CustomTextformfield(
+                          hasEye: true,
+                          obscureText: true,
+                          label: 'Confirme sua senha',
                           controller: confirmPasswordEC,
                           validator: userRegisterVM.confirmPassword(passwordEC),
-                          decoration: const InputDecoration(
-                            /*suffixIcon: GestureDetector(
-                              onTap: () => setState(
-                                () {
-                                  isVisible = !isVisible;
-                                },
-                              ),
-                              child: isVisible
-                                  ? const Icon(Icons.visibility)
-                                  : const Icon(Icons.visibility_off),
-                            ),*/
-                            contentPadding: EdgeInsets.symmetric(vertical: 2.0),
-                            hintText: 'Digite sua senha novamente',
-                            hintStyle:
-                                TextStyle(color: Colors.black, fontSize: 9),
-                            //border: InputBorder.none,
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 1),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 1),
-                            ),
-                            errorBorder: InputBorder.none,
-                            focusedErrorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                            isDense: true,
-                          ),
-                          style: const TextStyle(
-                              fontSize: 14.0, color: Colors.black),
                         ),
                         SizedBox(height: screenHeight * 0.1),
                         Align(

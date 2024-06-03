@@ -63,9 +63,11 @@ class UserAuthRepositoryImpl implements UserAuthRepository {
         password: userData.password,
       );
       return Success(userCredential);
+    } on FirebaseAuthException catch (e, s) {
+      return Failure(AuthError(message: 'erro: $e, stacktrace: $s'));
     } on Exception catch (e, s) {
       log('Erro ao cadastrar usuario', error: e, stackTrace: s);
-      return Failure(AuthError(message: 'Erro ao cadastrar usuario'));
+      return Failure(AuthError(message: 'Erro desconhecido'));
     }
   }
 }

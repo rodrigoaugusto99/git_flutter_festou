@@ -1,6 +1,10 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
+import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -26,11 +30,29 @@ class UserRegisterVm extends _$UserRegisterVm {
     ]);
   }
 
+  Future<String?> checkIfCpfExists(String cpf) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+    try {
+      QuerySnapshot querySnapshot =
+          await users.where('cpf', isEqualTo: cpf).get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        return 'Esse CPF já foi cadastrado.';
+      } else {
+        return null;
+      }
+    } catch (e) {
+      log('Erro ao buscar usuário por CPF: $e');
+      return null;
+    }
+  }
+
   //validação email
   FormFieldValidator<String> validateCpf() {
     return Validatorless.multiple([
       Validatorless.required('CPF obrigatorio'),
-      Validatorless.cpf('CPF invalido')
+      Validatorless.min(14, 'CPF invalido'),
     ]);
   }
 
@@ -45,8 +67,23 @@ class UserRegisterVm extends _$UserRegisterVm {
 //validação senha
   FormFieldValidator<String> validatePassword() {
     return Validatorless.multiple([
-      Validatorless.required('Senha obrigatoria'),
-      Validatorless.min(6, 'Senha deve ter no minimo 6 caracteres'),
+      Validatorless.required('Senha obrigatória'),
+      Validatorless.min(6, 'Senha deve ter no mínimo 6 caracteres'),
+      (value) {
+        if (!RegExp(r'^(?=.*[A-Z])').hasMatch(value!)) {
+          return 'Senha deve conter pelo menos uma letra maiúscula';
+        }
+        if (!RegExp(r'^(?=.*[a-z])').hasMatch(value)) {
+          return 'Senha deve conter pelo menos uma letra minúscula';
+        }
+        if (!RegExp(r'^(?=.*\d)').hasMatch(value)) {
+          return 'Senha deve conter pelo menos um número';
+        }
+        if (!RegExp(r'^(?=.*[@$!%*?&])').hasMatch(value)) {
+          return 'Senha deve conter pelo menos um caractere especial (@, \$, !, %, *, ?, &)';
+        }
+        return null;
+      },
     ]);
   }
 
@@ -60,8 +97,13 @@ class UserRegisterVm extends _$UserRegisterVm {
   }
 
   void validateForm(
-      BuildContext context, formKey, emailEC, passwordEC, nameEC, cpfEC) {
+      BuildContext context, formKey, emailEC, passwordEC, nameEC, cpfEC) async {
     if (formKey.currentState?.validate() == true) {
+      final response = await checkIfCpfExists(cpfEC.text);
+      if (response != null) {
+        Messages.showError(response, context);
+        return;
+      }
       register(
         email: emailEC.text,
         password: passwordEC.text,
@@ -90,6 +132,7 @@ class UserRegisterVm extends _$UserRegisterVm {
     );
 
     final registerResult = await userRegisterService.execute(userData);
+    //log(registerResult..toString(), name: 'registerResult');
     switch (registerResult) {
       case Success():
         state = UserRegisterStateStatus.success;
