@@ -188,23 +188,14 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
                           width: buttonWidth,
                           height: buttonHeight,
                           decoration: BoxDecoration(
-                            gradient: cpfEC.text.length < 14
-                                ? const LinearGradient(
-                                    colors: [
-                                      Color(0xff9747FF),
-                                      Color(0xff4300B1),
-                                    ],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                  )
-                                : const LinearGradient(
-                                    colors: [
-                                      Colors.grey,
-                                      Colors.grey,
-                                    ],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                  ),
+                            gradient: const LinearGradient(
+                              colors: [
+                                Color(0xff9747FF),
+                                Color(0xff4300B1),
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
                             borderRadius: BorderRadius.circular(50),
                           ),
                           child: const Align(
