@@ -188,23 +188,14 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
                           width: buttonWidth,
                           height: buttonHeight,
                           decoration: BoxDecoration(
-                            gradient: cpfEC.text.length < 14
-                                ? const LinearGradient(
-                                    colors: [
-                                      Color(0xff9747FF),
-                                      Color(0xff4300B1),
-                                    ],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                  )
-                                : const LinearGradient(
-                                    colors: [
-                                      Colors.grey,
-                                      Colors.grey,
-                                    ],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                  ),
+                            gradient: const LinearGradient(
+                              colors: [
+                                Color(0xff9747FF),
+                                Color(0xff4300B1),
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
                             borderRadius: BorderRadius.circular(50),
                           ),
                           child: const Align(
@@ -228,7 +219,10 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('Seu e-mail é:'),
+                            const Padding(
+                              padding: EdgeInsets.only(bottom: 8.0),
+                              child: Text('Seu e-mail é:'),
+                            ),
                             Container(
                               alignment: Alignment.center,
                               padding: const EdgeInsets.all(8),
