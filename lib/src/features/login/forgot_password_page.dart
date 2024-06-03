@@ -1,8 +1,13 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
+import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/login/forgot_email_page.dart';
 import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
+import 'package:validatorless/validatorless.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({Key? key}) : super(key: key);
@@ -15,8 +20,41 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final emailEC = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
+  Future<String?> checkIfEmailExists(String email) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+    try {
+      QuerySnapshot querySnapshot =
+          await users.where('email', isEqualTo: email).get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        return null;
+      } else {
+        return 'Esse e-mail não está cadastrado';
+      }
+    } catch (e) {
+      log('Erro ao buscar usuário por e-mail: $e');
+    }
+    return null;
+  }
+
   // Método para enviar o link de redefinição de senha para o email digitado
   Future<void> passwordReset() async {
+    if (emailEC.text == '') {
+      Messages.showError('Insira o e-mail', context);
+      return;
+    }
+    if (formKey.currentState?.validate() == false) {
+      Messages.showError('E-mail inválido', context);
+      return;
+    }
+    //todo: check if email is registered
+    final response = await checkIfEmailExists(emailEC.text);
+
+    if (response != null) {
+      Messages.showError(response, context);
+      return;
+    }
     try {
       // Método do Firebase para enviar o link no email
       await FirebaseAuth.instance.sendPasswordResetEmail(email: emailEC.text);
@@ -30,16 +68,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           );
         },
       );
+      Messages.showSuccess(
+          'Um link de verificação foi enviado para o e-mail cadastrado',
+          context);
+      return;
     } catch (e) {
       // Tratar erros
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Text(e.toString()),
-          );
-        },
-      );
+      Messages.showError(e.toString(), context);
+      return;
     }
   }
 
@@ -116,7 +152,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           const Align(
                             alignment: Alignment.center,
                             child: Text(
-                              'Recuperar\n   conta',
+                              'Recuperar\nconta',
+                              textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 24,
                                 height: 1,
@@ -147,6 +184,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     CustomTextformfield(
                       label: 'E-mail',
                       controller: emailEC,
+                      validator: Validatorless.email(emailEC.text),
                     ),
                     const SizedBox(height: 10),
                     Align(
