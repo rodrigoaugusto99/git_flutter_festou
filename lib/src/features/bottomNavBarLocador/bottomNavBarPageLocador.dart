@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/profile.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/calendario.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
@@ -56,7 +57,7 @@ class _BottomNavBarPageLocadorState extends State<BottomNavBarPageLocador> {
             case 2:
               return const Mensagens();
             case 3:
-              return const Menu();
+              return const Profile(true);
             default:
               return Container(); // Lida com índices fora do alcance, se aplicável
           }
@@ -71,22 +72,24 @@ class _BottomNavBarPageLocadorState extends State<BottomNavBarPageLocador> {
             unselectedItemColor: Colors.black,
             currentIndex: _currentIndex,
             onTap: _onTabTapped,
-            items: const [
-              BottomNavigationBarItem(
+            items: [
+              const BottomNavigationBarItem(
                 icon: Icon(Icons.home_filled),
                 label: 'Espaços',
               ),
-              BottomNavigationBarItem(
+              const BottomNavigationBarItem(
                 icon: Icon(Icons.calendar_month),
                 label: 'Calendário',
               ),
-              BottomNavigationBarItem(
+              const BottomNavigationBarItem(
                 icon: Icon(Icons.chat),
                 label: 'Mensagens',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.menu),
-                label: 'Menu',
+                icon: Image.asset(
+                  'lib/assets/images/Ellipse 10pessoinha.png',
+                ),
+                label: 'Profile',
               ),
             ],
           ),

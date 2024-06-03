@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarPageLocador.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
 import 'package:git_flutter_festou/src/features/widgets/my_rows_config.dart';
@@ -8,7 +9,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 
 class Profile extends ConsumerStatefulWidget {
-  const Profile({super.key});
+  final bool isLocador;
+  const Profile(this.isLocador, {super.key});
 
   @override
   ConsumerState<Profile> createState() => _ProfileState();
@@ -154,19 +156,33 @@ class _ProfileState extends ConsumerState<Profile> {
                       const SizedBox(height: 25),
                       myText(text: 'Locação'),
                       const SizedBox(height: 15),
-                      myRow(
-                        text: 'Quero disponibilizar um espaço',
-                        icon1: Image.asset(
-                          'lib/assets/images/Icon Disponibilizarcasinha.png',
-                        ),
-                        onTap: () => Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const BottomNavBarPageLocador(),
+                      if (widget.isLocador)
+                        myRow(
+                          text: 'Quero viajar',
+                          icon1: Image.asset(
+                            'lib/assets/images/Icon Disponibilizarcasinha.png',
+                          ),
+                          onTap: () => Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const BottomNavBarPage(),
+                            ),
                           ),
                         ),
-                      ),
+                      if (!widget.isLocador)
+                        myRow(
+                          text: 'Quero disponibilizar um espaço',
+                          icon1: Image.asset(
+                            'lib/assets/images/Icon Disponibilizarcasinha.png',
+                          ),
+                          onTap: () => Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const BottomNavBarPageLocador(),
+                            ),
+                          ),
+                        ),
                       const SizedBox(height: 25),
                       myText(text: 'Atendimento'),
                       const SizedBox(height: 15),
