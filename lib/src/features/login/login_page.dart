@@ -230,7 +230,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                     //fontFamily: ,
                                     color: Color.fromARGB(255, 255, 255, 255),
                                     fontWeight: FontWeight.w400,
-                                    fontSize: 11,
+                                    fontSize: 12,
                                   ),
                                 ),
                               ),
@@ -286,7 +286,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               const Text(
                                 'Não tem conta?',
                                 style: TextStyle(
-                                  fontSize: 11,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w400,
                                   color: Colors.white,
                                 ),
@@ -297,7 +297,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 child: const Text(
                                   ' Cadastre-se',
                                   style: TextStyle(
-                                    fontSize: 11,
+                                    fontSize: 12,
                                     fontWeight: FontWeight.w400,
                                     color: Color(0xffC08FFF),
                                   ),
