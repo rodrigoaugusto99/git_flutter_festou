@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/features/login/forgot_email_page.dart';
+import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({Key? key}) : super(key: key);
@@ -52,7 +53,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     final double enviarButtonHeight = (30 / 732) * screenHeight;*/
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF8F8F8),
       body: SingleChildScrollView(
         child: Stack(
           children: [
@@ -78,20 +79,42 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           child: SizedBox(
                             height: screenHeight * 0.12,
                             child: Stack(
+                              alignment: Alignment.center,
+                              clipBehavior: Clip.none,
                               children: [
-                                const Text(
-                                  'FESTOU',
-                                  style: TextStyle(
-                                    fontFamily: 'NerkoOne',
-                                    fontSize: 60,
-                                    color: Color(0xff9747FF),
+                                ShaderMask(
+                                  shaderCallback: (bounds) {
+                                    return const LinearGradient(
+                                      colors: [
+                                        Color(0xff9747FF),
+                                        Color(0xff5B2B99),
+                                      ],
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                    ).createShader(
+                                      Rect.fromLTWH(
+                                        0,
+                                        0,
+                                        bounds.width,
+                                        bounds.height,
+                                      ),
+                                    );
+                                  },
+                                  child: const Text(
+                                    'FESTOU',
+                                    style: TextStyle(
+                                      fontFamily: 'NerkoOne',
+                                      fontSize: 60,
+                                      color: Colors
+                                          .white, // A cor branca será substituída pelo shader
+                                    ),
                                   ),
                                 ),
-                                Positioned(
-                                  bottom: 0,
-                                  left: screenWidth * 0.11,
-                                  child: const Text(
-                                    'Cadastro',
+                                const Positioned(
+                                  bottom: -10,
+                                  child: Text(
+                                    'Recuperar conta',
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontFamily: 'Marcellus',
@@ -119,34 +142,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'E-mail:',
-                          style: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.w500),
-                        ),
-                        TextFormField(
+                        CustomTextformfield(
+                          label: 'E-mail',
                           controller: emailEC,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(vertical: 2.0),
-                            hintText: 'Digite aqui seu e-mail',
-                            hintStyle:
-                                TextStyle(color: Colors.black, fontSize: 9),
-                            //border: InputBorder.none,
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 1),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 1),
-                            ),
-                            errorBorder: InputBorder.none,
-                            focusedErrorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                            isDense: true,
-                          ),
-                          style: const TextStyle(
-                              fontSize: 14.0, color: Colors.black),
                         ),
                         const SizedBox(height: 10),
                         Align(
@@ -162,14 +160,17 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                 ),
                               );
                             },
-                            child: const Text(
-                              'Esqueci meu e-mail',
-                              style: TextStyle(
-                                  fontSize: 11, color: Color(0xff000000)),
+                            child: const Padding(
+                              padding: EdgeInsets.only(right: 12.0),
+                              child: Text(
+                                'Esqueci meu e-mail',
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.black),
+                              ),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 20),
                         Align(
                           child: InkWell(
                             onTap: passwordReset,
@@ -192,7 +193,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                               child: const Align(
                                 alignment: Alignment.center,
                                 child: Text(
-                                  'Enviar código',
+                                  'ENVIAR',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 10,

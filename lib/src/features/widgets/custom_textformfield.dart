@@ -15,7 +15,7 @@ class CustomTextformfield extends StatefulWidget {
     this.inputFormatters,
     this.hasEye = false,
     required this.controller,
-    required this.validator,
+    this.validator,
     this.enable = true,
     this.obscureText = false,
   });
