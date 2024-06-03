@@ -168,9 +168,9 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                           controller: nameEC,
                           validator: userRegisterVM.validateName(),
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 20),
                         CustomTextformfield(
-                          label: 'CPF',
+                          label: 'CPF / CNPJ',
                           controller: cpfEC,
                           validator: userRegisterVM.validateCpf(),
                           inputFormatters: [
@@ -181,13 +181,13 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                             )
                           ],
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 20),
                         CustomTextformfield(
                           label: 'E-mail',
                           controller: emailEC,
                           validator: userRegisterVM.validateEmail(),
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 20),
                         CustomTextformfield(
                           hasEye: true,
                           obscureText: true,
@@ -195,7 +195,7 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                           controller: passwordEC,
                           validator: userRegisterVM.validatePassword(),
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 20),
                         CustomTextformfield(
                           hasEye: true,
                           obscureText: true,
@@ -231,7 +231,7 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                                 'CADASTRAR',
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 10,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
@@ -263,7 +263,7 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                                 'VOLTAR',
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 10,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
