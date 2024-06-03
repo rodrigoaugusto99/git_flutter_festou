@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarPageLocador.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
@@ -207,11 +208,15 @@ class _ProfileState extends ConsumerState<Profile> {
                       myText(text: 'Outros'),
                       const SizedBox(height: 15),
                       myRow(
-                        text: 'Termos de Serviço',
+                        text: 'Sair do Festou',
                         icon1: Image.asset(
                           'lib/assets/images/Icon Sairsairdofestoyu.png',
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          ref.invalidate(userFirestoreRepositoryProvider);
+                          ref.invalidate(userAuthRepositoryProvider);
+                          ref.read(logoutProvider.future);
+                        },
                       ),
                       const SizedBox(height: 100),
                     ],
