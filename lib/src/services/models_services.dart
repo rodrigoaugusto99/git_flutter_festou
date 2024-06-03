@@ -86,6 +86,7 @@ class ModelsServices {
           locadorCpf: spaceDocument['locador_cpf'] ?? '',
           nomeEmpresaLocadora: spaceDocument['nome_empresa_locadora'] ?? '',
           locadorAssinatura: spaceDocument['locador_assinatura'] ?? '',
+          numLikes: spaceDocument['num_likes'] ?? 0,
         );
 
         return spaceModel;
