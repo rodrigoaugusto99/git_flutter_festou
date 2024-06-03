@@ -7,6 +7,11 @@ class UserService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  //todo: colocar o parametro "id" aqui.
+  //caso String id nao for null, entao esse ID
+  //que vais er usado para a pesquisa, e nao o id do current.User
+  //(sera usado p pegar user do feedback ou reserva etc.
+  //)
   Future<UserModel?> getCurrentUserModel() async {
     User? firebaseUser = _auth.currentUser;
     if (firebaseUser != null) {
@@ -28,8 +33,6 @@ class UserService {
           bairro: data['user_address']?['bairro'] ?? '',
           cidade: data['user_address']?['cidade'] ?? '',
           id: firebaseUser.uid,
-          doc1Url: data['doc1_url'] ?? '',
-          doc2Url: data['doc2_url'] ?? '',
           avatarUrl: data['avatar_url'] ?? '',
         );
       }

@@ -60,7 +60,7 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
               case 2:
                 return const MyFavoriteSpacePage();
               case 3:
-                return const Profile();
+                return const Profile(false);
               default:
                 return Container(); // Lida com índices fora do alcance, se aplicável
             }

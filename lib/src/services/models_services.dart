@@ -30,8 +30,6 @@ class ModelsServices {
           bairro: data['user_address']?['bairro'] ?? '',
           cidade: data['user_address']?['cidade'] ?? '',
           id: userId,
-          doc1Url: data['doc1_url'] ?? '',
-          doc2Url: data['doc2_url'] ?? '',
           avatarUrl: data['avatar_url'] ?? '',
         );
 

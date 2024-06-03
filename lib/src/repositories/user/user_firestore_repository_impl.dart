@@ -53,7 +53,6 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         'email': userData.email,
         'name': userData.name,
         'cpf': userData.cpf,
-        'userType': 'LOCATARIO',
         'telefone': '',
         'user_address': {
           'cep': '',
@@ -62,8 +61,6 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
           'cidade': '',
         },
         'avatar_url': '',
-        'doc1_url': '',
-        'doc2_url': '',
       };
 
       // Insira o usuario na coleção 'users'
@@ -132,37 +129,6 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
   }
 
   @override
-  Future<Either<RepositoryException, Nil>> updateToLocador(
-      ({
-        User user,
-        String cnpj,
-        String emailComercial,
-      }) userData) async {
-    try {
-      QuerySnapshot querySnapshot = await usersCollection
-          .where("uid", isEqualTo: userData.user.uid)
-          .get();
-
-      if (querySnapshot.docs.length == 1) {
-        DocumentReference userDocRef = querySnapshot.docs[0].reference;
-
-        await userDocRef.update({
-          'cnpj': userData.cnpj,
-          'email_comercial': userData.emailComercial,
-          'userType': 'LOCADOR',
-        });
-
-        log('Informações de usuário adicionadas com sucesso!');
-      }
-      return Success(nil);
-    } catch (e) {
-      log('Erro ao atualizar userType locatario para locador: $e');
-      return Failure(RepositoryException(
-          message: 'Erro ao atualizar o usuário como Locador'));
-    }
-  }
-
-  @override
   Future<Either<RepositoryException, UserModel>> getUser() async {
     try {
       final userDocument = await getUserDocument();
@@ -179,8 +145,6 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         bairro: userData['user_address']?['bairro'] ?? '',
         cidade: userData['user_address']?['cidade'] ?? '',
         id: user.uid,
-        doc1Url: userData['doc1_url'] ?? '',
-        doc2Url: userData['doc2_url'] ?? '',
         avatarUrl: userData['avatar_url'] ?? '',
       );
 
@@ -193,21 +157,6 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
           RepositoryException(message: 'Erro ao atualizar o usuário: $e'));
     }
   }
-
-  /*Future<String> getInfo(String string) async {
-    try {
-      final userDocument = await getUserDocument();
-
-      final userData = userDocument.data() as Map<String, dynamic>;
-
-      final String x = userData[string] ?? '';
-
-      return x;
-    } catch (e) {
-      log('Erro ao recuperar $string do usuario do firestore: $e');
-      return 'deu erro';
-    }
-  }*/
 
   @override
   Future<Either<RepositoryException, UserModel>> getUserById(
@@ -227,8 +176,6 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         bairro: userData['user_address']?['bairro'] ?? '',
         cidade: userData['user_address']?['cidade'] ?? '',
         id: userId,
-        doc1Url: userData['doc1_url'] ?? '',
-        doc2Url: userData['doc2_url'] ?? '',
         avatarUrl: userData['avatar_url'] ?? '',
       );
 //gambiarra - colocando dados do firestore e do storage aqui

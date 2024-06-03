@@ -7,7 +7,6 @@ import 'package:git_flutter_festou/src/features/auth/auth_page.dart';
 import 'package:git_flutter_festou/src/features/auth/verify_email_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/my%20favorite%20spaces%20mvvm/my_favorite_spaces_page.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/locador/quero_ser_locador.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/search/search_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/help/help_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarPageLocador.dart';
@@ -47,7 +46,6 @@ class MyApp extends StatelessWidget {
         '/register/space': (_) => const EspacoRegisterPage(),
         '/register/user/infos': (_) => const UserRegisterInfosPage(),
         '/account/help': (_) => const HelpPage(),
-        '/account/locador': (_) => QueroSerLocadorPage(),
         '/account/favorites': (_) => const MyFavoriteSpacePage(),
         '/home/my_spaces': (_) => const MySpacesPage(),
         '/home/all_spaces': (_) => const AllSpacesPage(),
