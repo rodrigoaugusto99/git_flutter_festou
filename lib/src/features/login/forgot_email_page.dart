@@ -219,7 +219,10 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('Seu e-mail é:'),
+                            const Padding(
+                              padding: EdgeInsets.only(bottom: 8.0),
+                              child: Text('Seu e-mail é:'),
+                            ),
                             Container(
                               alignment: Alignment.center,
                               padding: const EdgeInsets.all(8),
