@@ -27,13 +27,6 @@ abstract interface class UserFirestoreRepository {
   Future<Either<RepositoryException, Nil>> updatetUser(
       String text, String newText);
 
-  Future<Either<RepositoryException, Nil>> updateToLocador(
-      ({
-        User user,
-        String cnpj,
-        String emailComercial,
-      }) userData);
-
   Future<Either<RepositoryException, UserModel>> getUserById(String userId);
 
   Future<Either<RepositoryException, Nil>> clearField(

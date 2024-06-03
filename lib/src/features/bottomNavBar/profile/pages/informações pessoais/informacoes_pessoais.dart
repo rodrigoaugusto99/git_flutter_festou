@@ -23,6 +23,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
   TextEditingController logradourolEC = TextEditingController();
   TextEditingController bairroEC = TextEditingController();
   TextEditingController cidadeEC = TextEditingController();
+  TextEditingController cpfEC = TextEditingController();
 
   bool isEditingName = false;
   bool isEditingTelefone = false;
@@ -43,6 +44,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
     logradourolEC = TextEditingController(text: widget.userModel.logradouro);
     bairroEC = TextEditingController(text: widget.userModel.bairro);
     cidadeEC = TextEditingController(text: widget.userModel.cidade);
+    cpfEC = TextEditingController(text: widget.userModel.cpf);
   }
 
   @override
@@ -54,7 +56,6 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
     logradourolEC.dispose();
     bairroEC.dispose();
     cidadeEC.dispose();
-
     super.dispose();
   }
 
@@ -218,6 +219,11 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 label: 'Cidade',
                 controller: cidadeEC,
               ),
+              myRow(
+                enable: false,
+                label: 'CPF',
+                controller: cpfEC,
+              ),
               GestureDetector(
                 onTap: () async {
                   final bool2 = await informacoesPessoaisVm
@@ -268,41 +274,68 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
   Widget myRow({
     required String label,
     required TextEditingController controller,
+    bool enable = true,
   }) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white,
-                  ),
-                  child: TextField(
-                    controller: controller,
-                    decoration: InputDecoration(
-                      labelText: label,
-                      border: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      errorBorder: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      contentPadding: EdgeInsets
-                          .zero, // Remova o preenchimento interno, se necessário
-                    ),
-                  ),
-                ),
-              )
-            ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+        ),
+        child: TextFormField(
+          textInputAction: TextInputAction.done,
+          //onFieldSubmitted: onFieldSubmitted,
+          enabled: enable,
+          controller: controller,
+
+          style: TextStyle(
+              color: enable ? Colors.black : Colors.grey,
+              overflow: TextOverflow.ellipsis),
+
+          decoration: InputDecoration(
+            labelStyle: const TextStyle(color: Colors.black),
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 16.0,
+              horizontal: 5.0,
+            ),
+            label: Text(label),
+            hintStyle: const TextStyle(
+              fontSize: 16,
+              color: Color(0xff48464C),
+              fontWeight: FontWeight.w400,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(4.0),
+              borderSide: const BorderSide(
+                color: Colors.black,
+                width: 1.0,
+              ),
+            ),
+            disabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(4.0),
+              borderSide: const BorderSide(
+                color: Colors.white,
+                width: 1.0,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(4.0),
+              borderSide: const BorderSide(
+                color: Colors.white,
+                width: 1.0,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(4.0),
+              borderSide: const BorderSide(
+                color: Colors.white,
+              ),
+            ),
           ),
         ),
-      ],
+      ),
     );
   }
 }
