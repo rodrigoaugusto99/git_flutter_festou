@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
@@ -91,54 +90,59 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                           ),
                         ),
                         Align(
-                          child: SizedBox(
-                            height: screenHeight * 0.12,
-                            child: Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                ShaderMask(
-                                  shaderCallback: (bounds) {
-                                    return const LinearGradient(
-                                      colors: [
-                                        Color(0xff9747FF),
-                                        Color(0xff5B2B99),
-                                      ],
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                    ).createShader(
-                                      Rect.fromLTWH(
-                                        0,
-                                        0,
-                                        bounds.width,
-                                        bounds.height,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const SizedBox(
+                                  height:
+                                      10), // Adicionado para descer o título "Festou"
+                              ShaderMask(
+                                shaderCallback: (bounds) {
+                                  return const LinearGradient(
+                                    colors: [
+                                      Color(0xff9747FF),
+                                      Color(0xff5B2B99),
+                                    ],
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                  ).createShader(
+                                    Rect.fromLTWH(
+                                      0,
+                                      0,
+                                      bounds.width,
+                                      bounds.height,
+                                    ),
+                                  );
+                                },
+                                child: const Text(
+                                  'FESTOU',
+                                  style: TextStyle(
+                                    fontFamily: 'NerkoOne',
+                                    fontSize:
+                                        60, // Mantido o tamanho reduzido de 60 para 50
+                                    height:
+                                        0.8, // Ajusta a altura da linha para reduzir o espaço
+                                    color: Colors
+                                        .white, // A cor branca será substituída pelo shader
+                                    shadows: [
+                                      Shadow(
+                                        blurRadius: 15.0,
+                                        color: Color.fromARGB(75, 0, 0, 0),
+                                        offset: Offset(0, 3),
                                       ),
-                                    );
-                                  },
-                                  child: const Text(
-                                    'FESTOU',
-                                    style: TextStyle(
-                                      fontFamily: 'NerkoOne',
-                                      fontSize: 60,
-                                      color: Colors
-                                          .white, // A cor branca será substituída pelo shader
-                                    ),
+                                    ],
                                   ),
                                 ),
-                                Positioned(
-                                  bottom: -10,
-                                  left: screenWidth * 0.11,
-                                  child: const Text(
-                                    'Cadastro',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 20,
-                                      fontFamily: 'Marcellus',
-                                      color: Color(0xff000000),
-                                    ),
-                                  ),
+                              ), // Ajuste o espaço entre os textos
+                              const Text(
+                                'Cadastro',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontFamily: 'Marcellus',
+                                  color: Color(0xff000000),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                         Positioned(
@@ -152,13 +156,19 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                     ),
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 40,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        CustomTextformfield(
+                          label: 'Nome',
+                          controller: nameEC,
+                          validator: userRegisterVM.validateName(),
+                        ),
+                        const SizedBox(height: 15),
                         CustomTextformfield(
                           label: 'CPF',
                           controller: cpfEC,
@@ -176,12 +186,6 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                           label: 'E-mail',
                           controller: emailEC,
                           validator: userRegisterVM.validateEmail(),
-                        ),
-                        const SizedBox(height: 15),
-                        CustomTextformfield(
-                          label: 'Nome',
-                          controller: nameEC,
-                          validator: userRegisterVM.validateName(),
                         ),
                         const SizedBox(height: 15),
                         CustomTextformfield(
