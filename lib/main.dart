@@ -11,6 +11,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/search/search_page.
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/help/help_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarPageLocador.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
+import 'package:git_flutter_festou/src/features/login/forgot_password_page.dart';
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
 import 'package:git_flutter_festou/src/features/register/user%20infos/user_register_infos_page.dart';
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
         '/emailVerification': (_) => const VerifyEmailPage(),
         '/auth': (_) => const AuthPage(),
         '/login': (_) => const LoginPage(),
+        '/forgot_password': (_) => const ForgotPasswordPage(),
         '/register/user': (_) => const UserRegisterPage(),
         '/register/space': (_) => const EspacoRegisterPage(),
         '/register/user/infos': (_) => const UserRegisterInfosPage(),
