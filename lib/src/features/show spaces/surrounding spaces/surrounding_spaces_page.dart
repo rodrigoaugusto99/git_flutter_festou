@@ -213,8 +213,8 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
         ),
         Positioned(
           top: 150,
-          left: 60,
-          right: 60,
+          left: 110,
+          right: 110,
           child: GestureDetector(
             onTap: canRefresh != false
                 ? () async {
@@ -240,9 +240,9 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: const Text(
-                'Atualizar espaços',
+                'Mostrar nessa área',
                 style: TextStyle(
-                    fontSize: 22,
+                    fontSize: 14,
                     color: Colors.black,
                     fontWeight: FontWeight.w900),
               ),
@@ -251,11 +251,11 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
         ),
         if (isShowingSomeSpace)
           Positioned(
-            bottom: 50,
+            bottom: 70,
             child: GestureDetector(
               onTap: navToPage,
               child: SizedBox(
-                width: 300,
+                width: 320,
                 height: 260,
                 child: Stack(
                   children: [
@@ -291,7 +291,7 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
-                                width: 250,
+                                width: 270,
                                 height: 80,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
@@ -346,35 +346,41 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                              color: _getColor(
-                                                double.parse(spaceShowing!
-                                                    .averageRating),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  color: _getColor(
+                                                    double.parse(spaceShowing!
+                                                        .averageRating),
+                                                  ),
+                                                ),
+                                                height: 20,
+                                                width: 20,
+                                                child: Center(
+                                                  child: Text(
+                                                    double.parse(spaceShowing!
+                                                            .averageRating)
+                                                        .toStringAsFixed(1),
+                                                    style: const TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 10),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                            height: 20,
-                                            width: 20,
-                                            child: Center(
-                                              child: Text(
-                                                double.parse(spaceShowing!
-                                                        .averageRating)
-                                                    .toStringAsFixed(1),
-                                                style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 10),
-                                              ),
-                                            ),
+                                              const SizedBox(width: 3),
+                                              Text(
+                                                  style: const TextStyle(
+                                                    color: Color(0xff5E5E5E),
+                                                    fontSize: 10,
+                                                  ),
+                                                  '(${spaceShowing!.numComments})'),
+                                            ],
                                           ),
-                                          const Text(
-                                              style: TextStyle(
-                                                color: Color(0xff5E5E5E),
-                                                fontSize: 10,
-                                              ),
-                                              "(105)"),
                                           Row(
                                             children: [
                                               Container(
@@ -392,28 +398,31 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
                                                   color: Colors.white,
                                                 ),
                                               ),
+                                              const SizedBox(width: 3),
+                                              Text(
+                                                style: const TextStyle(
+                                                    color: Color(0xff9747FF),
+                                                    fontSize: 10,
+                                                    fontWeight:
+                                                        FontWeight.w700),
+                                                "R\$${spaceShowing!.preco},00/h",
+                                              ),
                                             ],
                                           ),
-                                          const Text(
-                                            style: TextStyle(
-                                                color: Color(0xff9747FF),
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.w700),
-                                            "R\$800,00/h",
-                                          ),
-                                          const Row(
+                                          Row(
                                             children: [
-                                              Icon(
+                                              const Icon(
                                                 Icons.favorite,
                                                 size: 20,
                                                 color: Color(0xff9747FF),
                                               ),
+                                              const SizedBox(width: 3),
                                               Text(
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     color: Color(0xff5E5E5E),
                                                     fontSize: 10,
                                                   ),
-                                                  "(598)"),
+                                                  "(${spaceShowing!.numLikes})"),
                                             ],
                                           ),
                                         ],
