@@ -304,8 +304,7 @@ class _ChatPageState extends State<ChatPage> {
                     child: Text(
                       snapshot.data ?? 'Usuário',
                       style: const TextStyle(
-                          fontWeight: FontWeight.w900,
-                          fontFamily: 'InterVariable'),
+                          fontWeight: FontWeight.bold, fontFamily: 'Inter'),
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
                     ),

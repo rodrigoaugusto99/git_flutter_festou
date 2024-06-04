@@ -134,11 +134,15 @@ flutter:
 
     - family: Inter
       fonts:
-      - asset: lib/assets/fonts/Inter.ttf
-
-    - family: InterVariable
-      fonts:
-      - asset: lib/assets/fonts/InterVariable.ttf
+      - asset: lib/assets/fonts/Inter-Thin.ttf
+      - asset: lib/assets/fonts/Inter-ExtraLight.ttf
+      - asset: lib/assets/fonts/Inter-Light.ttf
+      - asset: lib/assets/fonts/Inter-Regular.ttf
+      - asset: lib/assets/fonts/Inter-Medium.ttf
+      - asset: lib/assets/fonts/Inter-SemiBold.ttf
+      - asset: lib/assets/fonts/Inter-Bold.ttf
+      - asset: lib/assets/fonts/Inter-ExtraBold.ttf
+      - asset: lib/assets/fonts/Inter-Black.ttf
 
     - family: NerkoOne
       fonts:
