@@ -23,26 +23,11 @@ class MySliverListToCardInfo extends StatelessWidget {
         (context, index) {
           if (index >= 0 && index < data.spaces.length) {
             // Verifique se o índice é válido antes de acessar a lista
-            return InkWell(
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => NewCardInfo(space: data.spaces[index]),
-                ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(top: y * 0.03),
-                child: NewSpaceCard(
-                  hasHeart: x,
-                  space: data.spaces[index],
-                  isReview: false,
-                ),
-              ),
-            );
           } else {
             // Índice inválido, retorne um widget vazio ou de carregamento, conforme necessário
             return Container();
           }
+          return null;
         },
         childCount: data.spaces.length,
       ),

@@ -25,12 +25,6 @@ class SearchViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onClick(bool thisBool) {
-    _isShowing = thisBool;
-
-    notifyListeners();
-  }
-
   void onChangedSearch(String value) {
     if (value == '') {
       _isShowing = false;

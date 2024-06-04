@@ -1400,6 +1400,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  searchfield:
+    dependency: "direct main"
+    description:
+      name: searchfield
+      sha256: c01e61706ad5bdc98db28abbe4b7810582155fd6a5eeb7556aefe601db95ed9b
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   shared_preferences:
     dependency: "direct main"
     description:
