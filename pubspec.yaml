@@ -86,6 +86,7 @@ dependencies:
   flutter_emoji: ^2.1.0
   rxdart: ^0.27.7
   mask_text_input_formatter: ^2.9.0
+  easy_mask: ^2.0.1
  
 
 dev_dependencies:

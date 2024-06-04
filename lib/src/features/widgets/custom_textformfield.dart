@@ -10,6 +10,7 @@ class CustomTextformfield extends StatefulWidget {
   List<TextInputFormatter>? inputFormatters;
   TextInputType? keyboardType;
   Function(String)? onChanged;
+  Function()? onEditingComplete;
   bool hasEye;
   CustomTextformfield({
     super.key,
@@ -20,6 +21,7 @@ class CustomTextformfield extends StatefulWidget {
     this.validator,
     this.onChanged,
     this.keyboardType,
+    this.onEditingComplete,
     this.enable = true,
     this.obscureText = false,
   });
@@ -34,6 +36,7 @@ class _CustomTextformfieldState extends State<CustomTextformfield> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onEditingComplete: widget.onEditingComplete,
       textInputAction: TextInputAction.done,
       inputFormatters: widget.inputFormatters,
       obscureText: widget.obscureText == false

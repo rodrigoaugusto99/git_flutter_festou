@@ -23,7 +23,7 @@ class ModelsServices {
         UserModel userModel = UserModel(
           email: data['email'] ?? '',
           name: data['name'] ?? '',
-          cpf: data['cpf'] ?? '',
+          cpfOuCnpj: data['cpf'] ?? '',
           cep: data['user_address']?['cep'] ?? '',
           logradouro: data['user_address']?['logradouro'] ?? '',
           telefone: data['telefone'] ?? '',

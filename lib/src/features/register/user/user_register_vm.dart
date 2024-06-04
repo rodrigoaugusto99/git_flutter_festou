@@ -48,11 +48,28 @@ class UserRegisterVm extends _$UserRegisterVm {
     }
   }
 
+  Future<String?> checkIfEmailExists(String email) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+    try {
+      QuerySnapshot querySnapshot =
+          await users.where('email', isEqualTo: email).get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        return 'E-mail já cadastrado.';
+      } else {
+        return null;
+      }
+    } catch (e) {
+      log('Erro ao buscar usuário por e-mail: $e');
+      return null;
+    }
+  }
+
   //validação email
   FormFieldValidator<String> validateCpf() {
     return Validatorless.multiple([
       Validatorless.required('CPF obrigatorio'),
-      Validatorless.min(14, 'CPF invalido'),
     ]);
   }
 
@@ -102,6 +119,15 @@ class UserRegisterVm extends _$UserRegisterVm {
       final response = await checkIfCpfExists(cpfEC.text);
       if (response != null) {
         Messages.showError(response, context);
+        return;
+      }
+      if (cpfEC.text.length != 14 && cpfEC.text.length != 18) {
+        Messages.showError('CPF ou CNPJ inválidos.', context);
+        return;
+      }
+      final response2 = await checkIfEmailExists(emailEC.text);
+      if (response2 != null) {
+        Messages.showError(response2, context);
         return;
       }
       register(

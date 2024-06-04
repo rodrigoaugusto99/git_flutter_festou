@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
@@ -14,10 +17,9 @@ class UserRegisterPage extends ConsumerStatefulWidget {
 }
 
 class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
-  //text editing controllers
-
+  // Text editing controllers
   final emailEC = TextEditingController();
-  final cpfEC = TextEditingController();
+  final cpfOuCnpjEC = TextEditingController();
   final nameEC = TextEditingController();
   final passwordEC = TextEditingController();
   final confirmPasswordEC = TextEditingController();
@@ -25,9 +27,8 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
 
   @override
   void dispose() {
-    //Limpeza do controller
     emailEC.dispose();
-    cpfEC.dispose();
+    cpfOuCnpjEC.dispose();
     nameEC.dispose();
     passwordEC.dispose();
     confirmPasswordEC.dispose();
@@ -63,6 +64,7 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
     final double buttonHeight = (37 / 732) * screenHeight;
     final double firstContainer = (179 / 732) * screenHeight;
 
+    String? formattedValue;
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8F8),
       resizeToAvoidBottomInset: true,
@@ -160,14 +162,12 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                     const SizedBox(height: 20),
                     CustomTextformfield(
                       label: 'CPF / CNPJ',
-                      controller: cpfEC,
+                      controller: cpfOuCnpjEC,
                       validator: userRegisterVM.validateCpf(),
                       inputFormatters: [
-                        MaskTextInputFormatter(
-                          mask: '###.###.###-##',
-                          filter: {"#": RegExp(r'[0-9]')},
-                          type: MaskAutoCompletionType.lazy,
-                        )
+                        TextInputMask(
+                            mask: ['999.999.999-99', '99.999.999/9999-99'],
+                            reverse: false)
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -207,7 +207,7 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
             InkWell(
               onTap: () {
                 userRegisterVM.validateForm(
-                    context, formKey, emailEC, passwordEC, nameEC, cpfEC);
+                    context, formKey, emailEC, passwordEC, nameEC, cpfOuCnpjEC);
               },
               child: Container(
                 alignment: Alignment.center,

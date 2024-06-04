@@ -345,6 +345,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  easy_mask:
+    dependency: "direct main"
+    description:
+      name: easy_mask
+      sha256: be5e8c5e25a25f840e5679c6ad3f79602898783b6df4d97583c2d462f4757b1a
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   emoji_picker_flutter:
     dependency: "direct main"
     description:
