@@ -7,6 +7,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minha
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_page.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -51,7 +52,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
         ),
         const SizedBox(height: 16),
         myRow(
-          text: 'Métodos de Pagamento',
+          text: 'Métodos de pagamento',
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
@@ -75,6 +76,17 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
           icon1: Image.asset(
             'lib/assets/images/Icon Históricominhnasatividades.png',
           ),
+        ),
+        const SizedBox(height: 16),
+        myRow(
+          text: 'Minhas notificações',
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const NotificacoesPage(),
+            ),
+          ),
+          icon1: const Icon(Icons.notifications_outlined),
         ),
         const SizedBox(height: 16),
         StreamBuilder<List<QuerySnapshot>>(

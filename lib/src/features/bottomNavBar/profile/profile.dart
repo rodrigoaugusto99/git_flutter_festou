@@ -110,18 +110,67 @@ class _ProfileState extends ConsumerState<Profile> {
                                 },
                               ),
                             ),
-                            child: CircleAvatar(
-                              radius: 50,
-                              backgroundImage:
-                                  NetworkImage(updatedUserModel.avatarUrl),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Container(
+                                  width: 110,
+                                  height: 110,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.black,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                Container(
+                                  width: 105,
+                                  height: 105,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                CircleAvatar(
+                                  radius: 50,
+                                  backgroundImage:
+                                      NetworkImage(updatedUserModel.avatarUrl),
+                                ),
+                              ],
                             ),
                           ),
                         )
                       else
-                        const CircleAvatar(
-                          radius: 50,
-                          child: Icon(
-                            Icons.person,
+                        Align(
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Container(
+                                width: 110,
+                                height: 110,
+                                decoration: const BoxDecoration(
+                                  color: Colors.black,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              Container(
+                                width: 105,
+                                height: 105,
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              CircleAvatar(
+                                  radius: 50,
+                                  child: updatedUserModel.name.isNotEmpty
+                                      ? Text(
+                                          updatedUserModel.name[0],
+                                          style: const TextStyle(fontSize: 52),
+                                        )
+                                      : const Icon(
+                                          Icons.person,
+                                          size: 40,
+                                        )),
+                            ],
                           ),
                         ),
                       const SizedBox(height: 15),
@@ -133,16 +182,14 @@ class _ProfileState extends ConsumerState<Profile> {
                               updatedUserModel.name,
                               style: const TextStyle(
                                   fontSize: 22,
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w800,
                                   height: 1.2),
                             ),
                             Align(
                               child: Text(
                                 updatedUserModel.email,
                                 style: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.grey),
+                                    fontSize: 12, color: Colors.grey),
                               ),
                             ),
                           ],
