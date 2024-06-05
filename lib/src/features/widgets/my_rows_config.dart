@@ -117,8 +117,8 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
                 ),
                 if (unreadCount > 0)
                   Positioned(
-                    top: -5,
-                    right: -3,
+                    top: -10,
+                    right: 0,
                     child: Container(
                       padding: const EdgeInsets.all(5),
                       decoration: const BoxDecoration(
