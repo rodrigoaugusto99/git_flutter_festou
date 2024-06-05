@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +7,7 @@ import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais_status.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais_vm.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:image_picker/image_picker.dart';
 
 class InformacoesPessoais extends ConsumerStatefulWidget {
   final UserModel userModel;
@@ -25,33 +28,37 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
   TextEditingController cidadeEC = TextEditingController();
   TextEditingController cpfEC = TextEditingController();
 
-  bool isEditingName = false;
-  bool isEditingTelefone = false;
-  bool isEditinEmail = false;
-  bool isEditingCep = false;
-  bool isEditingLogradouro = false;
-  bool isEditingBairro = false;
-  bool isEditingCidade = false;
+  File? _selectedImage;
+  bool isEditing = false;
+  bool isHovering = false;
+  String buttonEditionName = 'Editar';
+  String avatarUrl = '';
+  String originalAvatarUrl = '';
+  bool isImageRemoved = false;
+  late Map<String, dynamic> userData;
 
   @override
   void initState() {
     super.initState();
 
     nameEC = TextEditingController(text: widget.userModel.name);
-    telefoneEC = TextEditingController(text: widget.userModel.telefone);
+    cpfEC = TextEditingController(text: widget.userModel.cpfOuCnpj);
     emailEC = TextEditingController(text: widget.userModel.email);
+    telefoneEC = TextEditingController(text: widget.userModel.telefone);
     cepEC = TextEditingController(text: widget.userModel.cep);
     logradourolEC = TextEditingController(text: widget.userModel.logradouro);
     bairroEC = TextEditingController(text: widget.userModel.bairro);
     cidadeEC = TextEditingController(text: widget.userModel.cidade);
-    cpfEC = TextEditingController(text: widget.userModel.cpfOuCnpj);
+    avatarUrl = widget.userModel.avatarUrl;
+    originalAvatarUrl = avatarUrl;
   }
 
   @override
   void dispose() {
     nameEC.dispose();
-    telefoneEC.dispose();
+    cpfEC.dispose();
     emailEC.dispose();
+    telefoneEC.dispose();
     cepEC.dispose();
     logradourolEC.dispose();
     bairroEC.dispose();
@@ -81,6 +88,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 247, 247),
       appBar: AppBar(
+        surfaceTintColor: const Color(0xfff8f8f8),
         leading: Padding(
           padding: const EdgeInsets.only(left: 18.0),
           child: Container(
@@ -92,7 +100,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                   color: Colors.grey.withOpacity(0.5),
                   spreadRadius: 2,
                   blurRadius: 5,
-                  offset: const Offset(0, 2), // changes position of shadow
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
@@ -112,7 +120,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xfff8f8f8),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -138,50 +146,114 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                       Map<String, dynamic> userData =
                           snapshot.data!.docs[0].data() as Map<String, dynamic>;
                       String avatarUrl = userData['avatar_url'] ?? '';
-
                       return InkWell(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Stack(
                               children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    informacoesPessoaisVm.pickAvatar();
-                                  },
-                                  child: Container(
-                                    decoration: const BoxDecoration(
-                                        shape: BoxShape.circle),
-                                    child: avatarUrl.isNotEmpty
-                                        ? CircleAvatar(
-                                            backgroundImage: Image.network(
-                                              avatarUrl,
-                                              fit: BoxFit.cover,
-                                            ).image,
-                                            radius: 60,
-                                          )
-                                        : const Icon(
-                                            Icons.person,
-                                            size: 90,
-                                          ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 30.0),
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      if (isEditing) {
+                                        final newAvatar =
+                                            await informacoesPessoaisVm
+                                                .pickAvatar();
+                                        if (newAvatar != null) {
+                                          setState(() {
+                                            _selectedImage = newAvatar;
+                                          });
+                                        }
+                                      }
+                                    },
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          _selectedImage != null
+                                              ? CircleAvatar(
+                                                  backgroundImage: FileImage(
+                                                      _selectedImage!),
+                                                  radius: 60,
+                                                )
+                                              : avatarUrl.isNotEmpty &&
+                                                      !isImageRemoved
+                                                  ? CircleAvatar(
+                                                      backgroundImage:
+                                                          Image.network(
+                                                        avatarUrl,
+                                                        fit: BoxFit.cover,
+                                                      ).image,
+                                                      radius: 60,
+                                                    )
+                                                  : CircleAvatar(
+                                                      backgroundColor:
+                                                          const Color(
+                                                              0xffeaddff),
+                                                      radius: 60,
+                                                      child: widget.userModel
+                                                              .name.isNotEmpty
+                                                          ? Text(
+                                                              widget.userModel
+                                                                  .name[0],
+                                                              style:
+                                                                  const TextStyle(
+                                                                      fontSize:
+                                                                          52),
+                                                            )
+                                                          : const Icon(
+                                                              Icons.person,
+                                                              size: 40,
+                                                            ),
+                                                    ),
+                                          if (isEditing)
+                                            Positioned.fill(
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: Colors.black
+                                                      .withOpacity(0.5),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                              ),
+                                            ),
+                                          if (isEditing)
+                                            const Icon(
+                                              Icons.edit,
+                                              color: Colors.white,
+                                            ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
-                                Positioned(
-                                  right: 0,
-                                  child: GestureDetector(
+                                if (isEditing && avatarUrl.isNotEmpty ||
+                                    isEditing && _selectedImage != null)
+                                  Positioned(
+                                    right: 5,
+                                    child: GestureDetector(
                                       onTap: () async {
-                                        informacoesPessoaisVm
-                                            .deleteImageFirestore('avatar_url',
-                                                widget.userModel.id);
+                                        setState(() {
+                                          _selectedImage = null;
+                                          avatarUrl = '';
+                                          isImageRemoved = true;
+                                        });
                                       },
                                       child: Container(
                                         decoration: const BoxDecoration(
-                                          color: Colors.grey,
+                                          color: Colors.red,
                                           shape: BoxShape.circle,
                                         ),
-                                        child: const Icon(Icons.close),
-                                      )),
-                                ),
+                                        child: const Icon(
+                                          Icons.close,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                               ],
                             ),
                           ],
@@ -192,42 +264,104 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                     }
                   }),
               myRow(
-                label: 'Nome civil',
+                label: 'Nome',
                 controller: nameEC,
+                enable: isEditing,
               ),
               myRow(
-                label: 'Telefone',
-                controller: telefoneEC,
+                label: 'CPF / CNPJ',
+                controller: cpfEC,
+                enable: false,
               ),
               myRow(
                 label: 'E-mail',
                 controller: emailEC,
+                enable: false,
+              ),
+              myRow(
+                label: 'Telefone',
+                controller: telefoneEC,
+                enable: isEditing,
               ),
               myRow(
                 label: 'CEP',
                 controller: cepEC,
+                enable: isEditing,
               ),
               myRow(
                 label: 'Logradouro',
                 controller: logradourolEC,
+                enable: isEditing,
               ),
               myRow(
                 label: 'Bairro',
                 controller: bairroEC,
+                enable: isEditing,
               ),
               myRow(
                 label: 'Cidade',
                 controller: cidadeEC,
+                enable: isEditing,
               ),
-              myRow(
-                enable: false,
-                label: 'CPF',
-                controller: cpfEC,
+              GestureDetector(
+                onTap: () {
+                  if (isEditing) {
+                    setState(() {
+                      nameEC =
+                          TextEditingController(text: widget.userModel.name);
+                      telefoneEC = TextEditingController(
+                          text: widget.userModel.telefone);
+                      cepEC = TextEditingController(text: widget.userModel.cep);
+                      logradourolEC = TextEditingController(
+                          text: widget.userModel.logradouro);
+                      bairroEC =
+                          TextEditingController(text: widget.userModel.bairro);
+                      cidadeEC =
+                          TextEditingController(text: widget.userModel.cidade);
+                      _selectedImage = null;
+                      buttonEditionName = 'Editar';
+                      isEditing = false;
+                      isImageRemoved = false;
+                      avatarUrl = originalAvatarUrl;
+                    });
+                  } else {
+                    setState(() {
+                      isEditing = !isEditing;
+                      buttonEditionName = isEditing ? 'Cancelar' : 'Editar';
+                    });
+                  }
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      right: 30, left: 30, top: 30, bottom: 10),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xff9747FF),
+                          Color(0xff4300B1),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: Text(
+                      buttonEditionName,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
               ),
               GestureDetector(
                 onTap: () async {
-                  final bool2 = await informacoesPessoaisVm
-                      .uploadAvatar(widget.userModel.id);
+                  bool saveImageSuccess = false;
 
                   await informacoesPessoaisVm.updateInfo(
                     bairro: bairroEC.text,
@@ -239,27 +373,57 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                     email: emailEC.text,
                   );
 
-                  if (bool2) {
-                    Messages.showSuccess('Dados salvos com sucesso', context);
-                  } else {
-                    Messages.showError('Erro ao salvar dados', context);
+                  if (isImageRemoved) {
+                    await informacoesPessoaisVm.deleteImageFirestore(
+                      'avatar_url',
+                      widget.userModel.id,
+                    );
+                    isImageRemoved = false;
                   }
+
+                  if (_selectedImage != null) {
+                    saveImageSuccess = await informacoesPessoaisVm
+                        .uploadAvatar(widget.userModel.id);
+
+                    if (saveImageSuccess) {
+                      Messages.showSuccess('Dados salvos com sucesso', context);
+                    } else {
+                      Messages.showError('Erro ao salvar dados', context);
+                    }
+                  } else {
+                    Messages.showSuccess('Dados salvos com sucesso', context);
+                  }
+
+                  setState(() {
+                    isEditing = false;
+                  });
+
+                  Navigator.of(context).pop();
                 },
                 child: Padding(
-                  padding: const EdgeInsets.only(
-                      bottom: 20, left: 30, right: 30, top: 10),
+                  padding:
+                      const EdgeInsets.only(bottom: 20, left: 30, right: 30),
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     decoration: BoxDecoration(
-                        color: const Color(0xff9747FF),
-                        borderRadius: BorderRadius.circular(50)),
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xff9747FF),
+                          Color(0xff4300B1),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
                     child: const Text(
                       'Salvar',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 12),
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                 ),
@@ -277,7 +441,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
     bool enable = true,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
@@ -286,49 +450,42 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
         ),
         child: TextFormField(
           textInputAction: TextInputAction.done,
-          //onFieldSubmitted: onFieldSubmitted,
           enabled: enable,
           controller: controller,
-
           style: TextStyle(
+              fontSize: 15,
               color: enable ? Colors.black : Colors.grey,
               overflow: TextOverflow.ellipsis),
-
           decoration: InputDecoration(
-            labelStyle: const TextStyle(color: Colors.black),
+            labelStyle: const TextStyle(color: Colors.black, fontSize: 15),
             contentPadding: const EdgeInsets.symmetric(
-              vertical: 16.0,
+              vertical: 12.0,
               horizontal: 5.0,
             ),
             label: Text(label),
-            hintStyle: const TextStyle(
-              fontSize: 16,
-              color: Color(0xff48464C),
-              fontWeight: FontWeight.w400,
-            ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(4.0),
+              borderRadius: BorderRadius.circular(10.0),
               borderSide: const BorderSide(
                 color: Colors.black,
                 width: 1.0,
               ),
             ),
             disabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(4.0),
+              borderRadius: BorderRadius.circular(10.0),
               borderSide: const BorderSide(
                 color: Colors.white,
                 width: 1.0,
               ),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(4.0),
+              borderRadius: BorderRadius.circular(10.0),
               borderSide: const BorderSide(
                 color: Colors.white,
                 width: 1.0,
               ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(4.0),
+              borderRadius: BorderRadius.circular(10.0),
               borderSide: const BorderSide(
                 color: Colors.white,
               ),
