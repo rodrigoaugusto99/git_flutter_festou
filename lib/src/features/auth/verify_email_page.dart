@@ -89,10 +89,11 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
           ),
           body: Column(
             children: [
-              const Text('A verification email has been sent to your email.'),
+              const Text(
+                  'Um e-mail de validação foi enviado o e-mail cadastrado.'),
               ElevatedButton(
                 onPressed: canResendEmail ? sendVerificationEmail : null,
-                child: const Text('Resend Email'),
+                child: const Text('Reenviar e-mail'),
               ),
               ElevatedButton(
                 onPressed: () => FirebaseAuth.instance.signOut(),

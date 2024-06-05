@@ -43,6 +43,37 @@ class _SpacesWithSugestionPageState
     final y = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      bottomNavigationBar: Container(
+        margin: const EdgeInsets.only(top: 20),
+        padding: const EdgeInsets.all(16.0),
+        color: Colors.grey[200],
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Festou!',
+                  style: TextStyle(
+                      fontFamily: 'RedHatDisplay',
+                      fontSize: 18,
+                      color: Colors.blueGrey[500],
+                      fontWeight: FontWeight.w900),
+                ),
+                const SizedBox(height: 2.0), // Espaçamento entre os textos
+                Text(
+                  '${DateTime.now().year} - Todos os direitos reservados.',
+                  style: const TextStyle(
+                    fontSize: 14.0,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
       body: NestedScrollView(
         floatHeaderSlivers: true,
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
@@ -53,10 +84,10 @@ class _SpacesWithSugestionPageState
             ),
             actions: <Widget>[
               Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: FloatingActionButton(
-                  backgroundColor: Colors.white,
-                  onPressed: () {
+                padding:
+                    const EdgeInsets.only(right: 20.0, top: 5.0, bottom: 5.0),
+                child: GestureDetector(
+                  onTap: () {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -64,23 +95,58 @@ class _SpacesWithSugestionPageState
                       ),
                     );
                   },
-                  child: const Icon(
-                    Icons.notifications_outlined,
-                    color: Colors.black,
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.only(
+                        top: 10, left: 10, right: 10, bottom: 15),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset:
+                              const Offset(0, 4), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.notifications_outlined,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
               ),
             ],
             leading: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FloatingActionButton(
-                backgroundColor: Colors.white,
-                onPressed: () {
+              padding: const EdgeInsets.only(left: 10.0, top: 5.0, bottom: 5.0),
+              child: GestureDetector(
+                onTap: () {
                   Navigator.of(context).pop();
                 },
-                child: const Icon(
-                  Icons.arrow_back,
-                  color: Colors.black,
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.only(
+                      top: 10, left: 10, right: 10, bottom: 15),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset:
+                            const Offset(0, 4), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.black,
+                  ),
                 ),
               ),
             ),
@@ -133,40 +199,6 @@ class _SpacesWithSugestionPageState
                     data: data,
                     spaces: sugestions,
                     x: true,
-                  ),
-
-                  SliverToBoxAdapter(
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 20),
-                      padding: const EdgeInsets.all(16.0),
-                      color: Colors.grey[200],
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Column(
-                            children: [
-                              Text(
-                                'Festou!',
-                                style: TextStyle(
-                                    fontFamily: 'RedHatDisplay',
-                                    fontSize: 18,
-                                    color: Colors.blueGrey[500],
-                                    fontWeight: FontWeight.w900),
-                              ),
-                              const SizedBox(
-                                  height: 2.0), // Espaçamento entre os textos
-                              Text(
-                                '${DateTime.now().year} - Todos os direitos reservados.',
-                                style: const TextStyle(
-                                  fontSize: 14.0,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
                   ),
                 ],
               ),

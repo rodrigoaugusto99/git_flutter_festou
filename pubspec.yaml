@@ -87,7 +87,9 @@ dependencies:
   rxdart: ^0.27.7
   firebase_messaging: ^14.7.19
   stylish_bottom_bar: ^1.1.0
- 
+  mask_text_input_formatter: ^2.9.0
+  easy_mask: ^2.0.1
+  searchfield: ^1.0.4 
 
 dev_dependencies:
   flutter_test:

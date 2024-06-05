@@ -69,8 +69,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final double passwordFieldWidth = (291 / 412) * screenWidth;
     final double passwordFieldHeight = (39 / 732) * screenHeight;
 
-    final double loginButtonWidth = (115 / 412) * screenWidth;
-    final double loginButtonHeight = (31 / 732) * screenHeight;
+    final double loginButtonWidth = (202 / 412) * screenWidth;
+    final double loginButtonHeight = (37 / 732) * screenHeight;
 
     final double googleLoginButtonWidth = (202 / 412) * screenWidth;
     final double googleLoginButtonHeight = (37 / 732) * screenHeight;
@@ -230,7 +230,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                     //fontFamily: ,
                                     color: Color.fromARGB(255, 255, 255, 255),
                                     fontWeight: FontWeight.w400,
-                                    fontSize: 11,
+                                    fontSize: 12,
                                   ),
                                 ),
                               ),
@@ -269,7 +269,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                   'LOGIN',
                                   style: TextStyle(
                                       color: Colors.white, // Cor do texto
-                                      fontSize: 11, // Tamanho do texto
+                                      fontSize: 12, // Tamanho do texto
                                       fontWeight: FontWeight
                                           .w400 // Estilo de texto em negrito
                                       ),
@@ -286,7 +286,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               const Text(
                                 'Não tem conta?',
                                 style: TextStyle(
-                                  fontSize: 11,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w400,
                                   color: Colors.white,
                                 ),
@@ -297,7 +297,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 child: const Text(
                                   ' Cadastre-se',
                                   style: TextStyle(
-                                    fontSize: 11,
+                                    fontSize: 12,
                                     fontWeight: FontWeight.w400,
                                     color: Color(0xffC08FFF),
                                   ),
@@ -372,7 +372,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                     'LOGIN COM O GOOGLE',
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 10,
+                                      fontSize: 11,
                                       fontWeight: FontWeight.w400,
                                     ),
                                   ),
