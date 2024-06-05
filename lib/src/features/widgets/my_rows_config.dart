@@ -8,6 +8,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagam
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_page.dart';
+import 'package:git_flutter_festou/src/features/widgets/notifications_counter.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -20,6 +21,14 @@ class MyRowsConfig extends StatefulWidget {
 }
 
 class _MyRowsConfigState extends State<MyRowsConfig> {
+  late NotificationCounter _notificationCounter;
+
+  @override
+  void initState() {
+    super.initState();
+    _notificationCounter = NotificationCounter();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -89,46 +98,51 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
           icon1: const Icon(Icons.notifications_outlined),
         ),
         const SizedBox(height: 16),
-        StreamBuilder<List<QuerySnapshot>>(
-          stream: FirebaseFirestore.instance
-              .collection('chat_rooms')
-              .where('chatRoomIDs',
-                  arrayContains: FirebaseAuth.instance.currentUser!.uid)
-              .snapshots()
-              .switchMap((chatRoomsSnapshot) {
-            if (chatRoomsSnapshot.docs.isEmpty) {
-              return Stream.value([]);
-            }
-
-            List<Stream<QuerySnapshot>> messageStreams = chatRoomsSnapshot.docs
-                .map((doc) => doc.reference
-                    .collection('messages')
-                    .where('receiverID',
-                        isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-                    .where('isSeen', isEqualTo: false)
-                    .snapshots())
-                .toList();
-
-            return Rx.combineLatest(
-                messageStreams, (List<QuerySnapshot> list) => list);
-          }),
+        StreamBuilder<int>(
+          stream: _notificationCounter.notificationCount,
           builder: (context, snapshot) {
-            bool hasUnreadMessages = snapshot.hasData &&
-                snapshot.data!
-                    .any((querySnapshot) => querySnapshot.docs.isNotEmpty);
-
-            return myRow(
-              text: 'Mensagens',
-              hasUnreadMessages: hasUnreadMessages,
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const Mensagens(),
+            int unreadCount = snapshot.data ?? 0;
+            return Stack(
+              clipBehavior: Clip.none,
+              children: [
+                myRow(
+                  text: 'Mensagens',
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Mensagens(),
+                    ),
+                  ),
+                  icon1: Image.asset('lib/assets/images/icon_messages.png'),
                 ),
-              ),
-              icon1: Image.asset(
-                'lib/assets/images/icon_messages.png',
-              ),
+                if (unreadCount > 0)
+                  Positioned(
+                    top: -5,
+                    right: -3,
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: const BoxDecoration(
+                        color: Colors.purple,
+                        shape: BoxShape.circle,
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 17,
+                        minHeight: 17,
+                      ),
+                      child: Center(
+                        child: Text(
+                          unreadCount > 99 ? '99+' : '$unreadCount',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             );
           },
         ),
