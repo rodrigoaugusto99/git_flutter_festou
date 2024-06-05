@@ -44,7 +44,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
     logradourolEC = TextEditingController(text: widget.userModel.logradouro);
     bairroEC = TextEditingController(text: widget.userModel.bairro);
     cidadeEC = TextEditingController(text: widget.userModel.cidade);
-    cpfEC = TextEditingController(text: widget.userModel.cpf);
+    cpfEC = TextEditingController(text: widget.userModel.cpfOuCnpj);
   }
 
   @override

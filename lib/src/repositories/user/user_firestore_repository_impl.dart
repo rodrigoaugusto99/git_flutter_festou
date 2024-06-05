@@ -138,7 +138,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       final UserModel userModel = UserModel(
         email: userData['email'] ?? '',
         name: userData['name'] ?? '',
-        cpf: userData['cpf'] ?? '',
+        cpfOuCnpj: userData['cpf'] ?? '',
         cep: userData['user_address']?['cep'] ?? '',
         logradouro: userData['user_address']?['logradouro'] ?? '',
         telefone: userData['telefone'] ?? '',
@@ -169,7 +169,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       final UserModel userModel = UserModel(
         email: userData['email'] ?? '',
         name: userData['name'] ?? '',
-        cpf: userData['cpf'] ?? '',
+        cpfOuCnpj: userData['cpf'] ?? '',
         cep: userData['user_address']?['cep'] ?? '',
         logradouro: userData['user_address']?['logradouro'] ?? '',
         telefone: userData['telefone'] ?? '',

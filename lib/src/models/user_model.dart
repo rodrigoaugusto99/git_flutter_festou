@@ -1,7 +1,7 @@
 class UserModel {
   final String email;
   final String name;
-  final String cpf;
+  final String cpfOuCnpj;
   final String cep;
   final String logradouro;
   final String telefone;
@@ -13,7 +13,7 @@ class UserModel {
   UserModel({
     required this.email,
     required this.name,
-    required this.cpf,
+    required this.cpfOuCnpj,
     required this.cep,
     required this.logradouro,
     required this.telefone,

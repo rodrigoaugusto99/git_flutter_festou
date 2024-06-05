@@ -281,8 +281,8 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
         '<b>${widget.summaryData.spaceModel.bairro}, ${widget.summaryData.spaceModel.cidade}</b>');
     modifiedHtml = modifiedHtml.replaceAll(
         '{Nome do Cliente}', '<b>${userModel!.name}</b>');
-    modifiedHtml =
-        modifiedHtml.replaceAll('{CPF do Cliente}', '<b>${userModel!.cpf}</b>');
+    modifiedHtml = modifiedHtml.replaceAll(
+        '{CPF do Cliente}', '<b>${userModel!.cpfOuCnpj}</b>');
 
     modifiedHtml = modifiedHtml.replaceAll('{CPF do responsável pelo espaço}',
         '<b>${widget.summaryData.spaceModel.locadorCpf}</b>');

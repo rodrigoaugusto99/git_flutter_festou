@@ -295,30 +295,62 @@ p decidir o isFavorited*/
   @override
   Future<Either<RepositoryException, Nil>> toggleFavoriteSpace(
       String spaceId, bool isFavorited) async {
-    QuerySnapshot querySnapshot =
-        await usersCollection.where("uid", isEqualTo: user.uid).get();
+    try {
+      // Busca o documento do usuário
+      QuerySnapshot querySnapshot =
+          await usersCollection.where("uid", isEqualTo: user.uid).get();
 
-    if (querySnapshot.docs.length == 1) {
-      final userDocument = querySnapshot.docs.first;
-      String x;
+      if (querySnapshot.docs.length == 1) {
+        final userDocument = querySnapshot.docs.first;
 
-      if (isFavorited) {
-        userDocument.reference.update({
-          'spaces_favorite': FieldValue.arrayUnion([spaceId]),
-        });
-        x = 'add';
+        // Atualiza o documento do usuário
+        if (isFavorited) {
+          await userDocument.reference.update({
+            'spaces_favorite': FieldValue.arrayUnion([spaceId]),
+          });
+          log('sucesso! - add -  $spaceId');
+        } else {
+          await userDocument.reference.update({
+            'spaces_favorite': FieldValue.arrayRemove([spaceId]),
+          });
+          log('sucesso! - removed -  $spaceId');
+        }
+
+        // Busca o documento do espaço pelo space_id
+        QuerySnapshot spaceSnapshot = await spacesCollection
+            .where('space_id', isEqualTo: spaceId)
+            .limit(1)
+            .get();
+
+        if (spaceSnapshot.docs.isNotEmpty) {
+          final spaceDocument = spaceSnapshot.docs.first;
+
+          // Atualiza o campo num_likes no documento do espaço
+          if (isFavorited) {
+            await spaceDocument.reference.update({
+              'num_likes': FieldValue.increment(1),
+            });
+          } else {
+            await spaceDocument.reference.update({
+              'num_likes': FieldValue.increment(-1),
+            });
+          }
+        } else {
+          log('Nenhum documento do espaço foi encontrado.');
+          return Failure(RepositoryException(
+              message: 'Espaço não encontrado no banco de dados'));
+        }
+
+        return Success(nil);
       } else {
-        userDocument.reference.update({
-          'spaces_favorite': FieldValue.arrayRemove([spaceId]),
-        });
-        x = 'removed';
+        log('Nenhum documento de usuário foi encontrado, ou mais de 1 foi encontrado.');
+        return Failure(RepositoryException(
+            message: 'Usuário não encontrado no banco de dados'));
       }
-      log('sucesso! - $x -  $spaceId');
-      return Success(nil);
-    } else {
-      log('nenhum documento desse espaço foi encontrado, ou mais de 1 foram encontrados.');
-      return Failure(RepositoryException(
-          message: 'Espaço não encontrado no banco de dados'));
+    } catch (e) {
+      log('Erro ao atualizar o espaço favorito: $e');
+      return Failure(
+          RepositoryException(message: 'Erro ao atualizar o espaço favorito'));
     }
   }
 
@@ -375,6 +407,7 @@ p decidir o isFavorited*/
       locadorCpf: spaceDocument['locador_cpf'] ?? '',
       nomeEmpresaLocadora: spaceDocument['nome_empresa_locadora'] ?? '',
       locadorAssinatura: spaceDocument['locador_assinatura'] ?? '',
+      numLikes: spaceDocument['num_likes'] ?? 0,
     );
   }
 
@@ -415,7 +448,7 @@ p decidir o isFavorited*/
         UserModel userModel = UserModel(
           email: data['email'] ?? '',
           name: data['name'] ?? '',
-          cpf: data['cpf'] ?? '',
+          cpfOuCnpj: data['cpf'] ?? '',
           cep: data['user_address']?['cep'] ?? '',
           logradouro: data['user_address']?['logradouro'] ?? '',
           telefone: data['telefone'] ?? '',

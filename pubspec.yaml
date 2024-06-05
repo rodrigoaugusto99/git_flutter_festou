@@ -85,7 +85,9 @@ dependencies:
   emoji_picker_flutter: ^2.1.1
   flutter_emoji: ^2.1.0
   rxdart: ^0.27.7
-  firebase_messaging: ^14.7.19
+  mask_text_input_formatter: ^2.9.0
+  easy_mask: ^2.0.1
+  searchfield: ^1.0.4
  
 
 dev_dependencies:

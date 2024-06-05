@@ -33,9 +33,11 @@ class SpaceModel {
   final String locadorCpf;
   final String nomeEmpresaLocadora;
   final String locadorAssinatura;
+  final int numLikes;
 
   SpaceModel({
     required this.isFavorited,
+    required this.numLikes,
     required this.spaceId,
     required this.userId,
     required this.titulo,

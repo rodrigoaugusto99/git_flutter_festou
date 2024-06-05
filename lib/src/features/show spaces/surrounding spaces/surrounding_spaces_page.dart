@@ -1,7 +1,10 @@
 import 'dart:developer';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_state.dart';
@@ -19,9 +22,182 @@ class SurroundingSpacesPage extends ConsumerStatefulWidget {
       _SurroundingSpacesPageState();
 }
 
-//TODO: spaces by surrounding area
-
 class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
+  final CollectionReference spacesCollection =
+      FirebaseFirestore.instance.collection('spaces');
+
+  bool isShowing = false;
+
+  List<SpaceModel> filteredList = [];
+
+  List<SpaceModel> allSpaces = [];
+
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
+  Future init() async {
+    allSpaces = await getAllSpaces();
+
+    setState(() {});
+  }
+
+  void onChangedSearch(String value) {
+    log(value, name: 'value');
+    if (value == '') {
+      isShowing = false;
+      setState(() {
+        filteredList = [];
+      });
+      return;
+    }
+    String searchValue = value.toLowerCase();
+
+    setState(() {
+      filteredList = allSpaces
+          .where(
+              (project) => project.titulo.toLowerCase().contains(searchValue))
+          .toList();
+    });
+    log(filteredList.toString(), name: 'espacos filtrados');
+    // Adicionando a busca ao histórico
+  }
+
+  Future<List<SpaceModel>> getAllSpaces() async {
+    try {
+      //pega todos os documentos dos espaços
+      final allSpaceDocuments = await spacesCollection.get();
+
+//await pois retorna future
+//pega os favoritos do usuario
+      final userSpacesFavorite = await getUserFavoriteSpaces();
+
+/*percorre todos os espaços levando em conta os favoritos
+p decidir o isFavorited*/
+
+//todo: mapSpaceDocumentToModel ajustado
+      List<SpaceModel> spaceModels =
+          await Future.wait(allSpaceDocuments.docs.map((spaceDocument) {
+        final isFavorited =
+            userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
+        return mapSpaceDocumentToModel(spaceDocument, isFavorited);
+      }).toList());
+
+      return spaceModels;
+    } catch (e) {
+      log('Erro ao recuperar todos os espaços: $e');
+      return [];
+    }
+  }
+
+  final CollectionReference usersCollection =
+      FirebaseFirestore.instance.collection('users');
+
+  final user = FirebaseAuth.instance.currentUser!;
+  Future<DocumentSnapshot> getUserDocument() async {
+    final userDocument =
+        await usersCollection.where('uid', isEqualTo: user.uid).get();
+
+    if (userDocument.docs.isNotEmpty) {
+      return userDocument.docs[0]; // Retorna o primeiro documento encontrado.
+    }
+
+    // Trate o caso em que nenhum usuário foi encontrado.
+    //se esse erro ocorrer la numm metodo que chama getUsrDocument, o (e) do catch vai ter essa msg
+    throw Exception("Usuário n encontrado");
+  }
+
+  Future<List<String>?> getUserFavoriteSpaces() async {
+    final userDocument = await getUserDocument();
+
+    final userData = userDocument.data() as Map<String, dynamic>;
+
+    if (userData.containsKey('spaces_favorite')) {
+      return List<String>.from(userData['spaces_favorite'] ?? []);
+    }
+
+    return null;
+  }
+
+  Future<SpaceModel> mapSpaceDocumentToModel(
+    QueryDocumentSnapshot spaceDocument,
+    bool isFavorited,
+  ) async {
+    // Pegando os dados necessários antes de criar o card
+    List<String> selectedTypes =
+        List<String>.from(spaceDocument['selectedTypes'] ?? []);
+    List<String> selectedServices =
+        List<String>.from(spaceDocument['selectedServices'] ?? []);
+    List<String> imagesUrl =
+        List<String>.from(spaceDocument['images_url'] ?? []);
+    List<String> days = List<String>.from(spaceDocument['days'] ?? []);
+
+    String spaceId = spaceDocument.get('space_id');
+    final averageRating = await getAverageRating(spaceId);
+    final numComments = await getNumComments(spaceId);
+
+    return SpaceModel(
+      isFavorited: isFavorited,
+      spaceId: spaceDocument['space_id'] ?? '',
+      userId: spaceDocument['user_id'] ?? '',
+      titulo: spaceDocument['titulo'] ?? '',
+      cep: spaceDocument['cep'] ?? '',
+      logradouro: spaceDocument['logradouro'] ?? '',
+      numero: spaceDocument['numero'] ?? '',
+      bairro: spaceDocument['bairro'] ?? '',
+      cidade: spaceDocument['cidade'] ?? '',
+      selectedTypes: selectedTypes,
+      selectedServices: selectedServices,
+      averageRating: averageRating,
+      numComments: numComments,
+      locadorName: spaceDocument['locador_name'] ?? '',
+      descricao: spaceDocument['descricao'] ?? '',
+      city: spaceDocument['city'] ?? '',
+      imagesUrl: imagesUrl,
+      latitude: spaceDocument['latitude'] ?? 0.0,
+      longitude: spaceDocument['longitude'] ?? 0.0,
+      locadorAvatarUrl: spaceDocument['locadorAvatarUrl'] ?? '',
+      startTime: spaceDocument['startTime'] ?? '',
+      endTime: spaceDocument['endTime'] ?? '',
+      days: days,
+      preco: spaceDocument['preco'] ?? '',
+      cnpjEmpresaLocadora: spaceDocument['cnpj_empresa_locadora'] ?? '',
+      estado: spaceDocument['estado'] ?? '',
+      locadorCpf: spaceDocument['locador_cpf'] ?? '',
+      nomeEmpresaLocadora: spaceDocument['nome_empresa_locadora'] ?? '',
+      locadorAssinatura: spaceDocument['locador_assinatura'] ?? '',
+      numLikes: spaceDocument['num_likes'] ?? 0,
+    );
+  }
+
+  Future<String> getAverageRating(String spaceId) async {
+    final spaceDocument =
+        await spacesCollection.where('space_id', isEqualTo: spaceId).get();
+
+    if (spaceDocument.docs.isNotEmpty) {
+      String averageRatingValue = spaceDocument.docs.first['average_rating'];
+      return averageRatingValue;
+    }
+
+    // Trate o caso em que nenhum espaço foi encontrado.
+    throw Exception("Espaço não encontrado");
+  }
+
+  Future<String> getNumComments(String spaceId) async {
+    final spaceDocument =
+        await spacesCollection.where('space_id', isEqualTo: spaceId).get();
+
+    if (spaceDocument.docs.isNotEmpty) {
+      String numComments = spaceDocument.docs.first['num_comments'];
+      return numComments;
+    }
+
+    // Trate o caso em que nenhum espaço foi encontrado.
+    throw Exception("Espaço não encontrado");
+  }
+
   SurroundingSpacesState previousState = SurroundingSpacesState(
       status: SurroundingSpacesStateStatus.loaded, spaces: []);
   GoogleMapController? mapController;
@@ -182,7 +358,7 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
           }).toSet(),
         ),
         Positioned(
-          top: 95,
+          top: 105,
           left: 20,
           right: 20,
           child: Container(
@@ -191,71 +367,103 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Row(
+            child: Column(
               children: [
-                Icon(
-                  Icons.search,
-                  color: Color(0xff9747FF),
-                ),
-                SizedBox(width: 15),
-                Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Buscar',
-                      hintStyle: TextStyle(fontSize: 12),
-                      border: InputBorder.none,
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.search,
+                      color: Color(0xff9747FF),
                     ),
-                  ),
+                    const SizedBox(width: 15),
+                    Expanded(
+                      child: TextField(
+                        onChanged: (c) {
+                          log(c);
+                          onChangedSearch(c);
+
+                          setState(() {});
+                        },
+                        decoration: const InputDecoration(
+                          hintText: 'Buscar',
+                          hintStyle: TextStyle(fontSize: 12),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
         ),
-        Positioned(
-          top: 150,
-          left: 60,
-          right: 60,
-          child: GestureDetector(
-            onTap: canRefresh != false
-                ? () async {
-                    LatLngBounds visibleRegion =
-                        await mapController!.getVisibleRegion();
-                    /*eu estava em duvida em sincronizar o initialCameraPosition
-                        com o rioDeJaneiroBounds (visao inicial p carregar o espaços).
-                        então, printei o valor da regiao visivel logo quando entra no mapa,
-                        ou seja, quando é o initialCameraPosition.*/
-                    log('Visible Region: $visibleRegion');
-
-                    setState(() {
-                      rioDeJaneiroBounds = visibleRegion;
-                    });
-                    canRefresh = false;
-                  }
-                : null,
-            child: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              decoration: BoxDecoration(
-                color: Colors.purple.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Text(
-                'Atualizar espaços',
-                style: TextStyle(
-                    fontSize: 22,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w900),
+        if (filteredList != [])
+          Positioned(
+            top: 150,
+            left: 20,
+            right: 20,
+            child: SizedBox(
+              height: 1500,
+              child: ListView.builder(
+                padding: EdgeInsetsDirectional.zero,
+                itemCount: filteredList.length,
+                itemBuilder: (context, index) => Container(
+                  color: Colors.green,
+                  child: Text(
+                    filteredList[index].titulo.toString(),
+                    style: const TextStyle(fontSize: 24, color: Colors.white),
+                  ),
+                ),
               ),
             ),
           ),
-        ),
+        if (filteredList.isEmpty)
+          Positioned(
+            top: 165,
+            left: 110,
+            right: 110,
+            child: GestureDetector(
+              onTap: canRefresh != false
+                  ? () async {
+                      LatLngBounds visibleRegion =
+                          await mapController!.getVisibleRegion();
+
+                      log('Visible Region: $visibleRegion');
+
+                      setState(() {
+                        rioDeJaneiroBounds = visibleRegion;
+                      });
+                      canRefresh = false;
+                    }
+                  : null,
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.purple.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Text(
+                      'Mostrar nessa área',
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         if (isShowingSomeSpace)
           Positioned(
-            bottom: 50,
+            bottom: 90,
             child: GestureDetector(
               onTap: navToPage,
               child: SizedBox(
-                width: 300,
+                width: 320,
                 height: 260,
                 child: Stack(
                   children: [
@@ -291,7 +499,7 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
-                                width: 250,
+                                width: 270,
                                 height: 80,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
@@ -346,35 +554,41 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                              color: _getColor(
-                                                double.parse(spaceShowing!
-                                                    .averageRating),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  color: _getColor(
+                                                    double.parse(spaceShowing!
+                                                        .averageRating),
+                                                  ),
+                                                ),
+                                                height: 20,
+                                                width: 20,
+                                                child: Center(
+                                                  child: Text(
+                                                    double.parse(spaceShowing!
+                                                            .averageRating)
+                                                        .toStringAsFixed(1),
+                                                    style: const TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 10),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                            height: 20,
-                                            width: 20,
-                                            child: Center(
-                                              child: Text(
-                                                double.parse(spaceShowing!
-                                                        .averageRating)
-                                                    .toStringAsFixed(1),
-                                                style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 10),
-                                              ),
-                                            ),
+                                              const SizedBox(width: 3),
+                                              Text(
+                                                  style: const TextStyle(
+                                                    color: Color(0xff5E5E5E),
+                                                    fontSize: 10,
+                                                  ),
+                                                  '(${spaceShowing!.numComments})'),
+                                            ],
                                           ),
-                                          const Text(
-                                              style: TextStyle(
-                                                color: Color(0xff5E5E5E),
-                                                fontSize: 10,
-                                              ),
-                                              "(105)"),
                                           Row(
                                             children: [
                                               Container(
@@ -392,28 +606,31 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
                                                   color: Colors.white,
                                                 ),
                                               ),
+                                              const SizedBox(width: 3),
+                                              Text(
+                                                style: const TextStyle(
+                                                    color: Color(0xff9747FF),
+                                                    fontSize: 10,
+                                                    fontWeight:
+                                                        FontWeight.w700),
+                                                "R\$${spaceShowing!.preco},00/h",
+                                              ),
                                             ],
                                           ),
-                                          const Text(
-                                            style: TextStyle(
-                                                color: Color(0xff9747FF),
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.w700),
-                                            "R\$800,00/h",
-                                          ),
-                                          const Row(
+                                          Row(
                                             children: [
-                                              Icon(
+                                              const Icon(
                                                 Icons.favorite,
                                                 size: 20,
                                                 color: Color(0xff9747FF),
                                               ),
+                                              const SizedBox(width: 3),
                                               Text(
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     color: Color(0xff5E5E5E),
                                                     fontSize: 10,
                                                   ),
-                                                  "(598)"),
+                                                  "(${spaceShowing!.numLikes})"),
                                             ],
                                           ),
                                         ],

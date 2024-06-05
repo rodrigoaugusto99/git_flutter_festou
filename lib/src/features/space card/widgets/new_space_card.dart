@@ -73,7 +73,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
             if (widget.hasHeart)
               if (showLottie)
                 Positioned(
-                  left: x * 0.14,
+                  left: x * 0.1,
                   child: Lottie.asset(
                     'lib/assets/animations/heartBeats.json',
                     repeat: false,
@@ -89,8 +89,8 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                 ),
             if (widget.hasHeart)
               Positioned(
-                top: y * 0.009,
-                left: x * 0.82,
+                top: 10,
+                right: 10,
                 child: Container(
                   decoration: BoxDecoration(
                       color: const Color.fromARGB(59, 255, 255, 255),
@@ -217,8 +217,8 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
                       width: x * 0.84,
-                      height: 100,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           color: Colors.white,
@@ -234,7 +234,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(top: 8, left: 25),
+                            padding: const EdgeInsets.only(left: 25),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -268,35 +268,38 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 5),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: _getColor(
-                                        double.parse(
-                                            widget.space.averageRating),
+                                Row(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: _getColor(
+                                          double.parse(
+                                              widget.space.averageRating),
+                                        ),
                                       ),
-                                    ),
-                                    height: y * 0.035,
-                                    width: x * 0.07,
-                                    child: Center(
-                                      child: Text(
-                                        double.parse(widget.space.averageRating)
-                                            .toStringAsFixed(1),
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
+                                      height: y * 0.035,
+                                      width: x * 0.07,
+                                      child: Center(
+                                        child: Text(
+                                          double.parse(
+                                                  widget.space.averageRating)
+                                              .toStringAsFixed(1),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
+                                    const SizedBox(width: 5),
+                                    Text(
+                                        style: const TextStyle(
+                                          color: Color(0xff5E5E5E),
+                                        ),
+                                        '(${widget.space.numComments})'),
+                                  ],
                                 ),
-                                const Text(
-                                    style: TextStyle(
-                                      color: Color(0xff5E5E5E),
-                                    ),
-                                    "(105)"),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 20),
                                   child: Row(
@@ -315,33 +318,33 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                                           color: Colors.white,
                                         ),
                                       ),
+                                      const SizedBox(width: 5),
+                                      Text(
+                                        style: const TextStyle(
+                                            color: Color(0xff9747FF),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w700),
+                                        "R\$${widget.space.preco},00/h",
+                                      ),
                                     ],
                                   ),
                                 ),
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 5),
-                                  child: Text(
-                                    style: TextStyle(
-                                        color: Color(0xff9747FF),
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w700),
-                                    "R\$800,00/h",
-                                  ),
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 20, right: 0),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 20, right: 0),
                                   child: Row(
                                     children: [
-                                      Icon(
+                                      const Icon(
                                         Icons.favorite,
                                         size: 20,
                                         color: Color(0xff9747FF),
                                       ),
+                                      const SizedBox(width: 5),
                                       Text(
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             color: Color(0xff5E5E5E),
                                           ),
-                                          "(598)"),
+                                          widget.space.numLikes.toString()),
                                     ],
                                   ),
                                 ),

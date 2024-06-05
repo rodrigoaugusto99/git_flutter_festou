@@ -69,29 +69,12 @@ class _SearchPageState extends State<SearchPage> {
                         ],
                       ),
                     ),
-                    searchViewModel.getIsShowingBool() == true
-                        // ? Expanded(
-                        //     child: Column(
-                        //       crossAxisAlignment: CrossAxisAlignment.start,
-                        //       children: [
-                        //         Padding(
-                        //           padding: EdgeInsets.only(top: y * 0.02),
-                        //           child: const Text(
-                        //             'Buscas recentes',
-                        //             style:
-                        //                 TextStyle(fontWeight: FontWeight.bold),
-                        //           ),
-                        //         ),
-                        //         Expanded(child: _buildSearchHistory())
-                        //       ],
-                        //     ),
-                        //   )
+                    searchViewModel.getSpaces() != []
                         ? Expanded(
                             child: ListView.builder(
                               padding: const EdgeInsets.all(10),
                               itemCount: searchViewModel.getSpaces().length,
                               itemBuilder: (context, index) {
-                                log('aaaaaaaaaa');
                                 return NewSpaceCard(
                                   hasHeart: true,
                                   space: searchViewModel.getSpaces()[index],
@@ -155,14 +138,6 @@ class _SearchPageState extends State<SearchPage> {
                                   searchViewModel.onChangedSearch(value);
                                 },
                                 controller: _controller,
-                                onSubmitted: (value) {
-                                  if (value.trim().isNotEmpty) {
-                                    searchViewModel.onClick(true);
-                                    _addSearchToHistory(value.trim());
-
-                                    // _controller.clear();
-                                  }
-                                },
                                 autofocus: true,
                                 decoration: const InputDecoration(
                                   hintText: 'Buscar no Festou',
@@ -183,7 +158,6 @@ class _SearchPageState extends State<SearchPage> {
                               child: InkWell(
                                 onTap: () {
                                   _controller.clear();
-                                  searchViewModel.onClick(false);
                                 },
                                 child: Icon(
                                   Icons.clear,
