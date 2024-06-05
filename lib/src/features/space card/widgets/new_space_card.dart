@@ -266,7 +266,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                           Padding(
                             padding: const EdgeInsets.only(left: 25, right: 30),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Row(
                                   children: [
