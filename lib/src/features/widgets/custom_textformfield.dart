@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:svg_flutter/svg.dart';
 
 class CustomTextformfield extends StatefulWidget {
   final bool enable;
   final String label;
+  final String? svgPath;
   final bool obscureText;
   final TextEditingController controller;
   final String? Function(String?)? validator;
@@ -12,10 +14,13 @@ class CustomTextformfield extends StatefulWidget {
   Function(String)? onChanged;
   Function()? onEditingComplete;
   bool hasEye;
+  double? ddd;
   CustomTextformfield({
     super.key,
     required this.label,
     this.inputFormatters,
+    this.ddd,
+    this.svgPath,
     this.hasEye = false,
     required this.controller,
     this.validator,
@@ -54,6 +59,15 @@ class _CustomTextformfieldState extends State<CustomTextformfield> {
           color: widget.enable ? Colors.black : Colors.grey,
           overflow: TextOverflow.ellipsis),
       decoration: InputDecoration(
+        prefixIcon: widget.svgPath != null
+            ? Padding(
+              padding:  EdgeInsets.only(left: widget.ddd!),
+              child: Image.asset(
+                  widget.svgPath!,
+                  color: Colors.black,
+                ),
+            )
+            : null,
         suffixIcon: widget.hasEye
             ? GestureDetector(
                 onTap: () => setState(

@@ -574,44 +574,54 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                               child: Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment
-                                                        .spaceBetween,
+                                                        .spaceEvenly,
                                                 children: [
-                                                  Container(
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                      color: _getColor(
-                                                        double.parse(widget
-                                                            .summaryData
-                                                            .spaceModel
-                                                            .averageRating),
-                                                      ),
-                                                    ),
-                                                    height: 20,
-                                                    width: 20,
-                                                    child: Center(
-                                                      child: Text(
-                                                        double.parse(widget
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5),
+                                                          color: _getColor(
+                                                            double.parse(widget
                                                                 .summaryData
                                                                 .spaceModel
-                                                                .averageRating)
-                                                            .toStringAsFixed(1),
-                                                        style: const TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 10),
+                                                                .averageRating),
+                                                          ),
+                                                        ),
+                                                        height: 20,
+                                                        width: 20,
+                                                        child: Center(
+                                                          child: Text(
+                                                            double.parse(widget
+                                                                    .summaryData
+                                                                    .spaceModel
+                                                                    .averageRating)
+                                                                .toStringAsFixed(
+                                                                    1),
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 10),
+                                                          ),
+                                                        ),
                                                       ),
-                                                    ),
+                                                      const SizedBox(width: 3),
+                                                      Text(
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Color(
+                                                                0xff5E5E5E),
+                                                            fontSize: 10,
+                                                          ),
+                                                          '(${widget.summaryData.spaceModel.numComments})'),
+                                                    ],
                                                   ),
-                                                  const Text(
-                                                      style: TextStyle(
-                                                        color:
-                                                            Color(0xff5E5E5E),
-                                                        fontSize: 10,
-                                                      ),
-                                                      "(105)"),
                                                   Row(
                                                     children: [
                                                       Container(
@@ -631,32 +641,36 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                                           color: Colors.white,
                                                         ),
                                                       ),
+                                                      const SizedBox(width: 3),
+                                                      Text(
+                                                        style: const TextStyle(
+                                                            color: Color(
+                                                                0xff9747FF),
+                                                            fontSize: 10,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w700),
+                                                        "R\$${widget.summaryData.spaceModel.preco},00/h",
+                                                      ),
                                                     ],
                                                   ),
-                                                  const Text(
-                                                    style: TextStyle(
-                                                        color:
-                                                            Color(0xff9747FF),
-                                                        fontSize: 10,
-                                                        fontWeight:
-                                                            FontWeight.w700),
-                                                    "R\$800,00/h",
-                                                  ),
-                                                  const Row(
+                                                  Row(
                                                     children: [
-                                                      Icon(
+                                                      const Icon(
                                                         Icons.favorite,
                                                         size: 20,
                                                         color:
                                                             Color(0xff9747FF),
                                                       ),
+                                                      const SizedBox(width: 3),
                                                       Text(
-                                                          style: TextStyle(
+                                                          style:
+                                                              const TextStyle(
                                                             color: Color(
                                                                 0xff5E5E5E),
                                                             fontSize: 10,
                                                           ),
-                                                          "(598)"),
+                                                          "(${widget.summaryData.spaceModel.numLikes})"),
                                                     ],
                                                   ),
                                                 ],

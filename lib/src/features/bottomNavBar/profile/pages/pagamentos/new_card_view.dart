@@ -1,12 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
 
-class NewCardView extends StatelessWidget {
+class NewCardView extends StatefulWidget {
   const NewCardView({super.key});
 
+  @override
+  State<NewCardView> createState() => _NewCardViewState();
+}
+
+class _NewCardViewState extends State<NewCardView> {
+  final nameEC = TextEditingController(text: 'Emília Faria M Souza');
+  final cardNumberEC = TextEditingController(text: '7894 1234 4568 2580');
+  final validateDateEC = TextEditingController(text: '01/29');
+  final cvvEC = TextEditingController(text: '100');
+  final flagEC = TextEditingController(text: 'Cartão Master 2');
+  bool _isChecked = false;
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: const Color(0XFFF8F8F8),
       appBar: AppBar(
         leading: Padding(
           padding: const EdgeInsets.only(left: 18.0),
@@ -57,8 +70,8 @@ class NewCardView extends StatelessWidget {
                       color: const Color(0xff9747FF),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
+                    child: const Padding(
+                      padding: EdgeInsets.only(
                           left: 31, right: 22, top: 22, bottom: 11),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,7 +79,7 @@ class NewCardView extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
+                              Text(
                                 'Festou',
                                 style: TextStyle(
                                   color: Colors.white,
@@ -74,39 +87,10 @@ class NewCardView extends StatelessWidget {
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
-                              SizedBox(
-                                height: 30,
-                                width: 50,
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      height: 30,
-                                      width: 30,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: const Color(0xffFF0000)
-                                            .withOpacity(0.65),
-                                      ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Container(
-                                        height: 30,
-                                        width: 30,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: const Color(0xffFF7A00)
-                                              .withOpacity(0.6),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
                             ],
                           ),
-                          const Spacer(),
-                          const Text(
+                          Spacer(),
+                          Text(
                             '7894 **** **** 2580',
                             style: TextStyle(
                               color: Colors.white,
@@ -114,7 +98,7 @@ class NewCardView extends StatelessWidget {
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                          const Row(
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Column(
@@ -190,6 +174,17 @@ class NewCardView extends StatelessWidget {
                     ),
                   ),
                 ),
+                Positioned(
+                  top: 24,
+                  right: screenWidth / 11.5,
+                  child: SizedBox(
+                    height: screenWidth / 3,
+                    width: screenWidth / 3,
+                    child: Image.asset(
+                      'lib/assets/images/festou-logo.png',
+                    ),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 45),
@@ -197,46 +192,47 @@ class NewCardView extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 17),
               child: Column(
                 children: [
-                  myRow(
-                    text: 'Emília Faria M Souza',
-                    icon: Image.asset('lib/assets/images/image 6pessoa.png'),
-                    onTap: () {},
+                  CustomTextformfield(
+                    ddd: 10,
+                    svgPath: 'lib/assets/images/image 6perssoa.png',
+                    label: '',
+                    controller: nameEC,
                   ),
                   const SizedBox(height: 15),
-                  myRow(
-                      text: '7894 1234 4568 2580',
-                      icon: Image.asset('lib/assets/images/image 42card.png'),
-                      onTap: () {}),
+                  CustomTextformfield(
+                    ddd: 5,
+                    label: '',
+                    controller: cardNumberEC,
+                    svgPath: 'lib/assets/images/image 4card.png',
+                  ),
                   const SizedBox(height: 15),
                   Row(
                     children: [
                       Expanded(
-                        child: myRow(
-                            text: '01/29',
-                            icon: Image.asset(
-                                'lib/assets/images/image 4calendar.png'),
-                            onTap: () {}),
+                        child: CustomTextformfield(
+                          ddd: 2,
+                          svgPath: 'lib/assets/images/image 4calendarrrr.png',
+                          label: '',
+                          controller: validateDateEC,
+                        ),
                       ),
                       const SizedBox(width: 20),
                       Expanded(
-                        child: myRow(
-                            text: '100',
-                            icon:
-                                Image.asset('lib/assets/images/image 5cvv.png'),
-                            onTap: () {}),
+                        child: CustomTextformfield(
+                          ddd: 10,
+                          svgPath: 'lib/assets/images/image 5cardcvv.png',
+                          label: '',
+                          controller: cvvEC,
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 15),
-                  myRow(
-                    text: 'Cartão Master 2',
-                    icon: Image.asset('lib/assets/images/image 7master2.png'),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const NewCardView(),
-                      ),
-                    ),
+                  CustomTextformfield(
+                    ddd: 10,
+                    svgPath: 'lib/assets/images/image 7passa.png',
+                    label: '',
+                    controller: flagEC,
                   ),
                 ],
               ),
@@ -248,17 +244,56 @@ class NewCardView extends StatelessWidget {
       bottomNavigationBar: Padding(
         padding:
             const EdgeInsets.only(bottom: 20, left: 30, right: 30, top: 10),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-              color: const Color(0xff9747FF),
-              borderRadius: BorderRadius.circular(50)),
-          child: const Text(
-            'Adicionar cartão',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.w700, fontSize: 12),
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 25),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Checkbox(
+                    side: const BorderSide(),
+                    activeColor: Colors.transparent,
+                    splashRadius: 0,
+                    checkColor: Colors.black,
+                    value: _isChecked,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _isChecked = value ?? false;
+                      });
+                    },
+                  ),
+                  const Text(
+                    'Definir como método de pagamento principal',
+                    style: TextStyle(fontSize: 11),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xff9747FF),
+                      Color(0xff4300B1),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                  borderRadius: BorderRadius.circular(50)),
+              child: const Text(
+                'Adicionar cartão',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -275,16 +310,9 @@ class NewCardView extends StatelessWidget {
         height: 40,
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: color ?? Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                spreadRadius: 2,
-                blurRadius: 5,
-                offset: const Offset(0, 6),
-              ),
-            ]),
+          borderRadius: BorderRadius.circular(10),
+          color: color ?? Colors.white,
+        ),
         child: Row(
           children: [
             icon,

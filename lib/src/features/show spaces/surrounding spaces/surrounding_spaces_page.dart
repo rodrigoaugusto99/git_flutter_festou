@@ -357,106 +357,110 @@ p decidir o isFavorited*/
             );
           }).toSet(),
         ),
+        // Positioned(
+        //   top: 105,
+        //   left: 20,
+        //   right: 20,
+        //   child: Container(
+        //     padding: const EdgeInsets.symmetric(horizontal: 5),
+        //     decoration: BoxDecoration(
+        //       color: Colors.white,
+        //       borderRadius: BorderRadius.circular(10),
+        //     ),
+        //     child: Column(
+        //       children: [
+        //         Row(
+        //           children: [
+        //             const Icon(
+        //               Icons.search,
+        //               color: Color(0xff9747FF),
+        //             ),
+        //             const SizedBox(width: 15),
+        //             Expanded(
+        //               child: TextField(
+        //                 onChanged: (c) {
+        //                   log(c);
+        //                   onChangedSearch(c);
+
+        //                   setState(() {});
+        //                 },
+        //                 decoration: const InputDecoration(
+        //                   hintText: 'Buscar',
+        //                   hintStyle: TextStyle(fontSize: 12),
+        //                   border: InputBorder.none,
+        //                 ),
+        //               ),
+        //             ),
+        //           ],
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
+        // if (filteredList != [])
+        //   Positioned(
+        //     top: 150,
+        //     left: 20,
+        //     right: 20,
+        //     child: Container(
+        //       color: filteredList == [] ? Colors.white : Colors.transparent,
+        //       height: 120,
+        //       child: ListView.builder(
+        //         padding: EdgeInsetsDirectional.zero,
+        //         itemCount: filteredList.length,
+        //         itemBuilder: (context, index) => Container(
+        //           color: Colors.white,
+        //           child: Padding(
+        //             padding: const EdgeInsets.symmetric(vertical: 5),
+        //             child: Text(
+        //               filteredList[index].titulo.toString(),
+        //               style: const TextStyle(fontSize: 16, color: Colors.black),
+        //             ),
+        //           ),
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // if (filteredList.isEmpty)
         Positioned(
-          top: 105,
-          left: 20,
-          right: 20,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-            ),
+          top: 115,
+          left: 110,
+          right: 110,
+          child: GestureDetector(
+            onTap: canRefresh != false
+                ? () async {
+                    LatLngBounds visibleRegion =
+                        await mapController!.getVisibleRegion();
+
+                    log('Visible Region: $visibleRegion');
+
+                    setState(() {
+                      rioDeJaneiroBounds = visibleRegion;
+                    });
+                    canRefresh = false;
+                  }
+                : null,
             child: Column(
               children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.search,
-                      color: Color(0xff9747FF),
-                    ),
-                    const SizedBox(width: 15),
-                    Expanded(
-                      child: TextField(
-                        onChanged: (c) {
-                          log(c);
-                          onChangedSearch(c);
-
-                          setState(() {});
-                        },
-                        decoration: const InputDecoration(
-                          hintText: 'Buscar',
-                          hintStyle: TextStyle(fontSize: 12),
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),
-                  ],
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.purple.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Text(
+                    'Mostrar nessa área',
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w900),
+                  ),
                 ),
               ],
             ),
           ),
         ),
-        if (filteredList != [])
-          Positioned(
-            top: 150,
-            left: 20,
-            right: 20,
-            child: SizedBox(
-              height: 1500,
-              child: ListView.builder(
-                padding: EdgeInsetsDirectional.zero,
-                itemCount: filteredList.length,
-                itemBuilder: (context, index) => Container(
-                  color: Colors.green,
-                  child: Text(
-                    filteredList[index].titulo.toString(),
-                    style: const TextStyle(fontSize: 24, color: Colors.white),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        if (filteredList.isEmpty)
-          Positioned(
-            top: 165,
-            left: 110,
-            right: 110,
-            child: GestureDetector(
-              onTap: canRefresh != false
-                  ? () async {
-                      LatLngBounds visibleRegion =
-                          await mapController!.getVisibleRegion();
-
-                      log('Visible Region: $visibleRegion');
-
-                      setState(() {
-                        rioDeJaneiroBounds = visibleRegion;
-                      });
-                      canRefresh = false;
-                    }
-                  : null,
-              child: Column(
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.purple.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Text(
-                      'Mostrar nessa área',
-                      style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w900),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
         if (isShowingSomeSpace)
           Positioned(
             bottom: 90,
@@ -552,7 +556,7 @@ p decidir o isFavorited*/
                                           left: 25, right: 30),
                                       child: Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceEvenly,
                                         children: [
                                           Row(
                                             children: [
