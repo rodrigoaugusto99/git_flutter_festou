@@ -30,6 +30,8 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
 
   final user = FirebaseAuth.instance.currentUser!;
 
+  
+
   @override
   Future<Either<RepositoryException, Nil>> saveSpace(
       ({

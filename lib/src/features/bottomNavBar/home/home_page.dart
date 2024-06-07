@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/app_bar_home.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/feed_noticias.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/menu_space_types.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/search_button.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
@@ -54,6 +55,15 @@ class _HomePageState extends ConsumerState<HomePage> {
                     child: SearchButton(
                       fadeInDuration: fadeInDuration,
                     ),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: Text('Feed de notícias'),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: FeedNoticias(),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: Text('Últimos vistos'),
                   ),
                   SliverToBoxAdapter(
                       child: MyLastSeenSpaces(

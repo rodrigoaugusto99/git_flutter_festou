@@ -308,4 +308,6 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
           RepositoryException(message: 'Erro ao apagar esse campo: $e'));
     }
   }
+
+  
 }
