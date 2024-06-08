@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/app_bar_home.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/cupons_e_promocoes.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/feed_noticias.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/menu_space_types.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/search_button.dart';
@@ -57,19 +58,35 @@ class _HomePageState extends ConsumerState<HomePage> {
                     ),
                   ),
                   const SliverToBoxAdapter(
-                    child: Text('Feed de notícias'),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text('Feed de notícias'),
+                    ),
                   ),
                   const SliverToBoxAdapter(
                     child: FeedNoticias(),
                   ),
                   const SliverToBoxAdapter(
-                    child: Text('Últimos vistos'),
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 16, bottom: 16, top: 30),
+                      child: Text('Últimos vistos'),
+                    ),
                   ),
                   SliverToBoxAdapter(
                       child: MyLastSeenSpaces(
                     data: data,
                     spaces: allSpaces,
                   )),
+                  const SliverToBoxAdapter(
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
+                      child: Text('Cupons e promoções'),
+                    ),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: CuponsEPromocoes(),
+                  ),
                   SliverToBoxAdapter(
                     child: InkWell(
                       onTap: () {

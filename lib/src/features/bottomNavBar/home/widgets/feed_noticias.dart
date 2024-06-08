@@ -32,7 +32,8 @@ class _FeedNoticiasState extends State<FeedNoticias> {
               itemCount: 1,
               itemBuilder: (context, index) {
                 return Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
                     child: Shimmer.fromColors(
@@ -61,17 +62,20 @@ class _FeedNoticiasState extends State<FeedNoticias> {
 
         final posts = snapshot.data!;
 
-        return SizedBox(
-          height: 250,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: posts.length,
-            itemBuilder: (context, index) {
-              final post = posts[index];
-              return EachPost(
-                post: post,
-              );
-            },
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: SizedBox(
+            height: 250,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: posts.length,
+              itemBuilder: (context, index) {
+                final post = posts[index];
+                return EachPost(
+                  post: post,
+                );
+              },
+            ),
           ),
         );
       },
