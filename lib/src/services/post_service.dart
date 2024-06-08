@@ -2,8 +2,10 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:git_flutter_festou/src/models/post_model.dart';
+import 'package:uuid/uuid.dart';
 
 class PostService {
   final storage = FirebaseStorage.instance;
@@ -65,12 +67,14 @@ class PostService {
       );
 
       final spaceResult = await getPostImages(spaceId);
-
+      const uuid = Uuid();
       Map<String, dynamic> newPost = {
+        'id': uuid.v1(),
         'space_id': spaceId,
         'titulo': titulo,
         'descricao': descricao,
-        'images_url': spaceResult,
+        'imagens': spaceResult,
+        'coverPhoto': coverPhoto,
       };
 
       await postsCollection.add(newPost);
@@ -80,5 +84,61 @@ class PostService {
     }
   }
 
-  //todo:recuperar posts no firestore em que o spaceId esta contido no array "spacer_favorte" do usuario no firestore
+  Future<List<PostModel>?> getPostModelsBySpaceIds() async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    User? user = auth.currentUser;
+
+    if (user != null) {
+      try {
+        QuerySnapshot userSnapshot = await firestore
+            .collection('users')
+            .where('uid', isEqualTo: user.uid)
+            .get();
+
+        if (userSnapshot.docs.isNotEmpty) {
+          // Assume que o primeiro documento encontrado é o usuário desejado
+          DocumentSnapshot userDoc = userSnapshot.docs.first;
+
+          // Recupera a lista de IDs do campo "space_favorites"
+          List<dynamic> spaceFavoritesDynamic = userDoc['spaces_favorite'];
+          List<String> spaceFavorites =
+              List<String>.from(spaceFavoritesDynamic);
+
+          // Consulta para recuperar os posts onde o campo "spaceId" está contido na lista spaceFavorites
+          QuerySnapshot postsSnapshot = await firestore
+              .collection('posts')
+              .where('spaceId', whereIn: spaceFavorites)
+              .get();
+
+          List<PostModel> postModels = [];
+
+          for (var doc in postsSnapshot.docs) {
+            final data = doc.data() as Map<String, dynamic>;
+            final imagensDynamic = data['imagens'] as List<dynamic>;
+            final imagens = List<String>.from(imagensDynamic);
+
+            final post = PostModel(
+              title: data['titulo'] ?? '',
+              description: data['descricao'] ?? '',
+              imagens: imagens,
+              coverPhoto: data['coverPhoto'] ?? '',
+              id: data['id'] ?? doc.id,
+            );
+            postModels.add(post);
+          }
+          return postModels;
+        } else {
+          print('Usuário não encontrado.');
+          return null;
+        }
+      } catch (e) {
+        print('Erro ao recuperar dados: $e');
+        return null;
+      }
+    } else {
+      print('Usuário não autenticado.');
+      return null;
+    }
+  }
 }

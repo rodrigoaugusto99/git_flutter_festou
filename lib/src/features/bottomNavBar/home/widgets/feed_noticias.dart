@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/models/post_model.dart';
+import 'package:git_flutter_festou/src/services/post_service.dart';
 
 class FeedNoticias extends StatefulWidget {
   const FeedNoticias({super.key});
@@ -9,52 +10,57 @@ class FeedNoticias extends StatefulWidget {
 }
 
 class _FeedNoticiasState extends State<FeedNoticias> {
-  List<PostModel> posts = [
-    PostModel(
-        title: 'post 1',
-        description: 'description 1',
-        imagens: [],
-        coverPhoto: ''),
-    PostModel(
-        title: 'post 2',
-        description: 'description 2',
-        imagens: [],
-        coverPhoto: ''),
-    PostModel(
-        title: 'post 3',
-        description: 'description 3',
-        imagens: [],
-        coverPhoto: ''),
-  ];
+  PostService postService = PostService();
   @override
   Widget build(BuildContext context) {
     double y = MediaQuery.of(context).size.height;
     double x = MediaQuery.of(context).size.width;
-    return SizedBox(
-      height: y * 0.3,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: posts.length,
-        itemBuilder: (context, index) {
-          final post = posts[index];
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.blue,
-              ),
-              width: x * 0.40,
-              child: Column(
-                children: [
-                  Text(post.title),
-                  Text(post.description),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
+    return FutureBuilder<List<PostModel>?>(
+      future: postService.getPostModelsBySpaceIds(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return SizedBox(
+              height: y * 0.21,
+              child: const Center(child: CircularProgressIndicator()));
+        }
+
+        if (snapshot.hasError) {
+          return Center(child: Text("Error: ${snapshot.error}"));
+        }
+
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text("No spaces viewed recently."));
+        }
+
+        final posts = snapshot.data!;
+
+        return SizedBox(
+          height: y * 0.3,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: posts.length,
+            itemBuilder: (context, index) {
+              final post = posts[index];
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.blue,
+                  ),
+                  width: x * 0.40,
+                  child: Column(
+                    children: [
+                      Text(post.title),
+                      Text(post.description),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

@@ -49,28 +49,35 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
       if (isReview == false) {
         return Stack(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16.0),
-              child: CarouselSlider(
-                items: widget.space.imagesUrl
-                    .map((imageUrl) => Image.network(
-                          imageUrl,
-                          fit: BoxFit.cover,
-                        ))
-                    .toList(),
-                options: CarouselOptions(
-                  autoPlay: true,
-                  aspectRatio: 16 / 12,
-                  viewportFraction: 1.0,
-                  enableInfiniteScroll: true,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      _currentIndex = index;
-                    });
-                  },
+            if (widget.space.imagesUrl == [])
+              Container(
+                height: 200,
+                width: 300,
+                color: Colors.grey,
+              ),
+            if (widget.space.imagesUrl != [])
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16.0),
+                child: CarouselSlider(
+                  items: widget.space.imagesUrl
+                      .map((imageUrl) => Image.network(
+                            imageUrl,
+                            fit: BoxFit.cover,
+                          ))
+                      .toList(),
+                  options: CarouselOptions(
+                    autoPlay: true,
+                    aspectRatio: 16 / 12,
+                    viewportFraction: 1.0,
+                    enableInfiniteScroll: true,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        _currentIndex = index;
+                      });
+                    },
+                  ),
                 ),
               ),
-            ),
             if (widget.hasHeart)
               if (showLottie)
                 Positioned(
