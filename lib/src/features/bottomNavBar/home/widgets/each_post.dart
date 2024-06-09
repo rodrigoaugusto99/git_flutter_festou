@@ -35,17 +35,51 @@ class _EachPostState extends State<EachPost> {
         future: _loadImage(widget.post.imagens[0]),
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: Shimmer.fromColors(
-                baseColor: const Color.fromARGB(255, 221, 221, 221),
-                highlightColor: Colors.white,
-                child: Container(
-                  height: 250,
-                  width: 182.0,
-                  color: Colors.red,
+            return Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Shimmer.fromColors(
+                    baseColor: const Color.fromARGB(255, 221, 221, 221),
+                    highlightColor: Colors.white,
+                    child: Container(
+                      height: 250,
+                      width: 182.0,
+                      color: Colors.red,
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(
+                  width: 20,
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Shimmer.fromColors(
+                    baseColor: const Color.fromARGB(255, 221, 221, 221),
+                    highlightColor: Colors.white,
+                    child: Container(
+                      height: 250,
+                      width: 182.0,
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Shimmer.fromColors(
+                    baseColor: const Color.fromARGB(255, 221, 221, 221),
+                    highlightColor: Colors.white,
+                    child: Container(
+                      height: 250,
+                      width: 182.0,
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+              ],
             );
           } else if (snapshot.hasError) {
             return const Center(child: Text('Error loading image'));

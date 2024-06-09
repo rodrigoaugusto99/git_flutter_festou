@@ -60,7 +60,6 @@ class RegisterPostVm {
       imageFiles: imagesToRegister!,
       titulo: tituloEC.text,
       descricao: descricaoEC.text,
-      coverPhoto: coverPhoto!,
     );
   }
 }

@@ -58,7 +58,6 @@ class PostService {
     required List<File> imageFiles,
     required String titulo,
     required String descricao,
-    required File coverPhoto,
   }) async {
     try {
       await uploadPostImages(
@@ -74,7 +73,6 @@ class PostService {
         'titulo': titulo,
         'descricao': descricao,
         'imagens': spaceResult,
-        'coverPhoto': coverPhoto,
       };
 
       await postsCollection.add(newPost);
@@ -122,7 +120,6 @@ class PostService {
               title: data['titulo'] ?? '',
               description: data['descricao'] ?? '',
               imagens: imagens,
-              coverPhoto: data['coverPhoto'] ?? '',
               id: data['id'] ?? doc.id,
             );
             postModels.add(post);

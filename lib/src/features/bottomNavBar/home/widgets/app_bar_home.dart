@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:git_flutter_festou/src/services/user_service.dart';
 import '../../../../core/providers/application_providers.dart';
 
 class AppBarHome extends ConsumerStatefulWidget {
@@ -12,6 +14,19 @@ class AppBarHome extends ConsumerStatefulWidget {
 
 class _AppBarMenuSpaceTypesState extends ConsumerState<AppBarHome> {
   final user = FirebaseAuth.instance.currentUser!;
+  UserService userService = UserService();
+  UserModel? userModel;
+
+  @override
+  void initState() {
+    getUserModel();
+    super.initState();
+  }
+
+  Future<void> getUserModel() async {
+    userModel = await userService.getCurrentUserModel();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +41,52 @@ class _AppBarMenuSpaceTypesState extends ConsumerState<AppBarHome> {
               Row(
                 children: [
                   Expanded(
-                    child: Text(
-                      'Olá, ${user.displayName}! Festou?',
-                      // user_infos no banco
-                      style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold),
+                    child: Row(
+                      children: [
+                        if (userModel != null)
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 27,
+                                backgroundImage:
+                                    NetworkImage(userModel!.avatarUrl),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                            ],
+                          ),
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              const TextSpan(
+                                text: 'Olá, ',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              TextSpan(
+                                text: user.displayName!.split(" ")[0],
+                                style: const TextStyle(
+                                  color: Color(0xff6100FF), // Cor roxa
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const TextSpan(
+                                text: '! Festou?',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
                     ),
                   ),
                   IconButton(

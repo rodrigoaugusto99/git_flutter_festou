@@ -28,12 +28,13 @@ class _FeedNoticiasState extends State<FeedNoticias> {
           return SizedBox(
             height: 250,
             child: ListView.builder(
+              padding: const EdgeInsets.only(left: 6.5),
               scrollDirection: Axis.horizontal,
-              itemCount: 1,
+              itemCount: 5,
               itemBuilder: (context, index) {
                 return Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
                     child: Shimmer.fromColors(

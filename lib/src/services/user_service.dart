@@ -243,9 +243,6 @@ class UserService {
     // Trate o caso em que nenhum usuário foi encontrado.
     //se esse erro ocorrer la numm metodo que chama getUsrDocument, o (e) do catch vai ter essa msg
     throw Exception("Usuário n encontrado");
-    //! erro as vezes, se deletar a conta com google e criar de novo rapidao, o
-    //!documento no firestore e auth estão certos, com o mesmo id, mas o objeto user do auth que o programa
-    //!carrega primeiramente é o anterior já excluido, com o uid antigo
   }
 
 //retorna a lista de ids dos espaços favoritados pelo usuario

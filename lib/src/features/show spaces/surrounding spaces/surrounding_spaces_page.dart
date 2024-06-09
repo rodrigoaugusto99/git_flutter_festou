@@ -12,6 +12,7 @@ import 'package:git_flutter_festou/src/features/show%20spaces/surrounding%20spac
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_card_info.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SurroundingSpacesPage extends ConsumerStatefulWidget {
@@ -278,7 +279,9 @@ p decidir o isFavorited*/
     setState(() {});
   }
 
+  final userService = UserService();
   void navToPage() {
+    userService.updateLastSeen(spaceShowing!.spaceId);
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -465,7 +468,7 @@ p decidir o isFavorited*/
           Positioned(
             bottom: 90,
             child: GestureDetector(
-              onTap: navToPage,
+              onTap: () => navToPage(),
               child: SizedBox(
                 width: 320,
                 height: 260,

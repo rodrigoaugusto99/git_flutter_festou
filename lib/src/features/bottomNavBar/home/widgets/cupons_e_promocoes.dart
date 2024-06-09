@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 class CuponsEPromocoes extends StatefulWidget {
@@ -8,69 +9,58 @@ class CuponsEPromocoes extends StatefulWidget {
 }
 
 class _CuponsEPromocoesState extends State<CuponsEPromocoes> {
+  int currentIndex = 0;
   @override
   Widget build(BuildContext context) {
+    List<String> images = [
+      'lib/assets/images/Cupom de 50dddd.png',
+      'lib/assets/images/Banner cashbackuomdoi.png',
+    ];
     return Container(
-      height: 219,
-      decoration: BoxDecoration(
-          color: Colors.grey, borderRadius: BorderRadius.circular(8)),
-      child: Stack(
-        clipBehavior: Clip.none,
+      child: Column(
         children: [
-          Positioned(
-            top: 26,
-            left: 18,
-            child: RichText(
-              text: const TextSpan(
-                text: 'Os melhores ',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
-                children: <TextSpan>[
-                  TextSpan(
-                    text: 'cupons\n',
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      decorationColor: Colors.white,
-                    ),
-                  ),
-                  TextSpan(
-                    text: 'e os ',
-                  ),
-                  TextSpan(
-                    text: 'maiores\ndescontos',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      decoration: TextDecoration.underline,
-                      decorationColor: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
+          CarouselSlider(
+            items: images
+                .map((image) => Image.asset(
+                      image,
+                      fit: BoxFit.cover,
+                    ))
+                .toList(),
+            options: CarouselOptions(
+              autoPlay: true,
+              aspectRatio: 16 / 9,
+              viewportFraction: 1,
+              enableInfiniteScroll: true,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  currentIndex = index;
+                });
+              },
             ),
           ),
-          const Positioned(
-            bottom: 40,
-            left: 18,
-            child: Text(
-              'Você só encontra\nna',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-              ),
+          const SizedBox(
+            height: 10,
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: images.map((img) {
+                int index = images.indexOf(img);
+                return Container(
+                  width: 8.0,
+                  height: 8.0,
+                  margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: currentIndex == index
+                        ? const Color(0xff9747FF)
+                        : Colors.grey.shade500,
+                  ),
+                );
+              }).toList(),
             ),
           ),
-          Positioned(
-            right: -25,
-            top: 0,
-            bottom: 0,
-            child: Image.asset(
-                'lib/assets/images/homem-afro-americano-verificando-seu-smartphone 1homem_iphhone.png'),
-          )
         ],
       ),
     );

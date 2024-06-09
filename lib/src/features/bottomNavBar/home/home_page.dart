@@ -12,6 +12,7 @@ import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/my_last_seen_spaces.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_page.dart';
 import 'package:lottie/lottie.dart';
+import 'package:svg_flutter/svg.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   final String? previousRoute;
@@ -50,6 +51,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                 slivers: [
                   const AppBarHome(),
                   const SliverToBoxAdapter(
+                      child: SizedBox(
+                    height: 15,
+                  )),
+                  const SliverToBoxAdapter(
                     child: MenuSpaceTypes(),
                   ),
                   SliverToBoxAdapter(
@@ -87,6 +92,13 @@ class _HomePageState extends ConsumerState<HomePage> {
                   const SliverToBoxAdapter(
                     child: CuponsEPromocoes(),
                   ),
+                  const SliverToBoxAdapter(
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
+                      child: Text('Feed de notícias'),
+                    ),
+                  ),
                   SliverToBoxAdapter(
                     child: InkWell(
                       onTap: () {
@@ -97,17 +109,27 @@ class _HomePageState extends ConsumerState<HomePage> {
                           ),
                         );
                       },
-                      child: SizedBox(
-                        height: 200, // Altura desejada
-
-                        child: Transform.scale(
-                          scale: 3,
-                          child: Lottie.asset(
-                            'lib/assets/animations/earth1.json',
-                            fit: BoxFit.cover,
-                            animate: false,
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(top: 10),
+                            child: Image.asset(
+                              'lib/assets/images/Globofffg.png',
+                              width: 200,
+                              height: 200,
+                            ),
                           ),
-                        ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          const Text(
+                            'Clique no globo para buscar espaços no mapa',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                        ],
                       ),
                     ),
                   ),

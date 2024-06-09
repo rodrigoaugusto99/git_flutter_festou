@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/new_card_info.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:lottie/lottie.dart';
@@ -211,7 +212,15 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
 
     final userService = UserService();
     return GestureDetector(
-      onTap: () => userService.updateLastSeen(widget.space.spaceId),
+      onTap: () {
+        userService.updateLastSeen(widget.space.spaceId);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NewCardInfo(space: widget.space),
+          ),
+        );
+      },
       child: Container(
         padding: const EdgeInsets.all(6),
         color: Colors.white,
