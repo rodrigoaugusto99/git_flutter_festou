@@ -108,7 +108,7 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
                 selectedColor: Colors.deepPurple,
                 title: const Text('Perfil'),
                 badge:
-                    Text(notificationCount > 9 ? '9+' : '$notificationCount'),
+                    Text(notificationCount > 99 ? '99+' : '$notificationCount'),
                 showBadge: notificationCount > 0,
                 badgeColor: Colors.purple,
                 badgePadding: const EdgeInsets.only(left: 4, right: 4),

@@ -6,16 +6,19 @@ class NotificationCounter {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  final BehaviorSubject<int> _notificationCount =
+      BehaviorSubject<int>.seeded(0);
+
+  Stream<int> get notificationCount => _notificationCount.stream;
+
   NotificationCounter() {
     _init();
   }
 
   void _init() async {
-    // Obtém o usuário atual
     User? currentUser = _auth.currentUser;
 
     if (currentUser != null) {
-      // Escuta as mudanças nos chats
       _firestore
           .collection('chat_rooms')
           .where('chatRoomIDs', arrayContains: currentUser.uid)
@@ -26,7 +29,6 @@ class NotificationCounter {
           return;
         }
 
-        // Escuta as mensagens não vistas
         List<Stream<QuerySnapshot>> messageStreams = chatRoomsSnapshot.docs
             .map((doc) => doc.reference
                 .collection('messages')
@@ -40,12 +42,18 @@ class NotificationCounter {
           int unreadCount = snapshots.fold(
               0, (sum, querySnapshot) => sum + querySnapshot.docs.length);
           _updateNotificationCount(unreadCount);
+          _updateNotificationCountInDB(
+              unreadCount); // Adiciona atualização no banco de dados
         });
       });
     }
   }
 
-  void _updateNotificationCount(int count) async {
+  void _updateNotificationCount(int count) {
+    _notificationCount.add(count);
+  }
+
+  void _updateNotificationCountInDB(int count) async {
     User? currentUser = _auth.currentUser;
 
     if (currentUser != null) {

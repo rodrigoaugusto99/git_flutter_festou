@@ -48,13 +48,16 @@ class InformacoesPessoaisVM extends _$InformacoesPessoaisVM {
     }
   }
 
-  Future pickAvatar() async {
+  Future<File?> pickAvatar() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image == null) return null;
     File? img = File(image.path);
     img = await _cropAvatar(imageFile: img);
-    state = state.copyWith(
-        status: InformacoesPessoaisStateStatus.success, avatarCropped: img);
+    if (img != null) {
+      state = state.copyWith(
+          status: InformacoesPessoaisStateStatus.success, avatarCropped: img);
+    }
+    return img;
   }
 
   Future<File?> _cropAvatar({required File imageFile}) async {
