@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/app_bar_home.dart';
@@ -44,109 +45,111 @@ class _HomePageState extends ConsumerState<HomePage> {
         return false;
       },
       child: Scaffold(
-          backgroundColor: Colors.white,
-          body: allSpaces.when(
-            data: (AllSpaceState data) {
-              return CustomScrollView(
-                slivers: [
-                  const AppBarHome(),
-                  const SliverToBoxAdapter(
-                      child: SizedBox(
-                    height: 15,
-                  )),
-                  const SliverToBoxAdapter(
-                    child: MenuSpaceTypes(),
+        extendBody: true,
+        backgroundColor: Colors.white,
+        body: allSpaces.when(
+          data: (AllSpaceState data) {
+            return CustomScrollView(
+              slivers: [
+                const AppBarHome(),
+                const SliverToBoxAdapter(
+                    child: SizedBox(
+                  height: 15,
+                )),
+                const SliverToBoxAdapter(
+                  child: MenuSpaceTypes(),
+                ),
+                SliverToBoxAdapter(
+                  child: SearchButton(
+                    fadeInDuration: fadeInDuration,
                   ),
-                  SliverToBoxAdapter(
-                    child: SearchButton(
-                      fadeInDuration: fadeInDuration,
-                    ),
+                ),
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text('Feed de notícias'),
                   ),
-                  const SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text('Feed de notícias'),
-                    ),
+                ),
+                const SliverToBoxAdapter(
+                  child: FeedNoticias(),
+                ),
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 16, bottom: 16, top: 30),
+                    child: Text('Últimos vistos'),
                   ),
-                  const SliverToBoxAdapter(
-                    child: FeedNoticias(),
+                ),
+                SliverToBoxAdapter(
+                    child: MyLastSeenSpaces(
+                  data: data,
+                  spaces: allSpaces,
+                )),
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
+                    child: Text('Cupons e promoções'),
                   ),
-                  const SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 16, bottom: 16, top: 30),
-                      child: Text('Últimos vistos'),
-                    ),
+                ),
+                const SliverToBoxAdapter(
+                  child: CuponsEPromocoes(),
+                ),
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
+                    child: Text('Feed de notícias'),
                   ),
-                  SliverToBoxAdapter(
-                      child: MyLastSeenSpaces(
-                    data: data,
-                    spaces: allSpaces,
-                  )),
-                  const SliverToBoxAdapter(
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
-                      child: Text('Cupons e promoções'),
-                    ),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: CuponsEPromocoes(),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
-                      child: Text('Feed de notícias'),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SurroundingSpacesPage(),
+                ),
+                SliverToBoxAdapter(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SurroundingSpacesPage(),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(top: 10),
+                          child: Image.asset(
+                            'lib/assets/images/Globofffg.png',
+                            width: 200,
+                            height: 200,
                           ),
-                        );
-                      },
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(top: 10),
-                            child: Image.asset(
-                              'lib/assets/images/Globofffg.png',
-                              width: 200,
-                              height: 200,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          const Text(
-                            'Clique no globo para buscar espaços no mapa',
-                            style: TextStyle(fontSize: 12),
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        const Text(
+                          'Clique no globo para buscar espaços no mapa',
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        const SizedBox(
+                          height: 50,
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              );
-            },
-            error: (Object error, StackTrace stackTrace) {
-              return const Stack(children: [
-                Center(child: Icon(Icons.error)),
-              ]);
-            },
-            loading: () {
-              return const Stack(children: [
-                Center(child: CustomLoadingIndicator()),
-              ]);
-            },
-          )),
+                ),
+              ],
+            );
+          },
+          error: (Object error, StackTrace stackTrace) {
+            return const Stack(children: [
+              Center(child: Icon(Icons.error)),
+            ]);
+          },
+          loading: () {
+            return const Stack(children: [
+              Center(child: CustomLoadingIndicator()),
+            ]);
+          },
+        ),
+      ),
     );
   }
 }
