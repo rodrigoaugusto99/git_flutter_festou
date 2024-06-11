@@ -14,6 +14,7 @@ class CustomTextformfield extends StatefulWidget {
   Function(String)? onChanged;
   Function()? onEditingComplete;
   bool hasEye;
+  bool isBig;
   double? ddd;
   CustomTextformfield({
     super.key,
@@ -29,6 +30,7 @@ class CustomTextformfield extends StatefulWidget {
     this.onEditingComplete,
     this.enable = true,
     this.obscureText = false,
+    this.isBig = false,
   });
 
   @override
@@ -41,6 +43,8 @@ class _CustomTextformfieldState extends State<CustomTextformfield> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      minLines: widget.isBig == true ? 5 : null,
+      maxLines: widget.isBig == true ? 10 : null,
       onEditingComplete: widget.onEditingComplete,
       textInputAction: TextInputAction.done,
       inputFormatters: widget.inputFormatters,
@@ -61,12 +65,12 @@ class _CustomTextformfieldState extends State<CustomTextformfield> {
       decoration: InputDecoration(
         prefixIcon: widget.svgPath != null
             ? Padding(
-              padding:  EdgeInsets.only(left: widget.ddd!),
-              child: Image.asset(
+                padding: EdgeInsets.only(left: widget.ddd!),
+                child: Image.asset(
                   widget.svgPath!,
                   color: Colors.black,
                 ),
-            )
+              )
             : null,
         suffixIcon: widget.hasEye
             ? GestureDetector(
@@ -82,11 +86,15 @@ class _CustomTextformfieldState extends State<CustomTextformfield> {
             : null,
         fillColor: Colors.white,
         filled: true,
-        labelStyle: const TextStyle(color: Colors.black, fontSize: 14),
+        labelStyle: const TextStyle(
+          color: Colors.black,
+          fontSize: 14,
+        ),
         contentPadding: const EdgeInsets.symmetric(
           vertical: 10.0,
           horizontal: 10.0,
         ),
+        alignLabelWithHint: widget.isBig ? true : null,
         label: Text(widget.label),
         hintStyle: const TextStyle(
           fontSize: 16,

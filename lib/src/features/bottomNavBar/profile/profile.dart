@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/central/central_de_ajuda.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarPageLocador.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
@@ -238,7 +239,12 @@ class _ProfileState extends ConsumerState<Profile> {
                         icon1: Image.asset(
                           'lib/assets/images/Icon Atendimentocentral.png',
                         ),
-                        onTap: () {},
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const CentralDeAjuda(),
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 25),
                       myText(text: 'Jurídico'),
