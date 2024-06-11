@@ -73,17 +73,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 const SliverToBoxAdapter(
                   child: FeedNoticias(),
                 ),
-                const SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 16, bottom: 16, top: 30),
-                    child: Text('Últimos vistos'),
-                  ),
-                ),
-                SliverToBoxAdapter(
-                    child: MyLastSeenSpaces(
-                  data: data,
-                  spaces: allSpaces,
-                )),
+                const SliverToBoxAdapter(child: MyLastSeenSpaces()),
                 const SliverToBoxAdapter(
                   child: Padding(
                     padding:

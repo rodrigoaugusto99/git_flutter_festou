@@ -14,12 +14,8 @@ import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:shimmer/shimmer.dart';
 
 class MyLastSeenSpaces extends StatefulWidget {
-  final AllSpaceState data;
-  final AsyncValue spaces;
   const MyLastSeenSpaces({
     super.key,
-    required this.data,
-    required this.spaces,
   });
 
   @override
@@ -38,30 +34,42 @@ class _MyLastSeenSpacesState extends State<MyLastSeenSpaces> {
       future: userService.getLastSeenSpaces(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Container(
-            padding: const EdgeInsets.only(left: 16),
-            height: 150,
-            width: 250,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.only(right: 20),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: Shimmer.fromColors(
-                      baseColor: const Color.fromARGB(255, 221, 221, 221),
-                      highlightColor: Colors.white,
-                      child: Container(
-                        width: 250,
-                        color: Colors.red,
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 16, bottom: 16, top: 30),
+                  child: Text(''),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.only(left: 16),
+                height: 150,
+                width: 250,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 5,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: const EdgeInsets.only(right: 20),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: Shimmer.fromColors(
+                          baseColor: const Color.fromARGB(255, 221, 221, 221),
+                          highlightColor: Colors.white,
+                          child: Container(
+                            width: 250,
+                            color: Colors.red,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                );
-              },
-            ),
+                    );
+                  },
+                ),
+              ),
+            ],
           );
         }
 
@@ -70,23 +78,32 @@ class _MyLastSeenSpacesState extends State<MyLastSeenSpaces> {
         }
 
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text("No spaces viewed recently."));
+          return Container();
         }
 
         final spaces = snapshot.data!;
 
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          height: 150,
-          child: ListView.builder(
-            clipBehavior: Clip.none,
-            scrollDirection: Axis.horizontal,
-            itemCount: spaces.length,
-            itemBuilder: (context, index) {
-              final space = spaces[index];
-              return EachLastSeen(space: space);
-            },
-          ),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(left: 16, bottom: 16, top: 30),
+              child: Text('Últimos vistos'),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              height: 150,
+              child: ListView.builder(
+                clipBehavior: Clip.none,
+                scrollDirection: Axis.horizontal,
+                itemCount: spaces.length,
+                itemBuilder: (context, index) {
+                  final space = spaces[index];
+                  return EachLastSeen(space: space);
+                },
+              ),
+            ),
+          ],
         );
       },
     );
