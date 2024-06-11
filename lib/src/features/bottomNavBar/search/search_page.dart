@@ -102,81 +102,112 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildSearchBox(double x, double y) {
+    Duration fadeInDuration = const Duration(milliseconds: 400);
     return Expanded(
       child: Column(
         children: [
-          Row(
-            children: [
-              Icon(Icons.search, color: Colors.purple[300]),
-              const SizedBox(width: 10.0),
-              Expanded(
-                child: Stack(
-                  children: [
-                    _controller.text.isEmpty
-                        ? RichText(
-                            text: TextSpan(
-                              style: TextStyle(color: Colors.blueGrey[500]),
-                              children: const <TextSpan>[
-                                TextSpan(text: 'Buscar no '),
-                                TextSpan(
-                                    text: 'Festou',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                              ],
-                            ),
-                          )
-                        : Container(
-                            height: 0,
-                          ),
-                    Column(
+          Padding(
+            padding:
+                EdgeInsets.symmetric(horizontal: x * 0.03, vertical: y * 0.02),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(8.0),
+                onTap: () {
+                  Navigator.of(context)
+                      .pushReplacementNamed('/home/search_page');
+                },
+                child: FadeInDown(
+                  duration: fadeInDuration,
+                  from: y * 0.1,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: x * 0.02, vertical: y * 0.01),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Row(
                       children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                onChanged: (value) {
-                                  searchViewModel.onChangedSearch(value);
-                                },
-                                controller: _controller,
-                                autofocus: true,
-                                decoration: const InputDecoration(
-                                  hintText: 'Buscar no Festou',
-                                  hintStyle:
-                                      TextStyle(color: Colors.transparent),
-                                  border: InputBorder.none,
-                                  isDense: true,
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 0, horizontal: 0),
-                                ),
-                                style: TextStyle(
-                                    color: Colors.blueGrey[900], fontSize: 12),
-                                cursorColor: Colors.blueGrey[900],
+                        Icon(Icons.search, color: Colors.purple[300]),
+                        const SizedBox(width: 10.0),
+                        Expanded(
+                          child: Stack(
+                            children: [
+                              _controller.text.isEmpty
+                                  ? RichText(
+                                      text: TextSpan(
+                                        style: TextStyle(
+                                            color: Colors.blueGrey[500]),
+                                        children: const <TextSpan>[
+                                          TextSpan(text: 'Buscar no '),
+                                          TextSpan(
+                                              text: 'Festou',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold)),
+                                        ],
+                                      ),
+                                    )
+                                  : Container(
+                                      height: 0,
+                                    ),
+                              Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextField(
+                                          onChanged: (value) {
+                                            searchViewModel
+                                                .onChangedSearch(value);
+                                          },
+                                          controller: _controller,
+                                          autofocus: true,
+                                          decoration: const InputDecoration(
+                                            hintText: 'Buscar no Festou',
+                                            hintStyle: TextStyle(
+                                                color: Colors.transparent),
+                                            border: InputBorder.none,
+                                            isDense: true,
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    vertical: 0, horizontal: 0),
+                                          ),
+                                          style: TextStyle(
+                                              color: Colors.blueGrey[900],
+                                              fontSize: 12),
+                                          cursorColor: Colors.blueGrey[900],
+                                        ),
+                                      ),
+                                      Visibility(
+                                        visible: _controller.text.isNotEmpty,
+                                        child: InkWell(
+                                          onTap: () {
+                                            _controller.clear();
+                                          },
+                                          child: Icon(
+                                            Icons.clear,
+                                            color: Colors.blueGrey[900],
+                                            size: 14,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 20,
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ),
-                            Visibility(
-                              visible: _controller.text.isNotEmpty,
-                              child: InkWell(
-                                onTap: () {
-                                  _controller.clear();
-                                },
-                                child: Icon(
-                                  Icons.clear,
-                                  color: Colors.blueGrey[900],
-                                  size: 14,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
               ),
-            ],
+            ),
           ),
         ],
       ),
