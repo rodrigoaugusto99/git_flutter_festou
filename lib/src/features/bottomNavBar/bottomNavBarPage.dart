@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/my%20favorite%20spaces%20mvvm/my_favorite_spaces_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/profile.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/search/search_page.dart';
@@ -38,12 +37,6 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
     setState(() {
       _currentIndex = index;
     });
-  }
-
-  void _onTabTapped(int index) {
-    _pageController.jumpToPage(
-      index,
-    );
   }
 
   @override
@@ -130,11 +123,6 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
               );
             },
           ),
-          // floatingActionButton: Image.asset(
-          //   'lib/assets/images/festou-logo.png',
-          //   scale: 5,
-          //   fit: BoxFit.cover,
-          // ),
           floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           body: PageView.builder(
             physics: const NeverScrollableScrollPhysics(),
