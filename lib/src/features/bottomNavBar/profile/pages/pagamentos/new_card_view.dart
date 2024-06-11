@@ -67,7 +67,7 @@ class _NewCardViewState extends State<NewCardView> {
                     height: screenWidth / 2,
                     width: screenWidth,
                     decoration: BoxDecoration(
-                      color: const Color(0xff9747FF),
+                      color: const Color(0xff4300B1),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Padding(

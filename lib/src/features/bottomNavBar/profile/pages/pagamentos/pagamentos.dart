@@ -69,6 +69,7 @@ class _PagamentosState extends State<Pagamentos> {
               text: 'Pix',
               icon: Image.asset('lib/assets/images/Pix Imagepix.png'),
               onTap: () {},
+              textColor: null,
             ),
             const SizedBox(height: 27),
             const Text(
@@ -95,7 +96,7 @@ class _PagamentosState extends State<Pagamentos> {
                     shape: const RoundedRectangleBorder(
                       side: BorderSide.none,
                     ),
-                    backgroundColor: const Color(0xff9747FF),
+                    backgroundColor: const Color(0xff4300B1),
                     title: Stack(
                       clipBehavior: Clip.none,
                       alignment: Alignment.center,
@@ -105,31 +106,34 @@ class _PagamentosState extends State<Pagamentos> {
                             child: Image.asset(
                                 'lib/assets/images/image 4carotn.png')),
                         const SizedBox(width: 10),
-                        const Text(
-                          'Pagar com Cartao de crédito',
-                          style: TextStyle(fontSize: 12, color: Colors.black),
-                        ),
+                        Text('Pagar com Cartao de crédito',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: isExpanded ? Colors.white : Colors.black,
+                            )),
                       ],
                     ),
                     children: <Widget>[
                       MyRow(
-                        hasMargin: true,
-                        color: selectedRows[0]
-                            ? const Color(0xff9747FF)
-                            : Colors.white,
-                        text: 'Cartao de crédito',
-                        icon:
-                            Image.asset('lib/assets/images/image 4carotn.png'),
-                        onTap: () {
-                          setState(() {
-                            selectedRows[0] = !selectedRows[0];
-                          });
-                        },
-                      ),
+                          hasMargin: true,
+                          color: selectedRows[0]
+                              ? const Color(0xff4300B1)
+                              : Colors.white,
+                          text: 'Cartao de crédito',
+                          icon: Image.asset(
+                              'lib/assets/images/image 4carotn.png'),
+                          onTap: () {
+                            setState(() {
+                              selectedRows[0] = !selectedRows[0];
+                            });
+                          },
+                          textColor: selectedRows[0]
+                              ? Colors.white
+                              : const Color(0xff4300B1)),
                       //const SizedBox(height: 12),
                       MyRow(
                         color: selectedRows[1]
-                            ? const Color(0xff9747FF)
+                            ? const Color(0xff4300B1)
                             : Colors.white,
                         text: 'Cartão Visa',
                         icon:
@@ -139,12 +143,13 @@ class _PagamentosState extends State<Pagamentos> {
                             selectedRows[1] = !selectedRows[1];
                           });
                         },
+                        textColor: selectedRows[0]
+                            ? Colors.white
+                            : const Color(0xff4300B1),
                       ),
                       //const SizedBox(height: 12),
                       MyRow(
-                        color: selectedRows[2]
-                            ? const Color(0xff9747FF)
-                            : Colors.white,
+                        color: null,
                         text: 'Adicionar novo cartão de crédito',
                         icon:
                             Image.asset('lib/assets/images/image 4xxdfad.png'),
@@ -159,6 +164,7 @@ class _PagamentosState extends State<Pagamentos> {
                             ),
                           );
                         },
+                        textColor: null,
                       ),
                       // Adicione mais opções conforme necessário
                     ],
@@ -176,7 +182,7 @@ class _PagamentosState extends State<Pagamentos> {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: const Color(0xff9747FF),
+                          color: const Color(0xff4300B1),
                         ),
                         height: 20,
                       ),
@@ -196,6 +202,7 @@ class _PagamentosState extends State<Pagamentos> {
     required Function()? onTap,
     bool? hasMargin,
     Color? color,
+    required Color? textColor,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -228,7 +235,7 @@ class _PagamentosState extends State<Pagamentos> {
                   ),
                   Text(
                     text,
-                    style: const TextStyle(fontSize: 12),
+                    style: TextStyle(fontSize: 12, color: textColor),
                   ),
                 ],
               ),
