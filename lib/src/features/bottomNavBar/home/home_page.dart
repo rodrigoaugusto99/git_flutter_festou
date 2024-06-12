@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/app_bar_home.dart';
@@ -12,8 +11,6 @@ import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/my_last_seen_spaces.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_page.dart';
-import 'package:lottie/lottie.dart';
-import 'package:svg_flutter/svg.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   final String? previousRoute;
@@ -51,10 +48,14 @@ class _HomePageState extends ConsumerState<HomePage> {
           data: (AllSpaceState data) {
             return CustomScrollView(
               slivers: [
+                const SliverToBoxAdapter(
+                    child: SizedBox(
+                  height: 20,
+                )),
                 const AppBarHome(),
                 const SliverToBoxAdapter(
                     child: SizedBox(
-                  height: 15,
+                  height: 20,
                 )),
                 const SliverToBoxAdapter(
                   child: MenuSpaceTypes(),

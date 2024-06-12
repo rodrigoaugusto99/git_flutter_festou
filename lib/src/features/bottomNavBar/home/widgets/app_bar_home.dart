@@ -68,7 +68,9 @@ class _AppBarMenuSpaceTypesState extends ConsumerState<AppBarHome> {
                                 ),
                               ),
                               TextSpan(
-                                text: user.displayName!.split(" ")[0],
+                                text: userModel != null
+                                    ? userModel!.name.split(" ")[0]
+                                    : "Usuário",
                                 style: const TextStyle(
                                   color: Color(0xff6100FF), // Cor roxa
                                   fontSize: 16,
