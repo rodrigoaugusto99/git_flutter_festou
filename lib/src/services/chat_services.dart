@@ -15,24 +15,17 @@ class ChatServices {
       receiverID: receiverID,
       message: message,
       timestamp: timestamp,
-      isSeen: false, // Inicialmente, a mensagem não foi vista
+      isSeen: false,
     );
 
     List<String> ids = [currentUserID, receiverID];
     ids.sort();
     String chatRoomID = ids.join('_');
 
-    // Adiciona ou atualiza o documento do chat room com a lista chatRoomIDs e o campo lastMessageTimestamp
+    // Adiciona o documento com a lista chatRoomIDs e define o ID como chatRoomID
     await _firestore.collection('chat_rooms').doc(chatRoomID).set(
-        {
-          'chatRoomIDs': ids,
-          'lastMessageTimestamp':
-              timestamp, // Atualiza o timestamp da última mensagem
-          'isTyping': false // Inicializa o campo isTyping
-        },
-        SetOptions(
-            merge:
-                true)); // Utiliza merge para não sobrescrever campos existentes
+        {'chatRoomIDs': ids, 'lastMessageTimestamp': timestamp},
+        SetOptions(merge: true));
 
     // Adiciona a mensagem à coleção messages no mesmo documento
     await _firestore
@@ -40,6 +33,32 @@ class ChatServices {
         .doc(chatRoomID)
         .collection('messages')
         .add(newMessage.toMap());
+  }
+
+  Future<void> setWritingState(String receiverID, bool isWriting) async {
+    final String currentUserID = _auth.currentUser!.uid;
+
+    List<String> ids = [currentUserID, receiverID];
+    ids.sort();
+    String chatRoomID = ids.join('_');
+
+    await _firestore.collection('chat_rooms').doc(chatRoomID).update({
+      'isWriting_$currentUserID': isWriting,
+    });
+  }
+
+  Stream<bool> isWriting(String userID) {
+    final String currentUserID = _auth.currentUser!.uid;
+
+    List<String> ids = [currentUserID, userID];
+    ids.sort();
+    String chatRoomID = ids.join('_');
+
+    return _firestore
+        .collection('chat_rooms')
+        .doc(chatRoomID)
+        .snapshots()
+        .map((snapshot) => snapshot.data()?['isWriting_$userID'] ?? false);
   }
 
   Future<void> setTypingStatus(String receiverID, bool isTyping) async {

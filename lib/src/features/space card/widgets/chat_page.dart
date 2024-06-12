@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
@@ -32,12 +34,43 @@ class _ChatPageState extends State<ChatPage> {
   bool notWait = false;
   String userID = FirebaseAuth.instance.currentUser!.uid;
   bool isTyping = false;
+  bool isWriting = false;
+  Timer? _writingTimer;
 
   @override
   void initState() {
     super.initState();
-    _chatServices.setTypingStatus(widget.receiverID, false);
-    messageEC.addListener(_handleTyping);
+
+    // Listener para detectar quando o usuário começa a escrever
+    messageEC.addListener(() {
+      setWritingState(messageEC.text.isNotEmpty);
+    });
+  }
+
+  @override
+  void dispose() {
+    messageEC.dispose();
+    _writingTimer?.cancel();
+    super.dispose();
+  }
+
+  void setWritingState(bool writing) {
+    if (isWriting != writing) {
+      setState(() {
+        isWriting = writing;
+      });
+      _chatServices.setWritingState(widget.receiverID, writing);
+
+      // Se o usuário estiver escrevendo, agende um timer para definir como false após 5 segundos de inatividade
+      if (writing) {
+        _writingTimer?.cancel();
+        _writingTimer = Timer(const Duration(seconds: 5), () {
+          setWritingState(false);
+        });
+      } else {
+        _writingTimer?.cancel();
+      }
+    }
   }
 
   void _handleTyping() {
@@ -52,13 +85,6 @@ class _ChatPageState extends State<ChatPage> {
       });
       _chatServices.setTypingStatus(widget.receiverID, false);
     }
-  }
-
-  @override
-  void dispose() {
-    _chatServices.setTypingStatus(widget.receiverID, false);
-    messageEC.removeListener(_handleTyping);
-    super.dispose();
   }
 
   Future<void> _markMessagesAsSeen() async {
@@ -422,25 +448,14 @@ class _ChatPageState extends State<ChatPage> {
       ),
       body: Column(
         children: [
-          StreamBuilder<DocumentSnapshot>(
-            stream: _chatServices.getTypingStatus(chatRoomID),
+          StreamBuilder<bool>(
+            stream: _chatServices.isWriting(widget.receiverID),
             builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return const Text("Error");
+              if (snapshot.hasData && snapshot.data == true) {
+                return Text('${widget.receiverID} está escrevendo...');
+              } else {
+                return Container();
               }
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const SizedBox.shrink();
-              }
-              bool isOtherUserTyping = snapshot.data!['isTyping'];
-              String otherUserName = snapshot.data!['chatRoomIDs']
-                  .firstWhere((id) => id != userID);
-
-              return isOtherUserTyping
-                  ? Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text("$otherUserName está digitando..."),
-                    )
-                  : const SizedBox.shrink();
             },
           ),
           StreamBuilder(
