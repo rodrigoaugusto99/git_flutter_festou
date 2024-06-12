@@ -283,8 +283,13 @@ class _MensagensState extends State<Mensagens> {
                       .data() as Map<String, dynamic>;
                   final lastMessage = lastMessageData['message']
                       .replaceAll('\n', ' ') as String;
-                  final lastMessageTime =
-                      (lastMessageData['timestamp'] as Timestamp).toDate();
+                  DateTime? lastMessageTime;
+                  if (lastMessageData['timestamp'] != null) {
+                    lastMessageTime =
+                        (lastMessageData['timestamp'] as Timestamp).toDate();
+                  } else {
+                    lastMessageTime = DateTime.now();
+                  }
 
                   return FutureBuilder<String>(
                     future: otherAvatarFuture,
@@ -360,7 +365,7 @@ class _MensagensState extends State<Mensagens> {
                                             ),
                                             Text(
                                               formatMessageDate(
-                                                  lastMessageTime),
+                                                  lastMessageTime!),
                                               style: const TextStyle(
                                                 fontSize: 10,
                                               ),

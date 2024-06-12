@@ -8,31 +8,36 @@ class ChatServices {
 
   Future<void> sendMessage(String receiverID, String message) async {
     final String currentUserID = _auth.currentUser!.uid;
-    final Timestamp timestamp = Timestamp.now();
-
-    MessageModel newMessage = MessageModel(
-      senderID: currentUserID,
-      receiverID: receiverID,
-      message: message,
-      timestamp: timestamp,
-      isSeen: false,
-    );
 
     List<String> ids = [currentUserID, receiverID];
     ids.sort();
     String chatRoomID = ids.join('_');
 
-    // Adiciona o documento com a lista chatRoomIDs e define o ID como chatRoomID
-    await _firestore.collection('chat_rooms').doc(chatRoomID).set(
-        {'chatRoomIDs': ids, 'lastMessageTimestamp': timestamp},
-        SetOptions(merge: true));
-
     // Adiciona a mensagem à coleção messages no mesmo documento
-    await _firestore
+    DocumentReference messageRef = _firestore
         .collection('chat_rooms')
         .doc(chatRoomID)
         .collection('messages')
-        .add(newMessage.toMap());
+        .doc();
+
+    await messageRef.set({
+      'senderID': currentUserID,
+      'receiverID': receiverID,
+      'message': message,
+      'timestamp': FieldValue.serverTimestamp(),
+      'isSeen': false
+    });
+
+    // Obtém o timestamp do servidor
+    DocumentSnapshot messageSnap = await messageRef.get();
+    if (messageSnap.exists && messageSnap.data() != null) {
+      Timestamp serverTimestamp = messageSnap['timestamp'];
+
+      // Atualiza o documento do chat room com o último timestamp da mensagem
+      await _firestore.collection('chat_rooms').doc(chatRoomID).set(
+          {'chatRoomIDs': ids, 'lastMessageTimestamp': serverTimestamp},
+          SetOptions(merge: true));
+    }
   }
 
   Future<void> setWritingState(String receiverID, bool isWriting) async {

@@ -56,34 +56,27 @@ class _ChatPageState extends State<ChatPage> {
 
   void setWritingState(bool writing) {
     if (isWriting != writing) {
-      setState(() {
-        isWriting = writing;
-      });
       _chatServices.setWritingState(widget.receiverID, writing);
+      isWriting = writing;
+      isWriting = false;
 
-      // Se o usuário estiver escrevendo, agende um timer para definir como false após 5 segundos de inatividade
       if (writing) {
         _writingTimer?.cancel();
         _writingTimer = Timer(const Duration(seconds: 5), () {
-          setWritingState(false);
+          if (!isWriting) {
+            _chatServices.setWritingState(widget.receiverID, false);
+          }
         });
       } else {
         _writingTimer?.cancel();
       }
-    }
-  }
-
-  void _handleTyping() {
-    if (messageEC.text.isNotEmpty && !isTyping) {
-      setState(() {
-        isTyping = true;
+    } else if (writing) {
+      _writingTimer?.cancel();
+      _writingTimer = Timer(const Duration(seconds: 5), () {
+        if (!isWriting) {
+          _chatServices.setWritingState(widget.receiverID, false);
+        }
       });
-      _chatServices.setTypingStatus(widget.receiverID, true);
-    } else if (messageEC.text.isEmpty && isTyping) {
-      setState(() {
-        isTyping = false;
-      });
-      _chatServices.setTypingStatus(widget.receiverID, false);
     }
   }
 
@@ -93,6 +86,7 @@ class _ChatPageState extends State<ChatPage> {
 
   void sendMessage() async {
     if (messageEC.text.isNotEmpty) {
+      _chatServices.setWritingState(widget.receiverID, false);
       await _chatServices.sendMessage(widget.receiverID, messageEC.text);
       messageEC.clear();
     }
@@ -353,20 +347,46 @@ class _ChatPageState extends State<ChatPage> {
               ),
             ),
             Expanded(
-              child: FutureBuilder<String>(
-                future: getNameById(widget.receiverID),
-                builder: (context, snapshot) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Text(
-                      snapshot.data ?? 'Usuário',
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontFamily: 'Inter'),
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  );
-                },
+              child: Column(
+                children: [
+                  FutureBuilder<String>(
+                    future: getNameById(widget.receiverID),
+                    builder: (context, snapshot) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Text(
+                          snapshot.data ?? 'Usuário',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontFamily: 'Inter'),
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      );
+                    },
+                  ),
+                  StreamBuilder<bool>(
+                    stream: _chatServices.isWriting(widget.receiverID),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData && snapshot.data == true) {
+                        return FutureBuilder<String>(
+                          future: getNameById(widget.receiverID),
+                          builder: (context, snapshotName) {
+                            if (snapshotName.data == null) {
+                              return Container();
+                            } else {
+                              return Text(
+                                '${snapshotName.data!.split(" ")[0]} está digitando...',
+                                style: const TextStyle(fontSize: 11),
+                              );
+                            }
+                          },
+                        );
+                      } else {
+                        return Container();
+                      }
+                    },
+                  ),
+                ],
               ),
             ),
             FutureBuilder<String>(
@@ -448,26 +468,6 @@ class _ChatPageState extends State<ChatPage> {
       ),
       body: Column(
         children: [
-          StreamBuilder<bool>(
-            stream: _chatServices.isWriting(widget.receiverID),
-            builder: (context, snapshot) {
-              if (snapshot.hasData && snapshot.data == true) {
-                return FutureBuilder<String>(
-                  future: getNameById(widget.receiverID),
-                  builder: (context, snapshotName) {
-                    if (snapshotName.data == null) {
-                      return Container();
-                    } else {
-                      return Text(
-                          '${snapshotName.data!.split(" ")[0]} está escrevendo...');
-                    }
-                  },
-                );
-              } else {
-                return Container();
-              }
-            },
-          ),
           StreamBuilder(
             stream: _chatServices.getMessages(userID, widget.receiverID),
             builder: (context, snapshot) {
@@ -519,7 +519,13 @@ class _ChatPageState extends State<ChatPage> {
 
     double marginBottom = isSameUserAsNext ? 2 : 16;
 
-    Timestamp timestamp = data['timestamp'] as Timestamp;
+    Timestamp? timestamp;
+    if (data.containsKey('timestamp') && data['timestamp'] != null) {
+      timestamp = data['timestamp'] as Timestamp;
+    } else {
+      // Handle the case where the timestamp is null, for example by setting a default value
+      timestamp = Timestamp.now();
+    }
     bool isSeen = data['isSeen'] ?? false;
 
     return GestureDetector(
