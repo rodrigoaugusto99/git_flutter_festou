@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
-import 'package:git_flutter_festou/src/features/register/space/space_register_page.dart';
+import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/my_sliver_list_to_card_info.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_vm.dart';
@@ -73,11 +73,10 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
               SliverToBoxAdapter(
                 child: InkWell(
                     onTap: () {
-                      Navigator.of(context).push(
+                      Navigator.push(
+                        context,
                         MaterialPageRoute(
-                          builder: (context) {
-                            return const EspacoRegisterPage();
-                          },
+                          builder: (context) => const NewSpaceRegister(),
                         ),
                       );
                     },

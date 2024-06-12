@@ -116,37 +116,35 @@ class _PagamentosState extends State<Pagamentos> {
                     children: <Widget>[
                       MyRow(
                           hasMargin: true,
-                          color: selectedRows[0]
-                              ? const Color(0xff4300B1)
-                              : Colors.white,
+                          color: Colors.white,
                           text: 'Cartao de crédito',
                           icon: Image.asset(
                               'lib/assets/images/image 4carotn.png'),
                           onTap: () {
-                            setState(() {
-                              selectedRows[0] = !selectedRows[0];
-                            });
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => NewCardView(),
+                              ),
+                            );
                           },
-                          textColor: selectedRows[0]
-                              ? Colors.white
-                              : const Color(0xff4300B1)),
+                          textColor: const Color(0xff4300B1)),
+
                       //const SizedBox(height: 12),
                       MyRow(
-                        color: selectedRows[1]
-                            ? const Color(0xff4300B1)
-                            : Colors.white,
-                        text: 'Cartão Visa',
-                        icon:
-                            Image.asset('lib/assets/images/image 4carotn.png'),
-                        onTap: () {
-                          setState(() {
-                            selectedRows[1] = !selectedRows[1];
-                          });
-                        },
-                        textColor: selectedRows[0]
-                            ? Colors.white
-                            : const Color(0xff4300B1),
-                      ),
+                          color: Colors.white,
+                          text: 'Cartão Visa',
+                          icon: Image.asset(
+                              'lib/assets/images/image 4carotn.png'),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => NewCardView(),
+                              ),
+                            );
+                          },
+                          textColor: const Color(0xff4300B1)),
                       //const SizedBox(height: 12),
                       MyRow(
                         color: null,
@@ -154,13 +152,12 @@ class _PagamentosState extends State<Pagamentos> {
                         icon:
                             Image.asset('lib/assets/images/image 4xxdfad.png'),
                         onTap: () {
-                          setState(() {
-                            selectedRows[2] = !selectedRows[2];
-                          });
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const NewCardView(),
+                              builder: (context) => NewCardView(
+                                isNew: true,
+                              ),
                             ),
                           );
                         },

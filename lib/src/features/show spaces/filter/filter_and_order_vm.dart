@@ -1,3 +1,7 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
@@ -13,6 +17,39 @@ class FilterAndOrderVm extends _$FilterAndOrderVm {
   List<SpaceModel> spacesFilterService = [];
   List<SpaceModel> spacesFilterDays = [];
   String errorMessage = '';
+  final CollectionReference spacesCollection =
+      FirebaseFirestore.instance.collection('spaces');
+
+  final CollectionReference usersCollection =
+      FirebaseFirestore.instance.collection('users');
+
+  final user = FirebaseAuth.instance.currentUser!;
+
+  void addOrRemoveNote(String note) {
+    final allNotes = ['1', '2', '3', '4', '5'];
+    final selectedNotes = <String>[];
+
+    // Remover o '+' da nota clicada
+    String cleanNote = note.replaceAll('+', '');
+
+    // Encontrar o índice da nota clicada
+    int startIndex = allNotes.indexOf(cleanNote);
+
+    // Adicionar todas as notas a partir do índice da nota clicada
+    if (startIndex != -1) {
+      // Verifica se o índice é válido
+      for (int i = startIndex; i < allNotes.length; i++) {
+        selectedNotes.add(allNotes[i]);
+      }
+    }
+
+    // Atualizar o estado com as novas notas selecionadas
+    state = state.copyWith(
+        selectedNotes: selectedNotes,
+        status: FilterAndOrderStateStatus.initial);
+
+    log(selectedNotes.toString());
+  }
 
   void addOrRemoveAvailableDay(String weekDay) {
     final availableDays = state.availableDays;
@@ -73,74 +110,162 @@ class FilterAndOrderVm extends _$FilterAndOrderVm {
       :selectedTypes,
       :availableDays,
       :selectedServices,
+      :selectedNotes
     ) = state;
 
-    final spaceFirestoreRepository = ref.read(spaceFirestoreRepositoryProvider);
+    // Step 1: Query to get documents containing all the days
+    Query query = FirebaseFirestore.instance.collection('spaces');
 
-    final filterResultSpaceByType = await spaceFirestoreRepository
-        .getSpacesBySelectedTypes(selectedTypes: selectedTypes);
-
-    switch (filterResultSpaceByType) {
-      case Success(value: final filteredSpacesData):
-        spacesFilterType = filteredSpacesData;
-        break;
-      case Failure(exception: RepositoryException(:final message)):
-        state = state.copyWith(
-          status: FilterAndOrderStateStatus.error,
-          filteredSpaces: [],
-          errorMessage: () => message,
-        );
+    for (String day in availableDays) {
+      query = query.where('days', arrayContains: day);
     }
 
-    final filterResultSpaceByService =
-        await spaceFirestoreRepository.getSpacesBySelectedServices(
+    // Execute the query for days
+    QuerySnapshot daysSnapshot = await query.get();
+    List<DocumentSnapshot> filteredByDays = daysSnapshot.docs;
+
+    // Step 2: Filter by selectedServices
+    filteredByDays = filteredByDays.where((doc) {
+      List<dynamic> services = doc['selectedServices'];
+      return selectedServices.every((service) => services.contains(service));
+    }).toList();
+
+    // Step 3: Filter by selectedTypes
+    List<DocumentSnapshot> finalFiltered = filteredByDays.where((doc) {
+      List<dynamic> types = doc['selectedTypes'];
+      return selectedTypes.every((type) => types.contains(type));
+    }).toList();
+
+    // Step 4: Filter by selectedNotes
+    if (selectedNotes.isNotEmpty) {
+      // Convert selectedNotes to double and find the minimum value
+      double minSelectedNote = selectedNotes
+          .map((note) => double.parse(note.replaceAll('+', '')))
+          .reduce((a, b) => a < b ? a : b);
+
+      finalFiltered = finalFiltered.where((doc) {
+        double averageRating = double.parse(doc['average_rating']);
+        return averageRating >= minSelectedNote;
+      }).toList();
+    }
+
+    final userSpacesFavorite = await getUserFavoriteSpaces();
+
+    // Map the finalFiltered documents to SpaceModel objects
+    List<SpaceModel> spaceModels = [];
+    spaceModels = await Future.wait(finalFiltered.map((spaceDocument) {
+      final isFavorited =
+          userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
+      return mapSpaceDocumentToModel(spaceDocument, isFavorited);
+    }).toList());
+    state = state.copyWith(
+      status: FilterAndOrderStateStatus.success,
+      filteredSpaces: spaceModels,
+    );
+  }
+
+  Future<List<String>?> getUserFavoriteSpaces() async {
+    final userDocument = await getUserDocument();
+
+    final userData = userDocument.data() as Map<String, dynamic>;
+
+    if (userData.containsKey('spaces_favorite')) {
+      return List<String>.from(userData['spaces_favorite'] ?? []);
+    }
+
+    return null;
+  }
+
+  Future<DocumentSnapshot> getUserDocument() async {
+    final userDocument =
+        await usersCollection.where('uid', isEqualTo: user.uid).get();
+
+    if (userDocument.docs.isNotEmpty) {
+      return userDocument.docs[0]; // Retorna o primeiro documento encontrado.
+    }
+
+    // Trate o caso em que nenhum usuário foi encontrado.
+    //se esse erro ocorrer la numm metodo que chama getUsrDocument, o (e) do catch vai ter essa msg
+    throw Exception("Usuário n encontrado");
+    //! erro as vezes, se deletar a conta com google e criar de novo rapidao, o
+    //!documento no firestore e auth estão certos, com o mesmo id, mas o objeto user do auth que o programa
+    //!carrega primeiramente é o anterior já excluido, com o uid antigo
+  }
+
+  Future<String> getAverageRating(String spaceId) async {
+    final spaceDocument =
+        await spacesCollection.where('space_id', isEqualTo: spaceId).get();
+
+    if (spaceDocument.docs.isNotEmpty) {
+      String averageRatingValue = spaceDocument.docs.first['average_rating'];
+      return averageRatingValue;
+    }
+
+    // Trate o caso em que nenhum espaço foi encontrado.
+    throw Exception("Espaço não encontrado");
+  }
+
+  Future<String> getNumComments(String spaceId) async {
+    final spaceDocument =
+        await spacesCollection.where('space_id', isEqualTo: spaceId).get();
+
+    if (spaceDocument.docs.isNotEmpty) {
+      String numComments = spaceDocument.docs.first['num_comments'];
+      return numComments;
+    }
+
+    // Trate o caso em que nenhum espaço foi encontrado.
+    throw Exception("Espaço não encontrado");
+  }
+
+  Future<SpaceModel> mapSpaceDocumentToModel(
+    DocumentSnapshot spaceDocument,
+    bool isFavorited,
+  ) async {
+    // Pegando os dados necessários antes de criar o card
+    List<String> selectedTypes =
+        List<String>.from(spaceDocument['selectedTypes'] ?? []);
+    List<String> selectedServices =
+        List<String>.from(spaceDocument['selectedServices'] ?? []);
+    List<String> imagesUrl =
+        List<String>.from(spaceDocument['images_url'] ?? []);
+    List<String> days = List<String>.from(spaceDocument['days'] ?? []);
+
+    String spaceId = spaceDocument.get('space_id');
+    final averageRating = await getAverageRating(spaceId);
+    final numComments = await getNumComments(spaceId);
+
+    return SpaceModel(
+      isFavorited: isFavorited,
+      spaceId: spaceDocument['space_id'] ?? '',
+      userId: spaceDocument['user_id'] ?? '',
+      titulo: spaceDocument['titulo'] ?? '',
+      cep: spaceDocument['cep'] ?? '',
+      logradouro: spaceDocument['logradouro'] ?? '',
+      numero: spaceDocument['numero'] ?? '',
+      bairro: spaceDocument['bairro'] ?? '',
+      cidade: spaceDocument['cidade'] ?? '',
+      selectedTypes: selectedTypes,
       selectedServices: selectedServices,
+      averageRating: averageRating,
+      numComments: numComments,
+      locadorName: spaceDocument['locador_name'] ?? '',
+      descricao: spaceDocument['descricao'] ?? '',
+      city: spaceDocument['city'] ?? '',
+      imagesUrl: imagesUrl,
+      latitude: spaceDocument['latitude'] ?? 0.0,
+      longitude: spaceDocument['longitude'] ?? 0.0,
+      locadorAvatarUrl: spaceDocument['locadorAvatarUrl'] ?? '',
+      startTime: spaceDocument['startTime'] ?? '',
+      endTime: spaceDocument['endTime'] ?? '',
+      days: days,
+      preco: spaceDocument['preco'] ?? '',
+      cnpjEmpresaLocadora: spaceDocument['cnpj_empresa_locadora'] ?? '',
+      estado: spaceDocument['estado'] ?? '',
+      locadorCpf: spaceDocument['locador_cpf'] ?? '',
+      nomeEmpresaLocadora: spaceDocument['nome_empresa_locadora'] ?? '',
+      locadorAssinatura: spaceDocument['locador_assinatura'] ?? '',
+      numLikes: spaceDocument['num_likes'] ?? 0,
     );
-
-    switch (filterResultSpaceByService) {
-      case Success(value: final filteredSpacesData):
-        spacesFilterService = filteredSpacesData;
-        break;
-      case Failure(exception: RepositoryException(:final message)):
-        state = state.copyWith(
-          status: FilterAndOrderStateStatus.error,
-          filteredSpaces: [],
-          errorMessage: () => message,
-        );
-    }
-    final filterResultSpaceByDay =
-        await spaceFirestoreRepository.getSpacesByAvailableDays(
-      availableDays: availableDays,
-    );
-
-    switch (filterResultSpaceByDay) {
-      case Success(value: final filteredSpacesData):
-        spacesFilterDays = filteredSpacesData;
-        break;
-      case Failure(exception: RepositoryException(:final message)):
-        state = state.copyWith(
-          status: FilterAndOrderStateStatus.error,
-          filteredSpaces: [],
-          errorMessage: () => message,
-        );
-    }
-
-    final spaces = await spaceFirestoreRepository.filterSpaces(
-        spacesFilterType, spacesFilterService, spacesFilterDays);
-
-    switch (spaces) {
-      case Success(value: final filteredSpacesData):
-        state = state.copyWith(
-          status: FilterAndOrderStateStatus.success,
-          filteredSpaces: filteredSpacesData,
-        );
-        break;
-      case Failure(exception: RepositoryException(:final message)):
-        state = state.copyWith(
-          status: FilterAndOrderStateStatus.error,
-          filteredSpaces: [],
-          errorMessage: () => message,
-        );
-    }
   }
 }

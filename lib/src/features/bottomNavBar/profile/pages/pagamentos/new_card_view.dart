@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
 
 class NewCardView extends StatefulWidget {
-  const NewCardView({super.key});
+  bool? isNew;
+  NewCardView({
+    super.key,
+    this.isNew = false,
+  });
 
   @override
   State<NewCardView> createState() => _NewCardViewState();

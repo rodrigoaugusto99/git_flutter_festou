@@ -88,7 +88,7 @@ class _FilterAndOrderPageState extends ConsumerState<FilterAndOrderPage> {
                     text: 'MÉDIA de avaliações',
                     onNotePressed: (String value) {
                       //log('onNotePressed: $value');
-                      //spaceFilterVm.addOrRemoveNote(value);
+                      filterAnOrderVm.addOrRemoveNote(value);
                     },
                   ),
                   Align(

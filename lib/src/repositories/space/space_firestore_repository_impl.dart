@@ -30,8 +30,6 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
 
   final user = FirebaseAuth.instance.currentUser!;
 
-  
-
   @override
   Future<Either<RepositoryException, Nil>> saveSpace(
       ({
@@ -82,35 +80,41 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
             final locadorName = await getLocadorName(spaceData.userId);
             final locadorAvatar = await getLocadorAvatar(spaceData.userId);
             final locadorModel = await getLocadorModel(spaceData.userId);
-            if (locadorModel != null) {
-              log('entrou no localModel != dd d dd');
-              Map<String, dynamic> newSpace = {
-                'space_id': spaceData.spaceId,
-                'user_id': locadorModel.id,
-                'titulo': spaceData.titulo,
-                'cep': spaceData.cep,
-                'logradouro': spaceData.logradouro,
-                'numero': spaceData.numero,
-                'bairro': spaceData.bairro,
-                'cidade': spaceData.cidade,
-                'selectedTypes': spaceData.selectedTypes,
-                'selectedServices': spaceData.selectedServices,
-                'average_rating': '0',
-                'num_comments': '0',
-                'locador_name': locadorModel.name,
-                'descricao': spaceData.descricao,
-                'city': 'xxxx',
-                'images_url': imagesData,
-                'latitude': spaceData.latitude,
-                'longitude': spaceData.longitude,
-                'locadorAvatarUrl': locadorModel.avatarUrl,
-                'startTime': spaceData.startTime,
-                'endTime': spaceData.endTime,
-                'days': spaceData.days,
-                'preco': spaceData.preco,
-              };
-              await spacesCollection.add(newSpace);
-            }
+            // if (locadorModel != null) {
+            //   log('entrou no localModel != dd d dd');
+            //   Map<String, dynamic> newSpace = {
+            //     'space_id': spaceData.spaceId,
+            //     'user_id': locadorModel.id,
+            //     'titulo': spaceData.titulo,
+            //     'cep': spaceData.cep,
+            //     'logradouro': spaceData.logradouro,
+            //     'numero': spaceData.numero,
+            //     'bairro': spaceData.bairro,
+            //     'cidade': spaceData.cidade,
+            //     'selectedTypes': spaceData.selectedTypes,
+            //     'selectedServices': spaceData.selectedServices,
+            //     'average_rating': '0',
+            //     'num_comments': '0',
+            //     'locador_name': locadorModel.name,
+            //     'descricao': spaceData.descricao,
+            //     'city': 'xxxx',
+            //     'images_url': imagesData,
+            //     'latitude': spaceData.latitude,
+            //     'longitude': spaceData.longitude,
+            //     'locadorAvatarUrl': locadorModel.avatarUrl,
+            //     'startTime': spaceData.startTime,
+            //     'endTime': spaceData.endTime,
+            //     'days': spaceData.days,
+            //     'preco': spaceData.preco,
+            //     'cnpj_empresa_locadora': 'estatico ainda',
+            //     'estado': 'estatico ainda',
+            //     'locador_assinatura': 'estatico ainda',
+            //     'locador_cpf': 'estatico ainda',
+            //     'nome_empresa_locadora': 'estatico ainda',
+            //     'num_likes': 0,
+            //   };
+            //   await spacesCollection.add(newSpace);
+            // }
 
             Map<String, dynamic> newSpace = {
               'space_id': spaceData.spaceId,
@@ -136,6 +140,12 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
               'endTime': spaceData.endTime,
               'days': spaceData.days,
               'preco': spaceData.preco,
+              'cnpj_empresa_locadora': 'estatico ainda',
+              'estado': 'estatico ainda',
+              'locador_assinatura': 'estatico ainda',
+              'locador_cpf': 'estatico ainda',
+              'nome_empresa_locadora': 'estatico ainda',
+              'num_likes': 0,
             };
             await spacesCollection.add(newSpace);
 
