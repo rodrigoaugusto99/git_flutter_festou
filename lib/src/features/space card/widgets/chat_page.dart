@@ -452,7 +452,17 @@ class _ChatPageState extends State<ChatPage> {
             stream: _chatServices.isWriting(widget.receiverID),
             builder: (context, snapshot) {
               if (snapshot.hasData && snapshot.data == true) {
-                return Text('${widget.receiverID} está escrevendo...');
+                return FutureBuilder<String>(
+                  future: getNameById(widget.receiverID),
+                  builder: (context, snapshotName) {
+                    if (snapshotName.data == null) {
+                      return Container();
+                    } else {
+                      return Text(
+                          '${snapshotName.data!.split(" ")[0]} está escrevendo...');
+                    }
+                  },
+                );
               } else {
                 return Container();
               }
