@@ -31,6 +31,35 @@ class _ChatPageState extends State<ChatPage> {
   bool isEmojiVisible = false;
   bool notWait = false;
   String userID = FirebaseAuth.instance.currentUser!.uid;
+  bool isTyping = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _chatServices.setTypingStatus(widget.receiverID, false);
+    messageEC.addListener(_handleTyping);
+  }
+
+  void _handleTyping() {
+    if (messageEC.text.isNotEmpty && !isTyping) {
+      setState(() {
+        isTyping = true;
+      });
+      _chatServices.setTypingStatus(widget.receiverID, true);
+    } else if (messageEC.text.isEmpty && isTyping) {
+      setState(() {
+        isTyping = false;
+      });
+      _chatServices.setTypingStatus(widget.receiverID, false);
+    }
+  }
+
+  @override
+  void dispose() {
+    _chatServices.setTypingStatus(widget.receiverID, false);
+    messageEC.removeListener(_handleTyping);
+    super.dispose();
+  }
 
   Future<void> _markMessagesAsSeen() async {
     await _chatServices.markMessagesAsSeen(widget.receiverID);
@@ -262,6 +291,8 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    String chatRoomID = _chatServices.getChatRoomId(userID, widget.receiverID);
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -391,6 +422,27 @@ class _ChatPageState extends State<ChatPage> {
       ),
       body: Column(
         children: [
+          StreamBuilder<DocumentSnapshot>(
+            stream: _chatServices.getTypingStatus(chatRoomID),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return const Text("Error");
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const SizedBox.shrink();
+              }
+              bool isOtherUserTyping = snapshot.data!['isTyping'];
+              String otherUserName = snapshot.data!['chatRoomIDs']
+                  .firstWhere((id) => id != userID);
+
+              return isOtherUserTyping
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("$otherUserName está digitando..."),
+                    )
+                  : const SizedBox.shrink();
+            },
+          ),
           StreamBuilder(
             stream: _chatServices.getMessages(userID, widget.receiverID),
             builder: (context, snapshot) {

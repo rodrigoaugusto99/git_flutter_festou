@@ -22,11 +22,17 @@ class ChatServices {
     ids.sort();
     String chatRoomID = ids.join('_');
 
-    // Adiciona o documento com a lista chatRoomIDs e define o ID como chatRoomID
-    await _firestore
-        .collection('chat_rooms')
-        .doc(chatRoomID)
-        .set({'chatRoomIDs': ids});
+    // Adiciona ou atualiza o documento do chat room com a lista chatRoomIDs e o campo lastMessageTimestamp
+    await _firestore.collection('chat_rooms').doc(chatRoomID).set(
+        {
+          'chatRoomIDs': ids,
+          'lastMessageTimestamp':
+              timestamp, // Atualiza o timestamp da última mensagem
+          'isTyping': false // Inicializa o campo isTyping
+        },
+        SetOptions(
+            merge:
+                true)); // Utiliza merge para não sobrescrever campos existentes
 
     // Adiciona a mensagem à coleção messages no mesmo documento
     await _firestore
@@ -34,6 +40,28 @@ class ChatServices {
         .doc(chatRoomID)
         .collection('messages')
         .add(newMessage.toMap());
+  }
+
+  Future<void> setTypingStatus(String receiverID, bool isTyping) async {
+    final String currentUserID = _auth.currentUser!.uid;
+    List<String> ids = [currentUserID, receiverID];
+    ids.sort();
+    String chatRoomID = ids.join('_');
+
+    await _firestore
+        .collection('chat_rooms')
+        .doc(chatRoomID)
+        .set({'isTyping': isTyping}, SetOptions(merge: true));
+  }
+
+  Stream<DocumentSnapshot> getTypingStatus(String chatRoomID) {
+    return _firestore.collection('chat_rooms').doc(chatRoomID).snapshots();
+  }
+
+  String getChatRoomId(String userID, String receiverID) {
+    List<String> ids = [userID, receiverID];
+    ids.sort();
+    return ids.join('_');
   }
 
   Stream<QuerySnapshot> getMessages(String userID, String otherUserID) {
