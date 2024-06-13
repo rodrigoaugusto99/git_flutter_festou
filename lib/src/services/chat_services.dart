@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:git_flutter_festou/src/models/message_model.dart';
 
 class ChatServices {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -40,48 +39,6 @@ class ChatServices {
     }
   }
 
-  Future<void> setWritingState(String receiverID, bool isWriting) async {
-    final String currentUserID = _auth.currentUser!.uid;
-
-    List<String> ids = [currentUserID, receiverID];
-    ids.sort();
-    String chatRoomID = ids.join('_');
-
-    await _firestore.collection('chat_rooms').doc(chatRoomID).update({
-      'isWriting_$currentUserID': isWriting,
-    });
-  }
-
-  Stream<bool> isWriting(String userID) {
-    final String currentUserID = _auth.currentUser!.uid;
-
-    List<String> ids = [currentUserID, userID];
-    ids.sort();
-    String chatRoomID = ids.join('_');
-
-    return _firestore
-        .collection('chat_rooms')
-        .doc(chatRoomID)
-        .snapshots()
-        .map((snapshot) => snapshot.data()?['isWriting_$userID'] ?? false);
-  }
-
-  Future<void> setTypingStatus(String receiverID, bool isTyping) async {
-    final String currentUserID = _auth.currentUser!.uid;
-    List<String> ids = [currentUserID, receiverID];
-    ids.sort();
-    String chatRoomID = ids.join('_');
-
-    await _firestore
-        .collection('chat_rooms')
-        .doc(chatRoomID)
-        .set({'isTyping': isTyping}, SetOptions(merge: true));
-  }
-
-  Stream<DocumentSnapshot> getTypingStatus(String chatRoomID) {
-    return _firestore.collection('chat_rooms').doc(chatRoomID).snapshots();
-  }
-
   String getChatRoomId(String userID, String receiverID) {
     List<String> ids = [userID, receiverID];
     ids.sort();
@@ -116,8 +73,15 @@ class ChatServices {
         .where('isSeen', isEqualTo: false)
         .get();
 
+    WriteBatch batch = _firestore.batch();
+
+    //O Firestore tem um limite de 500 operações por batch.
+    //Se for preciso atualizar mais de 500 documentos,
+    //precisará dividir as operações em múltiplos batches.
     for (var doc in messagesSnapshot.docs) {
-      await doc.reference.update({'isSeen': true});
+      batch.update(doc.reference, {'isSeen': true});
     }
+
+    await batch.commit();
   }
 }

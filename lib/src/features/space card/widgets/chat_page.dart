@@ -34,17 +34,11 @@ class _ChatPageState extends State<ChatPage> {
   bool notWait = false;
   String userID = FirebaseAuth.instance.currentUser!.uid;
   bool isTyping = false;
-  bool isWriting = false;
   Timer? _writingTimer;
 
   @override
   void initState() {
     super.initState();
-
-    // Listener para detectar quando o usuário começa a escrever
-    messageEC.addListener(() {
-      setWritingState(messageEC.text.isNotEmpty);
-    });
   }
 
   @override
@@ -54,39 +48,12 @@ class _ChatPageState extends State<ChatPage> {
     super.dispose();
   }
 
-  void setWritingState(bool writing) {
-    if (isWriting != writing) {
-      _chatServices.setWritingState(widget.receiverID, writing);
-      isWriting = writing;
-      isWriting = false;
-
-      if (writing) {
-        _writingTimer?.cancel();
-        _writingTimer = Timer(const Duration(seconds: 5), () {
-          if (!isWriting) {
-            _chatServices.setWritingState(widget.receiverID, false);
-          }
-        });
-      } else {
-        _writingTimer?.cancel();
-      }
-    } else if (writing) {
-      _writingTimer?.cancel();
-      _writingTimer = Timer(const Duration(seconds: 5), () {
-        if (!isWriting) {
-          _chatServices.setWritingState(widget.receiverID, false);
-        }
-      });
-    }
-  }
-
   Future<void> _markMessagesAsSeen() async {
     await _chatServices.markMessagesAsSeen(widget.receiverID);
   }
 
   void sendMessage() async {
     if (messageEC.text.isNotEmpty) {
-      _chatServices.setWritingState(widget.receiverID, false);
       await _chatServices.sendMessage(widget.receiverID, messageEC.text);
       messageEC.clear();
     }
@@ -347,46 +314,20 @@ class _ChatPageState extends State<ChatPage> {
               ),
             ),
             Expanded(
-              child: Column(
-                children: [
-                  FutureBuilder<String>(
-                    future: getNameById(widget.receiverID),
-                    builder: (context, snapshot) {
-                      return Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Text(
-                          snapshot.data ?? 'Usuário',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontFamily: 'Inter'),
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      );
-                    },
-                  ),
-                  StreamBuilder<bool>(
-                    stream: _chatServices.isWriting(widget.receiverID),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData && snapshot.data == true) {
-                        return FutureBuilder<String>(
-                          future: getNameById(widget.receiverID),
-                          builder: (context, snapshotName) {
-                            if (snapshotName.data == null) {
-                              return Container();
-                            } else {
-                              return Text(
-                                '${snapshotName.data!.split(" ")[0]} está digitando...',
-                                style: const TextStyle(fontSize: 11),
-                              );
-                            }
-                          },
-                        );
-                      } else {
-                        return Container();
-                      }
-                    },
-                  ),
-                ],
+              child: FutureBuilder<String>(
+                future: getNameById(widget.receiverID),
+                builder: (context, snapshot) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      snapshot.data ?? 'Usuário',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontFamily: 'Inter'),
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                },
               ),
             ),
             FutureBuilder<String>(
