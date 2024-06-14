@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/each_post.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/post_single_page.dart';
 import 'package:git_flutter_festou/src/models/post_model.dart';
 import 'package:git_flutter_festou/src/services/post_service.dart';
 import 'package:shimmer/shimmer.dart';
@@ -79,8 +81,20 @@ class _FeedNoticiasState extends State<FeedNoticias> {
                   log('entroui');
                   return Row(
                     children: [
-                      EachPost(
-                        post: post,
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return PostSinglePage(postModel: posts[index]);
+                              },
+                            ),
+                          );
+                        },
+                        child: EachPost(
+                          post: post,
+                        ),
                       ),
                       const SizedBox(
                         height: 244,
@@ -102,8 +116,20 @@ class _FeedNoticiasState extends State<FeedNoticias> {
                     ],
                   );
                 }
-                return EachPost(
-                  post: post,
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return PostSinglePage(postModel: posts[index]);
+                        },
+                      ),
+                    );
+                  },
+                  child: EachPost(
+                    post: post,
+                  ),
                 );
               },
             ),
