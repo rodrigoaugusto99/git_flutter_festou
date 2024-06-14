@@ -97,7 +97,9 @@ class _EachPostState extends State<EachPost> {
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network(
                       height: 250,
-                      widget.post.imagens[0],
+                      widget.post.imagens.length > 1
+                          ? widget.post.imagens[1]
+                          : widget.post.imagens[0],
                       fit: BoxFit.cover,
                     ),
                   ),

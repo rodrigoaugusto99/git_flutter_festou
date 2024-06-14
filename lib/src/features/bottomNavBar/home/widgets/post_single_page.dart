@@ -58,7 +58,20 @@ class PostSinglePage extends StatelessWidget {
                     },
                     child: Hero(
                       tag: postModel.imagens[index],
-                      child: Image.network(postModel.imagens[index]),
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(18),
+                          color: Colors.grey[200],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.network(
+                            postModel.imagens[index],
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
                     ),
                   );
                 },
