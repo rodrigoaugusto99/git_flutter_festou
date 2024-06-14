@@ -110,21 +110,7 @@ class PostService {
           List<DocumentSnapshot> postDocuments = [];
 
 //todo: paginacao limit(10)
-/*
-firestore.collection('items')
-  .where('status', '==', 'active')
-  .orderBy('timestamp', 'desc')
-  .limit(pageSize)
-  .get()
-  .then((snapshot) => {
-    if (!snapshot.empty) {
-      const lastVisible = snapshot.docs[snapshot.docs.length - 1];
-      snapshot.forEach((doc) => {
-        console.log(doc.id, ' => ', doc.data());
-      });
-    }
-  });
- */
+
           for (var space in spaceFavorites) {
             QuerySnapshot postsSnapshot = await firestore
                 .collection('posts')
@@ -139,6 +125,20 @@ firestore.collection('items')
               postDocuments.add(post);
             }
           }
+
+// firestore.collection('items')
+//   .where('status', '==', 'active')
+//   .orderBy('timestamp', 'desc')
+//   .limit(pageSize).
+//   .get()
+//   .then((snapshot) => {
+//     if (!snapshot.empty) {
+//       const lastVisible = snapshot.docs[snapshot.docs.length - 1];
+//       snapshot.forEach((doc) => {
+//         console.log(doc.id, ' => ', doc.data());
+//       });
+//     }
+//   });
 
           List<PostModel> postModels = [];
           //postDocuments.where((element) => false);

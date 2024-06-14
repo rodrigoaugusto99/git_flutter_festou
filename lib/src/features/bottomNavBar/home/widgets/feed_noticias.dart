@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -72,6 +73,35 @@ class _FeedNoticiasState extends State<FeedNoticias> {
               itemCount: posts.length,
               itemBuilder: (context, index) {
                 final post = posts[index];
+                log(index.toString(), name: 'index');
+                log(posts.length.toString(), name: 'posts.lentgth');
+                if (index == posts.length - 1 /*&& posts.length >= 10*/) {
+                  log('entroui');
+                  return Row(
+                    children: [
+                      EachPost(
+                        post: post,
+                      ),
+                      const SizedBox(
+                        height: 244,
+                        width: 181,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Ver todos',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios_sharp,
+                              color: Color(0xff4300B1),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  );
+                }
                 return EachPost(
                   post: post,
                 );
