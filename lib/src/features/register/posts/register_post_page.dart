@@ -43,12 +43,6 @@ class _RegisterPostPageState extends State<RegisterPostPage> {
           ),
           ElevatedButton(
             onPressed: () {
-              vm.pickCoverPhoto();
-            },
-            child: const Text('Escolher foto de capa'),
-          ),
-          ElevatedButton(
-            onPressed: () {
               vm.pickImages();
             },
             child: const Text('Escolher imagens'),

@@ -32,7 +32,7 @@ class PostService {
     }
   }
 
-  Future getPostImages(String spaceId) async {
+  Future<List<String>?> getPostImages(String spaceId) async {
     try {
       // Crie um prefixo para as imagens com base no spaceId
       final prefix = 'posts/$spaceId';
@@ -46,10 +46,11 @@ class PostService {
         final downloadURL = await item.getDownloadURL();
         imagesUrl.add(downloadURL);
       }
-
       log('Imagens do post do espaço $spaceId recuperadas com sucesso do Firebase Storage');
+      return imagesUrl;
     } catch (e) {
       log('Erro ao recuperar imagens do Firebase Storage: $e');
+      return null;
     }
   }
 
@@ -73,6 +74,7 @@ class PostService {
         'titulo': titulo,
         'descricao': descricao,
         'imagens': spaceResult,
+        'createdAt': FieldValue.serverTimestamp(),
       };
 
       await postsCollection.add(newPost);
@@ -97,25 +99,54 @@ class PostService {
         if (userSnapshot.docs.isNotEmpty) {
           // Assume que o primeiro documento encontrado é o usuário desejado
           DocumentSnapshot userDoc = userSnapshot.docs.first;
+          DateTime thirtyDaysAgo =
+              DateTime.now().subtract(const Duration(days: 30));
+          Timestamp thirtyDaysAgoTimestamp = Timestamp.fromDate(thirtyDaysAgo);
 
           // Recupera a lista de IDs do campo "space_favorites"
           List<dynamic> spaceFavoritesDynamic = userDoc['spaces_favorite'];
           List<String> spaceFavorites =
               List<String>.from(spaceFavoritesDynamic);
+          List<DocumentSnapshot> postDocuments = [];
 
-          // Consulta para recuperar os posts onde o campo "spaceId" está contido na lista spaceFavorites
-          QuerySnapshot postsSnapshot = await firestore
-              .collection('posts')
-              .where('spaceId', whereIn: spaceFavorites)
-              .get();
+//todo: paginacao limit(10)
+/*
+firestore.collection('items')
+  .where('status', '==', 'active')
+  .orderBy('timestamp', 'desc')
+  .limit(pageSize)
+  .get()
+  .then((snapshot) => {
+    if (!snapshot.empty) {
+      const lastVisible = snapshot.docs[snapshot.docs.length - 1];
+      snapshot.forEach((doc) => {
+        console.log(doc.id, ' => ', doc.data());
+      });
+    }
+  });
+ */
+          for (var space in spaceFavorites) {
+            QuerySnapshot postsSnapshot = await firestore
+                .collection('posts')
+                .doc(space)
+                .collection('posts')
+                .where('createdAt',
+                    isGreaterThanOrEqualTo: thirtyDaysAgoTimestamp)
+                .orderBy('createdAt', descending: true)
+                .get();
+
+            for (var post in postsSnapshot.docs) {
+              postDocuments.add(post);
+            }
+          }
 
           List<PostModel> postModels = [];
+          //postDocuments.where((element) => false);
 
-          for (var doc in postsSnapshot.docs) {
+          for (var doc in postDocuments) {
             final data = doc.data() as Map<String, dynamic>;
             final imagensDynamic = data['imagens'] as List<dynamic>;
             final imagens = List<String>.from(imagensDynamic);
-
             final post = PostModel(
               title: data['titulo'] ?? '',
               description: data['descricao'] ?? '',
@@ -124,6 +155,28 @@ class PostService {
             );
             postModels.add(post);
           }
+
+          QuerySnapshot festouSnapshot = await firestore
+              .collection('posts')
+              .doc('festou')
+              .collection('posts')
+              .get();
+          final festouSnap = festouSnapshot.docs[0];
+
+          if (!festouSnap.exists) return postModels;
+
+          final data = festouSnap.data() as Map<String, dynamic>;
+          final imagensDynamic = data['imagens'] as List<dynamic>;
+          final imagens = List<String>.from(imagensDynamic);
+          final post = PostModel(
+            title: data['titulo'] ?? '',
+            description: data['descricao'] ?? '',
+            imagens: imagens,
+            id: data['id'] ?? festouSnap.id,
+          );
+
+          postModels.insert(0, post);
+
           return postModels;
         } else {
           print('Usuário não encontrado.');

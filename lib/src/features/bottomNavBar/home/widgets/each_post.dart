@@ -89,10 +89,11 @@ class _EachPostState extends State<EachPost> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
               ),
-              width: 182,
+              width: 174,
               child: Stack(
                 children: [
                   ClipRRect(
+                    //clipBehavior: Clip.none,
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network(
                       height: 250,
@@ -103,7 +104,8 @@ class _EachPostState extends State<EachPost> {
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
-                      height: 100,
+                      height: 120,
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.vertical(
                             top: Radius.circular(24)),
@@ -111,7 +113,6 @@ class _EachPostState extends State<EachPost> {
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Align(
                             alignment: Alignment.center,
@@ -120,20 +121,22 @@ class _EachPostState extends State<EachPost> {
                                 Text(
                                   widget.post.title,
                                   style: const TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 11,
                                     fontWeight: FontWeight.w700,
                                     color: Colors.white,
                                   ),
+                                  textAlign: TextAlign.center,
                                 ),
                               ],
                             ),
                           ),
+                          const SizedBox(height: 7),
                           Align(
                             alignment: Alignment.center,
                             child: Text(
                               widget.post.description,
                               style: const TextStyle(
-                                fontSize: 15,
+                                fontSize: 10,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.white,
                               ),

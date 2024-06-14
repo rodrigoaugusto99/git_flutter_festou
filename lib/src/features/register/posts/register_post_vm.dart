@@ -16,7 +16,6 @@ class RegisterPostVm {
   final postService = PostService();
 
   List<File>? imagesToRegister;
-  File? coverPhoto;
 
   FormFieldValidator<String> validate() {
     return Validatorless.required('Campo obrigatorio');
@@ -35,18 +34,9 @@ class RegisterPostVm {
     }
   }
 
-  void pickCoverPhoto() async {
-    final imagePicker = ImagePicker();
-    final XFile? image =
-        await imagePicker.pickImage(source: ImageSource.gallery);
-    if (image == null) return;
-
-    coverPhoto = File(image.path);
-  }
-
   void validateForm() {
     if (formKey.currentState!.validate()) {
-      if (coverPhoto == null || imagesToRegister == null) {
+      if (imagesToRegister == null) {
         //todo:messagem pro usuario
         return;
       }
