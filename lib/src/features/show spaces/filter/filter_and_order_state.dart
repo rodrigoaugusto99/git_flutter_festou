@@ -8,7 +8,7 @@ class FilterAndOrderState {
   final List<String> selectedTypes;
   final List<String> selectedServices;
   final List<String> availableDays;
-  //final List<String> selectedNotes;
+  final List<String> selectedNotes;
   final List<SpaceModel> filteredSpaces;
   final String? errorMessage;
 
@@ -19,6 +19,7 @@ class FilterAndOrderState {
           selectedServices: <String>[],
           availableDays: <String>[],
           filteredSpaces: <SpaceModel>[],
+          selectedNotes: <String>[],
         );
 
   FilterAndOrderState(
@@ -27,6 +28,7 @@ class FilterAndOrderState {
       required this.selectedServices,
       required this.availableDays,
       required this.filteredSpaces,
+      required this.selectedNotes,
       this.errorMessage});
 
   FilterAndOrderState copyWith(
@@ -34,6 +36,7 @@ class FilterAndOrderState {
       List<String>? selectedTypes,
       List<String>? selectedServices,
       List<String>? availableDays,
+      List<String>? selectedNotes,
       List<SpaceModel>? filteredSpaces,
       ValueGetter<String?>? errorMessage}) {
     return FilterAndOrderState(
@@ -41,6 +44,7 @@ class FilterAndOrderState {
       selectedTypes: selectedTypes ?? this.selectedTypes,
       selectedServices: selectedServices ?? this.selectedServices,
       availableDays: availableDays ?? this.availableDays,
+      selectedNotes: selectedNotes ?? this.selectedNotes,
       filteredSpaces: filteredSpaces ?? this.filteredSpaces,
       errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
     );

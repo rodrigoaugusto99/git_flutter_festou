@@ -43,8 +43,8 @@ class _CustomTextformfieldState extends State<CustomTextformfield> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      minLines: widget.isBig == true ? 5 : null,
-      maxLines: widget.isBig == true ? 10 : null,
+      minLines: widget.isBig == true ? 5 : 1,
+      maxLines: widget.isBig == true ? 10 : 1,
       onEditingComplete: widget.onEditingComplete,
       textInputAction: TextInputAction.done,
       inputFormatters: widget.inputFormatters,

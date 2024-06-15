@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
@@ -31,6 +33,20 @@ class _ChatPageState extends State<ChatPage> {
   bool isEmojiVisible = false;
   bool notWait = false;
   String userID = FirebaseAuth.instance.currentUser!.uid;
+  bool isTyping = false;
+  Timer? _writingTimer;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    messageEC.dispose();
+    _writingTimer?.cancel();
+    super.dispose();
+  }
 
   Future<void> _markMessagesAsSeen() async {
     await _chatServices.markMessagesAsSeen(widget.receiverID);
@@ -262,6 +278,8 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    String chatRoomID = _chatServices.getChatRoomId(userID, widget.receiverID);
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -442,7 +460,13 @@ class _ChatPageState extends State<ChatPage> {
 
     double marginBottom = isSameUserAsNext ? 2 : 16;
 
-    Timestamp timestamp = data['timestamp'] as Timestamp;
+    Timestamp? timestamp;
+    if (data.containsKey('timestamp') && data['timestamp'] != null) {
+      timestamp = data['timestamp'] as Timestamp;
+    } else {
+      // Handle the case where the timestamp is null, for example by setting a default value
+      timestamp = Timestamp.now();
+    }
     bool isSeen = data['isSeen'] ?? false;
 
     return GestureDetector(

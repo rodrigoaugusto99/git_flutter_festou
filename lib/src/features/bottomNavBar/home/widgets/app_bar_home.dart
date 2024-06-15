@@ -13,7 +13,6 @@ class AppBarHome extends ConsumerStatefulWidget {
 }
 
 class _AppBarMenuSpaceTypesState extends ConsumerState<AppBarHome> {
-  final user = FirebaseAuth.instance.currentUser!;
   UserService userService = UserService();
   UserModel? userModel;
 

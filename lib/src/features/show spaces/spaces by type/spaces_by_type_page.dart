@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
@@ -112,8 +114,8 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                   FeedbacksPanel(
                     text: 'MÉDIA de avaliações',
                     onNotePressed: (String value) {
-                      //log('onNotePressed: $value');
-                      //spaceFilterVm.addOrRemoveNote(value);
+                      log('onNotePressed: $value');
+                      filterAnOrderVm.addOrRemoveNote(value);
                     },
                   ),
                   Align(

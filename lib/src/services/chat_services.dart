@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:git_flutter_festou/src/models/message_model.dart';
 
 class ChatServices {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -8,32 +7,42 @@ class ChatServices {
 
   Future<void> sendMessage(String receiverID, String message) async {
     final String currentUserID = _auth.currentUser!.uid;
-    final Timestamp timestamp = Timestamp.now();
-
-    MessageModel newMessage = MessageModel(
-      senderID: currentUserID,
-      receiverID: receiverID,
-      message: message,
-      timestamp: timestamp,
-      isSeen: false, // Inicialmente, a mensagem não foi vista
-    );
 
     List<String> ids = [currentUserID, receiverID];
     ids.sort();
     String chatRoomID = ids.join('_');
 
-    // Adiciona o documento com a lista chatRoomIDs e define o ID como chatRoomID
-    await _firestore
-        .collection('chat_rooms')
-        .doc(chatRoomID)
-        .set({'chatRoomIDs': ids});
-
     // Adiciona a mensagem à coleção messages no mesmo documento
-    await _firestore
+    DocumentReference messageRef = _firestore
         .collection('chat_rooms')
         .doc(chatRoomID)
         .collection('messages')
-        .add(newMessage.toMap());
+        .doc();
+
+    await messageRef.set({
+      'senderID': currentUserID,
+      'receiverID': receiverID,
+      'message': message,
+      'timestamp': FieldValue.serverTimestamp(),
+      'isSeen': false
+    });
+
+    // Obtém o timestamp do servidor
+    DocumentSnapshot messageSnap = await messageRef.get();
+    if (messageSnap.exists && messageSnap.data() != null) {
+      Timestamp serverTimestamp = messageSnap['timestamp'];
+
+      // Atualiza o documento do chat room com o último timestamp da mensagem
+      await _firestore.collection('chat_rooms').doc(chatRoomID).set(
+          {'chatRoomIDs': ids, 'lastMessageTimestamp': serverTimestamp},
+          SetOptions(merge: true));
+    }
+  }
+
+  String getChatRoomId(String userID, String receiverID) {
+    List<String> ids = [userID, receiverID];
+    ids.sort();
+    return ids.join('_');
   }
 
   Stream<QuerySnapshot> getMessages(String userID, String otherUserID) {
@@ -64,8 +73,15 @@ class ChatServices {
         .where('isSeen', isEqualTo: false)
         .get();
 
+    WriteBatch batch = _firestore.batch();
+
+    //O Firestore tem um limite de 500 operações por batch.
+    //Se for preciso atualizar mais de 500 documentos,
+    //precisará dividir as operações em múltiplos batches.
     for (var doc in messagesSnapshot.docs) {
-      await doc.reference.update({'isSeen': true});
+      batch.update(doc.reference, {'isSeen': true});
     }
+
+    await batch.commit();
   }
 }

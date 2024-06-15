@@ -1,13 +1,35 @@
 import 'package:flutter/material.dart';
 
-class FeedbacksPanel extends StatelessWidget {
+class FeedbacksPanel extends StatefulWidget {
   final ValueChanged<String> onNotePressed;
   final String text;
+
   const FeedbacksPanel({
     super.key,
     required this.onNotePressed,
     required this.text,
   });
+
+  @override
+  _FeedbacksPanelState createState() => _FeedbacksPanelState();
+}
+
+class _FeedbacksPanelState extends State<FeedbacksPanel> {
+  String selectedNote = '0+';
+
+  void updateSelectedNote(String note) {
+    setState(() {
+      selectedNote = note;
+      widget.onNotePressed(note);
+    });
+  }
+
+  bool isButtonActive(String note) {
+    // Extract the numeric part of the note and compare
+    double selectedValue = double.parse(selectedNote.replaceAll('+', ''));
+    double noteValue = double.parse(note.replaceAll('+', ''));
+    return noteValue >= selectedValue;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,41 +39,45 @@ class FeedbacksPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            text,
+            widget.text,
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
           ),
-          //rolagem caso dispositivo pequeno
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ButtonDay(
-                  label: '0+',
-                  onNotePressed: onNotePressed,
+                  label: '1+',
+                  isActive: isButtonActive('1'),
+                  onNotePressed: updateSelectedNote,
                   color: Colors.red,
                 ),
                 ButtonDay(
-                  label: '7+',
-                  onNotePressed: onNotePressed,
+                  label: '2+',
+                  isActive: isButtonActive('2'),
+                  onNotePressed: updateSelectedNote,
                   color: Colors.orange,
                 ),
                 ButtonDay(
-                  label: '7.5+',
-                  onNotePressed: onNotePressed,
+                  label: '3+',
+                  isActive: isButtonActive('3'),
+                  onNotePressed: updateSelectedNote,
                   color: const Color.fromARGB(255, 108, 209, 112),
                 ),
                 ButtonDay(
-                  label: '8+',
-                  onNotePressed: onNotePressed,
+                  label: '4+',
+                  isActive: isButtonActive('4'),
+                  onNotePressed: updateSelectedNote,
                   color: Colors.green,
                 ),
                 ButtonDay(
-                  label: '8.5+',
-                  onNotePressed: onNotePressed,
+                  label: '5+',
+                  isActive: isButtonActive('5'),
+                  onNotePressed: updateSelectedNote,
                   color: const Color.fromARGB(255, 9, 134, 13),
                 ),
               ],
@@ -63,57 +89,38 @@ class FeedbacksPanel extends StatelessWidget {
   }
 }
 
-class ButtonDay extends StatefulWidget {
+class ButtonDay extends StatelessWidget {
   final String label;
   final Color color;
+  final bool isActive;
   final ValueChanged<String> onNotePressed;
 
   const ButtonDay({
     super.key,
     required this.label,
-    required this.onNotePressed,
     required this.color,
+    required this.isActive,
+    required this.onNotePressed,
   });
 
   @override
-  State<ButtonDay> createState() => _ButtonDayState();
-}
-
-class _ButtonDayState extends State<ButtonDay> {
-  //1 - variavel de estado
-  var selected = false;
-  @override
   Widget build(BuildContext context) {
-    final ButtonDay(:onNotePressed, :label, :color) = widget;
-    //1 - variaveis esteticas que mudam com o clique
-
-    var buttonColor = selected ? Colors.grey : color;
-
     return Padding(
       padding: const EdgeInsets.all(5.0),
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
-        //se for pra desabilitar, botao inclicavel.(onTap null)
-        onTap: () {
-          //no onTap do botao que inverte o estado dele
-          setState(() {
-            onNotePressed(label);
-            selected = !selected;
-          });
-        },
+        onTap: () => onNotePressed(label),
         child: Container(
           width: 56,
           height: 56,
           decoration: BoxDecoration(
-            color: buttonColor,
+            color: isActive ? color : Colors.grey,
             borderRadius: BorderRadius.circular(8),
-            //1- variavel estetica
           ),
           child: Center(
             child: Text(
               label,
               style: const TextStyle(
-                //1- variavel estetica
                 color: Colors.white,
                 fontWeight: FontWeight.w500,
               ),
