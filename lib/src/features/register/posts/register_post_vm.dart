@@ -75,6 +75,7 @@ class RegisterPostVm with ChangeNotifier {
       imageFiles: imagesToRegister,
       titulo: tituloEC.text,
       descricao: descricaoEC.text,
+      coverPhoto: photoShowing!,
     );
   }
 }

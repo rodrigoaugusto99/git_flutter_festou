@@ -49,14 +49,15 @@ class _RegisterPostPageState extends State<RegisterPostPage> {
     return Scaffold(
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              const Color(0xff9747FF).withOpacity(1),
-              const Color(0xff4300B1).withOpacity(1),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+          color: Colors.grey[200],
+          // gradient: LinearGradient(
+          //   colors: [
+          //     const Color(0xff9747FF).withOpacity(1),
+          //     const Color(0xff4300B1).withOpacity(1),
+          //   ],
+          //   begin: Alignment.topCenter,
+          //   end: Alignment.bottomCenter,
+          // ),
           borderRadius: BorderRadius.circular(24),
         ),
         padding: const EdgeInsets.all(30),
@@ -75,11 +76,36 @@ class _RegisterPostPageState extends State<RegisterPostPage> {
                   preenchido e os botoes cancelar e salvar. Ao salvar, o texto vai aparecer 
                   no espaco abaixo, aparecendo botao de editar. titulo obrigatorio apenas
                    */
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
             CustomTextformfield(
               label: 'Descrição',
               controller: vm.descricaoEC,
               validator: vm.validate(),
+            ),
+            const SizedBox(height: 20),
+            GestureDetector(
+              onTap: vm.register,
+              child: Container(
+                  alignment: Alignment.center,
+                  height: 35,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xff9747FF),
+                        Color(0xff44300b1),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                  child: const Text(
+                    'Publicar',
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white),
+                  )),
             ),
           ],
         ),
@@ -99,7 +125,7 @@ class _RegisterPostPageState extends State<RegisterPostPage> {
               child: decContainer(
                 onTap: vm.pickImages,
                 allPadding: 10,
-                height: MediaQuery.of(context).size.height / 2.3,
+                height: MediaQuery.of(context).size.height / 3,
                 color: const Color(0xff9747FF).withOpacity(0.3),
                 radius: 10,
                 child: vm.photoShowing == null

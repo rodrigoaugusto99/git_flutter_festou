@@ -12,8 +12,11 @@ class PostService {
 
   final CollectionReference postsCollection =
       FirebaseFirestore.instance.collection('posts');
-  Future uploadPostImages(
-      {required List<File> imageFiles, required String spaceId}) async {
+  Future uploadPostImages({
+    required List<File> imageFiles,
+    required String spaceId,
+    required File coverPhoto,
+  }) async {
     try {
       // Crie um prefixo para as imagens com base no espaçoId
       final prefix = 'posts/$spaceId';
@@ -21,9 +24,13 @@ class PostService {
       // Faça o upload de cada imagem individualmente
       for (int i = 0; i < imageFiles.length; i++) {
         final imageFile = imageFiles[i];
-        var storageRef = storage.ref().child('$prefix/imagem_$i.jpg');
-
-        await storageRef.putFile(imageFile);
+        if (imageFile == coverPhoto) {
+          var storageRef = storage.ref().child('$prefix/coverPhoto.jpg');
+          await storageRef.putFile(imageFile);
+        } else {
+          var storageRef = storage.ref().child('$prefix/imagem_$i.jpg');
+          await storageRef.putFile(imageFile);
+        }
       }
 
       log('Imagens do post do espaco $spaceId enviadas com sucesso para o Firebase Storage');
@@ -32,7 +39,7 @@ class PostService {
     }
   }
 
-  Future<List<String>?> getPostImages(String spaceId) async {
+  Future<Map<String, dynamic>?> getPostImages(String spaceId) async {
     try {
       // Crie um prefixo para as imagens com base no spaceId
       final prefix = 'posts/$spaceId';
@@ -40,14 +47,23 @@ class PostService {
       // Recupere a lista de itens no Firebase Storage com o prefixo
       final ListResult result = await storage.ref().child(prefix).listAll();
       final imagesUrl = <String>[];
+      String? coverPhotoUrl;
 
       // Extraia as URLs das imagens da lista de itens
       for (var item in result.items) {
         final downloadURL = await item.getDownloadURL();
+        if (item.name == 'coverPhoto.jpg') {
+          coverPhotoUrl = downloadURL;
+        }
         imagesUrl.add(downloadURL);
       }
+
       log('Imagens do post do espaço $spaceId recuperadas com sucesso do Firebase Storage');
-      return imagesUrl;
+
+      return {
+        'coverPhotoUrl': coverPhotoUrl,
+        'imagesUrl': imagesUrl,
+      };
     } catch (e) {
       log('Erro ao recuperar imagens do Firebase Storage: $e');
       return null;
@@ -59,25 +75,31 @@ class PostService {
     required List<File> imageFiles,
     required String titulo,
     required String descricao,
+    required File coverPhoto,
   }) async {
     try {
       await uploadPostImages(
         imageFiles: imageFiles,
         spaceId: spaceId,
+        coverPhoto: coverPhoto,
       );
 
-      final spaceResult = await getPostImages(spaceId);
+      final postImages = await getPostImages(spaceId);
+      if (postImages!['imagesUrl'] == null) {
+        log('Erro ao adicionar post no firestore: postImages![imagesUrl] == null');
+        return;
+      }
       const uuid = Uuid();
       Map<String, dynamic> newPost = {
         'id': uuid.v1(),
-        'space_id': spaceId,
         'titulo': titulo,
         'descricao': descricao,
-        'imagens': spaceResult,
+        'imagens': postImages['imagesUrl'],
+        'coverPhoto': postImages['coverPhotoUrl'],
         'createdAt': FieldValue.serverTimestamp(),
       };
 
-      await postsCollection.add(newPost);
+      await postsCollection.doc(spaceId).collection('posts').add(newPost);
       log('Post criado com sucesso');
     } catch (e) {
       log('Erro ao adicionar post no firestore: $e');
@@ -150,6 +172,7 @@ class PostService {
             final post = PostModel(
               title: data['titulo'] ?? '',
               description: data['descricao'] ?? '',
+              coverPhoto: data['coverPhoto'] ?? '',
               imagens: imagens,
               id: data['id'] ?? doc.id,
             );
@@ -170,6 +193,7 @@ class PostService {
           final imagens = List<String>.from(imagensDynamic);
           final post = PostModel(
             title: data['titulo'] ?? '',
+            coverPhoto: data['coverPhoto'] ?? '',
             description: data['descricao'] ?? '',
             imagens: imagens,
             id: data['id'] ?? festouSnap.id,
