@@ -1,8 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/register/host%20feedback/host_feedback_register_page.dart';
+import 'package:git_flutter_festou/src/features/register/posts/register_post_page.dart';
 import 'package:git_flutter_festou/src/features/register/reserva/reserva_register_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/calendar_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_page.dart';
@@ -13,6 +16,7 @@ import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_all.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/single_video_page.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:social_share/social_share.dart';
 import 'package:svg_flutter/svg.dart';
 import 'package:video_player/video_player.dart';
@@ -38,6 +42,8 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
   late TabController tabController;
   final List<VideoPlayerController> controllers = [];
 
+  bool isMySpace = false;
+
   @override
   void initState() {
     super.initState();
@@ -48,6 +54,18 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
           setState(() {});
         });
       controllers.add(controller);
+    }
+    init();
+  }
+
+  void init() async {
+    final user = await UserService().getCurrentUserModel();
+    if (user != null) {
+      if (user.id == widget.space.userId) {
+        setState(() {
+          isMySpace = true;
+        });
+      }
     }
   }
 
@@ -559,7 +577,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
               crossAxisSpacing: 13,
               crossAxisCount: 3,
             ),
-            itemCount: 3,
+            itemCount: widget.space.videosUrl.length,
             itemBuilder: (BuildContext context, int index) {
               return buildVideoPlayer(index);
             },
@@ -605,7 +623,11 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
             padding: const EdgeInsets.only(left: 8),
             child: Text(
               widget.space.descricao,
-              style: const TextStyle(fontSize: 12),
+              maxLines: 3,
+              style: const TextStyle(
+                fontSize: 12,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
           const SizedBox(height: 10),
@@ -789,23 +811,46 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                       isCarouselVisible = info.visibleFraction > 0.0;
                     });
                   },
-                  child: CarouselSlider(
-                    items: widget.space.imagesUrl
-                        .map((imageUrl) => Image.network(
-                              imageUrl.toString(),
-                              fit: BoxFit.cover,
-                            ))
-                        .toList(),
-                    options: CarouselOptions(
-                      aspectRatio: 16 / 12,
-                      viewportFraction: 1.0,
-                      enableInfiniteScroll: false,
-                      onPageChanged: (index, reason) {
-                        setState(() {
-                          _currentSlide = index;
-                        });
-                      },
-                    ),
+                  child: Stack(
+                    children: [
+                      CarouselSlider(
+                        items: widget.space.imagesUrl
+                            .map((imageUrl) => Image.network(
+                                  imageUrl.toString(),
+                                  fit: BoxFit.cover,
+                                ))
+                            .toList(),
+                        options: CarouselOptions(
+                          aspectRatio: 16 / 12,
+                          viewportFraction: 1.0,
+                          enableInfiniteScroll: false,
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              _currentSlide = index;
+                            });
+                          },
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return RegisterPostPage(
+                                    spaceModel: widget.space,
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                          child: const Text('Fazer post'),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
