@@ -44,8 +44,8 @@ class _FeedNoticiasState extends State<FeedNoticias> {
                       baseColor: const Color.fromARGB(255, 221, 221, 221),
                       highlightColor: Colors.white,
                       child: Container(
-                        height: 250,
-                        width: 182.0,
+                        width: 174,
+                        height: 110,
                         color: Colors.red,
                       ),
                     ),
@@ -81,24 +81,28 @@ class _FeedNoticiasState extends State<FeedNoticias> {
                   log('entroui');
                   return Row(
                     children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return PostSinglePage(postModel: posts[index]);
-                              },
-                            ),
-                          );
-                        },
-                        child: EachPost(
-                          post: post,
+                      SizedBox(
+                        height: 244,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return PostSinglePage(
+                                      postModel: posts[index]);
+                                },
+                              ),
+                            );
+                          },
+                          child: EachPost(
+                            post: post,
+                          ),
                         ),
                       ),
                       const SizedBox(
-                        height: 244,
-                        width: 181,
+                        height: 250,
+                        width: 174,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -116,19 +120,23 @@ class _FeedNoticiasState extends State<FeedNoticias> {
                     ],
                   );
                 }
-                return InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return PostSinglePage(postModel: posts[index]);
-                        },
-                      ),
-                    );
-                  },
-                  child: EachPost(
-                    post: post,
+                return SizedBox(
+                  height: 250,
+                  width: 174,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return PostSinglePage(postModel: posts[index]);
+                          },
+                        ),
+                      );
+                    },
+                    child: EachPost(
+                      post: post,
+                    ),
                   ),
                 );
               },

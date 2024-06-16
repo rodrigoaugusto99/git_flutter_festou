@@ -43,8 +43,8 @@ class _EachPostState extends State<EachPost> {
                     baseColor: const Color.fromARGB(255, 221, 221, 221),
                     highlightColor: Colors.white,
                     child: Container(
-                      height: 250,
-                      width: 182.0,
+                      width: 174,
+                      height: 110,
                       color: Colors.red,
                     ),
                   ),
@@ -58,8 +58,8 @@ class _EachPostState extends State<EachPost> {
                     baseColor: const Color.fromARGB(255, 221, 221, 221),
                     highlightColor: Colors.white,
                     child: Container(
-                      height: 250,
-                      width: 182.0,
+                      width: 174,
+                      height: 110,
                       color: Colors.red,
                     ),
                   ),
@@ -73,8 +73,8 @@ class _EachPostState extends State<EachPost> {
                     baseColor: const Color.fromARGB(255, 221, 221, 221),
                     highlightColor: Colors.white,
                     child: Container(
-                      height: 250,
-                      width: 182.0,
+                      width: 174,
+                      height: 110,
                       color: Colors.red,
                     ),
                   ),
@@ -90,6 +90,7 @@ class _EachPostState extends State<EachPost> {
                 borderRadius: BorderRadius.circular(10),
               ),
               width: 174,
+              height: 110,
               child: Stack(
                 children: [
                   ClipRRect(
@@ -97,9 +98,7 @@ class _EachPostState extends State<EachPost> {
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network(
                       height: 250,
-                      widget.post.imagens.length > 1
-                          ? widget.post.imagens[1]
-                          : widget.post.imagens[0],
+                      widget.post.coverPhoto,
                       fit: BoxFit.cover,
                     ),
                   ),

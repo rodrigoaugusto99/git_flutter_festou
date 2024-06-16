@@ -89,9 +89,8 @@ class PostService {
         log('Erro ao adicionar post no firestore: postImages![imagesUrl] == null');
         return;
       }
-      const uuid = Uuid();
+
       Map<String, dynamic> newPost = {
-        'id': uuid.v1(),
         'titulo': titulo,
         'descricao': descricao,
         'imagens': postImages['imagesUrl'],
@@ -99,7 +98,16 @@ class PostService {
         'createdAt': FieldValue.serverTimestamp(),
       };
 
-      await postsCollection.doc(spaceId).collection('posts').add(newPost);
+      // Crie o documento ancestral se não existir
+      final ancestorDoc = postsCollection.doc(spaceId);
+      final ancestorSnapshot = await ancestorDoc.get();
+      if (!ancestorSnapshot.exists) {
+        await ancestorDoc.set({
+          'createdAt': FieldValue.serverTimestamp()
+        }); // Documento ancestral vazio com timestamp
+      }
+
+      await ancestorDoc.collection('posts').add(newPost);
       log('Post criado com sucesso');
     } catch (e) {
       log('Erro ao adicionar post no firestore: $e');
@@ -174,7 +182,7 @@ class PostService {
               description: data['descricao'] ?? '',
               coverPhoto: data['coverPhoto'] ?? '',
               imagens: imagens,
-              id: data['id'] ?? doc.id,
+              id: doc.id,
             );
             postModels.add(post);
           }
@@ -184,9 +192,10 @@ class PostService {
               .doc('festou')
               .collection('posts')
               .get();
+          if (festouSnapshot.docs.isEmpty) return postModels;
           final festouSnap = festouSnapshot.docs[0];
 
-          if (!festouSnap.exists) return postModels;
+          // if (!festouSnap.exists) ;
 
           final data = festouSnap.data() as Map<String, dynamic>;
           final imagensDynamic = data['imagens'] as List<dynamic>;
@@ -196,7 +205,7 @@ class PostService {
             coverPhoto: data['coverPhoto'] ?? '',
             description: data['descricao'] ?? '',
             imagens: imagens,
-            id: data['id'] ?? festouSnap.id,
+            id: festouSnap.id,
           );
 
           postModels.insert(0, post);
