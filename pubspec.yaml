@@ -92,6 +92,7 @@ dependencies:
   searchfield: ^1.0.4 
   shimmer: ^3.0.0
   cached_network_image: ^3.3.1
+  animated_text_kit: ^4.2.2
 
 dev_dependencies:
   flutter_test:

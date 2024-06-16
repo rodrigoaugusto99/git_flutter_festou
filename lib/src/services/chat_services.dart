@@ -24,7 +24,8 @@ class ChatServices {
       'receiverID': receiverID,
       'message': message,
       'timestamp': FieldValue.serverTimestamp(),
-      'isSeen': false
+      'isSeen': false,
+      'deletionRecipient': false // Adiciona o campo deletionRecipient
     });
 
     // Obtém o timestamp do servidor
@@ -50,12 +51,14 @@ class ChatServices {
     ids.sort();
     String chatRoomID = ids.join('_');
 
-    return _firestore
+    Stream<QuerySnapshot<Map<String, dynamic>>> result = _firestore
         .collection('chat_rooms')
         .doc(chatRoomID)
         .collection('messages')
         .orderBy('timestamp', descending: true)
         .snapshots();
+
+    return result;
   }
 
   Future<void> markMessagesAsSeen(String receiverID) async {
