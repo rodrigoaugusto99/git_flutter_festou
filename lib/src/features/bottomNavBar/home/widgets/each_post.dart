@@ -43,8 +43,6 @@ class _EachPostState extends State<EachPost> {
                     baseColor: const Color.fromARGB(255, 221, 221, 221),
                     highlightColor: Colors.white,
                     child: Container(
-                      width: 174,
-                      height: 110,
                       color: Colors.red,
                     ),
                   ),
@@ -58,8 +56,6 @@ class _EachPostState extends State<EachPost> {
                     baseColor: const Color.fromARGB(255, 221, 221, 221),
                     highlightColor: Colors.white,
                     child: Container(
-                      width: 174,
-                      height: 110,
                       color: Colors.red,
                     ),
                   ),
@@ -73,8 +69,6 @@ class _EachPostState extends State<EachPost> {
                     baseColor: const Color.fromARGB(255, 221, 221, 221),
                     highlightColor: Colors.white,
                     child: Container(
-                      width: 174,
-                      height: 110,
                       color: Colors.red,
                     ),
                   ),

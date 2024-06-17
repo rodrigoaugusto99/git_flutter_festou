@@ -114,6 +114,9 @@ class PostService {
     }
   }
 
+  //todo: armazenar o ultimo documento lido aqui
+  //todo: quando for chamar outro metodo, usar esse ultimo documento armazenado como startAfter
+
   Future<List<PostModel>?> getPostModelsBySpaceIds() async {
     final FirebaseAuth auth = FirebaseAuth.instance;
     FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -133,15 +136,15 @@ class PostService {
               DateTime.now().subtract(const Duration(days: 30));
           Timestamp thirtyDaysAgoTimestamp = Timestamp.fromDate(thirtyDaysAgo);
 
-          // Recupera a lista de IDs do campo "space_favorites"
+          // Recupera a lista de IDs do campo "spaces_favorite"
           List<dynamic> spaceFavoritesDynamic = userDoc['spaces_favorite'];
           List<String> spaceFavorites =
               List<String>.from(spaceFavoritesDynamic);
           List<DocumentSnapshot> postDocuments = [];
 
-//todo: paginacao limit(10)
-
           for (var space in spaceFavorites) {
+            if (postDocuments.length >= 10) break;
+
             QuerySnapshot postsSnapshot = await firestore
                 .collection('posts')
                 .doc(space)
@@ -152,26 +155,12 @@ class PostService {
                 .get();
 
             for (var post in postsSnapshot.docs) {
+              if (postDocuments.length >= 10) break;
               postDocuments.add(post);
             }
           }
 
-// firestore.collection('items')
-//   .where('status', '==', 'active')
-//   .orderBy('timestamp', 'desc')
-//   .limit(pageSize).
-//   .get()
-//   .then((snapshot) => {
-//     if (!snapshot.empty) {
-//       const lastVisible = snapshot.docs[snapshot.docs.length - 1];
-//       snapshot.forEach((doc) => {
-//         console.log(doc.id, ' => ', doc.data());
-//       });
-//     }
-//   });
-
           List<PostModel> postModels = [];
-          //postDocuments.where((element) => false);
 
           for (var doc in postDocuments) {
             final data = doc.data() as Map<String, dynamic>;
@@ -191,11 +180,10 @@ class PostService {
               .collection('posts')
               .doc('festou')
               .collection('posts')
+              .limit(1) // Limite de 1 documento
               .get();
           if (festouSnapshot.docs.isEmpty) return postModels;
           final festouSnap = festouSnapshot.docs[0];
-
-          // if (!festouSnap.exists) ;
 
           final data = festouSnap.data() as Map<String, dynamic>;
           final imagensDynamic = data['imagens'] as List<dynamic>;
