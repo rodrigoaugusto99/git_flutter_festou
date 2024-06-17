@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/new_card_info.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -55,8 +56,14 @@ class _EachLastSeenState extends State<EachLastSeen> {
           return const Center(child: Text('Error loading image'));
         } else {
           return GestureDetector(
-            //todo: nav to new_card_info
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NewCardInfo(space: widget.space),
+                ),
+              );
+            },
             child: Container(
               margin: const EdgeInsets.only(right: 20),
               height: 150,

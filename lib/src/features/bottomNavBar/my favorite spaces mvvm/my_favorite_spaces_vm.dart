@@ -97,6 +97,7 @@ class MyFavoriteSpacesVm extends ChangeNotifier {
     final numComments = await getNumComments(spaceId);
 
     return SpaceModel(
+      videosUrl: List<String>.from(spaceDocument['videos'] ?? []),
       isFavorited: isFavorited,
       spaceId: spaceDocument['space_id'] ?? '',
       userId: spaceDocument['user_id'] ?? '',

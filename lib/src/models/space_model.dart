@@ -18,6 +18,7 @@ class SpaceModel {
   final String descricao;
   final String city;
   final List<String> imagesUrl;
+  final List<String> videosUrl;
 
   final double latitude;
   final double longitude;
@@ -66,5 +67,6 @@ class SpaceModel {
     required this.locadorCpf,
     required this.nomeEmpresaLocadora,
     required this.locadorAssinatura,
+    required this.videosUrl,
   });
 }

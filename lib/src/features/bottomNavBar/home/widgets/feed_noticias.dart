@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/each_post.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/post_single_page.dart';
 import 'package:git_flutter_festou/src/models/post_model.dart';
 import 'package:git_flutter_festou/src/services/post_service.dart';
 import 'package:shimmer/shimmer.dart';
@@ -41,8 +44,8 @@ class _FeedNoticiasState extends State<FeedNoticias> {
                       baseColor: const Color.fromARGB(255, 221, 221, 221),
                       highlightColor: Colors.white,
                       child: Container(
-                        height: 250,
-                        width: 182.0,
+                        width: 174,
+                        height: 110,
                         color: Colors.red,
                       ),
                     ),
@@ -72,8 +75,69 @@ class _FeedNoticiasState extends State<FeedNoticias> {
               itemCount: posts.length,
               itemBuilder: (context, index) {
                 final post = posts[index];
-                return EachPost(
-                  post: post,
+                log(index.toString(), name: 'index');
+                log(posts.length.toString(), name: 'posts.lentgth');
+                if (index == posts.length - 1 /*&& posts.length >= 10*/) {
+                  log('entroui');
+                  return Row(
+                    children: [
+                      SizedBox(
+                        height: 244,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return PostSinglePage(
+                                      postModel: posts[index]);
+                                },
+                              ),
+                            );
+                          },
+                          child: EachPost(
+                            post: post,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 250,
+                        width: 174,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Ver todos',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios_sharp,
+                              color: Color(0xff4300B1),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  );
+                }
+                return SizedBox(
+                  height: 250,
+                  width: 174,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return PostSinglePage(postModel: posts[index]);
+                          },
+                        ),
+                      );
+                    },
+                    child: EachPost(
+                      post: post,
+                    ),
+                  ),
                 );
               },
             ),

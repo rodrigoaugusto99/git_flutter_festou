@@ -1,8 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/register/host%20feedback/host_feedback_register_page.dart';
+import 'package:git_flutter_festou/src/features/register/posts/register_post_page.dart';
 import 'package:git_flutter_festou/src/features/register/reserva/reserva_register_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/calendar_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_page.dart';
@@ -11,9 +14,12 @@ import 'package:git_flutter_festou/src/features/space%20card/widgets/show_map.da
 import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_limited.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_all.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/single_video_page.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:social_share/social_share.dart';
 import 'package:svg_flutter/svg.dart';
+import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class NewCardInfo extends ConsumerStatefulWidget {
@@ -34,11 +40,33 @@ bool scrollingUp = false;
 class _NewCardInfoState extends ConsumerState<NewCardInfo>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
+  final List<VideoPlayerController> controllers = [];
+
+  bool isMySpace = false;
 
   @override
   void initState() {
     super.initState();
     tabController = TabController(length: 3, vsync: this);
+    for (var video in widget.space.videosUrl) {
+      VideoPlayerController controller = VideoPlayerController.network(video)
+        ..initialize().then((_) {
+          setState(() {});
+        });
+      controllers.add(controller);
+    }
+    init();
+  }
+
+  void init() async {
+    final user = await UserService().getCurrentUserModel();
+    if (user != null) {
+      if (user.id == widget.space.userId) {
+        setState(() {
+          isMySpace = true;
+        });
+      }
+    }
   }
 
   @override
@@ -215,6 +243,96 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
     );
   }
 
+  Widget buildVideoPlayer(int index) {
+    final controller = controllers[index];
+    if (controller.value.isInitialized) {
+      return GestureDetector(
+        onTap: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (BuildContext context) {
+              return SingleVideoPage(controller: controller);
+            },
+          );
+
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) {
+          //       return SingleVideoPage(
+          //         controller: controller,
+          //       );
+          //     },
+          //   ),
+          // );
+        },
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: AspectRatio(
+                aspectRatio: controller.value.aspectRatio,
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: SizedBox(
+                    width: controller.value.size.width,
+                    height: controller.value.size.height,
+                    child: VideoPlayer(controller),
+                  ),
+                ),
+              ),
+            ),
+            Icon(
+              Icons.play_circle_fill,
+              color: Colors.white.withOpacity(0.7),
+              size: 40,
+            )
+          ],
+        ),
+      );
+    }
+    return Container();
+    // return const Column(
+    //   children: [
+    //     // Row(
+    //     //   mainAxisAlignment: MainAxisAlignment.center,
+    //     //   children: [
+    //     //     IconButton(
+    //     //       icon: Icon(
+    //     //           controller.value.isPlaying ? Icons.pause : Icons.play_arrow),
+    //     //       onPressed: () {
+    //     //         setState(() {
+    //     //           controller.value.isPlaying
+    //     //               ? controller.pause()
+    //     //               : controller.play();
+    //     //         });
+    //     //       },
+    //     //     ),
+    //     //     IconButton(
+    //     //       icon: const Icon(Icons.stop),
+    //     //       onPressed: () {
+    //     //         setState(() {
+    //     //           controller.pause();
+    //     //           controller.seekTo(Duration.zero);
+    //     //         });
+    //     //       },
+    //     //     ),
+    //     //     IconButton(
+    //     //       icon: const Icon(Icons.replay),
+    //     //       onPressed: () {
+    //     //         setState(() {
+    //     //           controller.seekTo(Duration.zero);
+    //     //           controller.play();
+    //     //         });
+    //     //       },
+    //     //     ),
+    //     //   ],
+    //     // ),
+    //   ],
+    // );
+  }
+
   void _showBottomSheet2(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -388,10 +506,10 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Row(
+          Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
+              const Text(
                 'Fotos ',
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
@@ -399,8 +517,8 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                 ),
               ),
               Text(
-                '(6 fotos)',
-                style: TextStyle(
+                '(${widget.space.imagesUrl.length} ${widget.space.imagesUrl.length == 1 ? 'foto' : 'fotos)'}',
+                style: const TextStyle(
                   fontWeight: FontWeight.w400,
                   fontSize: 12,
                   color: Color(0xff5E5E5E),
@@ -429,6 +547,41 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                         fit: BoxFit.cover));
               }),
           const SizedBox(height: 26),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              const Text(
+                'Vídeos ',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                ),
+              ),
+              Text(
+                '(${widget.space.videosUrl.length} ${widget.space.videosUrl.length == 1 ? 'vídeo' : 'vídeos)'}',
+                style: const TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12,
+                  color: Color(0xff5E5E5E),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 13),
+          GridView.builder(
+            padding: EdgeInsets.zero,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              mainAxisSpacing: 13,
+              crossAxisSpacing: 13,
+              crossAxisCount: 3,
+            ),
+            itemCount: widget.space.videosUrl.length,
+            itemBuilder: (BuildContext context, int index) {
+              return buildVideoPlayer(index);
+            },
+          ),
         ],
       );
     }
@@ -470,7 +623,11 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
             padding: const EdgeInsets.only(left: 8),
             child: Text(
               widget.space.descricao,
-              style: const TextStyle(fontSize: 12),
+              maxLines: 3,
+              style: const TextStyle(
+                fontSize: 12,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
           const SizedBox(height: 10),
@@ -654,23 +811,46 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                       isCarouselVisible = info.visibleFraction > 0.0;
                     });
                   },
-                  child: CarouselSlider(
-                    items: widget.space.imagesUrl
-                        .map((imageUrl) => Image.network(
-                              imageUrl.toString(),
-                              fit: BoxFit.cover,
-                            ))
-                        .toList(),
-                    options: CarouselOptions(
-                      aspectRatio: 16 / 12,
-                      viewportFraction: 1.0,
-                      enableInfiniteScroll: false,
-                      onPageChanged: (index, reason) {
-                        setState(() {
-                          _currentSlide = index;
-                        });
-                      },
-                    ),
+                  child: Stack(
+                    children: [
+                      CarouselSlider(
+                        items: widget.space.imagesUrl
+                            .map((imageUrl) => Image.network(
+                                  imageUrl.toString(),
+                                  fit: BoxFit.cover,
+                                ))
+                            .toList(),
+                        options: CarouselOptions(
+                          aspectRatio: 16 / 12,
+                          viewportFraction: 1.0,
+                          enableInfiniteScroll: false,
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              _currentSlide = index;
+                            });
+                          },
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return RegisterPostPage(
+                                    spaceModel: widget.space,
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                          child: const Text('Fazer post'),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -739,16 +919,16 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                           ),
                         ),
                         const Spacer(),
-                        const Column(
+                        Column(
                           children: [
                             Text(
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Color(0xff9747FF),
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700),
-                              "R\$800",
+                              "R\$${widget.space.preco}",
                             ),
-                            Text('Por hora'),
+                            const Text('Por hora'),
                           ],
                         ),
                       ],

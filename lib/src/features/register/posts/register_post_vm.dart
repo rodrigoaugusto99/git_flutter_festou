@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:validatorless/validatorless.dart';
 import 'package:git_flutter_festou/src/services/post_service.dart';
 
-class RegisterPostVm {
+class RegisterPostVm with ChangeNotifier {
   RegisterPostVm({
     required this.spaceModel,
   });
@@ -15,31 +15,56 @@ class RegisterPostVm {
   final formKey = GlobalKey<FormState>();
   final postService = PostService();
 
-  List<File>? imagesToRegister;
+  List<File> imagesToRegister = [];
 
   FormFieldValidator<String> validate() {
     return Validatorless.required('Campo obrigatorio');
   }
 
+  File? photoShowing;
+
+  void onPhotoTap(int index) {
+    photoShowing = imagesToRegister[index];
+    notifyListeners();
+  }
+
+  void deletarTudo() {
+    imagesToRegister = [];
+    notifyListeners();
+  }
+
+  void deletarImagem(int index) {
+    if (imagesToRegister.length == 1) {
+      photoShowing = null;
+      imagesToRegister.removeAt(index);
+    } else if (imagesToRegister[index] == photoShowing) {
+      imagesToRegister.removeAt(index);
+      photoShowing = imagesToRegister[0];
+    } else {
+      imagesToRegister.removeAt(index);
+    }
+
+    notifyListeners();
+  }
+
   void pickImages() async {
-    List<File> imageFiles = [];
     final imagePicker = ImagePicker();
     final List<XFile> images = await imagePicker.pickMultiImage();
     for (XFile image in images) {
       final imageFile = File(image.path);
-      imageFiles.add(imageFile);
+      imagesToRegister.add(imageFile);
     }
-    if (imageFiles != []) {
-      imagesToRegister = imageFiles;
-    }
+
+    photoShowing = imagesToRegister[0];
+
+    notifyListeners();
+    // if (imageFiles != []) {
+    //   imagesToRegister!.add(imageFiles);
+    // }
   }
 
   void validateForm() {
     if (formKey.currentState!.validate()) {
-      if (imagesToRegister == null) {
-        //todo:messagem pro usuario
-        return;
-      }
       register();
     }
   }
@@ -47,9 +72,10 @@ class RegisterPostVm {
   Future<void> register() async {
     postService.savePost(
       spaceId: spaceModel.spaceId,
-      imageFiles: imagesToRegister!,
+      imageFiles: imagesToRegister,
       titulo: tituloEC.text,
       descricao: descricaoEC.text,
+      coverPhoto: photoShowing!,
     );
   }
 }

@@ -390,6 +390,7 @@ p decidir o isFavorited*/
 //?função para capturar a lista de imagens desse espaço
 
     return SpaceModel(
+      videosUrl: List<String>.from(spaceDocument['videos'] ?? []),
       isFavorited: isFavorited,
       spaceId: spaceDocument['space_id'] ?? '',
       userId: spaceDocument['user_id'] ?? '',

@@ -202,6 +202,7 @@ class UserService {
       nomeEmpresaLocadora: spaceDocument['nome_empresa_locadora'] ?? '',
       locadorAssinatura: spaceDocument['locador_assinatura'] ?? '',
       numLikes: spaceDocument['num_likes'] ?? 0,
+      videosUrl: List<String>.from(spaceDocument['videos'] ?? []),
     );
   }
 
