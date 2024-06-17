@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/all_posts.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/each_post.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/post_single_page.dart';
 import 'package:git_flutter_festou/src/models/post_model.dart';
@@ -100,21 +101,33 @@ class _FeedNoticiasState extends State<FeedNoticias> {
                           ),
                         ),
                       ),
-                      const SizedBox(
+                      SizedBox(
                         height: 250,
                         width: 174,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Ver todos',
-                              style: TextStyle(fontWeight: FontWeight.w700),
-                            ),
-                            Icon(
-                              Icons.arrow_forward_ios_sharp,
-                              color: Color(0xff4300B1),
-                            )
-                          ],
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return const AllPosts();
+                                },
+                              ),
+                            );
+                          },
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Ver todos',
+                                style: TextStyle(fontWeight: FontWeight.w700),
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios_sharp,
+                                color: Color(0xff4300B1),
+                              )
+                            ],
+                          ),
                         ),
                       )
                     ],

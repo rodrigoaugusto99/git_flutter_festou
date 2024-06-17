@@ -14,7 +14,8 @@ class _CuponsEPromocoesState extends State<CuponsEPromocoes> {
   Widget build(BuildContext context) {
     List<String> images = [
       'lib/assets/images/Cupom de 50dddd.png',
-      'lib/assets/images/Banner cashbackuomdoi.png',
+      'lib/assets/images/Banner cashbackasasasa.png',
+      'lib/assets/images/Cupom 30%qrfxx.png'
     ];
     return Container(
       child: Column(

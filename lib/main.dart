@@ -21,6 +21,8 @@ import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/
 import 'package:git_flutter_festou/src/features/splash/splash_page.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+import 'src/features/show spaces/all_spaces_test.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(

@@ -391,6 +391,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
           widget.space.spaceId, widget.space.isFavorited);
     }
 
+//todo:
     String getIconPath(String service) {
       if (service == 'Cozinha') 'path';
       if (service == 'Estacionamento') 'path';
@@ -831,25 +832,26 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                           },
                         ),
                       ),
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return RegisterPostPage(
-                                    spaceModel: widget.space,
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                          child: const Text('Fazer post'),
+                      if (isMySpace)
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return RegisterPostPage(
+                                      spaceModel: widget.space,
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            child: const Text('Fazer post'),
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),
