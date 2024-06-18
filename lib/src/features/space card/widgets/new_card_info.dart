@@ -240,7 +240,12 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
   final estadoEC = TextEditingController();
 
   //todo: method to delete services clicked
+  //todo: method to delete photos and videos clicked
+  //todo: metodo para adicionar mais fotos e videos
   void toggleEditing() {
+    if (isEditing) {
+      //todo: save method
+    }
     setState(() {
       isEditing = !isEditing;
     });
@@ -458,38 +463,40 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
       return Column(
         children: [
           //botao
-          GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: () => showRatingDialog(widget.space),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: const Color(0xffF0F0F0),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-              child: Row(
-                children: [
-                  Image.asset('lib/assets/images/Pencilpencil.png'),
-                  const SizedBox(width: 17),
-                  const Text(
-                    'Deixe sua avaliação!',
-                    style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xff848484)),
-                  ),
-                  const Spacer(),
-                  const Text(
-                    '0/256',
-                    style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xff848484)),
-                  )
-                ],
+          if (!isEditing)
+            GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () => showRatingDialog(widget.space),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: const Color(0xffF0F0F0),
+                ),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                child: Row(
+                  children: [
+                    Image.asset('lib/assets/images/Pencilpencil.png'),
+                    const SizedBox(width: 17),
+                    const Text(
+                      'Deixe sua avaliação!',
+                      style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff848484)),
+                    ),
+                    const Spacer(),
+                    const Text(
+                      '0/256',
+                      style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff848484)),
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
           const SizedBox(height: 17),
           if (widget.space.numComments != '0')
             Row(
@@ -575,24 +582,43 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
           ),
           const SizedBox(height: 13),
           GridView.builder(
-              padding: EdgeInsets.zero,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                mainAxisSpacing: 13,
-                crossAxisSpacing: 13,
-                crossAxisCount: 3,
-              ),
-              itemCount: widget.space.imagesUrl.length > 6
-                  ? 6
-                  : widget.space.imagesUrl.length,
-              itemBuilder: (BuildContext context, int index) {
+            padding: EdgeInsets.zero,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              mainAxisSpacing: 13,
+              crossAxisSpacing: 13,
+              crossAxisCount: 3,
+            ),
+            itemCount: 6, // Sempre terá 6 itens no grid
+            itemBuilder: (BuildContext context, int index) {
+              if (index < widget.space.imagesUrl.length) {
+                // Mostrar as imagens da lista
                 return ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                        widget.space.imagesUrl[index].toString(),
-                        fit: BoxFit.cover));
-              }),
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.network(
+                    widget.space.imagesUrl[index].toString(),
+                    fit: BoxFit.cover,
+                  ),
+                );
+              } else if (index == widget.space.imagesUrl.length &&
+                  widget.space.imagesUrl.length < 6) {
+                // Mostrar a imagem do asset se estiver no próximo índice após a última imagem da lista
+                return GestureDetector(
+                  onTap: () {
+                    //todo: add photos
+                  },
+                  child: Image.asset(
+                    'lib/assets/images/Botao +botao_de_mais.png',
+                    width: 25,
+                  ),
+                );
+              } else {
+                // Mostrar um container vazio para os slots restantes
+                return null;
+              }
+            },
+          ),
           const SizedBox(height: 26),
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -624,9 +650,26 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
               crossAxisSpacing: 13,
               crossAxisCount: 3,
             ),
-            itemCount: widget.space.videosUrl.length,
+            itemCount: 3, // Sempre terá 3 itens no grid
             itemBuilder: (BuildContext context, int index) {
-              return buildVideoPlayer(index);
+              if (index < widget.space.videosUrl.length) {
+                // Mostrar os vídeos da lista
+                return buildVideoPlayer(index);
+              } else if (index == widget.space.videosUrl.length &&
+                  widget.space.videosUrl.length < 3) {
+                // Mostrar a imagem do asset se estiver no próximo índice após o último vídeo da lista
+                return GestureDetector(
+                  onTap: () {
+                    //todo: add video
+                  },
+                  child: Image.asset(
+                    'lib/assets/images/Botao +botao_de_mais.png',
+                    width: 25,
+                  ),
+                );
+              } else {
+                return null;
+              }
             },
           ),
         ],
@@ -1251,31 +1294,32 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                     ],
                   ),
                   const Spacer(),
-                  GestureDetector(
-                    //todo:  excluir
-                    onTap: () {},
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30, vertical: 8),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color(0xff9747FF),
-                            Color(0xff4300B1),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
+                  if (!isEditing)
+                    GestureDetector(
+                      //todo:  excluir
+                      onTap: () {},
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 8),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color(0xff9747FF),
+                              Color(0xff4300B1),
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ),
+                          borderRadius: BorderRadius.circular(24),
                         ),
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      child: const Text(
-                        'Excluir',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.w700),
-                        textAlign: TextAlign.center,
+                        child: const Text(
+                          'Excluir',
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.w700),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
-                  ),
                   const SizedBox(
                     width: 10,
                   ),
@@ -1296,9 +1340,9 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                         ),
                         borderRadius: BorderRadius.circular(24),
                       ),
-                      child: const Text(
-                        'Editar',
-                        style: TextStyle(
+                      child: Text(
+                        isEditing ? 'Salvar' : 'Editar',
+                        style: const TextStyle(
                             color: Colors.white, fontWeight: FontWeight.w700),
                         textAlign: TextAlign.center,
                       ),
