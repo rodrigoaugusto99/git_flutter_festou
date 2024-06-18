@@ -15,6 +15,7 @@ import 'package:git_flutter_festou/src/features/register/feedback/feedback_regis
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_limited.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_all.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/single_video_page.dart';
+import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:social_share/social_share.dart';
@@ -58,17 +59,6 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
       controllers.add(controller);
     }
     init();
-  }
-
-  void init() async {
-    final user = await UserService().getCurrentUserModel();
-    if (user != null) {
-      if (user.id == widget.space.userId) {
-        setState(() {
-          isMySpace = true;
-        });
-      }
-    }
   }
 
   @override
@@ -215,6 +205,45 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
         ],
       );
     }
+  }
+
+  void init() async {
+    final user = await UserService().getCurrentUserModel();
+    if (user != null) {
+      if (user.id == widget.space.userId) {
+        setState(() {
+          isMySpace = true;
+        });
+      }
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        precoEC.text = widget.space.preco;
+        visaoGeralEC.text = widget.space.descricao;
+        cepEC.text = widget.space.cep;
+        ruaEC.text = widget.space.logradouro;
+        numeroEC.text = widget.space.numero;
+        bairroEC.text = widget.space.bairro;
+        estadoEC.text = widget.space.estado;
+      });
+    });
+  }
+
+  bool isEditing = false;
+
+  final precoEC = TextEditingController();
+  final visaoGeralEC = TextEditingController();
+  final cepEC = TextEditingController();
+  final ruaEC = TextEditingController();
+  final numeroEC = TextEditingController();
+  final bairroEC = TextEditingController();
+  final estadoEC = TextEditingController();
+
+  //todo: method to delete services clicked
+  void toggleEditing() {
+    setState(() {
+      isEditing = !isEditing;
+    });
   }
 
   void _showBottomSheet(BuildContext context) {
@@ -395,17 +424,32 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
 
 //todo:
     String getIconPath(String service) {
-      if (service == 'Cozinha') 'path';
-      if (service == 'Estacionamento') 'path';
-      if (service == 'Segurança') 'path';
-      if (service == 'Limpeza ') 'path';
-      if (service == 'Decoração') 'path';
-      if (service == 'Bar') 'path';
-      if (service == 'Garçons') 'path';
-      if (service == 'Ar-condicionado') 'path';
-      if (service == 'Banheiros') 'path';
-      if (service == 'Som e iluminação') 'path';
-      return 'defaultPath';
+      if (service == 'Cozinha') {
+        return 'lib/assets/images/Rolling Pincozinha.png';
+      }
+      if (service == 'Estacionamento') {
+        return 'lib/assets/images/Vectorcarro.png';
+      }
+      if (service == 'Segurança') {
+        return 'lib/assets/images/Toilet Bowlvaso.png';
+      }
+      if (service == 'Limpeza ') return 'lib/assets/images/Toilet Bowlvaso.png';
+      if (service == 'Decoração') {
+        return 'lib/assets/images/Toilet Bowlvaso.png';
+      }
+      if (service == 'Bar') return 'lib/assets/images/Toilet Bowlvaso.png';
+      if (service == 'Garçons') return 'lib/assets/images/Toilet Bowlvaso.png';
+      if (service == 'Ar-condicionado') {
+        return 'lib/assets/images/Toilet Bowlvaso.png';
+      }
+      if (service == 'Banheiros') {
+        return 'lib/assets/images/Toilet Bowlvaso.png';
+      }
+      if (service == 'Som e iluminação') {
+        return 'lib/assets/images/Toilet Bowlvaso.png';
+      }
+
+      return 'lib/assets/images/Toilet Bowlvaso.svg';
     }
 
     final x = MediaQuery.of(context).size.width;
@@ -590,150 +634,234 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
     }
 
     Widget myFirstWidget() {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 60,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: widget.space.selectedServices.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  constraints: BoxConstraints(minWidth: x / 3.5),
-                  child: Row(
-                    children: [
-                      //SvgPicture.asset('assetName'),
-                      //todo:
-                      //getIcon(widget.space.selectedServices[index]),
-                      const Icon(Icons.align_vertical_top_sharp),
-                      Text(widget.space.selectedServices[index]),
-                    ],
+      return SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 60,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: widget.space.selectedServices.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          constraints: BoxConstraints(minWidth: x / 3.5),
+                          child: Row(
+                            children: [
+                              Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Image.asset(
+                                    getIconPath(
+                                        widget.space.selectedServices[index]),
+                                    width: 40,
+                                  ),
+                                  if (isEditing)
+                                    Positioned(
+                                      top: -11,
+                                      right: -2,
+                                      child: Image.asset(
+                                        'lib/assets/images/Deletardelete_service.png',
+                                        width: 20,
+                                      ),
+                                    )
+                                ],
+                              ),
+
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              // const Icon(Icons.align_vertical_top_sharp),
+                              Text(widget.space.selectedServices[index]),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                );
-              },
-            ),
-          ),
-          const Text(
-            'Visão geral',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: Text(
-              widget.space.descricao,
-              maxLines: 3,
-              style: const TextStyle(
-                fontSize: 12,
-                overflow: TextOverflow.ellipsis,
+                  if (isEditing)
+                    const SizedBox(
+                      width: 10,
+                    ),
+                  if (isEditing)
+                    Image.asset(
+                      'lib/assets/images/Botao +botao_de_mais.png',
+                      width: 30,
+                    ),
+                ],
               ),
             ),
-          ),
-          const SizedBox(height: 10),
-          const Text(
-            'Localização',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+            const Text(
+              'Visão geral',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ShowNewMap(
+            const SizedBox(height: 10),
+            if (!isEditing)
+              Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: Text(
+                  widget.space.descricao,
+                  maxLines: 3,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+            if (isEditing)
+              CustomTextformfield(
+                hintText: 'Visão geral',
+                controller: visaoGeralEC,
+                fillColor: const Color(0xffF0F0F0),
+              ),
+            const SizedBox(height: 10),
+            const Text(
+              'Localização',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 10),
+            if (!isEditing)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ShowNewMap(
+                          space: widget.space,
+                        ),
+                      ),
+                    );
+                  },
+                  child: AbsorbPointer(
+                    absorbing: true,
+                    child: ShowMap(
                       space: widget.space,
+                      scrollGesturesEnabled: false,
+                      zoomControlsEnabled: false,
+                      zoomGesturesEnabled: false,
+                      height: 200,
+                      width: double.infinity,
+                      x: true,
                     ),
                   ),
-                );
-              },
-              child: AbsorbPointer(
-                absorbing: true,
-                child: ShowMap(
-                  space: widget.space,
-                  scrollGesturesEnabled: false,
-                  zoomControlsEnabled: false,
-                  zoomGesturesEnabled: false,
-                  height: 200,
-                  width: double.infinity,
-                  x: true,
                 ),
+              ),
+            if (isEditing)
+              Column(
+                children: [
+                  CustomTextformfield(
+                    height: 40,
+                    controller: visaoGeralEC,
+                    hintText: 'CEP',
+                    fillColor: const Color(0xffF0F0F0),
+                  ),
+                  const SizedBox(height: 10),
+                  CustomTextformfield(
+                    height: 40,
+                    hintText: 'Rua',
+                    controller: visaoGeralEC,
+                    fillColor: const Color(0xffF0F0F0),
+                  ),
+                  const SizedBox(height: 10),
+                  CustomTextformfield(
+                    height: 40,
+                    hintText: 'Número',
+                    controller: visaoGeralEC,
+                    fillColor: const Color(0xffF0F0F0),
+                  ),
+                  const SizedBox(height: 10),
+                  CustomTextformfield(
+                    height: 40,
+                    hintText: 'Bairro',
+                    controller: visaoGeralEC,
+                    fillColor: const Color(0xffF0F0F0),
+                  ),
+                  const SizedBox(height: 10),
+                  CustomTextformfield(
+                    height: 40,
+                    hintText: 'Estado',
+                    controller: visaoGeralEC,
+                    fillColor: const Color(0xffF0F0F0),
+                  ),
+                ],
+              ),
+            const SizedBox(height: 15),
+            const Text(
+              'Agente Locador',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
               ),
             ),
-          ),
-          const SizedBox(height: 15),
-          const Text(
-            'Agente Locador',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
+            const SizedBox(height: 15),
+            Row(
+              children: [
+                widget.space.locadorAvatarUrl != ''
+                    ? CircleAvatar(
+                        backgroundColor: const Color(0xffF3F3F3),
+                        backgroundImage: Image.network(
+                          widget.space.locadorAvatarUrl,
+                          fit: BoxFit.cover,
+                        ).image,
+                        radius: 25,
+                      )
+                    : const CircleAvatar(
+                        backgroundColor: Color(0xffF3F3F3),
+                        radius: 25,
+                        child: Icon(
+                          Icons.person,
+                          color: Colors.black,
+                        ),
+                      ),
+                const SizedBox(width: 10),
+                Text(
+                  widget.space.locadorName,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
+                ),
+                const Spacer(),
+                InkWell(
+                  child: Container(
+                    padding: const EdgeInsets.all(7),
+                    //alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                      color: Color(0xffF3F3F3),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.chat_bubble,
+                      color: Color(0xff9747FF),
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChatPage(
+                          receiverID: widget.space.userId,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 15),
-          Row(
-            children: [
-              widget.space.locadorAvatarUrl != ''
-                  ? CircleAvatar(
-                      backgroundColor: const Color(0xffF3F3F3),
-                      backgroundImage: Image.network(
-                        widget.space.locadorAvatarUrl,
-                        fit: BoxFit.cover,
-                      ).image,
-                      radius: 25,
-                    )
-                  : const CircleAvatar(
-                      backgroundColor: Color(0xffF3F3F3),
-                      radius: 25,
-                      child: Icon(
-                        Icons.person,
-                        color: Colors.black,
-                      ),
-                    ),
-              const SizedBox(width: 10),
-              Text(
-                widget.space.locadorName,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black,
-                ),
-              ),
-              const Spacer(),
-              InkWell(
-                child: Container(
-                  padding: const EdgeInsets.all(7),
-                  //alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                    color: Color(0xffF3F3F3),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.chat_bubble,
-                    color: Color(0xff9747FF),
-                  ),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChatPage(
-                        receiverID: widget.space.userId,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       );
     }
 
@@ -923,18 +1051,37 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                           ),
                         ),
                         const Spacer(),
-                        Column(
-                          children: [
-                            Text(
-                              style: const TextStyle(
+                        if (!isEditing)
+                          Column(
+                            children: [
+                              Text(
+                                style: const TextStyle(
+                                    color: Color(0xff9747FF),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700),
+                                "R\$${widget.space.preco}",
+                              ),
+                              const Text('Por hora'),
+                            ],
+                          ),
+                        if (isEditing)
+                          SizedBox(
+                            width: 110,
+                            child: CustomTextformfield(
+                              hintText: 'Preço',
+                              withCrazyPadding: true,
+                              keyboardType: TextInputType.number,
+                              prefixIcon: const Text(
+                                'R\$',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
                                   color: Color(0xff9747FF),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700),
-                              "R\$${widget.space.preco}",
+                                ),
+                              ),
+                              controller: precoEC,
+                              fillColor: const Color(0xffF0F0F0),
                             ),
-                            const Text('Por hora'),
-                          ],
-                        ),
+                          )
                       ],
                     ),
                   ),
@@ -1134,7 +1281,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                   ),
                   GestureDetector(
                     //todo:
-                    onTap: () {},
+                    onTap: toggleEditing,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 30, vertical: 8),
