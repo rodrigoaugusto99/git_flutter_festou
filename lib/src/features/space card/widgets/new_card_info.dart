@@ -24,9 +24,11 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 class NewCardInfo extends ConsumerStatefulWidget {
   final SpaceModel space;
-  const NewCardInfo({
+  bool isLocadorFlow;
+  NewCardInfo({
     super.key,
     required this.space,
+    this.isLocadorFlow = false,
   });
 
   @override
@@ -1085,27 +1087,101 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-        child: GestureDetector(
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CalendarPage(
-                space: widget.space,
+        child: widget.isLocadorFlow
+            ? Row(
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        style: const TextStyle(
+                            color: Color(0xff9747FF),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700),
+                        "R\$${widget.space.preco}",
+                      ),
+                      const Text('Por hora'),
+                    ],
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    //todo:  excluir
+                    onTap: () {},
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 8),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xff9747FF),
+                            Color(0xff4300B1),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: const Text(
+                        'Excluir',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.w700),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  GestureDetector(
+                    //todo:
+                    onTap: () {},
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 8),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xff9747FF),
+                            Color(0xff4300B1),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: const Text(
+                        'Editar',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.w700),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CalendarPage(
+                      space: widget.space,
+                    ),
+                  ),
+                ),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  decoration: BoxDecoration(
+                      color: const Color(0xff9747FF),
+                      borderRadius: BorderRadius.circular(50)),
+                  child: const Text(
+                    'Alugar',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w700),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ),
-            ),
-          ),
-          child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              decoration: BoxDecoration(
-                  color: const Color(0xff9747FF),
-                  borderRadius: BorderRadius.circular(50)),
-              child: const Text(
-                'Alugar',
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-                textAlign: TextAlign.center,
-              )),
-        ),
       ),
     );
   }

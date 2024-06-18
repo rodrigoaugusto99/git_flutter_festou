@@ -15,11 +15,13 @@ class NewSpaceCard extends ConsumerStatefulWidget {
   final bool isReview;
   final bool hasHeart;
   final bool smallOne;
-  const NewSpaceCard({
+  bool isLocadorFlow;
+  NewSpaceCard({
     super.key,
     required this.space,
     required this.isReview,
     required this.hasHeart,
+    this.isLocadorFlow = false,
     this.smallOne = false,
   });
 
@@ -217,7 +219,8 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => NewCardInfo(space: widget.space),
+            builder: (context) => NewCardInfo(
+                space: widget.space, isLocadorFlow: widget.isLocadorFlow),
           ),
         );
       },
