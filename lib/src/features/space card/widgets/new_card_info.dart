@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/register/host%20feedback/host_feedback_register_page.dart';
 import 'package:git_flutter_festou/src/features/register/posts/register_post_page.dart';
-import 'package:git_flutter_festou/src/features/register/reserva/reserva_register_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/calendar_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_new_map.dart';
@@ -86,15 +85,6 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
           child: HostFeedbackRegisterPage(space: space),
         );
       },
-    );
-  }
-
-  void showDateDialog(SpaceModel space) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ReservaRegisterPage(space: space),
-      ),
     );
   }
 

@@ -122,24 +122,7 @@ final feedbackFirestoreRepositoryProvider =
 
 typedef FeedbackFirestoreRepositoryRef
     = ProviderRef<FeedbackFirestoreRepository>;
-String _$reservationFirestoreRepositoryHash() =>
-    r'51f26320240b61d7dbf1d1c946042bbac1255633';
 
-/// See also [reservationFirestoreRepository].
-@ProviderFor(reservationFirestoreRepository)
-final reservationFirestoreRepositoryProvider =
-    Provider<ReservationFirestoreRepository>.internal(
-  reservationFirestoreRepository,
-  name: r'reservationFirestoreRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$reservationFirestoreRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef ReservationFirestoreRepositoryRef
-    = ProviderRef<ReservationFirestoreRepository>;
 String _$logoutHash() => r'7ea42675097a08c6e33c22de70903cfbf5632d53';
 
 /// See also [logout].

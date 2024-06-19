@@ -5,8 +5,6 @@ import 'package:git_flutter_festou/src/repositories/feedback/feedback_firestore_
 import 'package:git_flutter_festou/src/repositories/feedback/feedback_firestore_repository_impl.dart';
 import 'package:git_flutter_festou/src/repositories/images/images_storage_repository.dart';
 import 'package:git_flutter_festou/src/repositories/images/images_storage_repository_impl.dart';
-import 'package:git_flutter_festou/src/repositories/reservation/reservation_firestore_repository.dart';
-import 'package:git_flutter_festou/src/repositories/reservation/reservation_firestore_repository_impl.dart';
 import 'package:git_flutter_festou/src/repositories/space/space_firestore_repository.dart';
 import 'package:git_flutter_festou/src/repositories/space/space_firestore_repository_impl.dart';
 import 'package:git_flutter_festou/src/repositories/user/user_auth_repository.dart';
@@ -63,10 +61,7 @@ FeedbackFirestoreRepository feedbackFirestoreRepository(
         FeedbackFirestoreRepositoryRef ref) =>
     FeedbackFirestoreRepositoryImpl();
 
-@Riverpod(keepAlive: true)
-ReservationFirestoreRepository reservationFirestoreRepository(
-        ReservationFirestoreRepositoryRef ref) =>
-    ReservationFirestoreRepositoryImpl();
+
 
 @riverpod
 Future<void> logout(LogoutRef ref) async {
