@@ -13,48 +13,16 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 class MyFavoriteSpacesVm extends ChangeNotifier {
   final CollectionReference spacesCollection =
       FirebaseFirestore.instance.collection('spaces');
-
-  List<SpaceModel> _filteredList = [];
-  final List<String> _searchHistory = [];
-
-  bool _isShowing = false;
-
-  bool getIsShowingBool() => _isShowing;
-  List<SpaceModel> getSpaces() => _filteredList;
-  List<String> getHistoric() => _searchHistory;
-
-  List<SpaceModel>? _allSpaces;
-
+  List<SpaceModel>? allSpaces;
+  bool isLoading = true;
   Future init() async {
-    _allSpaces = await getMyFavoriteSpaces();
-
+    isLoading = true;
+    allSpaces = await getMyFavoriteSpaces();
+    log(allSpaces.toString());
+    isLoading = false;
     notifyListeners();
   }
 
-  void onClick(bool thisBool) {
-    _isShowing = thisBool;
-
-    notifyListeners();
-  }
-
-  void onChangedSearch(String value) {
-    if (value == '') {
-      _isShowing = false;
-      notifyListeners();
-    }
-    if (_allSpaces != null) {
-      String searchValue = value.toLowerCase();
-
-      _filteredList = _allSpaces!
-          .where(
-              (project) => project.titulo.toLowerCase().contains(searchValue))
-          .toList();
-      notifyListeners();
-      // Adicionando a busca ao histórico
-    }
-  }
-
-  @override
   Future<List<SpaceModel>?> getMyFavoriteSpaces() async {
     try {
       //lista de espaços favoritados pelo usuario
@@ -129,6 +97,7 @@ class MyFavoriteSpacesVm extends ChangeNotifier {
     final numComments = await getNumComments(spaceId);
 
     return SpaceModel(
+      videosUrl: List<String>.from(spaceDocument['videos'] ?? []),
       isFavorited: isFavorited,
       spaceId: spaceDocument['space_id'] ?? '',
       userId: spaceDocument['user_id'] ?? '',

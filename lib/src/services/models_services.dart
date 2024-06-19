@@ -74,6 +74,7 @@ class ModelsServices {
           descricao: spaceDocument['descricao'] ?? '',
           city: spaceDocument['city'] ?? '',
           imagesUrl: List<String>.from(spaceDocument['images_url'] ?? []),
+          videosUrl: List<String>.from(spaceDocument['videos'] ?? []),
           latitude: spaceDocument['latitude'] ?? 0.0,
           longitude: spaceDocument['longitude'] ?? 0.0,
           locadorAvatarUrl: spaceDocument['locadorAvatarUrl'] ?? '',

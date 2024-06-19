@@ -63,7 +63,7 @@ class LoginVM extends _$LoginVM {
         ref.invalidate(spaceFirestoreRepositoryProvider);
         ref.invalidate(imagesStorageRepositoryProvider);
         ref.invalidate(feedbackFirestoreRepositoryProvider);
-        ref.invalidate(reservationFirestoreRepositoryProvider);
+
         state = state.copyWith(status: LoginStateStatus.userLogin);
         break;
       case Failure(exception: AuthError(:final message)):

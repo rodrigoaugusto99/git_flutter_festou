@@ -6,6 +6,8 @@ import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../loading_indicator.dart';
+
 class AllSpacesTest extends StatefulWidget {
   final bool zoomControlsEnabled;
   final bool scrollGesturesEnabled;
@@ -147,7 +149,7 @@ class _AllSpacesTestState extends State<AllSpacesTest> {
       future: loadLocalInfo(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CustomLoadingIndicator());
         } else if (snapshot.hasError) {
           return const Center(child: Text('Erro ao carregar os dados'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {

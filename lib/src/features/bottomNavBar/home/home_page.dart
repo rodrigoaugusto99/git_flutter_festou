@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/app_bar_home.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/cupons_e_promocoes.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/feed_noticias.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/menu_space_types.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/search_button.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
@@ -9,7 +11,6 @@ import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/my_last_seen_spaces.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_page.dart';
-import 'package:lottie/lottie.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   final String? previousRoute;
@@ -41,63 +42,105 @@ class _HomePageState extends ConsumerState<HomePage> {
         return false;
       },
       child: Scaffold(
-          backgroundColor: Colors.white,
-          body: allSpaces.when(
-            data: (AllSpaceState data) {
-              return CustomScrollView(
-                slivers: [
-                  const AppBarHome(),
-                  const SliverToBoxAdapter(
-                    child: MenuSpaceTypes(),
+        extendBody: true,
+        backgroundColor: Colors.white,
+        body: allSpaces.when(
+          data: (AllSpaceState data) {
+            return CustomScrollView(
+              slivers: [
+                const SliverToBoxAdapter(
+                    child: SizedBox(
+                  height: 20,
+                )),
+                const AppBarHome(),
+                const SliverToBoxAdapter(
+                    child: SizedBox(
+                  height: 20,
+                )),
+                const SliverToBoxAdapter(
+                  child: MenuSpaceTypes(),
+                ),
+                SliverToBoxAdapter(
+                  child: SearchButton(
+                    fadeInDuration: fadeInDuration,
                   ),
-                  SliverToBoxAdapter(
-                    child: SearchButton(
-                      fadeInDuration: fadeInDuration,
-                    ),
+                ),
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text('Feed de notícias'),
                   ),
-                  SliverToBoxAdapter(
-                      child: MyLastSeenSpaces(
-                    data: data,
-                    spaces: allSpaces,
-                  )),
-                  SliverToBoxAdapter(
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SurroundingSpacesPage(),
-                          ),
-                        );
-                      },
-                      child: SizedBox(
-                        height: 200, // Altura desejada
-
-                        child: Transform.scale(
-                          scale: 3,
-                          child: Lottie.asset(
-                            'lib/assets/animations/earth1.json',
-                            fit: BoxFit.cover,
-                            animate: false,
+                ),
+                const SliverToBoxAdapter(
+                  child: FeedNoticias(),
+                ),
+                const SliverToBoxAdapter(child: MyLastSeenSpaces()),
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
+                    child: Text('Cupons e promoções'),
+                  ),
+                ),
+                const SliverToBoxAdapter(
+                  child: CuponsEPromocoes(),
+                ),
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
+                    child: Text('Feed de notícias'),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SurroundingSpacesPage(),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(top: 10),
+                          child: Image.asset(
+                            'lib/assets/images/Globofffg.png',
+                            width: 200,
+                            height: 200,
                           ),
                         ),
-                      ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        const Text(
+                          'Clique no globo para buscar espaços no mapa',
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        const SizedBox(
+                          height: 50,
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              );
-            },
-            error: (Object error, StackTrace stackTrace) {
-              return const Stack(children: [
-                Center(child: Icon(Icons.error)),
-              ]);
-            },
-            loading: () {
-              return const Stack(children: [
-                Center(child: CustomLoadingIndicator()),
-              ]);
-            },
-          )),
+                ),
+              ],
+            );
+          },
+          error: (Object error, StackTrace stackTrace) {
+            return const Stack(children: [
+              Center(child: Icon(Icons.error)),
+            ]);
+          },
+          loading: () {
+            return const Stack(children: [
+              Center(child: CustomLoadingIndicator()),
+            ]);
+          },
+        ),
+      ),
     );
   }
 }

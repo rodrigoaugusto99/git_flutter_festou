@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/widgets/my_rows_config.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
@@ -30,7 +31,7 @@ class _ConfiguracoesState extends State<Configuracoes> {
         future: userFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CustomLoadingIndicator());
           } else if (snapshot.hasError) {
             return const Center(
                 child: Text('Erro ao carregar dados do usuário'));

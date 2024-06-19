@@ -11,7 +11,9 @@ import 'package:git_flutter_festou/src/features/space%20card/widgets/html_page.d
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/summary_data.dart';
 import 'package:git_flutter_festou/src/models/cupom_model.dart';
+import 'package:git_flutter_festou/src/models/reservation_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:git_flutter_festou/src/services/reserva_service.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:intl/intl.dart';
 
@@ -574,44 +576,54 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                               child: Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment
-                                                        .spaceBetween,
+                                                        .spaceEvenly,
                                                 children: [
-                                                  Container(
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                      color: _getColor(
-                                                        double.parse(widget
-                                                            .summaryData
-                                                            .spaceModel
-                                                            .averageRating),
-                                                      ),
-                                                    ),
-                                                    height: 20,
-                                                    width: 20,
-                                                    child: Center(
-                                                      child: Text(
-                                                        double.parse(widget
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5),
+                                                          color: _getColor(
+                                                            double.parse(widget
                                                                 .summaryData
                                                                 .spaceModel
-                                                                .averageRating)
-                                                            .toStringAsFixed(1),
-                                                        style: const TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 10),
+                                                                .averageRating),
+                                                          ),
+                                                        ),
+                                                        height: 20,
+                                                        width: 20,
+                                                        child: Center(
+                                                          child: Text(
+                                                            double.parse(widget
+                                                                    .summaryData
+                                                                    .spaceModel
+                                                                    .averageRating)
+                                                                .toStringAsFixed(
+                                                                    1),
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 10),
+                                                          ),
+                                                        ),
                                                       ),
-                                                    ),
+                                                      const SizedBox(width: 3),
+                                                      Text(
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Color(
+                                                                0xff5E5E5E),
+                                                            fontSize: 10,
+                                                          ),
+                                                          '(${widget.summaryData.spaceModel.numComments})'),
+                                                    ],
                                                   ),
-                                                  const Text(
-                                                      style: TextStyle(
-                                                        color:
-                                                            Color(0xff5E5E5E),
-                                                        fontSize: 10,
-                                                      ),
-                                                      "(105)"),
                                                   Row(
                                                     children: [
                                                       Container(
@@ -631,32 +643,36 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                                           color: Colors.white,
                                                         ),
                                                       ),
+                                                      const SizedBox(width: 3),
+                                                      Text(
+                                                        style: const TextStyle(
+                                                            color: Color(
+                                                                0xff9747FF),
+                                                            fontSize: 10,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w700),
+                                                        "R\$${widget.summaryData.spaceModel.preco},00/h",
+                                                      ),
                                                     ],
                                                   ),
-                                                  const Text(
-                                                    style: TextStyle(
-                                                        color:
-                                                            Color(0xff9747FF),
-                                                        fontSize: 10,
-                                                        fontWeight:
-                                                            FontWeight.w700),
-                                                    "R\$800,00/h",
-                                                  ),
-                                                  const Row(
+                                                  Row(
                                                     children: [
-                                                      Icon(
+                                                      const Icon(
                                                         Icons.favorite,
                                                         size: 20,
                                                         color:
                                                             Color(0xff9747FF),
                                                       ),
+                                                      const SizedBox(width: 3),
                                                       Text(
-                                                          style: TextStyle(
+                                                          style:
+                                                              const TextStyle(
                                                             color: Color(
                                                                 0xff5E5E5E),
                                                             fontSize: 10,
                                                           ),
-                                                          "(598)"),
+                                                          "(${widget.summaryData.spaceModel.numLikes})"),
                                                     ],
                                                   ),
                                                 ],
@@ -1271,8 +1287,21 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: GestureDetector(
           onTap: () {
-            if (widget.assinado && widget.html != null) {
+            if (widget.assinado && widget.html != null && userModel != null) {
               //todo: pode reservar
+              final reservationModel = ReservationModel(
+                spaceId: widget.summaryData.spaceModel.spaceId,
+                locadorId: widget.summaryData.spaceModel.userId,
+                clientId: userModel!.id,
+                checkInTime: widget.summaryData.checkInTime,
+                checkOutTime: widget.summaryData.checkOutTime,
+                selectedDate: widget.summaryData.selectedDate.toString(),
+                selectedFinalDate:
+                    widget.summaryData.selectedFinalDate.toString(),
+                contratoHtml: widget.html!,
+              );
+              ReservaService()
+                  .saveReservation(reservationModel: reservationModel);
               dev.log('Pode reservar.');
             } else {
               //todo: nao pode reservar

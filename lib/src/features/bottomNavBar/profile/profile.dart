@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/central/central_de_ajuda.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarPageLocador.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
+import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/widgets/my_rows_config.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -41,7 +43,7 @@ class _ProfileState extends ConsumerState<Profile> {
           future: userService.getCurrentUserModel(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: CustomLoadingIndicator());
             }
             if (snapshot.hasError) {
               return const Center(child: Text('Erro ao carregar os dados.'));
@@ -60,7 +62,7 @@ class _ProfileState extends ConsumerState<Profile> {
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(child: CustomLoadingIndicator());
                 }
                 if (snapshot.hasError) {
                   return const Center(
@@ -237,7 +239,12 @@ class _ProfileState extends ConsumerState<Profile> {
                         icon1: Image.asset(
                           'lib/assets/images/Icon Atendimentocentral.png',
                         ),
-                        onTap: () {},
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const CentralDeAjuda(),
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 25),
                       myText(text: 'Jurídico'),
@@ -263,7 +270,7 @@ class _ProfileState extends ConsumerState<Profile> {
                           ref.read(logoutProvider.future);
                         },
                       ),
-                      const SizedBox(height: 100),
+                      const SizedBox(height: 40),
                     ],
                   ),
                 );

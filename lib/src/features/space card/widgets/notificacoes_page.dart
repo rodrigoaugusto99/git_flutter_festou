@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 
@@ -49,7 +50,7 @@ class NotificacoesPage extends StatelessWidget {
         future: UserService().getCurrentUserModel(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CustomLoadingIndicator());
           } else if (snapshot.hasError) {
             return const Center(child: Text('Error loading user'));
           } else if (!snapshot.hasData || snapshot.data == null) {

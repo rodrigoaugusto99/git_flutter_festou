@@ -5,7 +5,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/new_card_info.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:lottie/lottie.dart';
 
 class NewSpaceCard extends ConsumerStatefulWidget {
@@ -13,11 +15,13 @@ class NewSpaceCard extends ConsumerStatefulWidget {
   final bool isReview;
   final bool hasHeart;
   final bool smallOne;
-  const NewSpaceCard({
+  bool isLocadorFlow;
+  NewSpaceCard({
     super.key,
     required this.space,
     required this.isReview,
     required this.hasHeart,
+    this.isLocadorFlow = false,
     this.smallOne = false,
   });
 
@@ -48,28 +52,35 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
       if (isReview == false) {
         return Stack(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16.0),
-              child: CarouselSlider(
-                items: widget.space.imagesUrl
-                    .map((imageUrl) => Image.network(
-                          imageUrl,
-                          fit: BoxFit.cover,
-                        ))
-                    .toList(),
-                options: CarouselOptions(
-                  autoPlay: true,
-                  aspectRatio: 16 / 12,
-                  viewportFraction: 1.0,
-                  enableInfiniteScroll: true,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      _currentIndex = index;
-                    });
-                  },
+            if (widget.space.imagesUrl == [])
+              Container(
+                height: 200,
+                width: 300,
+                color: Colors.grey,
+              ),
+            if (widget.space.imagesUrl != [])
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16.0),
+                child: CarouselSlider(
+                  items: widget.space.imagesUrl
+                      .map((imageUrl) => Image.network(
+                            imageUrl,
+                            fit: BoxFit.cover,
+                          ))
+                      .toList(),
+                  options: CarouselOptions(
+                    autoPlay: true,
+                    aspectRatio: 16 / 12,
+                    viewportFraction: 1.0,
+                    enableInfiniteScroll: true,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        _currentIndex = index;
+                      });
+                    },
+                  ),
                 ),
               ),
-            ),
             if (widget.hasHeart)
               if (showLottie)
                 Positioned(
@@ -201,165 +212,182 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
       }
     }
 
-    return Container(
-      padding: const EdgeInsets.all(6),
-      color: Colors.white,
-      height: 380,
-      child: Stack(
-        children: [
-          myCarousel(widget.isReview),
-          Padding(
-            padding: EdgeInsets.only(bottom: y * 0.03),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      width: x * 0.84,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 2,
-                              blurRadius: 20,
-                              offset: const Offset(0, 3),
+    final userService = UserService();
+    return GestureDetector(
+      onTap: () {
+        userService.updateLastSeen(widget.space.spaceId);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NewCardInfo(
+                space: widget.space, isLocadorFlow: widget.isLocadorFlow),
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(6),
+        height: 380,
+        child: Stack(
+          children: [
+            myCarousel(widget.isReview),
+            Padding(
+              padding: EdgeInsets.only(bottom: y * 0.03),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        width: x * 0.84,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 20,
+                                offset: const Offset(0, 3),
+                              ),
+                            ]),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 25),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    capitalizeFirstLetter(widget.space.titulo),
+                                    style: const TextStyle(
+                                        fontFamily: 'RedHatDisplay',
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w900),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ]),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 25),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  capitalizeFirstLetter(widget.space.titulo),
-                                  style: const TextStyle(
-                                      fontFamily: 'RedHatDisplay',
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w900),
-                                ),
-                              ],
+                            Padding(
+                              padding: const EdgeInsets.only(left: 25),
+                              child: Text(
+                                style: TextStyle(color: Colors.blueGrey[500]),
+                                capitalizeTitle(
+                                    "${widget.space.bairro}, ${widget.space.cidade}"),
+                              ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 25),
-                            child: Text(
-                              style: TextStyle(color: Colors.blueGrey[500]),
-                              capitalizeTitle(
-                                  "${widget.space.bairro}, ${widget.space.cidade}"),
+                            Container(
+                              margin:
+                                  const EdgeInsets.only(left: 25, right: 25),
+                              child: const Divider(
+                                thickness: 0.8,
+                                color: Color(0xff9747FF),
+                              ),
                             ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(left: 25, right: 25),
-                            child: const Divider(
-                              thickness: 0.8,
-                              color: Color(0xff9747FF),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 25, right: 30),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: _getColor(
-                                          double.parse(
-                                              widget.space.averageRating),
-                                        ),
-                                      ),
-                                      height: y * 0.035,
-                                      width: x * 0.07,
-                                      child: Center(
-                                        child: Text(
-                                          double.parse(
-                                                  widget.space.averageRating)
-                                              .toStringAsFixed(1),
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 5),
-                                    Text(
-                                        style: const TextStyle(
-                                          color: Color(0xff5E5E5E),
-                                        ),
-                                        '(${widget.space.numComments})'),
-                                  ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 20),
-                                  child: Row(
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 25, right: 30),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Row(
                                     children: [
                                       Container(
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(5),
-                                          color: const Color(0xff9747FF),
+                                          color: _getColor(
+                                            double.parse(
+                                                widget.space.averageRating),
+                                          ),
                                         ),
-                                        width: 20,
-                                        height: 20,
-                                        child: const Icon(
-                                          Icons.attach_money,
-                                          size: 15,
-                                          color: Colors.white,
+                                        height: y * 0.035,
+                                        width: x * 0.07,
+                                        child: Center(
+                                          child: Text(
+                                            double.parse(
+                                                    widget.space.averageRating)
+                                                .toStringAsFixed(1),
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(width: 5),
-                                      Text(
-                                        style: const TextStyle(
-                                            color: Color(0xff9747FF),
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w700),
-                                        "R\$${widget.space.preco},00/h",
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.only(left: 20, right: 0),
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.favorite,
-                                        size: 20,
-                                        color: Color(0xff9747FF),
                                       ),
                                       const SizedBox(width: 5),
                                       Text(
                                           style: const TextStyle(
                                             color: Color(0xff5E5E5E),
                                           ),
-                                          widget.space.numLikes.toString()),
+                                          '(${widget.space.numComments})'),
                                     ],
                                   ),
-                                ),
-                              ],
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 20),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            color: const Color(0xff9747FF),
+                                          ),
+                                          width: 20,
+                                          height: 20,
+                                          child: const Icon(
+                                            Icons.attach_money,
+                                            size: 15,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 5),
+                                        Text(
+                                          style: const TextStyle(
+                                              color: Color(0xff9747FF),
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w700),
+                                          "R\$${widget.space.preco},00/h",
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 20, right: 0),
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.favorite,
+                                          size: 20,
+                                          color: Color(0xff9747FF),
+                                        ),
+                                        const SizedBox(width: 5),
+                                        Text(
+                                            style: const TextStyle(
+                                              color: Color(0xff5E5E5E),
+                                            ),
+                                            widget.space.numLikes.toString()),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          )
-        ],
+                    ],
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

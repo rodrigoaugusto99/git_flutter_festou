@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/services_panel.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/weekdays_panel.dart';
@@ -111,8 +114,8 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                   FeedbacksPanel(
                     text: 'MÉDIA de avaliações',
                     onNotePressed: (String value) {
-                      //log('onNotePressed: $value');
-                      //spaceFilterVm.addOrRemoveNote(value);
+                      log('onNotePressed: $value');
+                      filterAnOrderVm.addOrRemoveNote(value);
                     },
                   ),
                   Align(
@@ -132,12 +135,25 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
       );
     }
 
+    Map<String, String> cds = {
+      "Debutante": "lib/assets/images/BackgroundDebutantedebutttt.png",
+      "Kids": "lib/assets/images/BackgroundKidsImage1kids.png",
+      "Casamento": "lib/assets/images/BackgroundMarriagecasamient.png",
+      "Reuniao": "lib/assets/images/BackgroundMeetingreunionaby.png",
+      "Outros": "lib/assets/images/BackgroundOthersotroz.png",
+      "Religioso": "lib/assets/images/BackgroundReligiousalaaaaa.png",
+      "Cha": "lib/assets/images/BackgroundTeaafffcghaaa.png",
+    };
+
     return SafeArea(
+      top: false,
       child: AnimatedBuilder(
           animation: spaceByTypeViewModel,
           builder: (context, child) {
             return Scaffold(
+              extendBodyBehindAppBar: true,
               appBar: AppBar(
+                backgroundColor: Colors.transparent,
                 actions: [
                   Padding(
                     padding: const EdgeInsets.only(right: 18.0),
@@ -194,74 +210,84 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                   ),
                 ),
                 centerTitle: true,
-                title: const Text(
-                  'Espaços por tipo',
-                  style: TextStyle(
+                title: Text(
+                  widget.type[0],
+                  style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.black),
                 ),
                 elevation: 0,
-                backgroundColor: Colors.white,
               ),
-              backgroundColor: Colors.white,
-              body: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        _buildSearchBox(x, y),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 15),
-                          child: GestureDetector(
-                            onTap: () => showFilterModal(context),
-                            child: Container(
-                              width: 35,
-                              height: 35,
-                              decoration: BoxDecoration(
-                                //color: Colors.white.withOpacity(0.7),
-                                color: const Color(0xff9747FF),
-                                borderRadius: BorderRadius.circular(10),
+              body: DecoratedBox(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage(cds[widget.type[0]]!),
+                      fit: BoxFit.cover),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 100,
+                      ),
+                      Row(
+                        children: [
+                          _buildSearchBox(x, y),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 15),
+                            child: GestureDetector(
+                              onTap: () => showFilterModal(context),
+                              child: Container(
+                                width: 35,
+                                height: 35,
+                                decoration: BoxDecoration(
+                                  //color: Colors.white.withOpacity(0.7),
+                                  color: const Color(0xff9747FF),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Image.asset(
+                                    'lib/assets/images/Sliderfitl.png'),
                               ),
-                              child: Image.asset(
-                                  'lib/assets/images/Sliderfitl.png'),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    if (spaceByTypeViewModel.getSpaces() != null &&
-                        spaceByTypeViewModel.showSpacesByType)
-                      Expanded(
-                        child: ListView.builder(
-                          padding: const EdgeInsets.all(10),
-                          itemCount: spaceByTypeViewModel.getSpaces()!.length,
-                          itemBuilder: (context, index) {
-                            return NewSpaceCard(
-                              hasHeart: true,
-                              space: spaceByTypeViewModel.getSpaces()![index],
-                              isReview: false,
-                            );
-                          },
-                        ),
+                        ],
                       ),
-                    if (spaceByTypeViewModel.getFiltered() != null &&
-                        spaceByTypeViewModel.showFiltered)
-                      Expanded(
-                        child: ListView.builder(
-                          padding: const EdgeInsets.all(10),
-                          itemCount: spaceByTypeViewModel.getFiltered()!.length,
-                          itemBuilder: (context, index) {
-                            return NewSpaceCard(
-                              hasHeart: true,
-                              space: spaceByTypeViewModel.getFiltered()![index],
-                              isReview: false,
-                            );
-                          },
+                      if (spaceByTypeViewModel.getSpaces() != null &&
+                          spaceByTypeViewModel.showSpacesByType)
+                        Expanded(
+                          child: ListView.builder(
+                            padding: const EdgeInsets.all(10),
+                            itemCount: spaceByTypeViewModel.getSpaces()!.length,
+                            itemBuilder: (context, index) {
+                              return NewSpaceCard(
+                                hasHeart: true,
+                                space: spaceByTypeViewModel.getSpaces()![index],
+                                isReview: false,
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                  ],
+                      if (spaceByTypeViewModel.getFiltered() != null &&
+                          spaceByTypeViewModel.showFiltered)
+                        Expanded(
+                          child: ListView.builder(
+                            padding: const EdgeInsets.all(10),
+                            itemCount:
+                                spaceByTypeViewModel.getFiltered()!.length,
+                            itemBuilder: (context, index) {
+                              return NewSpaceCard(
+                                hasHeart: true,
+                                space:
+                                    spaceByTypeViewModel.getFiltered()![index],
+                                isReview: false,
+                              );
+                            },
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
             );

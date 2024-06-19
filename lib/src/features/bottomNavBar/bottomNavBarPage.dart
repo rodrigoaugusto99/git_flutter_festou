@@ -39,122 +39,123 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
     });
   }
 
-  void _onTabTapped(int index) {
-    _pageController.jumpToPage(
-      index,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-      bottomNavigationBar: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('users')
-            .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-            .snapshots(),
-        builder: (context, snapshot) {
-          int notificationCount = 0;
-          if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-            var userDoc = snapshot.data!.docs.first;
-            notificationCount = userDoc['notifications'] ?? 0;
-          }
+    return Stack(
+      children: [
+        Scaffold(
+          bottomNavigationBar: StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('users')
+                .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                .snapshots(),
+            builder: (context, snapshot) {
+              int notificationCount = 0;
+              if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                var userDoc = snapshot.data!.docs.first;
+                notificationCount = userDoc['notifications'] ?? 0;
+              }
 
-          return StylishBottomBar(
-            option: DotBarOptions(
-              dotStyle: DotStyle.tile,
-              gradient: const LinearGradient(
-                colors: [
-                  Colors.deepPurple,
-                  Colors.pink,
+              return StylishBottomBar(
+                option: DotBarOptions(
+                  dotStyle: DotStyle.tile,
+                  gradient: const LinearGradient(
+                    colors: [
+                      Colors.deepPurple,
+                      Colors.pink,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                items: [
+                  BottomBarItem(
+                    icon: const Icon(
+                      Icons.house_outlined,
+                    ),
+                    selectedIcon: const Icon(Icons.house_rounded),
+                    selectedColor: Colors.teal,
+                    unSelectedColor: Colors.grey,
+                    title: const Text('Início'),
+                  ),
+                  BottomBarItem(
+                    icon: const Icon(Icons.search_outlined),
+                    selectedIcon: const Icon(Icons.search),
+                    selectedColor: Colors.blue,
+                    title: const Text('Buscar'),
+                  ),
+                  BottomBarItem(
+                      icon: const Icon(
+                        CupertinoIcons.heart,
+                      ),
+                      selectedIcon: const Icon(
+                        CupertinoIcons.heart_fill,
+                      ),
+                      selectedColor: Colors.red,
+                      title: const Text('Favoritos')),
+                  BottomBarItem(
+                    icon: const Icon(
+                      Icons.person_outline,
+                    ),
+                    selectedIcon: const Icon(
+                      Icons.person,
+                    ),
+                    selectedColor: Colors.deepPurple,
+                    title: const Text('Perfil'),
+                    badge: Text(
+                        notificationCount > 99 ? '99+' : '$notificationCount'),
+                    showBadge: notificationCount > 0,
+                    badgeColor: Colors.purple,
+                    badgePadding: const EdgeInsets.only(left: 4, right: 4),
+                  ),
                 ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-            items: [
-              BottomBarItem(
-                icon: const Icon(
-                  Icons.house_outlined,
-                ),
-                selectedIcon: const Icon(Icons.house_rounded),
-                selectedColor: Colors.teal,
-                unSelectedColor: Colors.grey,
-                title: const Text('Início'),
-              ),
-              BottomBarItem(
-                icon: const Icon(Icons.search_outlined),
-                selectedIcon: const Icon(Icons.search),
-                selectedColor: Colors.blue,
-                title: const Text('Buscar'),
-              ),
-              BottomBarItem(
-                  icon: const Icon(
-                    CupertinoIcons.heart,
-                  ),
-                  selectedIcon: const Icon(
-                    CupertinoIcons.heart_fill,
-                  ),
-                  selectedColor: Colors.red,
-                  title: const Text('Favoritos')),
-              BottomBarItem(
-                icon: const Icon(
-                  Icons.person_outline,
-                ),
-                selectedIcon: const Icon(
-                  Icons.person,
-                ),
-                selectedColor: Colors.deepPurple,
-                title: const Text('Perfil'),
-                badge:
-                    Text(notificationCount > 99 ? '99+' : '$notificationCount'),
-                showBadge: notificationCount > 0,
-                badgeColor: Colors.purple,
-                badgePadding: const EdgeInsets.only(left: 4, right: 4),
-              ),
-            ],
-            hasNotch: true,
-            fabLocation: StylishBarFabLocation.end,
-            currentIndex: _currentIndex,
-            notchStyle: NotchStyle.square,
-            onTap: (index) {
-              if (index == _currentIndex) return;
-              _pageController.jumpToPage(index);
-              setState(() {
-                _currentIndex = index;
-              });
+                hasNotch: true,
+                fabLocation: StylishBarFabLocation.center,
+                currentIndex: _currentIndex,
+                notchStyle: NotchStyle.square,
+                onTap: (index) {
+                  if (index == _currentIndex) return;
+                  _pageController.jumpToPage(index);
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+              );
             },
-          );
-        },
-      ),
-      floatingActionButton: Image.asset(
-        'lib/assets/images/festou-logo.png',
-        scale: 5,
-        fit: BoxFit.cover,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      body: SafeArea(
-        child: PageView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          controller: _pageController,
-          onPageChanged: _onPageChanged,
-          itemBuilder: (context, index) {
-            switch (index) {
-              case 0:
-                return const HomePage();
-              case 1:
-                return const SearchPage();
-              case 2:
-                return const MyFavoriteSpacePage();
-              case 3:
-                return const Profile(false);
-              default:
-                return Container(); // Lida com índices fora do alcance, se aplicável
-            }
-          },
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+          body: PageView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            controller: _pageController,
+            onPageChanged: _onPageChanged,
+            itemBuilder: (context, index) {
+              switch (index) {
+                case 0:
+                  return const HomePage();
+                case 1:
+                  return const SearchPage();
+                case 2:
+                  return const MyFavoriteSpacePage();
+                case 3:
+                  return const Profile(false);
+                default:
+                  return Container(); // Lida com índices fora do alcance, se aplicável
+              }
+            },
+          ),
         ),
-      ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 20),
+            child: Image.asset(
+              'lib/assets/images/festou-logo.png',
+              scale: 5,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

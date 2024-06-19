@@ -1,10 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/my%20favorite%20spaces%20mvvm/my_favorite_spaces_state.dart';
+import 'package:flutter/widgets.dart';
+
 import 'package:git_flutter_festou/src/features/bottomNavBar/my%20favorite%20spaces%20mvvm/my_favorite_spaces_vm.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/my_sliver_list_to_card_info.dart';
+
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_card_info.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
 
@@ -16,137 +16,112 @@ class MyFavoriteSpacePage extends StatefulWidget {
 }
 
 class _MyFavoriteSpacePageState extends State<MyFavoriteSpacePage> {
-  final _controller = TextEditingController();
-  List<String> searchHistory = [];
   MyFavoriteSpacesVm viewModel = MyFavoriteSpacesVm();
   @override
   void initState() {
-    viewModel.init();
-
-    _controller.addListener(_onTextChanged);
     super.initState();
+    viewModel.addListener(_onViewModelChanged);
+    viewModel.init();
   }
 
   @override
   void dispose() {
-    _controller.removeListener(_onTextChanged);
-    _controller.dispose();
+    viewModel.removeListener(_onViewModelChanged);
     super.dispose();
   }
 
-  void _onTextChanged() {
+  void _onViewModelChanged() {
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Favoritos',
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: Image.asset(
+            'lib/assets/images/BackgroundFavfundofav.png',
+            fit: BoxFit.cover,
+          ),
         ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-      ),
-      body: Column(
-        children: [
-          Row(
-            children: [
-              Icon(Icons.search, color: Colors.purple[300]),
-              const SizedBox(width: 10.0),
-              Stack(
-                children: [
-                  _controller.text.isEmpty
-                      ? RichText(
-                          text: TextSpan(
-                            style: TextStyle(color: Colors.blueGrey[500]),
-                            children: const <TextSpan>[
-                              TextSpan(text: 'Buscar no '),
-                              TextSpan(
-                                  text: 'Festou',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                        )
-                      : Container(
-                          height: 0,
-                        ),
-                  Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              onChanged: (value) {
-                                viewModel.onChangedSearch(value);
-                              },
-                              controller: _controller,
-                              autofocus: true,
-                              decoration: const InputDecoration(
-                                hintText: 'Buscar no Festou',
-                                hintStyle: TextStyle(color: Colors.transparent),
-                                border: InputBorder.none,
-                                isDense: true,
-                                contentPadding: EdgeInsets.symmetric(
-                                    vertical: 0, horizontal: 0),
-                              ),
-                              style: TextStyle(
-                                  color: Colors.blueGrey[900], fontSize: 12),
-                              cursorColor: Colors.blueGrey[900],
-                            ),
-                          ),
-                          Visibility(
-                            visible: _controller.text.isNotEmpty,
-                            child: InkWell(
-                              onTap: () {
-                                _controller.clear();
-                                viewModel.onClick(false);
-                              },
-                              child: Icon(
-                                Icons.clear,
-                                color: Colors.blueGrey[900],
-                                size: 14,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                        ],
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 18.0),
+                child: Container(
+                  padding: const EdgeInsets.all(7),
+                  decoration: BoxDecoration(
+                    //color: Colors.white.withOpacity(0.7),
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset:
+                            const Offset(0, 2), // changes position of shadow
                       ),
                     ],
                   ),
-                ],
+                  child: InkWell(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: const Icon(
+                      Icons.notifications_outlined,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
               ),
             ],
+            surfaceTintColor: Colors.transparent,
+            centerTitle: true,
+            title: const Text(
+              'Favoritos',
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
+            ),
+            elevation: 0,
+            backgroundColor: Colors.transparent,
           ),
-          ListView.builder(
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        NewCardInfo(space: viewModel.getSpaces()[index]),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-                  child: NewSpaceCard(
-                    hasHeart: true,
-                    space: viewModel.getSpaces()[index],
-                    isReview: false,
-                  ),
-                ),
-              );
-            },
-          )
-        ],
-      ),
+          body: !viewModel.isLoading
+              ? viewModel.allSpaces == null
+                  ? const Center(
+                      child: Text('Você não tem espaços favoritos'),
+                    )
+                  : SizedBox(
+                      height: 1000,
+                      child: ListView.builder(
+                        itemCount: viewModel.allSpaces!.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => NewCardInfo(
+                                    space: viewModel.allSpaces![index]),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 10, left: 10, right: 10),
+                              child: NewSpaceCard(
+                                hasHeart: true,
+                                space: viewModel.allSpaces![index],
+                                isReview: false,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    )
+              : const Center(child: CustomLoadingIndicator()),
+        ),
+      ],
     );
   }
 }

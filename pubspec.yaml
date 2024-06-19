@@ -39,8 +39,8 @@ dependencies:
   search_cep: ^4.0.2
   validatorless: ^1.2.3
   top_snackbar_flutter: ^3.1.0
-  firebase_core: ^2.16.0
-  firebase_auth: ^4.10.0
+  firebase_core: ^3.1.0
+  firebase_auth: ^5.1.0
   google_sign_in: ^6.1.5
   riverpod: ^2.4.1
   riverpod_lint: ^2.1.1
@@ -49,31 +49,31 @@ dependencies:
   riverpod_annotation: ^2.1.1
   riverpod_generator: ^3.0.0-dev.2
   google_maps_flutter: ^2.5.0
-  geocoding: ^2.1.0
-  geolocator: ^10.1.0
+  geocoding: ^3.0.0
+  geolocator: ^12.0.0
   image_picker: ^1.0.4
-  cloud_firestore: ^4.9.3
-  uuid: ^3.0.7
+  cloud_firestore: ^5.0.1
+  uuid: ^4.4.0
   animate_do: ^3.1.2
-  lottie: ^1.2.0
-  firebase_storage: ^11.4.0
+  lottie: ^3.1.2
+  firebase_storage: ^12.0.1
   carousel_slider: ^4.2.1
-  intl: ^0.18.1
+  intl: ^0.19.0
   glassmorphism: ^3.0.0
   glassmorphism_ui: ^0.3.0
   card_swiper: ^3.0.1
   
   social_share: ^2.3.1
   field_suggestion: ^0.2.5
-  flutter_typeahead: ^4.8.0
+  flutter_typeahead: ^5.2.0
   http: ^1.1.0
-  syncfusion_flutter_datepicker: ^23.2.4
+  syncfusion_flutter_datepicker: ^26.1.35
   ticket_widget: ^1.0.2
   table_calendar: ^3.0.9
   flutter_holo_date_picker_widget: ^1.1.2
   permission_handler: ^11.0.1
   visibility_detector: ^0.4.0+2
-  image_cropper: ^5.0.1
+  image_cropper: ^7.0.5
   dotted_border: ^2.1.0
   loading_indicator: ^3.1.1
   svg_flutter: ^0.0.1
@@ -85,11 +85,17 @@ dependencies:
   emoji_picker_flutter: ^2.1.1
   flutter_emoji: ^2.1.0
   rxdart: ^0.27.7
-  firebase_messaging: ^14.7.19
+  firebase_messaging: ^15.0.1
   stylish_bottom_bar: ^1.1.0
   mask_text_input_formatter: ^2.9.0
   easy_mask: ^2.0.1
   searchfield: ^1.0.4 
+  shimmer: ^3.0.0
+  cached_network_image: ^3.3.1
+  video_player: ^2.8.7
+  animated_text_kit: ^4.2.2
+  firebase_ui_firestore: ^1.6.3
+  firebase_pagination: ^4.0.0
 
 dev_dependencies:
   flutter_test:
@@ -100,7 +106,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -157,7 +163,8 @@ flutter:
 
     - family: RedHatDisplay
       fonts:
-        - asset: lib/assets/fonts/RedHatDisplay-black.ttf
+        - asset: lib/assets/fonts/RedHatDisplay.ttf
+        - asset: lib/assets/fonts/RedHatDisplay-Black.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
