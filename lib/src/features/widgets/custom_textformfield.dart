@@ -4,8 +4,9 @@ import 'package:svg_flutter/svg.dart';
 
 class CustomTextformfield extends StatefulWidget {
   final bool enable;
-  final String label;
+  final String? label;
   final String? svgPath;
+  final String? hintText;
   final bool obscureText;
   final TextEditingController controller;
   final String? Function(String?)? validator;
@@ -16,9 +17,21 @@ class CustomTextformfield extends StatefulWidget {
   bool hasEye;
   bool isBig;
   double? ddd;
+  double? height;
+  double? verticalPadding;
+  double? horizontalPadding;
+  Color? fillColor;
+  Widget? prefixIcon;
+  bool? withCrazyPadding;
   CustomTextformfield({
     super.key,
-    required this.label,
+    this.label,
+    this.hintText,
+    this.prefixIcon,
+    this.fillColor,
+    this.height,
+    this.verticalPadding,
+    this.horizontalPadding,
     this.inputFormatters,
     this.ddd,
     this.svgPath,
@@ -31,6 +44,7 @@ class CustomTextformfield extends StatefulWidget {
     this.enable = true,
     this.obscureText = false,
     this.isBig = false,
+    this.withCrazyPadding = false,
   });
 
   @override
@@ -42,90 +56,101 @@ bool isVisible = false;
 class _CustomTextformfieldState extends State<CustomTextformfield> {
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      minLines: widget.isBig == true ? 5 : 1,
-      maxLines: widget.isBig == true ? 10 : 1,
-      onEditingComplete: widget.onEditingComplete,
-      textInputAction: TextInputAction.done,
-      inputFormatters: widget.inputFormatters,
-      obscureText: widget.obscureText == false
-          ? false
-          : isVisible
-              ? false
-              : true,
-      onChanged: widget.onChanged,
-      enabled: widget.enable,
-      controller: widget.controller,
-      validator: widget.validator,
-      keyboardType: widget.keyboardType,
-      onTapOutside: (event) => {FocusScope.of(context).unfocus()},
-      style: TextStyle(
-          color: widget.enable ? Colors.black : Colors.grey,
-          overflow: TextOverflow.ellipsis),
-      decoration: InputDecoration(
-        prefixIcon: widget.svgPath != null
-            ? Padding(
-                padding: EdgeInsets.only(left: widget.ddd!),
-                child: Image.asset(
-                  widget.svgPath!,
-                  color: Colors.black,
-                ),
-              )
-            : null,
-        suffixIcon: widget.hasEye
-            ? GestureDetector(
-                onTap: () => setState(
-                  () {
-                    isVisible = !isVisible;
-                  },
-                ),
-                child: isVisible
-                    ? const Icon(Icons.visibility)
-                    : const Icon(Icons.visibility_off),
-              )
-            : null,
-        fillColor: Colors.white,
-        filled: true,
-        labelStyle: const TextStyle(
-          color: Colors.black,
-          fontSize: 14,
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 10.0,
-          horizontal: 10.0,
-        ),
-        alignLabelWithHint: widget.isBig ? true : null,
-        label: Text(widget.label),
-        hintStyle: const TextStyle(
-          fontSize: 16,
-          color: Color(0xff48464C),
-          fontWeight: FontWeight.w400,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: const BorderSide(
+    return SizedBox(
+      height: widget.height,
+      child: TextFormField(
+        minLines: widget.isBig == true ? 5 : 1,
+        maxLines: widget.isBig == true ? 10 : 1,
+        onEditingComplete: widget.onEditingComplete,
+        textInputAction: TextInputAction.done,
+        inputFormatters: widget.inputFormatters,
+        obscureText: widget.obscureText == false
+            ? false
+            : isVisible
+                ? false
+                : true,
+        onChanged: widget.onChanged,
+        enabled: widget.enable,
+        controller: widget.controller,
+        validator: widget.validator,
+        keyboardType: widget.keyboardType,
+        onTapOutside: (event) => {FocusScope.of(context).unfocus()},
+        style: TextStyle(
+            color: widget.enable ? Colors.black : Colors.grey,
+            overflow: TextOverflow.ellipsis),
+        decoration: InputDecoration(
+          hintText: widget.hintText,
+          prefixIcon: widget.svgPath != null
+              ? Padding(
+                  padding: EdgeInsets.only(left: widget.ddd!),
+                  child: Image.asset(
+                    widget.svgPath!,
+                    color: Colors.black,
+                  ),
+                )
+              : widget.withCrazyPadding == true
+                  ? Padding(
+                      padding: const EdgeInsets.only(
+                        top: 14,
+                      ),
+                      child: widget.prefixIcon,
+                    )
+                  : widget.prefixIcon,
+          suffixIcon: widget.hasEye
+              ? GestureDetector(
+                  onTap: () => setState(
+                    () {
+                      isVisible = !isVisible;
+                    },
+                  ),
+                  child: isVisible
+                      ? const Icon(Icons.visibility)
+                      : const Icon(Icons.visibility_off),
+                )
+              : null,
+          fillColor: widget.fillColor ?? Colors.white,
+          filled: true,
+          labelStyle: const TextStyle(
             color: Colors.black,
-            width: 1.0,
+            fontSize: 14,
           ),
-        ),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: const BorderSide(
-            color: Colors.white,
-            width: 1.0,
+          contentPadding: EdgeInsets.symmetric(
+            vertical: widget.verticalPadding ?? 10,
+            horizontal: widget.horizontalPadding ?? 10,
           ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: const BorderSide(
-            color: Colors.white,
-            width: 1.0,
+          alignLabelWithHint: widget.isBig ? true : null,
+          label: widget.label != null ? Text(widget.label!) : null,
+          hintStyle: const TextStyle(
+            fontSize: 16,
+            color: Color(0xff48464C),
+            fontWeight: FontWeight.w400,
           ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: const BorderSide(
-            color: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(
+              color: Colors.black,
+              width: 1.0,
+            ),
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(
+              color: Colors.white,
+              width: 1.0,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(
+              color: Colors.white,
+              width: 1.0,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(
+              color: Colors.white,
+            ),
           ),
         ),
       ),

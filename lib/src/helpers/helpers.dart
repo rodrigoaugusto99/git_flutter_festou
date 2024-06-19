@@ -19,6 +19,7 @@ Widget decContainer({
   return GestureDetector(
     onTap: onTap,
     child: Container(
+      clipBehavior: Clip.antiAlias,
       foregroundDecoration: BoxDecoration(color: foregroundColor),
       padding: EdgeInsets.only(
         left: leftPadding ?? allPadding ?? 0,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/meus%20feedbacks/meus_feedbacks_page.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/minhas%20reservas/minhas_reservas_page.dart';
 
 class MinhasAtividadesPage extends StatefulWidget {
   final String userId;
@@ -69,9 +68,10 @@ class _MinhasAtividadesPageState extends State<MinhasAtividadesPage> {
               const SizedBox(
                 height: 10,
               ),
-              MinhasReservasPage(
-                userId: widget.userId,
-              ),
+              //todo: minhas reservas
+              // MinhasReservasPage(
+              //   userId: widget.userId,
+              // ),
               const SizedBox(
                 height: 10,
               ),

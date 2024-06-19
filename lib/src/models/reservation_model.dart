@@ -1,15 +1,25 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ReservationModel {
-  final String userId;
+  final String clientId;
+  final String locadorId;
   final String spaceId;
-  final String range;
-  final String date;
-  final String status;
+  final int checkInTime;
+  final int checkOutTime;
+  final Timestamp? createdAt;
+  final String selectedDate;
+  final String? selectedFinalDate;
+  final String contratoHtml;
 
   ReservationModel({
     required this.spaceId,
-    required this.userId,
-    required this.range,
-    required this.date,
-    required this.status,
+    required this.clientId,
+    required this.locadorId,
+    required this.checkInTime,
+    required this.checkOutTime,
+    required this.selectedDate,
+    required this.selectedFinalDate,
+    this.createdAt,
+    required this.contratoHtml,
   });
 }

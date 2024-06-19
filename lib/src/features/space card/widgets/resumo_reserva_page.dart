@@ -11,7 +11,9 @@ import 'package:git_flutter_festou/src/features/space%20card/widgets/html_page.d
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/summary_data.dart';
 import 'package:git_flutter_festou/src/models/cupom_model.dart';
+import 'package:git_flutter_festou/src/models/reservation_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:git_flutter_festou/src/services/reserva_service.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:intl/intl.dart';
 
@@ -1285,8 +1287,21 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: GestureDetector(
           onTap: () {
-            if (widget.assinado && widget.html != null) {
+            if (widget.assinado && widget.html != null && userModel != null) {
               //todo: pode reservar
+              final reservationModel = ReservationModel(
+                spaceId: widget.summaryData.spaceModel.spaceId,
+                locadorId: widget.summaryData.spaceModel.userId,
+                clientId: userModel!.id,
+                checkInTime: widget.summaryData.checkInTime,
+                checkOutTime: widget.summaryData.checkOutTime,
+                selectedDate: widget.summaryData.selectedDate.toString(),
+                selectedFinalDate:
+                    widget.summaryData.selectedFinalDate.toString(),
+                contratoHtml: widget.html!,
+              );
+              ReservaService()
+                  .saveReservation(reservationModel: reservationModel);
               dev.log('Pode reservar.');
             } else {
               //todo: nao pode reservar
