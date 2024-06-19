@@ -6,7 +6,7 @@ import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_page.d
 import '../../loading_indicator.dart';
 
 class Mensagens extends StatefulWidget {
-  const Mensagens({Key? key}) : super(key: key);
+  const Mensagens({super.key});
 
   @override
   _MensagensState createState() => _MensagensState();
