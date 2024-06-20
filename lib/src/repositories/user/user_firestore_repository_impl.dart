@@ -80,6 +80,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
   Future<Either<RepositoryException, Nil>> saveUserInfos(
       ({
         String userId,
+        String fantasyName,
         String name,
         String telefone,
         String cep,
@@ -100,6 +101,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
             'bairro': userData.bairro,
             'cidade': userData.cidade,
           },
+          'fantasy_name': userData.fantasyName,
           'name': userData.name,
           'telefone': userData.telefone,
         };
@@ -136,6 +138,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       final userData = userDocument.data() as Map<String, dynamic>;
       final user = FirebaseAuth.instance.currentUser!;
       final UserModel userModel = UserModel(
+        fantasyName: userData['fantasy_name'] ?? '',
         email: userData['email'] ?? '',
         name: userData['name'] ?? '',
         cpfOuCnpj: userData['cpf'] ?? '',
@@ -146,6 +149,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         cidade: userData['user_address']?['cidade'] ?? '',
         id: user.uid,
         avatarUrl: userData['avatar_url'] ?? '',
+        locador: userData['locador'] ?? false,
       );
 
       return Success(userModel);
@@ -167,6 +171,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       final userData = userDocument.data() as Map<String, dynamic>;
 
       final UserModel userModel = UserModel(
+        fantasyName: userData['fantasy_name'] ?? '',
         email: userData['email'] ?? '',
         name: userData['name'] ?? '',
         cpfOuCnpj: userData['cpf'] ?? '',
@@ -177,6 +182,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         cidade: userData['user_address']?['cidade'] ?? '',
         id: userId,
         avatarUrl: userData['avatar_url'] ?? '',
+        locador: userData['locador'] ?? false,
       );
 //gambiarra - colocando dados do firestore e do storage aqui
 //esses swqitchs sao pra pegar os storags(cada um)
@@ -240,7 +246,12 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
     try {
       final userDocument = await getUserDocument();
 
-      if (text == 'name') {
+      if (text == 'fantasyName') {
+        // Atualize o campo 'fantasy_nome' com o novo valor 'newText'
+        await userDocument.reference.update({
+          'fantasy_name': newText,
+        });
+      } else if (text == 'name') {
         // Atualize o campo 'nome' com o novo valor 'newText'
         await userDocument.reference.update({
           'name': newText,
@@ -308,6 +319,4 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
           RepositoryException(message: 'Erro ao apagar esse campo: $e'));
     }
   }
-
-  
 }

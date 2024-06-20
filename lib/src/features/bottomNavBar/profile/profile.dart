@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarPage.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarLocadorPage.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/central/central_de_ajuda.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarPageLocador.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarLocatarioPage.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/widgets/my_rows_config.dart';
@@ -12,8 +12,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 
 class Profile extends ConsumerStatefulWidget {
-  final bool isLocador;
-  const Profile(this.isLocador, {super.key});
+  const Profile({super.key});
 
   @override
   ConsumerState<Profile> createState() => _ProfileState();
@@ -75,6 +74,7 @@ class _ProfileState extends ConsumerState<Profile> {
                 final data =
                     snapshot.data!.docs[0].data() as Map<String, dynamic>;
                 final updatedUserModel = UserModel(
+                  fantasyName: data['fantasy_name'],
                   email: data['email'] ?? '',
                   name: data['name'] ?? '',
                   cpfOuCnpj: data['cpf'] ?? '',
@@ -85,6 +85,7 @@ class _ProfileState extends ConsumerState<Profile> {
                   cidade: data['user_address']?['cidade'] ?? '',
                   id: userModel.id,
                   avatarUrl: data['avatar_url'] ?? '',
+                  locador: data['locador'] ?? true,
                 );
 
                 return SingleChildScrollView(
@@ -204,33 +205,22 @@ class _ProfileState extends ConsumerState<Profile> {
                       const SizedBox(height: 25),
                       myText(text: 'Locação'),
                       const SizedBox(height: 15),
-                      if (widget.isLocador)
-                        myRow(
-                          text: 'Quero viajar',
-                          icon1: Image.asset(
-                            'lib/assets/images/Icon Disponibilizarcasinha.png',
-                          ),
-                          onTap: () => Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const BottomNavBarPage(),
-                            ),
+                      myRow(
+                        text: userModel.locador
+                            ? 'Quero disponibilizar um espaço'
+                            : 'Quero deixar de ser um locatário',
+                        icon1: Image.asset(
+                          'lib/assets/images/Icon Disponibilizarcasinha.png',
+                        ),
+                        onTap: () => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => userModel.locador
+                                ? const BottomNavBarLocatarioPage()
+                                : const BottomNavBarLocadorPage(),
                           ),
                         ),
-                      if (!widget.isLocador)
-                        myRow(
-                          text: 'Quero disponibilizar um espaço',
-                          icon1: Image.asset(
-                            'lib/assets/images/Icon Disponibilizarcasinha.png',
-                          ),
-                          onTap: () => Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const BottomNavBarPageLocador(),
-                            ),
-                          ),
-                        ),
+                      ),
                       const SizedBox(height: 25),
                       myText(text: 'Atendimento'),
                       const SizedBox(height: 15),

@@ -9,7 +9,7 @@ import 'package:git_flutter_festou/src/features/space%20card/widgets/my_sliver_l
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/spaces%20with%20sugestion/spaces_with_sugestion_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/spaces%20with%20sugestion/spaces_with_sugestion_vm.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_page.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_locatario_page.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class SpacesWithSugestionPage extends ConsumerStatefulWidget {
@@ -91,7 +91,7 @@ class _SpacesWithSugestionPageState
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const NotificacoesPage(),
+                        builder: (context) => const NotificacoesLocatarioPage(),
                       ),
                     );
                   },

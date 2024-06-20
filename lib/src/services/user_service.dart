@@ -32,6 +32,7 @@ class UserService {
         DocumentSnapshot userDoc = querySnapshot.docs.first;
         final data = userDoc.data() as Map<String, dynamic>;
         return UserModel(
+          fantasyName: data['fantasy_name'] ?? '',
           email: data['email'] ?? '',
           name: data['name'] ?? '',
           cpfOuCnpj: data['cpf'] ?? '',
@@ -42,13 +43,35 @@ class UserService {
           cidade: data['user_address']?['cidade'] ?? '',
           id: firebaseUser.uid,
           avatarUrl: data['avatar_url'] ?? '',
+          locador: data['locador'] ?? false,
         );
       }
     }
     return null;
   }
 
-//pega os dados do cupom
+  Future<void> updateUserLocador(String userId, bool locador) async {
+    try {
+      // Primeiro, obtenha o documento do usuário usando o campo 'uid'
+      QuerySnapshot querySnapshot =
+          await usersCollection.where('uid', isEqualTo: userId).get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        // Pegue o primeiro documento encontrado
+        DocumentSnapshot userDoc = querySnapshot.docs.first;
+
+        // Atualize o campo 'locador' no documento do usuário
+        await userDoc.reference.update({'locador': locador});
+      } else {
+        throw Exception("Usuário não encontrado");
+      }
+    } catch (e) {
+      log(e.toString());
+      throw Exception('Erro ao atualizar o usuário');
+    }
+  }
+
+  //pega os dados do cupom
   Future<CupomModel?> getCupom(String codigo) async {
     QuerySnapshot querySnapshot = await _firestore
         .collection('cupons')
