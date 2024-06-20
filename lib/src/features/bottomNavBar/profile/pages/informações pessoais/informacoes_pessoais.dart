@@ -273,7 +273,8 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                   enable: isEditing,
                 ),
               myRow(
-                label: 'Nome',
+                label:
+                    widget.userModel.locador ? 'Nome' : 'Nome / Razão Social',
                 controller: nameEC,
                 enable: isEditing,
               ),
