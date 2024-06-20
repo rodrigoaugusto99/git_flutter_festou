@@ -15,6 +15,7 @@ class InformacoesPessoaisVM extends _$InformacoesPessoaisVM {
   InformacoesPessoaisState build() => InformacoesPessoaisState.initial();
 
   Future<void> updateInfo({
+    required String fantasyName,
     required String cidade,
     required String name,
     required String cep,
@@ -27,6 +28,7 @@ class InformacoesPessoaisVM extends _$InformacoesPessoaisVM {
 
     final a = await usersRepository.updatetUser('cidade', cidade);
 // ENTENDER O MOTIVO DESSE CODIGO E TER UM SWITCH APENAS PARA
+    await usersRepository.updatetUser('fantasyName', fantasyName);
     await usersRepository.updatetUser('name', name);
     await usersRepository.updatetUser('cep', cep);
     await usersRepository.updatetUser('email', email);

@@ -4,7 +4,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/search/search_page_vm.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
-import '../bottomNavBarPage.dart';
+import '../bottomNavBarLocadorPage.dart';
 import 'package:lottie/lottie.dart';
 
 class SearchPage extends StatefulWidget {
@@ -219,7 +219,7 @@ class _SearchPageState extends State<SearchPage> {
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => const BottomNavBarPage(),
+        builder: (context) => const BottomNavBarLocadorPage(),
       )),
       child: Text(
         'Cancelar',

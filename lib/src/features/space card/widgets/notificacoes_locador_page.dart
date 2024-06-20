@@ -3,8 +3,8 @@ import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 
-class NotificacoesPage extends StatelessWidget {
-  const NotificacoesPage({super.key});
+class NotificacoesLocadorPage extends StatelessWidget {
+  const NotificacoesLocadorPage({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -6,24 +6,29 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/profile/profile.dar
 import 'package:git_flutter_festou/src/features/bottomNavBar/search/search_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/home_page.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/widgets/notifications_counter.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
-class BottomNavBarPage extends StatefulWidget {
-  const BottomNavBarPage({super.key});
+class BottomNavBarLocadorPage extends StatefulWidget {
+  const BottomNavBarLocadorPage({super.key});
 
   @override
-  _BottomNavBarPageState createState() => _BottomNavBarPageState();
+  _BottomNavBarLocadorPageState createState() =>
+      _BottomNavBarLocadorPageState();
 }
 
-class _BottomNavBarPageState extends State<BottomNavBarPage> {
+class _BottomNavBarLocadorPageState extends State<BottomNavBarLocadorPage> {
   late PageController _pageController;
   int _currentIndex = 0;
+  bool _isLocador = false; // Cache para o estado do locador
+  bool _isLoading = true; // Indica se o estado está sendo carregado
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: _currentIndex);
+    _fetchUserLocadorStatus();
     NotificationCounter();
   }
 
@@ -31,6 +36,35 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  Future<void> _fetchUserLocadorStatus() async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .where('uid', isEqualTo: uid)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      // Pegue o primeiro documento encontrado
+      DocumentSnapshot userDoc = querySnapshot.docs.first;
+      setState(() {
+        _isLocador = userDoc['locador'];
+        _isLoading = false;
+      });
+
+      if (!_isLocador) {
+        // Atualize o campo 'locador' no documento do usuário
+        await userDoc.reference.update({'locador': true});
+        setState(() {
+          _isLocador = true;
+        });
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   void _onPageChanged(int index) {
@@ -41,6 +75,10 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Center(child: CustomLoadingIndicator());
+    }
+
     return Stack(
       children: [
         Scaffold(
@@ -137,7 +175,7 @@ class _BottomNavBarPageState extends State<BottomNavBarPage> {
                 case 2:
                   return const MyFavoriteSpacePage();
                 case 3:
-                  return const Profile(false);
+                  return const Profile();
                 default:
                   return Container(); // Lida com índices fora do alcance, se aplicável
               }

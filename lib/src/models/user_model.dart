@@ -1,4 +1,5 @@
 class UserModel {
+  final String fantasyName;
   final String email;
   final String name;
   final String cpfOuCnpj;
@@ -9,8 +10,10 @@ class UserModel {
   final String cidade;
   final String id;
   final String avatarUrl;
+  late final bool locador;
 
   UserModel({
+    required this.fantasyName,
     required this.email,
     required this.name,
     required this.cpfOuCnpj,
@@ -21,5 +24,6 @@ class UserModel {
     required this.cidade,
     required this.id,
     required this.avatarUrl,
+    required this.locador,
   });
 }

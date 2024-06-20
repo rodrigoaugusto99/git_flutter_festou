@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_page.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_locatario_page.dart';
 import 'package:git_flutter_festou/src/models/reservation_model.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
@@ -89,7 +89,7 @@ class _CalendarioState extends State<Calendario> {
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const NotificacoesPage(),
+                    builder: (context) => const NotificacoesLocatarioPage(),
                   ),
                 ),
                 child: const Icon(

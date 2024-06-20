@@ -459,6 +459,7 @@ p decidir o isFavorited*/
 
       if (data is Map<String, dynamic>) {
         UserModel userModel = UserModel(
+          fantasyName: data['fantasy_name'] ?? '',
           email: data['email'] ?? '',
           name: data['name'] ?? '',
           cpfOuCnpj: data['cpf'] ?? '',
@@ -469,6 +470,7 @@ p decidir o isFavorited*/
           cidade: data['user_address']?['cidade'] ?? '',
           id: userId,
           avatarUrl: data['avatar_url'] ?? '',
+          locador: data['locador'] ?? false,
         );
 
         return userModel;

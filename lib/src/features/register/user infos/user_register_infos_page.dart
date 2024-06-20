@@ -18,6 +18,7 @@ class UserRegisterInfosPage extends ConsumerStatefulWidget {
 }
 
 class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
+  final fantasyNameEC = TextEditingController();
   final fullNameEC = TextEditingController();
   final telefoneEC = TextEditingController();
   final cepEC = TextEditingController();
@@ -31,6 +32,7 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
   @override
   void dispose() {
     //Limpeza do controller
+    fantasyNameEC.dispose();
     fullNameEC.dispose();
     telefoneEC.dispose();
     cepEC.dispose();
@@ -160,6 +162,7 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
                           await userRegisterInfosVM.validateForm(
                               context,
                               formKey,
+                              fantasyNameEC.text,
                               fullNameEC.text,
                               telefoneEC.text,
                               cepEC.text,

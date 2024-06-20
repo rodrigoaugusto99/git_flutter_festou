@@ -14,6 +14,7 @@ abstract interface class UserFirestoreRepository {
   Future<Either<RepositoryException, Nil>> saveUserInfos(
       ({
         String userId,
+        String fantasyName,
         String name,
         String telefone,
         String cep,

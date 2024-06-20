@@ -1,4 +1,3 @@
-// bottomNavBarPageLocador.dart
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:confetti/confetti.dart';
@@ -8,38 +7,41 @@ import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/profile.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/calendario.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
+import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_page.dart';
 import 'package:git_flutter_festou/src/features/widgets/notifications_counter.dart';
-import 'package:stylish_bottom_bar/helpers/enums.dart';
-import 'package:stylish_bottom_bar/model/bar_items.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
-class BottomNavBarPageLocador extends StatefulWidget {
+class BottomNavBarLocatarioPage extends StatefulWidget {
   final int initialIndex;
-  const BottomNavBarPageLocador({super.key, this.initialIndex = 0});
+  const BottomNavBarLocatarioPage({super.key, this.initialIndex = 0});
 
   @override
-  _BottomNavBarPageLocadorState createState() =>
-      _BottomNavBarPageLocadorState();
+  _BottomNavBarLocatarioPageState createState() =>
+      _BottomNavBarLocatarioPageState();
 
   // Adicionando um método público para acessar o ConfettiController
   void playConfetti() {
-    _BottomNavBarPageLocadorState? state =
-        _BottomNavBarPageLocadorState._instance;
+    _BottomNavBarLocatarioPageState? state =
+        _BottomNavBarLocatarioPageState._instance;
     state?.playConfetti();
   }
 }
 
-class _BottomNavBarPageLocadorState extends State<BottomNavBarPageLocador> {
-  static _BottomNavBarPageLocadorState? _instance;
+class _BottomNavBarLocatarioPageState extends State<BottomNavBarLocatarioPage> {
+  static _BottomNavBarLocatarioPageState? _instance;
   late PageController _pageController;
   late ConfettiController _controllerCenter;
   int _currentIndex = 0;
+  bool _isLocador =
+      true; // Cache para o estado do locador (considerando que é locador inicialmente)
+  bool _isLoading = true; // Indica se o estado está sendo carregado
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: _currentIndex);
+    _fetchUserLocadorStatus();
     NotificationCounter();
     _controllerCenter =
         ConfettiController(duration: const Duration(seconds: 1));
@@ -56,6 +58,35 @@ class _BottomNavBarPageLocadorState extends State<BottomNavBarPageLocador> {
     super.dispose();
   }
 
+  Future<void> _fetchUserLocadorStatus() async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .where('uid', isEqualTo: uid)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      // Pegue o primeiro documento encontrado
+      DocumentSnapshot userDoc = querySnapshot.docs.first;
+      setState(() {
+        _isLocador = userDoc['locador'];
+        _isLoading = false;
+      });
+
+      if (_isLocador) {
+        // Atualize o campo 'locador' no documento do usuário
+        await userDoc.reference.update({'locador': false});
+        setState(() {
+          _isLocador = false;
+        });
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   void _onPageChanged(int index) {
     setState(() {
       _currentIndex = index;
@@ -64,6 +95,10 @@ class _BottomNavBarPageLocadorState extends State<BottomNavBarPageLocador> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Center(child: CustomLoadingIndicator());
+    }
+
     return Stack(
       children: [
         Scaffold(
@@ -123,7 +158,6 @@ class _BottomNavBarPageLocadorState extends State<BottomNavBarPageLocador> {
                         notificationCount > 99 ? '99+' : '$notificationCount'),
                     showBadge: notificationCount > 0,
                     badgeColor: Colors.purple,
-                    //badgePadding: const EdgeInsets.only(left: 4, right: 4),
                   ),
                   BottomBarItem(
                     icon: const Icon(
@@ -164,7 +198,7 @@ class _BottomNavBarPageLocadorState extends State<BottomNavBarPageLocador> {
                 case 2:
                   return const Mensagens();
                 case 3:
-                  return const Profile(true);
+                  return const Profile();
                 default:
                   return Container(); // Lida com índices fora do alcance, se aplicável
               }

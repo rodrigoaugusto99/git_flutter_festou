@@ -18,6 +18,7 @@ class InformacoesPessoais extends ConsumerStatefulWidget {
 }
 
 class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
+  TextEditingController fantasyNameEC = TextEditingController();
   TextEditingController nameEC = TextEditingController();
   TextEditingController telefoneEC = TextEditingController();
   TextEditingController emailEC = TextEditingController();
@@ -39,7 +40,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
   @override
   void initState() {
     super.initState();
-
+    fantasyNameEC = TextEditingController(text: widget.userModel.fantasyName);
     nameEC = TextEditingController(text: widget.userModel.name);
     cpfEC = TextEditingController(text: widget.userModel.cpfOuCnpj);
     emailEC = TextEditingController(text: widget.userModel.email);
@@ -54,6 +55,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
 
   @override
   void dispose() {
+    fantasyNameEC.dispose();
     nameEC.dispose();
     cpfEC.dispose();
     emailEC.dispose();
@@ -264,6 +266,12 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                       return const Text('Nenhum documento encontrado.');
                     }
                   }),
+              if (!widget.userModel.locador)
+                myRow(
+                  label: 'Nome Fantasia',
+                  controller: fantasyNameEC,
+                  enable: isEditing,
+                ),
               myRow(
                 label: 'Nome',
                 controller: nameEC,
@@ -308,6 +316,8 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 onTap: () {
                   if (isEditing) {
                     setState(() {
+                      fantasyNameEC = TextEditingController(
+                          text: widget.userModel.fantasyName);
                       nameEC =
                           TextEditingController(text: widget.userModel.name);
                       telefoneEC = TextEditingController(
@@ -365,6 +375,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                   bool saveImageSuccess = false;
 
                   await informacoesPessoaisVm.updateInfo(
+                    fantasyName: fantasyNameEC.text,
                     bairro: bairroEC.text,
                     name: nameEC.text,
                     cep: cepEC.text,

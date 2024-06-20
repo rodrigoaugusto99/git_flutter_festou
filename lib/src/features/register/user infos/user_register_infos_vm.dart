@@ -43,6 +43,7 @@ class UserRegisterInfosVm extends _$UserRegisterInfosVm {
   Future<void> validateForm(
     BuildContext context,
     formKey,
+    fantasyNameEC,
     fullNameEC,
     telefoneEC,
     cepEC,
@@ -52,6 +53,7 @@ class UserRegisterInfosVm extends _$UserRegisterInfosVm {
   ) async {
     if (formKey.currentState?.validate() == true) {
       await register(
+        fantasyNameEC,
         fullNameEC,
         telefoneEC,
         cepEC,
@@ -65,6 +67,7 @@ class UserRegisterInfosVm extends _$UserRegisterInfosVm {
   }
 
   Future<void> register(
+    String fantasyName,
     String name,
     String telefone,
     String cep,
@@ -77,6 +80,7 @@ class UserRegisterInfosVm extends _$UserRegisterInfosVm {
     final userId = user.uid;
     final userData = (
       userId: userId,
+      fantasyName: fantasyName,
       name: name,
       telefone: telefone,
       cep: cep,
