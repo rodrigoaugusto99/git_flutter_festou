@@ -246,6 +246,14 @@ class _ProfileState extends ConsumerState<Profile> {
                         ),
                         onTap: () {},
                       ),
+                      const SizedBox(height: 15),
+                      myRow(
+                        text: 'Política de privacidade',
+                        icon1: Image.asset(
+                          'lib/assets/images/icon_politica.png',
+                        ),
+                        onTap: () {},
+                      ),
                       const SizedBox(height: 25),
                       myText(text: 'Outros'),
                       const SizedBox(height: 15),
