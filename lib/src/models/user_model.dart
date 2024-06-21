@@ -26,4 +26,38 @@ class UserModel {
     required this.avatarUrl,
     required this.locador,
   });
+
+  factory UserModel.fromMap(Map<String, dynamic> data, String documentId) {
+    return UserModel(
+      fantasyName: data['fantasyName'] ?? '',
+      email: data['email'] ?? '',
+      name: data['name'] ?? '',
+      cpfOuCnpj: data['cpfOuCnpj'] ?? '',
+      cep: data['cep'] ?? '',
+      logradouro: data['logradouro'] ?? '',
+      telefone: data['telefone'] ?? '',
+      bairro: data['bairro'] ?? '',
+      cidade: data['cidade'] ?? '',
+      id: documentId,
+      avatarUrl: data['avatar_url'] ?? '',
+      locador: data['locador'] ?? false,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'fantasyName': fantasyName,
+      'email': email,
+      'name': name,
+      'cpfOuCnpj': cpfOuCnpj,
+      'cep': cep,
+      'logradouro': logradouro,
+      'telefone': telefone,
+      'bairro': bairro,
+      'cidade': cidade,
+      'id': id,
+      'avatar_url': avatarUrl,
+      'locador': locador,
+    };
+  }
 }
