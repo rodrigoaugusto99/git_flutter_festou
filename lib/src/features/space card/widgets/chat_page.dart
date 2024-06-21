@@ -187,13 +187,27 @@ class _ChatPageState extends State<ChatPage> {
           if (snapshot.exists) {
             Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
             if (data['senderID'] == userID) {
-              // Delete message if it's the user's own message
-              await messageCollection.doc(messageId).delete();
+              // Check if the message has already been deleted for the recipient
+              if (data['deletionRecipient'] == true) {
+                // Delete the message from the collection
+                await messageCollection.doc(messageId).delete();
+              } else {
+                // Mark the message as deleted for the sender
+                await messageCollection
+                    .doc(messageId)
+                    .update({'deletionSender': true});
+              }
+              //await messageCollection.doc(messageId).delete();
             } else {
-              // Mark message as deleted for the recipient if it's not their own message
-              await messageCollection
-                  .doc(messageId)
-                  .update({'deletionRecipient': true});
+              if (data['deletionSender'] == true) {
+                // Delete the message from the collection
+                await messageCollection.doc(messageId).delete();
+              } else {
+                // Mark the message as deleted for the recipient
+                await messageCollection
+                    .doc(messageId)
+                    .update({'deletionRecipient': true});
+              }
             }
           }
         }
@@ -439,8 +453,10 @@ class _ChatPageState extends State<ChatPage> {
               List<DocumentSnapshot> filteredDocs =
                   snapshot.data!.docs.where((doc) {
                 Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-                return !(data['receiverID'] == userID &&
-                    data['deletionRecipient'] == true);
+                return !((data['receiverID'] == userID &&
+                        data['deletionRecipient'] == true) ||
+                    (data['senderID'] == userID &&
+                        data['deletionSender'] == true));
               }).toList();
 
               return Expanded(

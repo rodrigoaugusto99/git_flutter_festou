@@ -25,7 +25,8 @@ class ChatServices {
       'message': message,
       'timestamp': FieldValue.serverTimestamp(),
       'isSeen': false,
-      'deletionRecipient': false // Adiciona o campo deletionRecipient
+      'deletionRecipient': false,
+      'deletionSender': false
     });
 
     // Obtém o timestamp do servidor
@@ -33,10 +34,35 @@ class ChatServices {
     if (messageSnap.exists && messageSnap.data() != null) {
       Timestamp serverTimestamp = messageSnap['timestamp'];
 
-      // Atualiza o documento do chat room com o último timestamp da mensagem
-      await _firestore.collection('chat_rooms').doc(chatRoomID).set(
-          {'chatRoomIDs': ids, 'lastMessageTimestamp': serverTimestamp},
-          SetOptions(merge: true));
+      DocumentReference chatRoomRef =
+          _firestore.collection('chat_rooms').doc(chatRoomID);
+
+      // Verifica o campo deletionID$receiverID e atualiza se necessário
+      DocumentSnapshot chatRoomSnap = await chatRoomRef.get();
+      if (chatRoomSnap.exists) {
+        Map<String, dynamic> chatRoomData =
+            chatRoomSnap.data() as Map<String, dynamic>;
+        if (chatRoomData['deletionID$receiverID'] == true ||
+            chatRoomData['deletionID$currentUserID'] == true) {
+          await chatRoomRef.update({
+            'deletionID$currentUserID': false,
+            'deletionID$receiverID': false,
+            'lastMessageTimestamp': serverTimestamp,
+          });
+        } else {
+          await chatRoomRef.update({
+            'lastMessageTimestamp': serverTimestamp,
+          });
+        }
+      } else {
+        // Cria o documento do chat room se não existir
+        await chatRoomRef.set({
+          'chatRoomIDs': ids,
+          'lastMessageTimestamp': serverTimestamp,
+          'deletionID$currentUserID': false,
+          'deletionID$receiverID': false,
+        });
+      }
     }
   }
 

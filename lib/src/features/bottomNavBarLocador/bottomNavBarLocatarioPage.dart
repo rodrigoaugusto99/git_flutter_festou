@@ -29,20 +29,19 @@ class BottomNavBarLocatarioPage extends StatefulWidget {
 }
 
 class _BottomNavBarLocatarioPageState extends State<BottomNavBarLocatarioPage> {
+  final Mensagens mensagens = const Mensagens();
   static _BottomNavBarLocatarioPageState? _instance;
   late PageController _pageController;
   late ConfettiController _controllerCenter;
   int _currentIndex = 0;
-  bool _isLocador =
-      true; // Cache para o estado do locador (considerando que é locador inicialmente)
-  bool _isLoading = true; // Indica se o estado está sendo carregado
+  bool _isLocador = true;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: _currentIndex);
+    _pageController = PageController(initialPage: widget.initialIndex);
     _fetchUserLocadorStatus();
-    NotificationCounter();
     _controllerCenter =
         ConfettiController(duration: const Duration(seconds: 1));
   }
@@ -102,17 +101,10 @@ class _BottomNavBarLocatarioPageState extends State<BottomNavBarLocatarioPage> {
     return Stack(
       children: [
         Scaffold(
-          bottomNavigationBar: StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection('users')
-                .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-                .snapshots(),
+          bottomNavigationBar: StreamBuilder<int>(
+            stream: mensagens.getTotalUnreadMessagesCount(),
             builder: (context, snapshot) {
-              int notificationCount = 0;
-              if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                var userDoc = snapshot.data!.docs.first;
-                notificationCount = userDoc['notifications'] ?? 0;
-              }
+              int notificationCount = snapshot.data ?? 0;
 
               return StylishBottomBar(
                 option: DotBarOptions(
@@ -134,13 +126,19 @@ class _BottomNavBarLocatarioPageState extends State<BottomNavBarLocatarioPage> {
                     selectedIcon: const Icon(Icons.house_rounded),
                     selectedColor: Colors.teal,
                     unSelectedColor: Colors.grey,
-                    title: const Text('Início'),
+                    title: const Text(
+                      'Início',
+                      style: TextStyle(fontSize: 12),
+                    ),
                   ),
                   BottomBarItem(
                     icon: const Icon(Icons.calendar_month_outlined),
                     selectedIcon: const Icon(Icons.calendar_month),
                     selectedColor: Colors.blue,
-                    title: const Text('Calendário'),
+                    title: const Text(
+                      'Calendário',
+                      style: TextStyle(fontSize: 12),
+                    ),
                   ),
                   BottomBarItem(
                     icon: const Icon(
@@ -152,11 +150,11 @@ class _BottomNavBarLocatarioPageState extends State<BottomNavBarLocatarioPage> {
                     selectedColor: Colors.red,
                     title: const Text(
                       'Mensagens',
-                      style: TextStyle(fontSize: 13),
+                      style: TextStyle(fontSize: 12),
                     ),
                     badge: Text(
                         notificationCount > 99 ? '99+' : '$notificationCount'),
-                    showBadge: notificationCount > 0,
+                    showBadge: notificationCount > 0 && _currentIndex != 2,
                     badgeColor: Colors.purple,
                   ),
                   BottomBarItem(
@@ -167,7 +165,10 @@ class _BottomNavBarLocatarioPageState extends State<BottomNavBarLocatarioPage> {
                       Icons.person,
                     ),
                     selectedColor: Colors.deepPurple,
-                    title: const Text('Perfil'),
+                    title: const Text(
+                      'Perfil',
+                      style: TextStyle(fontSize: 12),
+                    ),
                   ),
                 ],
                 hasNotch: true,
