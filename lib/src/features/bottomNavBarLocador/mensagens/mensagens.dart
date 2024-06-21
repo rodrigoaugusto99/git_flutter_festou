@@ -387,19 +387,20 @@ class _MensagensState extends State<Mensagens> {
                   return const CustomLoadingIndicator();
                 } else if (snapshot.hasError) {
                   return const Text('Erro ao carregar os dados');
+                } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Text('Nenhum dado encontrado');
                 } else {
-                  return buildChatRoomList(snapshot.data!);
-                  /*final filteredDocs = snapshot.data!.docs.where((doc) {
+                  final filteredDocs = snapshot.data!.docs.where((doc) {
                     final data = doc.data() as Map<String, dynamic>;
                     return data['deletionID$currentUserID'] != true;
                   }).toList();
 
                   if (filteredDocs.isEmpty) {
-                    return const Text('Nenhum dado encontrado');
+                    return const Center(
+                        child: Text('Não há conversas no momento!'));
                   }
 
-                  print('Dados carregados com sucesso.');
-                  return buildChatRoomListFromDocs(filteredDocs);*/
+                  return buildChatRoomList(snapshot.data!);
                 }
               },
             ),
