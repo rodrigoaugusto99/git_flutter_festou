@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:developer';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarLocadorPage.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarLocatarioPage.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/privacy_policy_page.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 
@@ -25,6 +26,21 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   Future<void> getUserModel() async {
     userModel = await userService.getCurrentUserModel();
     setState(() {});
+  }
+
+  Future<bool> checkPrivacyPolicyAcceptance() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      final usersCollection = FirebaseFirestore.instance.collection('users');
+      final userQuery =
+          await usersCollection.where('uid', isEqualTo: currentUser.uid).get();
+      if (userQuery.docs.isNotEmpty) {
+        final userDoc = userQuery.docs.first;
+        final userData = userDoc.data();
+        return userData['privacy_policy_acceptance'] ?? false;
+      }
+    }
+    return false;
   }
 
   @override
@@ -98,9 +114,24 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
           body: Center(child: CircularProgressIndicator()),
         );
       } else {
-        return userModel!.locador
-            ? const BottomNavBarLocadorPage()
-            : const BottomNavBarLocatarioPage();
+        return FutureBuilder<bool>(
+          future: checkPrivacyPolicyAcceptance(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
+            } else {
+              if (snapshot.data == true) {
+                return userModel!.locador
+                    ? const BottomNavBarLocadorPage()
+                    : const BottomNavBarLocatarioPage();
+              } else {
+                return const PrivacyPolicyPage(duringLogin: true);
+              }
+            }
+          },
+        );
       }
     } else {
       return Scaffold(

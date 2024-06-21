@@ -6,6 +6,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/centr
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarLocatarioPage.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/privacy_policy_page.dart';
 import 'package:git_flutter_festou/src/features/widgets/my_rows_config.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -252,7 +253,13 @@ class _ProfileState extends ConsumerState<Profile> {
                         icon1: Image.asset(
                           'lib/assets/images/icon_politica.png',
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PrivacyPolicyPage()),
+                          );
+                        },
                       ),
                       const SizedBox(height: 25),
                       myText(text: 'Outros'),
