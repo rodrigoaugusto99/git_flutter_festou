@@ -37,14 +37,16 @@ class ChatServices {
       DocumentReference chatRoomRef =
           _firestore.collection('chat_rooms').doc(chatRoomID);
 
-      // Verifica o campo deletionID$currentUserID e atualiza se necessário
+      // Verifica o campo deletionID$receiverID e atualiza se necessário
       DocumentSnapshot chatRoomSnap = await chatRoomRef.get();
       if (chatRoomSnap.exists) {
         Map<String, dynamic> chatRoomData =
             chatRoomSnap.data() as Map<String, dynamic>;
-        if (chatRoomData['deletionID$currentUserID'] == true) {
+        if (chatRoomData['deletionID$receiverID'] == true ||
+            chatRoomData['deletionID$currentUserID'] == true) {
           await chatRoomRef.update({
             'deletionID$currentUserID': false,
+            'deletionID$receiverID': false,
             'lastMessageTimestamp': serverTimestamp,
           });
         } else {

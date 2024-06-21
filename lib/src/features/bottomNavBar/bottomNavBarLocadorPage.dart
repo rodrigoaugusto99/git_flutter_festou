@@ -6,6 +6,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/profile/profile.dar
 import 'package:git_flutter_festou/src/features/bottomNavBar/search/search_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/home_page.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/widgets/notifications_counter.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
@@ -19,10 +20,11 @@ class BottomNavBarLocadorPage extends StatefulWidget {
 }
 
 class _BottomNavBarLocadorPageState extends State<BottomNavBarLocadorPage> {
+  final Mensagens mensagens = const Mensagens();
   late PageController _pageController;
   int _currentIndex = 0;
-  bool _isLocador = false; // Cache para o estado do locador
-  bool _isLoading = true; // Indica se o estado está sendo carregado
+  bool _isLocador = false;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -82,17 +84,10 @@ class _BottomNavBarLocadorPageState extends State<BottomNavBarLocadorPage> {
     return Stack(
       children: [
         Scaffold(
-          bottomNavigationBar: StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection('users')
-                .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-                .snapshots(),
+          bottomNavigationBar: StreamBuilder<int>(
+            stream: mensagens.getTotalUnreadMessagesCount(),
             builder: (context, snapshot) {
-              int notificationCount = 0;
-              if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                var userDoc = snapshot.data!.docs.first;
-                notificationCount = userDoc['notifications'] ?? 0;
-              }
+              int notificationCount = snapshot.data ?? 0;
 
               return StylishBottomBar(
                 option: DotBarOptions(
@@ -114,23 +109,33 @@ class _BottomNavBarLocadorPageState extends State<BottomNavBarLocadorPage> {
                     selectedIcon: const Icon(Icons.house_rounded),
                     selectedColor: Colors.teal,
                     unSelectedColor: Colors.grey,
-                    title: const Text('Início'),
+                    title: const Text(
+                      'Início',
+                      style: TextStyle(fontSize: 12),
+                    ),
                   ),
                   BottomBarItem(
                     icon: const Icon(Icons.search_outlined),
                     selectedIcon: const Icon(Icons.search),
                     selectedColor: Colors.blue,
-                    title: const Text('Buscar'),
+                    title: const Text(
+                      'Buscar',
+                      style: TextStyle(fontSize: 12),
+                    ),
                   ),
                   BottomBarItem(
-                      icon: const Icon(
-                        CupertinoIcons.heart,
-                      ),
-                      selectedIcon: const Icon(
-                        CupertinoIcons.heart_fill,
-                      ),
-                      selectedColor: Colors.red,
-                      title: const Text('Favoritos')),
+                    icon: const Icon(
+                      CupertinoIcons.heart,
+                    ),
+                    selectedIcon: const Icon(
+                      CupertinoIcons.heart_fill,
+                    ),
+                    selectedColor: Colors.red,
+                    title: const Text(
+                      'Favoritos',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ),
                   BottomBarItem(
                     icon: const Icon(
                       Icons.person_outline,
@@ -139,7 +144,10 @@ class _BottomNavBarLocadorPageState extends State<BottomNavBarLocadorPage> {
                       Icons.person,
                     ),
                     selectedColor: Colors.deepPurple,
-                    title: const Text('Perfil'),
+                    title: const Text(
+                      'Perfil',
+                      style: TextStyle(fontSize: 12),
+                    ),
                     badge: Text(
                         notificationCount > 99 ? '99+' : '$notificationCount'),
                     showBadge: notificationCount > 0,

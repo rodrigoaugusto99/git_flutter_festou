@@ -6,12 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_page.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import '../../loading_indicator.dart';
+import 'package:rxdart/rxdart.dart';
 
 class Mensagens extends StatefulWidget {
   const Mensagens({super.key});
 
   @override
   _MensagensState createState() => _MensagensState();
+
+  Stream<int> getTotalUnreadMessagesCount() {
+    return _MensagensState().getTotalUnreadMessagesCount();
+  }
 }
 
 class _MensagensState extends State<Mensagens> {
@@ -79,86 +84,55 @@ class _MensagensState extends State<Mensagens> {
     _messageListeners[chatRoomID] = subscription;
   }
 
-  Future<QuerySnapshot<Map<String, dynamic>>> getLastMessage(
-      String chatRoomID) async {
-    final currentUserID = FirebaseAuth.instance.currentUser!.uid;
-
-    // Consulta para mensagens enviadas pelo currentUserID com deletionSender false
-    var senderQuerySnapshot = await FirebaseFirestore.instance
-        .collection('chat_rooms')
-        .doc(chatRoomID)
-        .collection('messages')
-        .where('senderID', isEqualTo: currentUserID)
-        .where('deletionSender', isEqualTo: false)
-        .orderBy('timestamp', descending: true)
-        .limit(1)
-        .get();
-
-    // Consulta para mensagens recebidas pelo currentUserID com deletionRecipient false
-    var receiverQuerySnapshot = await FirebaseFirestore.instance
-        .collection('chat_rooms')
-        .doc(chatRoomID)
-        .collection('messages')
-        .where('receiverID', isEqualTo: currentUserID)
-        .where('deletionRecipient', isEqualTo: false)
-        .orderBy('timestamp', descending: true)
-        .limit(1)
-        .get();
-
-    // Verifique se ambas as consultas retornaram documentos
-    if (senderQuerySnapshot.docs.isNotEmpty &&
-        receiverQuerySnapshot.docs.isNotEmpty) {
-      // Compare os timestamps dos documentos mais recentes de cada consulta
-      var senderTimestamp =
-          senderQuerySnapshot.docs.first['timestamp'] as Timestamp;
-      var receiverTimestamp =
-          receiverQuerySnapshot.docs.first['timestamp'] as Timestamp;
-
-      if (senderTimestamp.compareTo(receiverTimestamp) > 0) {
-        return senderQuerySnapshot;
-      } else {
-        return receiverQuerySnapshot;
-      }
-    } else if (senderQuerySnapshot.docs.isNotEmpty) {
-      return senderQuerySnapshot;
-    } else {
-      return receiverQuerySnapshot;
-    }
-  }
-
-  Stream<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getLastMessages(
-      String chatRoomID) {
-    return _firestore
-        .collection('chat_rooms')
-        .doc(chatRoomID)
-        .collection('messages')
-        .orderBy('timestamp', descending: true)
-        .snapshots()
-        .map((snapshot) {
-      final currentUserID = _auth.currentUser!.uid;
-      return snapshot.docs.where((doc) {
-        final data = doc.data();
-        if (data['senderID'] == currentUserID && data['deletionSender']) {
-          return false;
-        }
-        if (data['receiverID'] == currentUserID && data['deletionRecipient']) {
-          return false;
-        }
-        return true;
-      }).toList();
-    });
-  }
-
-  Stream<int> getUnreadMessagesCount(String chatRoomID) {
+  Stream<Map<String, dynamic>> getLastMessageAndUnreadCount(String chatRoomID) {
     final currentUserID = _auth.currentUser!.uid;
-    return _firestore
-        .collection('chat_rooms')
-        .doc(chatRoomID)
-        .collection('messages')
-        .where('isSeen', isEqualTo: false)
-        .where('receiverID', isEqualTo: currentUserID)
-        .snapshots()
-        .map((snapshot) => snapshot.docs.length);
+    return Rx.combineLatest2(
+      _firestore
+          .collection('chat_rooms')
+          .doc(chatRoomID)
+          .collection('messages')
+          .orderBy('timestamp', descending: true)
+          .snapshots()
+          .map((snapshot) {
+        final messages = snapshot.docs.where((doc) {
+          final data = doc.data();
+          if (data['senderID'] == currentUserID &&
+              data['deletionSender'] == true) {
+            return false;
+          }
+          if (data['receiverID'] == currentUserID &&
+              data['deletionRecipient'] == true) {
+            return false;
+          }
+          return true;
+        }).toList();
+        return messages;
+      }),
+      _firestore
+          .collection('chat_rooms')
+          .doc(chatRoomID)
+          .collection('messages')
+          .where('isSeen', isEqualTo: false)
+          .where('receiverID', isEqualTo: currentUserID)
+          .snapshots()
+          .map((snapshot) {
+        int totalUnreadCount = 0;
+        snapshot.docs.forEach((messageDoc) {
+          var data = messageDoc.data();
+          if ((data['senderID'] == currentUserID &&
+                  data['deletionSender'] == true) ||
+              (data['receiverID'] == currentUserID &&
+                  data['deletionRecipient'] == true)) {
+            return; // Ignora a mensagem
+          }
+          totalUnreadCount++;
+        });
+        return totalUnreadCount;
+      }),
+      (messages, unreadCount) {
+        return {'messages': messages, 'unreadCount': unreadCount};
+      },
+    );
   }
 
   Future<DocumentSnapshot> getUserDocumentById(String userId) async {
@@ -170,6 +144,36 @@ class _MensagensState extends State<Mensagens> {
     }
 
     throw Exception("Usuário não encontrado");
+  }
+
+  Stream<int> getTotalUnreadMessagesCount() {
+    final currentUserID = _auth.currentUser!.uid;
+    return _firestore
+        .collection('chat_rooms')
+        .where('chatRoomIDs', arrayContains: currentUserID)
+        .snapshots()
+        .asyncMap((snapshot) async {
+      int totalUnreadCount = 0;
+      for (var doc in snapshot.docs) {
+        var unreadMessagesCount = await doc.reference
+            .collection('messages')
+            .where('isSeen', isEqualTo: false)
+            .where('receiverID', isEqualTo: currentUserID)
+            .get();
+
+        unreadMessagesCount.docs.forEach((messageDoc) {
+          var data = messageDoc.data();
+          if ((data['senderID'] == currentUserID &&
+                  data['deletionSender'] == true) ||
+              (data['receiverID'] == currentUserID &&
+                  data['deletionRecipient'] == true)) {
+            return; // Ignora a mensagem
+          }
+          totalUnreadCount++;
+        });
+      }
+      return totalUnreadCount;
+    });
   }
 
   Future<UserModel> getUserById(String id) async {
@@ -201,11 +205,7 @@ class _MensagensState extends State<Mensagens> {
       } else {
         selectedChatRoomIds.add(chatRoomId);
         counterSelection++;
-        onLongPressSelection = true; // Adicione esta linha
       }
-      print('selectedChatRoomIds: $selectedChatRoomIds');
-      print('counterSelection: $counterSelection');
-      print('onLongPressSelection: $onLongPressSelection');
     });
   }
 
@@ -220,6 +220,8 @@ class _MensagensState extends State<Mensagens> {
   Future<void> deleteSelectedChatRooms() async {
     final currentUserID = _auth.currentUser!.uid;
 
+    WriteBatch batch = _firestore.batch();
+
     for (var chatRoomId in selectedChatRoomIds) {
       var ids = chatRoomId.split('_');
 
@@ -232,19 +234,17 @@ class _MensagensState extends State<Mensagens> {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         if (data['senderID'] == currentUserID) {
           if (data['deletionRecipient'] == true) {
-            await messageCollection.doc(doc.id).delete();
+            batch.delete(messageCollection.doc(doc.id));
           } else {
-            await messageCollection
-                .doc(doc.id)
-                .update({'deletionSender': true});
+            batch.update(
+                messageCollection.doc(doc.id), {'deletionSender': true});
           }
         } else {
           if (data['deletionSender'] == true) {
-            await messageCollection.doc(doc.id).delete();
+            batch.delete(messageCollection.doc(doc.id));
           } else {
-            await messageCollection
-                .doc(doc.id)
-                .update({'deletionRecipient': true});
+            batch.update(
+                messageCollection.doc(doc.id), {'deletionRecipient': true});
           }
         }
       }
@@ -261,11 +261,13 @@ class _MensagensState extends State<Mensagens> {
 
       if (chatRoomData != null &&
           chatRoomData['deletionID$otherUserID'] == true) {
-        await chatRoomDocRef.delete();
+        batch.delete(chatRoomDocRef);
       } else if (chatRoomData != null) {
-        await chatRoomDocRef.update({'deletionID$currentUserID': true});
+        batch.update(chatRoomDocRef, {'deletionID$currentUserID': true});
       }
     }
+
+    await batch.commit();
 
     deselectAllChatRooms();
     setState(() {
@@ -387,20 +389,38 @@ class _MensagensState extends State<Mensagens> {
                   return const CustomLoadingIndicator();
                 } else if (snapshot.hasError) {
                   return const Text('Erro ao carregar os dados');
-                } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return const Text('Nenhum dado encontrado');
                 } else {
                   final filteredDocs = snapshot.data!.docs.where((doc) {
                     final data = doc.data() as Map<String, dynamic>;
                     return data['deletionID$currentUserID'] != true;
                   }).toList();
 
-                  if (filteredDocs.isEmpty) {
-                    return const Center(
-                        child: Text('Não há conversas no momento!'));
+                  Future<bool> hasMessages() async {
+                    for (var doc in filteredDocs) {
+                      final subCollection =
+                          await doc.reference.collection('messages').get();
+                      if (subCollection.docs.isNotEmpty) {
+                        return true;
+                      }
+                    }
+                    return false;
                   }
 
-                  return buildChatRoomList(snapshot.data!);
+                  return FutureBuilder<bool>(
+                    future: hasMessages(),
+                    builder: (context, snapshotMessage) {
+                      if (!snapshotMessage.hasData) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      if (filteredDocs.isEmpty || !snapshotMessage.data!) {
+                        return const Center(
+                            child: Text('Não há conversas no momento!'));
+                      }
+
+                      return buildChatRoomList(snapshot.data!);
+                    },
+                  );
                 }
               },
             ),
@@ -434,7 +454,6 @@ class _MensagensState extends State<Mensagens> {
 
         Future<String>? otherNameFuture;
         Future<String>? otherAvatarFuture;
-        Stream<int>? unreadMessagesCountStream;
         String name = '';
         String otherUserID = '';
 
@@ -447,7 +466,6 @@ class _MensagensState extends State<Mensagens> {
           otherUserID = currentUserID;
           otherAvatarFuture = getAvatarById(currentUserID);
         }
-        unreadMessagesCountStream = getUnreadMessagesCount(chatRoom.id);
 
         return FutureBuilder<String>(
           future: otherNameFuture,
@@ -458,170 +476,166 @@ class _MensagensState extends State<Mensagens> {
               name = snapshot.data ?? '';
             }
 
-            return StreamBuilder<
-                List<QueryDocumentSnapshot<Map<String, dynamic>>>>(
-              stream: getLastMessages(chatRoom.id),
-              builder: (context, messageSnapshot) {
-                if (messageSnapshot.hasError) {
-                  print(
-                      'Erro ao carregar a mensagem: ${messageSnapshot.error}');
-                  return const Text('Erro ao carregar a mensagem');
-                } else if (!messageSnapshot.hasData ||
-                    messageSnapshot.data!.isEmpty) {
-                  return Container();
-                } else {
-                  String lastMessage = '';
-                  DateTime? lastMessageTime;
-                  for (var chat in messageSnapshot.data!) {
-                    final lastMessageData = chat.data();
-                    if (lastMessageData['senderID'] == currentUserID &&
-                        lastMessageData['deletionSender']) {
-                      continue;
-                    } else if (lastMessageData['receiverID'] == currentUserID &&
-                        lastMessageData['deletionRecipient']) {
-                      continue;
+            return FutureBuilder<String>(
+              future: otherAvatarFuture,
+              builder: (context, avatarSnapshot) {
+                String avatarUrl = avatarSnapshot.data ?? '';
+
+                return StreamBuilder<Map<String, dynamic>>(
+                  stream: getLastMessageAndUnreadCount(chatRoom.id),
+                  builder: (context, combinedSnapshot) {
+                    if (combinedSnapshot.hasError) {
+                      print(
+                          'Erro ao carregar a mensagem: ${combinedSnapshot.error}');
+                      return const Text('Erro ao carregar a mensagem');
+                    } else if (!combinedSnapshot.hasData) {
+                      return const Center(child: CircularProgressIndicator());
                     } else {
-                      lastMessage = lastMessageData['message']
-                          .replaceAll('\n', ' ') as String;
+                      final messages = combinedSnapshot.data!['messages']
+                          as List<QueryDocumentSnapshot<Map<String, dynamic>>>;
+                      final unreadCount =
+                          combinedSnapshot.data!['unreadCount'] as int;
 
-                      if (lastMessageData['timestamp'] != null) {
-                        lastMessageTime =
-                            (lastMessageData['timestamp'] as Timestamp)
-                                .toDate();
-                      } else {
-                        lastMessageTime = DateTime.now();
+                      if (messages.isEmpty) {
+                        return Container();
                       }
-                      break; // Encontramos a última mensagem válida, podemos sair do loop
-                    }
-                  }
 
-                  return FutureBuilder<String>(
-                    future: otherAvatarFuture,
-                    builder: (context, avatarSnapshot) {
-                      String avatarUrl = avatarSnapshot.data ?? '';
+                      String lastMessage = '';
+                      DateTime? lastMessageTime;
+                      for (var chat in messages) {
+                        final lastMessageData = chat.data();
+                        if (lastMessageData['senderID'] == currentUserID &&
+                            lastMessageData['deletionSender']) {
+                          continue;
+                        } else if (lastMessageData['receiverID'] ==
+                                currentUserID &&
+                            lastMessageData['deletionRecipient']) {
+                          continue;
+                        } else {
+                          lastMessage = lastMessageData['message']
+                              .replaceAll('\n', ' ') as String;
 
-                      return StreamBuilder<int>(
-                        stream: unreadMessagesCountStream,
-                        builder: (context, unreadSnapshot) {
-                          int unreadCount = unreadSnapshot.data ?? 0;
+                          if (lastMessageData['timestamp'] != null) {
+                            lastMessageTime =
+                                (lastMessageData['timestamp'] as Timestamp)
+                                    .toDate();
+                          } else {
+                            lastMessageTime = DateTime.now();
+                          }
+                          break;
+                        }
+                      }
 
-                          return GestureDetector(
-                            onLongPress: () {
-                              if (!onLongPressSelection) {
-                                selectChatRoom(chatRoom.id);
-                                onLongPressSelection = true;
-                              }
-                            },
-                            onTap: () {
-                              if (onLongPressSelection) {
-                                selectChatRoom(chatRoom.id);
-                              } else {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ChatPage(
-                                      receiverID: otherUserID,
-                                    ),
-                                  ),
-                                );
-                              }
-                            },
-                            child: Container(
-                              color: selectedChatRoomIds.contains(chatRoom.id)
-                                  ? Colors.grey.withOpacity(0.5)
-                                  : Colors.white,
-                              alignment: Alignment.center,
-                              height: 95,
-                              margin: const EdgeInsets.only(bottom: 12),
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 15),
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    backgroundImage: avatarUrl.isNotEmpty
-                                        ? NetworkImage(avatarUrl)
-                                        : null,
-                                    backgroundColor: avatarUrl.isNotEmpty
-                                        ? Colors.transparent
-                                        : const Color(0XFFF0F0F0),
-                                    radius: 35,
-                                    child: avatarUrl.isEmpty
-                                        ? const Icon(Icons.person)
-                                        : null,
-                                  ),
-                                  const SizedBox(width: 15),
-                                  Expanded(
-                                    child: Column(
+                      return GestureDetector(
+                        onLongPress: () {
+                          if (!onLongPressSelection) {
+                            selectChatRoom(chatRoom.id);
+                            onLongPressSelection = true;
+                          }
+                        },
+                        onTap: () {
+                          if (onLongPressSelection) {
+                            selectChatRoom(chatRoom.id);
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ChatPage(
+                                  receiverID: otherUserID,
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        child: Container(
+                          color: selectedChatRoomIds.contains(chatRoom.id)
+                              ? Colors.grey.withOpacity(0.5)
+                              : Colors.white,
+                          alignment: Alignment.center,
+                          height: 95,
+                          margin: const EdgeInsets.only(bottom: 12),
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundImage: avatarUrl.isNotEmpty
+                                    ? NetworkImage(avatarUrl)
+                                    : null,
+                                backgroundColor: avatarUrl.isNotEmpty
+                                    ? Colors.transparent
+                                    : const Color(0XFFF0F0F0),
+                                radius: 35,
+                                child: avatarUrl.isEmpty
+                                    ? const Icon(Icons.person)
+                                    : null,
+                              ),
+                              const SizedBox(width: 15),
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              name,
-                                              style: const TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            if (lastMessageTime != null)
-                                              Text(
-                                                formatMessageDate(
-                                                    lastMessageTime),
-                                                style: const TextStyle(
-                                                  fontSize: 10,
-                                                ),
-                                              ),
-                                          ],
+                                        Text(
+                                          name,
+                                          style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold),
                                         ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                lastMessage,
-                                                style: const TextStyle(
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ),
+                                        if (lastMessageTime != null)
+                                          Text(
+                                            formatMessageDate(lastMessageTime),
+                                            style: const TextStyle(
+                                              fontSize: 10,
                                             ),
-                                            const SizedBox(
-                                              width: 20,
-                                            ),
-                                            if (unreadCount > 0)
-                                              CircleAvatar(
-                                                backgroundColor: Colors.purple,
-                                                radius: 10,
-                                                child: Text(
-                                                  unreadCount.toString(),
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 10,
-                                                  ),
-                                                ),
-                                              ),
-                                          ],
-                                        )
+                                          ),
                                       ],
                                     ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
-                        },
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            lastMessage,
+                                            style: const TextStyle(
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 20,
+                                        ),
+                                        if (unreadCount > 0)
+                                          CircleAvatar(
+                                            backgroundColor: Colors.purple,
+                                            radius: 10,
+                                            child: Text(
+                                              unreadCount.toString(),
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 10,
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
                       );
-                    },
-                  );
-                }
+                    }
+                  },
+                );
               },
             );
           },

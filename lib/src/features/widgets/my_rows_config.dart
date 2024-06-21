@@ -20,12 +20,11 @@ class MyRowsConfig extends StatefulWidget {
 }
 
 class _MyRowsConfigState extends State<MyRowsConfig> {
-  late NotificationCounter _notificationCounter;
+  final Mensagens mensagens = const Mensagens();
 
   @override
   void initState() {
     super.initState();
-    _notificationCounter = NotificationCounter();
   }
 
   @override
@@ -105,7 +104,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
         if (widget.userModel.locador) ...[
           const SizedBox(height: 16),
           StreamBuilder<int>(
-            stream: _notificationCounter.notificationCount,
+            stream: mensagens.getTotalUnreadMessagesCount(),
             builder: (context, snapshot) {
               int unreadCount = snapshot.data ?? 0;
               return Stack(
