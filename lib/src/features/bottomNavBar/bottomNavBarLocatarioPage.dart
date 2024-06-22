@@ -11,15 +11,15 @@ import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/widgets/notifications_counter.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
-class BottomNavBarLocadorPage extends StatefulWidget {
-  const BottomNavBarLocadorPage({super.key});
+class BottomNavBarLocatarioPage extends StatefulWidget {
+  const BottomNavBarLocatarioPage({super.key});
 
   @override
-  _BottomNavBarLocadorPageState createState() =>
-      _BottomNavBarLocadorPageState();
+  _BottomNavBarLocatarioPageState createState() =>
+      _BottomNavBarLocatarioPageState();
 }
 
-class _BottomNavBarLocadorPageState extends State<BottomNavBarLocadorPage> {
+class _BottomNavBarLocatarioPageState extends State<BottomNavBarLocatarioPage> {
   final Mensagens mensagens = const Mensagens();
   late PageController _pageController;
   int _currentIndex = 0;
@@ -55,11 +55,11 @@ class _BottomNavBarLocadorPageState extends State<BottomNavBarLocadorPage> {
         _isLoading = false;
       });
 
-      if (!_isLocador) {
+      if (_isLocador) {
         // Atualize o campo 'locador' no documento do usuário
-        await userDoc.reference.update({'locador': true});
+        await userDoc.reference.update({'locador': false});
         setState(() {
-          _isLocador = true;
+          _isLocador = false;
         });
       }
     } else {

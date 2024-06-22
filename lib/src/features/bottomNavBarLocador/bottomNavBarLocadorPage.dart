@@ -9,28 +9,27 @@ import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/c
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_page.dart';
-import 'package:git_flutter_festou/src/features/widgets/notifications_counter.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
-class BottomNavBarLocatarioPage extends StatefulWidget {
+class BottomNavBarLocadorPage extends StatefulWidget {
   final int initialIndex;
-  const BottomNavBarLocatarioPage({super.key, this.initialIndex = 0});
+  const BottomNavBarLocadorPage({super.key, this.initialIndex = 0});
 
   @override
-  _BottomNavBarLocatarioPageState createState() =>
-      _BottomNavBarLocatarioPageState();
+  _BottomNavBarLocadorPageState createState() =>
+      _BottomNavBarLocadorPageState();
 
   // Adicionando um método público para acessar o ConfettiController
   void playConfetti() {
-    _BottomNavBarLocatarioPageState? state =
-        _BottomNavBarLocatarioPageState._instance;
+    _BottomNavBarLocadorPageState? state =
+        _BottomNavBarLocadorPageState._instance;
     state?.playConfetti();
   }
 }
 
-class _BottomNavBarLocatarioPageState extends State<BottomNavBarLocatarioPage> {
+class _BottomNavBarLocadorPageState extends State<BottomNavBarLocadorPage> {
   final Mensagens mensagens = const Mensagens();
-  static _BottomNavBarLocatarioPageState? _instance;
+  static _BottomNavBarLocadorPageState? _instance;
   late PageController _pageController;
   late ConfettiController _controllerCenter;
   int _currentIndex = 0;
@@ -72,11 +71,11 @@ class _BottomNavBarLocatarioPageState extends State<BottomNavBarLocatarioPage> {
         _isLoading = false;
       });
 
-      if (_isLocador) {
+      if (!_isLocador) {
         // Atualize o campo 'locador' no documento do usuário
-        await userDoc.reference.update({'locador': false});
+        await userDoc.reference.update({'locador': true});
         setState(() {
-          _isLocador = false;
+          _isLocador = true;
         });
       }
     } else {
