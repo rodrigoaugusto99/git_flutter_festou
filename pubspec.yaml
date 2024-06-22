@@ -2,7 +2,7 @@ name: git_flutter_festou
 description: A new Flutter project.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.6 <4.0.0'
+  sdk: ">=3.0.6 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -30,7 +30,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -62,7 +61,7 @@ dependencies:
   glassmorphism: ^3.0.0
   glassmorphism_ui: ^0.3.0
   card_swiper: ^3.0.1
-  
+
   social_share: ^2.3.1
   field_suggestion: ^0.2.5
   flutter_typeahead: ^5.2.0
@@ -89,13 +88,11 @@ dependencies:
   stylish_bottom_bar: ^1.1.0
   mask_text_input_formatter: ^2.9.0
   easy_mask: ^2.0.1
-  searchfield: ^1.0.4 
+  searchfield: ^1.0.4
   shimmer: ^3.0.0
   cached_network_image: ^3.3.1
   video_player: ^2.8.7
   animated_text_kit: ^4.2.2
-  firebase_ui_firestore: ^1.6.3
-  firebase_pagination: ^4.0.0
 
 dev_dependencies:
   flutter_test:
@@ -113,7 +110,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -139,23 +135,23 @@ flutter:
   fonts:
     - family: Valentine
       fonts:
-      - asset: lib/assets/fonts/Valentine.ttf
+        - asset: lib/assets/fonts/Valentine.ttf
 
     - family: Inter
       fonts:
-      - asset: lib/assets/fonts/Inter-Thin.ttf
-      - asset: lib/assets/fonts/Inter-ExtraLight.ttf
-      - asset: lib/assets/fonts/Inter-Light.ttf
-      - asset: lib/assets/fonts/Inter-Regular.ttf
-      - asset: lib/assets/fonts/Inter-Medium.ttf
-      - asset: lib/assets/fonts/Inter-SemiBold.ttf
-      - asset: lib/assets/fonts/Inter-Bold.ttf
-      - asset: lib/assets/fonts/Inter-ExtraBold.ttf
-      - asset: lib/assets/fonts/Inter-Black.ttf
+        - asset: lib/assets/fonts/Inter-Thin.ttf
+        - asset: lib/assets/fonts/Inter-ExtraLight.ttf
+        - asset: lib/assets/fonts/Inter-Light.ttf
+        - asset: lib/assets/fonts/Inter-Regular.ttf
+        - asset: lib/assets/fonts/Inter-Medium.ttf
+        - asset: lib/assets/fonts/Inter-SemiBold.ttf
+        - asset: lib/assets/fonts/Inter-Bold.ttf
+        - asset: lib/assets/fonts/Inter-ExtraBold.ttf
+        - asset: lib/assets/fonts/Inter-Black.ttf
 
     - family: NerkoOne
       fonts:
-      - asset: lib/assets/fonts/NerkoOne.ttf
+        - asset: lib/assets/fonts/NerkoOne.ttf
 
     - family: Marcellus
       fonts:

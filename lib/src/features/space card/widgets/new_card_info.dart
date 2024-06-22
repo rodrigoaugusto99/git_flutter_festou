@@ -1,13 +1,16 @@
+import 'dart:developer';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
+import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/host%20feedback/host_feedback_register_page.dart';
 import 'package:git_flutter_festou/src/features/register/posts/register_post_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/calendar_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_page.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/new_card_info_edit_vm.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_new_map.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_map.dart';
 import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
@@ -197,6 +200,8 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
     }
   }
 
+  NewCardInfoEditVm? newCardInfoEditVm;
+  List<String> selectedServices = [];
   void init() async {
     final user = await UserService().getCurrentUserModel();
     if (user != null) {
@@ -206,6 +211,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
         });
       }
     }
+    newCardInfoEditVm = NewCardInfoEditVm(spaceId: widget.space.spaceId);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         precoEC.text = widget.space.preco;
@@ -215,6 +221,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
         numeroEC.text = widget.space.numero;
         bairroEC.text = widget.space.bairro;
         estadoEC.text = widget.space.estado;
+        selectedServices = widget.space.selectedServices as List<String>;
       });
     });
   }
@@ -229,19 +236,82 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
   final bairroEC = TextEditingController();
   final estadoEC = TextEditingController();
 
-  //todo: method to delete services clicked
-  //todo: method to delete photos and videos clicked
-  //todo: metodo para adicionar mais fotos e videos
+  //todo: verificacao da existencia do endereco.
+
   void toggleEditing() {
     if (isEditing) {
       //todo: save method
+      final x = verificarCamposVazios();
+      if (x != null) {
+        Messages.showError(x, context);
+        return;
+      }
+      saveChanges();
     }
     setState(() {
       isEditing = !isEditing;
     });
   }
 
-  void _showBottomSheet(BuildContext context) {
+  void saveChanges() {
+    log(selectedServices.toString(), name: 'selectedServices');
+    //todo: dto
+    Map<String, dynamic> newSpaceInfos = {
+      //todo: addOrRemoveImage/video method
+      // 'images_url': imagesData,
+      'preco': precoEC.text,
+
+      'selectedServices': selectedServices,
+      'cep': cepEC.text,
+      'logradouro': ruaEC.text,
+      'numero': numeroEC.text,
+      'bairro': bairroEC.text,
+      'cidade': cepEC.text,
+      'descricao': visaoGeralEC.text,
+      'estado': estadoEC.text,
+      //'locador_assinatura': 'estatico ainda',
+      // 'latitude': spaceData.latitude,
+      // 'longitude': spaceData.longitude,
+      // 'startTime': spaceData.startTime,
+      // 'endTime': spaceData.endTime,
+      // 'days': spaceData.days,
+    };
+    if (newCardInfoEditVm != null) {
+      Messages.showSuccess('Espaço atualizado com sucesso!', context);
+      //todo: ainda nao estou chamando, curioso
+      //newCardInfoEditVm!.updateSpace(newSpaceInfos);
+    }
+
+    //todo: call method from vm.
+  }
+
+  String? verificarCamposVazios() {
+    if (precoEC.text.isEmpty) {
+      return 'O campo Preço está vazio.';
+    }
+    if (visaoGeralEC.text.isEmpty) {
+      return 'O campo Visão Geral está vazio.';
+    }
+    if (cepEC.text.isEmpty) {
+      return 'O campo CEP está vazio.';
+    }
+    if (ruaEC.text.isEmpty) {
+      return 'O campo Rua está vazio.';
+    }
+    if (numeroEC.text.isEmpty) {
+      return 'O campo Número está vazio.';
+    }
+    if (bairroEC.text.isEmpty) {
+      return 'O campo Bairro está vazio.';
+    }
+    if (estadoEC.text.isEmpty) {
+      return 'O campo Estado está vazio.';
+    }
+    return null;
+  }
+
+//todo: estilizar bottom sheets
+  void showBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -249,7 +319,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
                 widget.space.descricao,
@@ -359,48 +429,127 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
     // );
   }
 
-  void _showBottomSheet2(BuildContext context) {
+  Map<String, String> serviceIconPaths = {
+    'Cozinha': 'lib/assets/images/image 3cozinha.png',
+    'Estacionamento': 'lib/assets/images/image 3estacionamento.png',
+    'Segurança': 'lib/assets/images/image 3seguranca.png',
+    'Limpeza': 'lib/assets/images/image 3limpeza.png',
+    'Decoração': 'lib/assets/images/image 3decoracao.png',
+    'Bar': 'lib/assets/images/image 3bar.png',
+    'Garçons': 'lib/assets/images/image 3garcom.png',
+    'Ar-condicionado': 'lib/assets/images/image 3arcondicionado.png',
+    'Banheiros': 'lib/assets/images/image 3banheiro.png',
+    'Som e iluminação': 'lib/assets/images/image 3somiluminacao.png',
+  };
+  void addOrRemoveService(String service) {
+    log(service);
+    if (selectedServices.contains(service)) {
+      selectedServices.remove(service);
+    } else {
+      selectedServices.add(service);
+    }
+    setState(() {});
+    log(selectedServices.toString());
+  }
+
+  void showBottomSheet2(BuildContext context, List<String> selectedServices) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
-        return Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              const Text(
-                'O que esse lugar oferece',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 8, // Espaçamento horizontal entre os chips
-                runSpacing: 8, // Espaçamento vertical entre as linhas de chips
-                children: widget.space.selectedServices
-                    .map(
-                      (service) => Chip(
-                        backgroundColor:
-                            const Color.fromARGB(255, 195, 162, 201),
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 5,
-                          horizontal: 10,
+        return StatefulBuilder(
+          builder: (context, setState) {
+            // void addOrRemoveService(String service) {
+            //   log(service);
+            //   if (selectedServices.contains(service)) {
+            //     selectedServices.remove(service);
+            //   } else {
+            //     selectedServices.add(service);
+            //   }
+            //   setState(() {}); // Atualiza o estado local do BottomSheet
+            //   log(selectedServices.toString());
+            // }
+
+            return Container(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text(
+                    'Adicione serviços',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 8, // Espaçamento horizontal entre os chips
+                    runSpacing:
+                        8, // Espaçamento vertical entre as linhas de chips
+                    children: serviceIconPaths.entries.map((entry) {
+                      final isSelected = selectedServices.contains(entry.key);
+                      return GestureDetector(
+                        onTap: () {
+                          addOrRemoveService(entry.key);
+                          setState(
+                              () {}); // Atualiza o estado local do BottomSheet
+                        },
+                        child: Chip(
+                          backgroundColor: isSelected
+                              ? Colors.grey
+                              : const Color.fromARGB(255, 195, 162, 201),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 5,
+                            horizontal: 10,
+                          ),
+                          avatar: Image.asset(
+                            getIconPath(entry.key),
+                            width: 40,
+                          ),
+                          label: Text(entry.key),
                         ),
-                        avatar: const Icon(Icons.text_snippet),
-                        label: Text(service),
-                      ),
-                    )
-                    .toList(),
+                      );
+                    }).toList(),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
+  }
+
+  String getIconPath(String service) {
+    if (service == 'Cozinha') {
+      return 'lib/assets/images/image 3cozinha.png';
+    }
+    if (service == 'Estacionamento') {
+      return 'lib/assets/images/image 3estacionamento.png';
+    }
+    if (service == 'Segurança') {
+      return 'lib/assets/images/image 3seguranca.png';
+    }
+    if (service == 'Limpeza ') return 'lib/assets/images/image 3limpeza.png';
+    if (service == 'Decoração') {
+      return 'lib/assets/images/image 3decoracao.png';
+    }
+    if (service == 'Bar') return 'lib/assets/images/image 3bar.png';
+    if (service == 'Garçons') return 'lib/assets/images/image 3garcom.png';
+    if (service == 'Ar-condicionado') {
+      return 'lib/assets/images/image 3arcondicionado.png';
+    }
+    if (service == 'Banheiros') {
+      return 'lib/assets/images/image 3banheiro.png';
+    }
+    if (service == 'Som e iluminação') {
+      return 'lib/assets/images/image 3somiluminacao.png';
+    }
+
+    return 'lib/assets/images/image 3outros.png';
   }
 
   bool isCarouselVisible = true;
@@ -418,34 +567,6 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
     }
 
 //todo:
-    String getIconPath(String service) {
-      if (service == 'Cozinha') {
-        return 'lib/assets/images/Rolling Pincozinha.png';
-      }
-      if (service == 'Estacionamento') {
-        return 'lib/assets/images/Vectorcarro.png';
-      }
-      if (service == 'Segurança') {
-        return 'lib/assets/images/Toilet Bowlvaso.png';
-      }
-      if (service == 'Limpeza ') return 'lib/assets/images/Toilet Bowlvaso.png';
-      if (service == 'Decoração') {
-        return 'lib/assets/images/Toilet Bowlvaso.png';
-      }
-      if (service == 'Bar') return 'lib/assets/images/Toilet Bowlvaso.png';
-      if (service == 'Garçons') return 'lib/assets/images/Toilet Bowlvaso.png';
-      if (service == 'Ar-condicionado') {
-        return 'lib/assets/images/Toilet Bowlvaso.png';
-      }
-      if (service == 'Banheiros') {
-        return 'lib/assets/images/Toilet Bowlvaso.png';
-      }
-      if (service == 'Som e iluminação') {
-        return 'lib/assets/images/Toilet Bowlvaso.png';
-      }
-
-      return 'lib/assets/images/Toilet Bowlvaso.svg';
-    }
 
     final x = MediaQuery.of(context).size.width;
 
@@ -694,13 +815,17 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                                   ),
                                   if (isEditing)
                                     Positioned(
-                                      top: -11,
-                                      right: -2,
-                                      child: Image.asset(
-                                        'lib/assets/images/Deletardelete_service.png',
-                                        width: 20,
+                                      top: -3,
+                                      right: -3,
+                                      child: GestureDetector(
+                                        onTap: () => addOrRemoveService(widget
+                                            .space.selectedServices[index]),
+                                        child: Image.asset(
+                                          'lib/assets/images/Deletardelete_service.png',
+                                          width: 20,
+                                        ),
                                       ),
-                                    )
+                                    ),
                                 ],
                               ),
 
@@ -720,9 +845,12 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                       width: 10,
                     ),
                   if (isEditing)
-                    Image.asset(
-                      'lib/assets/images/Botao +botao_de_mais.png',
-                      width: 30,
+                    GestureDetector(
+                      onTap: () => showBottomSheet2(context, selectedServices),
+                      child: Image.asset(
+                        'lib/assets/images/Botao +botao_de_mais.png',
+                        width: 30,
+                      ),
                     ),
                 ],
               ),
@@ -736,14 +864,17 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
             ),
             const SizedBox(height: 10),
             if (!isEditing)
-              Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: Text(
-                  widget.space.descricao,
-                  maxLines: 3,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    overflow: TextOverflow.ellipsis,
+              GestureDetector(
+                onTap: () => showBottomSheet(context),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: Text(
+                    widget.space.descricao,
+                    maxLines: 3,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
               ),
@@ -795,7 +926,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                 children: [
                   CustomTextformfield(
                     height: 40,
-                    controller: visaoGeralEC,
+                    controller: cepEC,
                     hintText: 'CEP',
                     fillColor: const Color(0xffF0F0F0),
                   ),
@@ -803,28 +934,28 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                   CustomTextformfield(
                     height: 40,
                     hintText: 'Rua',
-                    controller: visaoGeralEC,
+                    controller: ruaEC,
                     fillColor: const Color(0xffF0F0F0),
                   ),
                   const SizedBox(height: 10),
                   CustomTextformfield(
                     height: 40,
                     hintText: 'Número',
-                    controller: visaoGeralEC,
+                    controller: numeroEC,
                     fillColor: const Color(0xffF0F0F0),
                   ),
                   const SizedBox(height: 10),
                   CustomTextformfield(
                     height: 40,
                     hintText: 'Bairro',
-                    controller: visaoGeralEC,
+                    controller: bairroEC,
                     fillColor: const Color(0xffF0F0F0),
                   ),
                   const SizedBox(height: 10),
                   CustomTextformfield(
                     height: 40,
                     hintText: 'Estado',
-                    controller: visaoGeralEC,
+                    controller: estadoEC,
                     fillColor: const Color(0xffF0F0F0),
                   ),
                 ],
