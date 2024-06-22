@@ -51,6 +51,8 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       Map<String, dynamic> newUser = {
         'uid': userData.id,
         'email': userData.email,
+        'fantasy_name': '',
+        'locador': true,
         'name': userData.name,
         'cpf': userData.cpf,
         'telefone': '',
