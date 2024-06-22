@@ -46,10 +46,11 @@ class _ProfileState extends ConsumerState<Profile> {
       final selectedFinalDate = DateTime.parse(data['selectedFinalDate']);
       final checkOutTime = data['checkOutTime'];
 
-      if (selectedFinalDate.day == now.day &&
-          selectedFinalDate.month == now.month &&
-          selectedFinalDate.year == now.year &&
-          checkOutTime >= now.hour) {
+      if (selectedFinalDate.isAfter(now) ||
+          selectedFinalDate.day == now.day &&
+              selectedFinalDate.month == now.month &&
+              selectedFinalDate.year == now.year &&
+              checkOutTime >= now.hour) {
         return true;
       }
     }
@@ -112,9 +113,9 @@ class _ProfileState extends ConsumerState<Profile> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Contrato Ativo'),
+            title: const Text('Contrato de Locação Ativo'),
             content: const Text(
-                'Você possui um contrato ativo e não pode mudar para locador.'),
+                'Você possui um contrato de locação ativo e não pode mudar para locador.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
