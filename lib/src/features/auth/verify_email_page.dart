@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarLocadorPage.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarLocatarioPage.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/privacy_policy_page.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/service_terms_page.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 
@@ -38,6 +39,21 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
         final userDoc = userQuery.docs.first;
         final userData = userDoc.data();
         return userData['privacy_policy_acceptance'] ?? false;
+      }
+    }
+    return false;
+  }
+
+  Future<bool> checkServiceTermsAcceptance() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      final usersCollection = FirebaseFirestore.instance.collection('users');
+      final userQuery =
+          await usersCollection.where('uid', isEqualTo: currentUser.uid).get();
+      if (userQuery.docs.isNotEmpty) {
+        final userDoc = userQuery.docs.first;
+        final userData = userDoc.data();
+        return userData['service_terms_acceptance'] ?? false;
       }
     }
     return false;
@@ -116,19 +132,40 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
       } else {
         return FutureBuilder<bool>(
           future: checkPrivacyPolicyAcceptance(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
+          builder: (context, privacySnapshot) {
+            if (privacySnapshot.connectionState == ConnectionState.waiting) {
               return const Scaffold(
                 body: Center(child: CircularProgressIndicator()),
               );
             } else {
-              if (snapshot.data == true) {
-                return userModel!.locador
-                    ? const BottomNavBarLocadorPage()
-                    : const BottomNavBarLocatarioPage();
-              } else {
-                return const PrivacyPolicyPage(duringLogin: true);
-              }
+              return FutureBuilder<bool>(
+                future: checkServiceTermsAcceptance(),
+                builder: (context, termsSnapshot) {
+                  if (termsSnapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return const Scaffold(
+                      body: Center(child: CircularProgressIndicator()),
+                    );
+                  } else {
+                    if (privacySnapshot.data == true &&
+                        termsSnapshot.data == true) {
+                      return userModel!.locador
+                          ? const BottomNavBarLocadorPage()
+                          : const BottomNavBarLocatarioPage();
+                    } else if (privacySnapshot.data == false) {
+                      return const PrivacyPolicyPage(duringLogin: true);
+                    } else if (termsSnapshot.data == false) {
+                      return const ServiceTermsPage(duringLogin: true);
+                    } else {
+                      return const Scaffold(
+                        body: Center(
+                          child: Text('Erro desconhecido. Tente novamente.'),
+                        ),
+                      );
+                    }
+                  }
+                },
+              );
             }
           },
         );
@@ -141,7 +178,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
         body: Column(
           children: [
             const Text(
-                'Um e-mail de validação foi enviado o e-mail cadastrado.'),
+                'Um e-mail de validação foi enviado ao e-mail cadastrado.'),
             ElevatedButton(
               onPressed: canResendEmail ? sendVerificationEmail : null,
               child: const Text('Reenviar e-mail'),
