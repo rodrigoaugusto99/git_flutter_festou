@@ -306,7 +306,7 @@ class _MensagensState extends State<Mensagens> {
           return Scaffold(
             backgroundColor: const Color(0XFFF0F0F0),
             appBar: AppBar(
-              leading: user.locador
+              leading: !user.locador
                   ? Padding(
                       padding: const EdgeInsets.only(left: 18.0),
                       child: Container(

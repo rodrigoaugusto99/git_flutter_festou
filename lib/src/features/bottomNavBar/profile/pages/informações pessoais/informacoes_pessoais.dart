@@ -266,7 +266,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                       return const Text('Nenhum documento encontrado.');
                     }
                   }),
-              if (!widget.userModel.locador)
+              if (widget.userModel.locador)
                 myRow(
                   label: 'Nome Fantasia',
                   controller: fantasyNameEC,
@@ -274,7 +274,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                 ),
               myRow(
                 label:
-                    widget.userModel.locador ? 'Nome' : 'Nome / Razão Social',
+                    widget.userModel.locador ? 'Nome / Razão Social' : 'Nome',
                 controller: nameEC,
                 enable: isEditing,
               ),

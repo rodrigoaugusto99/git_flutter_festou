@@ -5,12 +5,12 @@ import 'package:git_flutter_festou/firebase_options.dart';
 import 'package:git_flutter_festou/src/core/ui/festou_nav_global_key.dart';
 import 'package:git_flutter_festou/src/features/auth/auth_page.dart';
 import 'package:git_flutter_festou/src/features/auth/verify_email_page.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarLocadorPage.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarLocatarioPage.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/home_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/my%20favorite%20spaces%20mvvm/my_favorite_spaces_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/search/search_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/help/help_page.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarLocatarioPage.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarLocadorPage.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
 import 'package:git_flutter_festou/src/features/login/forgot_password_page.dart';
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       navigatorKey: FestouNavGlobalKey.instance.navKey,
       routes: {
-        '/home': (_) => const BottomNavBarLocadorPage(),
+        '/home': (_) => const BottomNavBarLocatarioPage(),
         '/emailVerification': (_) => const VerifyEmailPage(),
         '/auth': (_) => const AuthPage(),
         '/login': (_) => const LoginPage(),
@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
           final initialIndex = settings.arguments as int? ?? 0;
           return MaterialPageRoute(
             builder: (context) =>
-                BottomNavBarLocatarioPage(initialIndex: initialIndex),
+                BottomNavBarLocadorPage(initialIndex: initialIndex),
           );
         }
         return null;

@@ -52,7 +52,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         'uid': userData.id,
         'email': userData.email,
         'fantasy_name': '',
-        'locador': true,
+        'locador': false,
         'name': userData.name,
         'cpf': userData.cpf,
         'telefone': '',

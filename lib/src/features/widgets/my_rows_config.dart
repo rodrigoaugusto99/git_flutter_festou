@@ -57,7 +57,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
           icon1: Image.asset(
               'lib/assets/images/Icon Segurançalogineseguranca.png'),
         ),
-        if (widget.userModel.locador) ...[
+        if (!widget.userModel.locador) ...[
           const SizedBox(height: 16),
           myRow(
             text: 'Métodos de pagamento',
@@ -75,14 +75,14 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
         const SizedBox(height: 16),
         myRow(
           text: widget.userModel.locador
-              ? 'Minhas reservas e avaliações'
-              : 'Avaliações dos meus espaços',
+              ? 'Avaliações dos meus espaços'
+              : 'Minhas reservas e avaliações',
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => widget.userModel.locador
-                    ? MinhasAtividadesPage(userId: widget.userModel.id)
-                    : AvaliacoesMeusEspacosPage(userId: widget.userModel.id)),
+                    ? AvaliacoesMeusEspacosPage(userId: widget.userModel.id)
+                    : MinhasAtividadesPage(userId: widget.userModel.id)),
           ),
           icon1: Image.asset(
             'lib/assets/images/Icon Históricominhnasatividades.png',
@@ -95,13 +95,13 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
             context,
             MaterialPageRoute(
               builder: (context) => widget.userModel.locador
-                  ? const NotificacoesLocatarioPage()
-                  : const NotificacoesLocadorPage(),
+                  ? const NotificacoesLocadorPage()
+                  : const NotificacoesLocatarioPage(),
             ),
           ),
           icon1: const Icon(Icons.notifications_outlined),
         ),
-        if (widget.userModel.locador) ...[
+        if (!widget.userModel.locador) ...[
           const SizedBox(height: 16),
           StreamBuilder<int>(
             stream: mensagens.getTotalUnreadMessagesCount(),
