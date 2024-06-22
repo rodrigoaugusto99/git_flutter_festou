@@ -21,10 +21,151 @@ class Profile extends ConsumerStatefulWidget {
 }
 
 class _ProfileState extends ConsumerState<Profile> {
+  UserModel? userModel;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUser();
+  }
+
+  void fetchUser() async {
+    userModel = await UserService().getCurrentUserModel();
+    setState(() {});
+  }
+
+  Future<bool> hasActiveContract(String clientId) async {
+    final now = DateTime.now();
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('reservations')
+        .where('client_id', isEqualTo: clientId)
+        .get();
+
+    for (var doc in querySnapshot.docs) {
+      final data = doc.data();
+      final selectedFinalDate = DateTime.parse(data['selectedFinalDate']);
+      final checkOutTime = data['checkOutTime'];
+
+      if (selectedFinalDate.day == now.day &&
+          selectedFinalDate.month == now.month &&
+          selectedFinalDate.year == now.year &&
+          checkOutTime >= now.hour) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  void navigateBasedOnContract(BuildContext context) async {
+    if (userModel == null) return;
+
+    if (userModel!.locador) {
+      final hasSpaces = await hasRegisteredSpaces(userModel!.id);
+
+      if (hasSpaces) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Espaços Registrados'),
+            content: const Text(
+                'Você possui espaços cadastrados no seu nome e não pode mudar para locatário.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Confirmação de Mudança'),
+            content: const Text(
+                'Você não poderá mais disponibilizar espaços a partir da mudança, podendo apenas alugar. Deseja continuar?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancelar'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const BottomNavBarLocatarioPage(),
+                    ),
+                  );
+                },
+                child: const Text('Confirmar'),
+              ),
+            ],
+          ),
+        );
+      }
+    } else {
+      final hasContract = await hasActiveContract(userModel!.id);
+
+      if (hasContract) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Contrato Ativo'),
+            content: const Text(
+                'Você possui um contrato ativo e não pode mudar para locador.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Confirmação de Mudança'),
+            content: const Text(
+                'Você não poderá mais alugar espaços a partir da mudança, podendo apenas disponibilizar. Deseja continuar?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancelar'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const BottomNavBarLocadorPage(),
+                    ),
+                  );
+                },
+                child: const Text('Confirmar'),
+              ),
+            ],
+          ),
+        );
+      }
+    }
+  }
+
+  Future<bool> hasRegisteredSpaces(String userId) async {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('spaces')
+        .where('user_id', isEqualTo: userId)
+        .get();
+
+    return querySnapshot.docs.isNotEmpty;
+  }
+
   @override
   Widget build(BuildContext context) {
     UserService userService = UserService();
-
     return Scaffold(
       backgroundColor: const Color(0xffF8F8F8),
       appBar: AppBar(
@@ -209,19 +350,12 @@ class _ProfileState extends ConsumerState<Profile> {
                       const SizedBox(height: 15),
                       myRow(
                         text: userModel.locador
-                            ? 'Quero disponibilizar um espaço'
-                            : 'Quero deixar de ser um locatário',
+                            ? 'Quero deixar de ser um locador'
+                            : 'Quero disponibilizar um espaço',
                         icon1: Image.asset(
                           'lib/assets/images/Icon Disponibilizarcasinha.png',
                         ),
-                        onTap: () => Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => userModel.locador
-                                ? const BottomNavBarLocatarioPage()
-                                : const BottomNavBarLocadorPage(),
-                          ),
-                        ),
+                        onTap: () => navigateBasedOnContract(context),
                       ),
                       const SizedBox(height: 25),
                       myText(text: 'Atendimento'),
