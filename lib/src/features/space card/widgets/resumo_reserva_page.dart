@@ -187,6 +187,8 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     userModel = await userService.getCurrentUserModel();
   }
 
+  DateTime? dataTermino;
+
   Future replaceMarkers({
     // required String cpf,
     // required String name,
@@ -248,6 +250,20 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
         '<b>${widget.summaryData.checkOutTime}:00h</b>');
     modifiedHtml = modifiedHtml.replaceAll('{Data de Início do Evento}',
         '<b>${DateFormat('d \'de\' MMMM \'de\' y', 'pt_BR').format(widget.summaryData.selectedDate)}</b>');
+
+    // Verificar se o checkOutTime está entre 00 e 04
+    dataTermino = widget.summaryData.selectedDate;
+    int checkOutTimeStr = widget.summaryData.checkOutTime;
+    dataTermino ??= widget.summaryData.selectedDate;
+    if (checkOutTimeStr >= 0 && checkOutTimeStr <= 4) {
+      dataTermino = dataTermino!.add(const Duration(days: 1));
+    }
+    widget.summaryData.selectedFinalDate = dataTermino;
+    dev.log(dataTermino.toString());
+
+// Substituir a data de término do evento
+    modifiedHtml = modifiedHtml.replaceAll('{Data de Término do Evento}',
+        '<b>${DateFormat('d \'de\' MMMM \'de\' y', 'pt_BR').format(dataTermino!)}</b>');
     modifiedHtml =
         modifiedHtml.replaceAll('{Número de Horas}', '<b>$hoursDifference</b>');
     modifiedHtml = modifiedHtml.replaceAll(
@@ -1287,6 +1303,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: GestureDetector(
           onTap: () {
+            dev.log(widget.summaryData.selectedFinalDate.toString());
             if (widget.assinado && widget.html != null && userModel != null) {
               //todo: pode reservar
               final reservationModel = ReservationModel(

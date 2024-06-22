@@ -21,17 +21,28 @@ class _CalendarPageState extends State<CalendarPage> {
   int? checkOutTime;
   bool showWarning = false;
   void onSelectTime(int selectedTime) {
+    log(selectedTime.toString());
     setState(() {
       if (checkInTime == selectedTime) {
-        checkInTime = checkOutTime;
+        // Se clicar novamente no mesmo checkInTime, limpar ambos
+        checkInTime = null;
         checkOutTime = null;
       } else if (checkOutTime == selectedTime) {
+        // Se clicar novamente no mesmo checkOutTime, limpar apenas ele
         checkOutTime = null;
       } else if (checkInTime == null) {
+        // Primeira seleção: definir checkInTime
         checkInTime = selectedTime;
       } else if (checkOutTime == null) {
-        checkOutTime = selectedTime;
+        // Segunda seleção: definir checkOutTime, garantindo que seja maior que checkInTime
+        if (selectedTime > checkInTime!) {
+          checkOutTime = selectedTime;
+        } else {
+          checkOutTime = checkInTime;
+          checkInTime = selectedTime;
+        }
       } else {
+        // Limpar e definir novamente checkInTime
         checkInTime = selectedTime;
         checkOutTime = null;
       }
@@ -39,7 +50,43 @@ class _CalendarPageState extends State<CalendarPage> {
       showWarning = false;
 
       if (checkInTime != null && checkOutTime != null) {
-        if (checkInTime! > checkOutTime!) {
+        // Ajustar checkOutTime temporariamente para a validação
+        int adjustedCheckOutTime = checkOutTime!;
+        if (checkOutTime! >= 0 && checkOutTime! <= 4) {
+          adjustedCheckOutTime += 24;
+        }
+
+        if ((adjustedCheckOutTime - checkInTime!) < 4) {
+          setState(() {
+            showWarning = true;
+          });
+          return;
+        }
+
+        // Garantir que checkOutTime seja sempre maior que checkInTime,
+        // considerando a continuidade do dia
+        if (checkInTime! >= 1 &&
+            checkInTime! <= 4 &&
+            checkOutTime! > checkInTime!) {
+          // Do nothing, valid case
+        } else if (checkOutTime! >= 1 &&
+            checkOutTime! <= 4 &&
+            checkOutTime! < checkInTime!) {
+          // Valid case
+        } else if (checkInTime! >= 1 &&
+            checkInTime! <= 4 &&
+            checkOutTime! <= 4) {
+          int temp = checkInTime!;
+          checkInTime = checkOutTime;
+          checkOutTime = temp;
+        } else if (checkOutTime! < checkInTime!) {
+          int temp = checkInTime!;
+          checkInTime = checkOutTime;
+          checkOutTime = temp;
+        }
+
+        // Inverter valores se checkInTime for 00, 01, 02, 03 ou 04
+        if (checkInTime! >= 0 && checkInTime! <= 4) {
           int temp = checkInTime!;
           checkInTime = checkOutTime;
           checkOutTime = temp;
@@ -52,6 +99,9 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     int startHour = int.parse(widget.space.startTime);
     int endHour = int.parse(widget.space.endTime);
+    if (endHour < startHour) {
+      endHour += 24;
+    }
     int itemCount = endHour - startHour + 1;
     return Scaffold(
       backgroundColor: Colors.grey[100],
@@ -227,7 +277,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   scrollDirection: Axis.horizontal,
                   itemCount: itemCount,
                   itemBuilder: (BuildContext context, int index) {
-                    int hour = startHour + index;
+                    int hour = (startHour + index) % 24;
                     bool isSelected =
                         (hour == checkInTime) || (hour == checkOutTime);
                     if (index == 0) {
@@ -272,8 +322,8 @@ class _CalendarPageState extends State<CalendarPage> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: Text(
-                    'Horario de check-in: ${checkInTime.toString().padLeft(2, '0')}, '
-                    'Horario de saida: ${checkOutTime.toString().padLeft(2, '0')}',
+                    'Horario de check-in: ${checkInTime != null ? checkInTime.toString().padLeft(2, '0') : ''}, '
+                    'Horario de saida: ${checkOutTime != null ? ((checkOutTime! % 24).toString().padLeft(2, '0')) : ''}',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -324,7 +374,13 @@ class _CalendarPageState extends State<CalendarPage> {
               return;
             }
 
-            if ((checkOutTime! - checkInTime!) < 4) {
+            // Verificação com ajuste temporário para checkOutTime
+            int adjustedCheckOutTime = checkOutTime!;
+            if (checkOutTime! >= 0 && checkOutTime! <= 4) {
+              adjustedCheckOutTime += 24;
+            }
+
+            if ((adjustedCheckOutTime - checkInTime!) < 4) {
               setState(() {
                 showWarning = true;
               });

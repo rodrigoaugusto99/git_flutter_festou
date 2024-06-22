@@ -15,6 +15,8 @@ Widget decContainer({
   double? allPadding,
   Widget? child,
   Function()? onTap,
+  Gradient? gradient,
+  BoxShadow? boxShadow,
 }) {
   return GestureDetector(
     onTap: onTap,
@@ -30,6 +32,8 @@ Widget decContainer({
       height: height,
       width: width,
       decoration: BoxDecoration(
+        boxShadow: boxShadow != null ? [boxShadow] : null,
+        gradient: gradient,
         color: color,
         border: borderWidth != null && borderColor != null
             ? Border.all(

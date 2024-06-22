@@ -18,6 +18,7 @@ class UserService {
   //que vais er usado para a pesquisa, e nao o id do current.User
   //(sera usado p pegar user do feedback ou reserva etc.
   //)
+
   Future<UserModel?> getCurrentUserModel() async {
     User? firebaseUser = _auth.currentUser;
     if (firebaseUser != null) {
@@ -70,6 +71,33 @@ class UserService {
   }
 
   //pega os dados do cupom
+  Future<UserModel?> getCurrentUserModelById({required String id}) async {
+    QuerySnapshot querySnapshot =
+        await _firestore.collection('users').where('uid', isEqualTo: id).get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      DocumentSnapshot userDoc = querySnapshot.docs.first;
+      final data = userDoc.data() as Map<String, dynamic>;
+      return UserModel(
+        email: data['email'] ?? '',
+        name: data['name'] ?? '',
+        cpfOuCnpj: data['cpf'] ?? '',
+        cep: data['user_address']?['cep'] ?? '',
+        logradouro: data['user_address']?['logradouro'] ?? '',
+        telefone: data['telefone'] ?? '',
+        bairro: data['user_address']?['bairro'] ?? '',
+        cidade: data['user_address']?['cidade'] ?? '',
+        id: data['uid'] ?? '',
+        avatarUrl: data['avatar_url'] ?? '',
+        fantasyName: data['avatar_url'] ?? '',
+        locador: data['locador'],
+      );
+    }
+
+    return null;
+  }
+
+//pega os dados do cupom
   Future<CupomModel?> getCupom(String codigo) async {
     QuerySnapshot querySnapshot = await _firestore
         .collection('cupons')
