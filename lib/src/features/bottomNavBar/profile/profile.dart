@@ -7,6 +7,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBar
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/privacy_policy_page.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/service_terms_page.dart';
 import 'package:git_flutter_festou/src/features/widgets/my_rows_config.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -245,7 +246,13 @@ class _ProfileState extends ConsumerState<Profile> {
                         icon1: Image.asset(
                           'lib/assets/images/Icon Termosjuridic.png',
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ServiceTermsPage()),
+                          );
+                        },
                       ),
                       const SizedBox(height: 15),
                       myRow(
@@ -257,7 +264,8 @@ class _ProfileState extends ConsumerState<Profile> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => PrivacyPolicyPage()),
+                                builder: (context) =>
+                                    const PrivacyPolicyPage()),
                           );
                         },
                       ),
