@@ -5,13 +5,13 @@ import 'package:git_flutter_festou/src/features/space%20card/widgets/summary_dat
 import 'package:git_flutter_festou/src/models/cupom_model.dart';
 
 class ContratoAssinadoPage extends StatefulWidget {
-  final SummaryData summaryData;
+  final SummaryData? summaryData;
   final CupomModel? cupomModel;
   String? html;
   ContratoAssinadoPage({
     super.key,
-    required this.summaryData,
-    required this.cupomModel,
+    this.summaryData,
+    this.cupomModel,
     required this.html,
   });
 
@@ -51,7 +51,7 @@ class _ContratoAssinadoPageState extends State<ContratoAssinadoPage> {
         ),
         centerTitle: true,
         title: const Text(
-          'Calendário',
+          'Contrato assinado',
           style: TextStyle(
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
@@ -97,19 +97,24 @@ class _ContratoAssinadoPageState extends State<ContratoAssinadoPage> {
                 ),
               ),
               onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ResumoReservaPage(
-                      assinado: true,
-                      summaryData: widget.summaryData,
-                      cupomModel: widget.cupomModel,
-                      html: widget.html,
+                if (widget.summaryData == null) {
+                  Navigator.of(context).pop();
+                } else {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ResumoReservaPage(
+                        assinado: true,
+                        summaryData: widget.summaryData!,
+                        cupomModel: widget.cupomModel,
+                        html: widget.html,
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
               },
-              child: const Text('Continuar reserva'),
+              child: Text(
+                  widget.summaryData == null ? 'Voltar' : 'Continuar reserva'),
             ),
           ],
         ),

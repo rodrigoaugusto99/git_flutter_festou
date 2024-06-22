@@ -1,14 +1,20 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_locatario_page.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_page.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_assinado_page.dart';
+// import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_page.dart';
+import 'package:git_flutter_festou/src/helpers/helpers.dart';
 import 'package:git_flutter_festou/src/models/reservation_model.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:git_flutter_festou/src/services/reserva_service.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
+import 'package:intl/intl.dart';
 import 'package:svg_flutter/svg.dart';
 
 class Calendario extends StatefulWidget {
@@ -66,6 +72,7 @@ class _CalendarioState extends State<Calendario> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xffF8F8F8),
       appBar: AppBar(
         actions: [
           Padding(
@@ -112,24 +119,75 @@ class _CalendarioState extends State<Calendario> {
       body: minhasReservas == null
           ? const CircularProgressIndicator()
           : ListView(
-              padding: const EdgeInsets.all(20),
+              clipBehavior: Clip.none,
+              // padding: const EdgeInsets.all(20),
               children: [
                 const Text('Calendário de reservas'),
-                CalendarioExpansioWidget(minhasReservas: minhasReservas!),
                 CalendarioExpansioWidget(
-                    minhasReservas: minhasReservasProximas!),
+                    minhasReservas: minhasReservas!,
+                    title: 'Todas as reservas'),
+                CalendarioExpansioWidget(
+                  minhasReservas: minhasReservasProximas!,
+                  title: 'Próximas reservas',
+                ),
               ],
             ),
     );
   }
 }
 
-class CalendarioExpansioWidget extends StatelessWidget {
-  List<ReservationModel> minhasReservas;
-  CalendarioExpansioWidget({
+class CalendarioExpansioWidget extends StatefulWidget {
+  final List<ReservationModel> minhasReservas;
+  final String title;
+
+  const CalendarioExpansioWidget({
     required this.minhasReservas,
+    required this.title,
     super.key,
   });
+
+  @override
+  State<CalendarioExpansioWidget> createState() =>
+      _CalendarioExpansioWidgetState();
+}
+
+class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
+  UserModel? user;
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   getUserById();
+  // }
+
+  Future<void> getUserById(String id) async {
+    user = await UserService().getCurrentUserModelById(id: id);
+
+    setState(() {});
+  }
+
+  String formatTime(int hour) {
+    String hourStr = hour.toString().padLeft(2, '0');
+    return '$hourStr:00h';
+  }
+
+  String formatDateString(String dateStr) {
+    DateTime date = DateTime.parse(dateStr);
+    DateFormat formatter = DateFormat('d \'de\' MMMM \'de\' yyyy', 'pt_BR');
+    return formatter.format(date);
+  }
+
+  String? formatTimestamp(Timestamp? timestamp) {
+    if (timestamp == null) return null;
+    DateTime date = timestamp.toDate();
+    DateFormat formatter = DateFormat('d \'de\' MMMM \'de\' yyyy', 'pt_BR');
+    return formatter.format(date);
+  }
+
+  bool isDateInFuture(String dateStr) {
+    DateTime date = DateTime.parse(dateStr);
+    DateTime now = DateTime.now();
+    return date.isAfter(now);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,29 +199,281 @@ class CalendarioExpansioWidget extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         side: BorderSide.none,
       ),
-      //backgroundColor: const Color(0xff9747FF),
-      childrenPadding: const EdgeInsets.symmetric(horizontal: 33),
+      childrenPadding: const EdgeInsets.symmetric(vertical: 10),
       title: Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
           Positioned(
-              left: 5,
-              child:
-                  Image.asset('lib/assets/images/IconSearchcalendarbaby.png')),
+            left: 5,
+            child: Image.asset('lib/assets/images/IconSearchcalendarbaby.png'),
+          ),
           const SizedBox(width: 10),
-          const Positioned(
+          Positioned(
             left: 40,
             child: Text(
-              'Todas as reservas',
-              style: TextStyle(fontSize: 12, color: Colors.black),
+              widget.title,
+              style: const TextStyle(fontSize: 12, color: Colors.black),
             ),
           ),
         ],
       ),
-      children: [
-        Text(minhasReservas.length.toString()),
-      ],
+      //todo:  pra prsquisar reservas, pesqquisar com base no nome do espaco, do cliente, e mais.
+      //todo: botao cancelar; check/close icon
+      children: widget.minhasReservas.map((reserva) {
+        bool eventInFuture = isDateInFuture(reserva.selectedFinalDate);
+        getUserById(reserva.clientId);
+
+        return Container(
+          decoration: BoxDecoration(
+            color: eventInFuture ? null : const Color(0xffD4D4D4),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                color: Colors.white,
+                child: const Padding(
+                  padding: EdgeInsets.only(left: 23, top: 11),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '20 de Mai / 2024',
+                        style: TextStyle(
+                          color: Color(0xff4300B1),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 11,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Stack(
+                children: [
+                  Image.asset('lib/assets/images/Rectangle 108imageBehind.png'),
+                  decContainer(
+                    topPadding: 5,
+                    bottomPadding: 9,
+                    leftPadding: 23,
+                    rightPadding: 24,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundImage: user != null
+                                  ? Image.network(
+                                      user!.avatarUrl,
+                                      fit: BoxFit.cover,
+                                    ).image
+                                  : const AssetImage(
+                                          'lib/assets/images/avatar.png')
+                                      as ImageProvider,
+                              radius: 20,
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              user != null ? user!.name : '',
+                              style: const TextStyle(
+                                fontSize: 11,
+                              ),
+                            ),
+                            const Spacer(),
+                            decContainer(
+                              onTap: eventInFuture
+                                  ? () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ChatPage(
+                                            receiverID: reserva.locadorId,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  : null,
+                              allPadding: 5,
+                              radius: 100,
+                              color: eventInFuture
+                                  ? const Color(0xffF3F3F3)
+                                  : const Color(0xff979797),
+                              child: Icon(
+                                Icons.chat_bubble,
+                                color: eventInFuture
+                                    ? const Color(0xff4300B1)
+                                    : const Color(0xffD4D4D4),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 9,
+                        ),
+                        Text(
+                          'O evento ${eventInFuture ? "acontecerá" : "aconteceu"} em:',
+                          style: const TextStyle(
+                            fontSize: 11,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 9,
+                        ),
+                        Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text.rich(
+                                  TextSpan(
+                                    text: 'Início às ',
+                                    style: const TextStyle(
+                                      fontSize: 10.5,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text: formatTime(reserva.checkInTime),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const TextSpan(text: ' do dia '),
+                                      TextSpan(
+                                        text: formatDateString(
+                                            reserva.selectedDate),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const TextSpan(text: '.'),
+                                    ],
+                                  ),
+                                ),
+                                Text.rich(
+                                  TextSpan(
+                                    text: 'Término às ',
+                                    style: const TextStyle(
+                                      fontSize: 10.5,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text: formatTime(reserva.checkOutTime),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const TextSpan(text: ' do dia '),
+                                      TextSpan(
+                                        text: formatDateString(
+                                            reserva.selectedFinalDate),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const TextSpan(text: '.'),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Spacer(),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    right: 24,
+                    bottom: 9,
+                    child: Column(
+                      children: [
+                        if (eventInFuture)
+                          decContainer(
+                            topPadding: 5,
+                            bottomPadding: 5,
+                            leftPadding: 15,
+                            rightPadding: 15,
+                            gradient: const LinearGradient(
+                              colors: [
+                                Color(0xff9747FF),
+                                Color(0xff4300B1),
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
+                            radius: 50,
+                            child: const Text(
+                              'Cancelar',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 8,
+                              ),
+                            ),
+                          ),
+                        const SizedBox(
+                          height: 4,
+                        ),
+                        decContainer(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ContratoAssinadoPage(
+                                  summaryData: null,
+                                  cupomModel: null,
+                                  html: reserva.contratoHtml,
+                                ),
+                              ),
+                            );
+                          },
+                          topPadding: 5,
+                          bottomPadding: 5,
+                          leftPadding: 15,
+                          rightPadding: 15,
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color(0xff9747FF),
+                              Color(0xff4300B1),
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ),
+                          radius: 50,
+                          child: const Text(
+                            'Contrato',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 8,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+        // return Column(
+        //   crossAxisAlignment: CrossAxisAlignment.start,
+        //   children: [
+        //     Text('Check-In: ${formatTime(reserva.checkInTime)}'),
+        //     Text('Check-Out: ${formatTime(reserva.checkOutTime)}'),
+        //     Text(
+        //         'Criado em: ${formatTimestamp(reserva.createdAt) ?? 'Data não disponível'}'),
+        //     Text('Data Selecionada: ${formatDateString(reserva.selectedDate)}'),
+        //     Text(
+        //         'Data Final Selecionada: ${formatDateString(reserva.selectedFinalDate)}'),
+        //     const Divider(), // To separate different reservations visually
+        //   ],
+        // );
+      }).toList(),
     );
   }
 }
