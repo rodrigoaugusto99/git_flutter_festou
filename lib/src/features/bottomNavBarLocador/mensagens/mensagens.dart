@@ -123,7 +123,7 @@ class _MensagensState extends State<Mensagens> {
                   data['deletionSender'] == true) ||
               (data['receiverID'] == currentUserID &&
                   data['deletionRecipient'] == true)) {
-            return; // Ignora a mensagem
+            return;
           }
           totalUnreadCount++;
         });
@@ -167,7 +167,7 @@ class _MensagensState extends State<Mensagens> {
                   data['deletionSender'] == true) ||
               (data['receiverID'] == currentUserID &&
                   data['deletionRecipient'] == true)) {
-            return; // Ignora a mensagem
+            return;
           }
           totalUnreadCount++;
         });
