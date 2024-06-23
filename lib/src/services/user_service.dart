@@ -39,7 +39,7 @@ class UserService {
                 radius: 27,
                 child: userModel.name.isNotEmpty
                     ? Text(
-                        userModel.name[0],
+                        userModel.name[0].toUpperCase(),
                         style: const TextStyle(fontSize: 25),
                       )
                     : const Icon(

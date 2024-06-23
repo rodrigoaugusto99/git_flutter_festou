@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_page.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
-import '../../loading_indicator.dart';
 import 'package:rxdart/rxdart.dart';
 
 class Mensagens extends StatefulWidget {
@@ -239,7 +239,8 @@ class _MensagensState extends State<Mensagens> {
             batch.update(
                 messageCollection.doc(doc.id), {'deletionSender': true});
           }
-        } else {
+        }
+        if (data['receiverID'] == currentUserID) {
           if (data['deletionSender'] == true) {
             batch.delete(messageCollection.doc(doc.id));
           } else {
@@ -252,7 +253,13 @@ class _MensagensState extends State<Mensagens> {
       DocumentReference<Map<String, dynamic>> chatRoomDocRef =
           _firestore.collection('chat_rooms').doc(chatRoomId);
 
-      String otherUserID = ids.firstWhere((id) => id != currentUserID);
+      String otherUserID;
+
+      if (ids[0] == ids[1]) {
+        otherUserID = ids[0];
+      } else {
+        otherUserID = ids.firstWhere((id) => id != currentUserID);
+      }
 
       DocumentSnapshot<Map<String, dynamic>> chatRoomDoc =
           await chatRoomDocRef.get();
@@ -295,12 +302,10 @@ class _MensagensState extends State<Mensagens> {
     return FutureBuilder<UserModel>(
       future: getUserById(currentUserID),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CustomLoadingIndicator();
-        } else if (snapshot.hasError) {
+        if (snapshot.hasError) {
           return const Text('Erro ao carregar o usuário');
         } else if (!snapshot.hasData) {
-          return const Text('Usuário não encontrado');
+          return const CustomLoadingIndicator();
         } else {
           UserModel user = snapshot.data!;
           return Scaffold(
@@ -410,7 +415,7 @@ class _MensagensState extends State<Mensagens> {
                     future: hasMessages(),
                     builder: (context, snapshotMessage) {
                       if (!snapshotMessage.hasData) {
-                        return const Center(child: CircularProgressIndicator());
+                        return const CustomLoadingIndicator();
                       }
 
                       if (filteredDocs.isEmpty || !snapshotMessage.data!) {
@@ -558,16 +563,22 @@ class _MensagensState extends State<Mensagens> {
                           child: Row(
                             children: [
                               CircleAvatar(
-                                backgroundImage: avatarUrl.isNotEmpty
-                                    ? NetworkImage(avatarUrl)
-                                    : null,
-                                backgroundColor: avatarUrl.isNotEmpty
-                                    ? Colors.transparent
-                                    : const Color(0XFFF0F0F0),
                                 radius: 35,
-                                child: avatarUrl.isEmpty
-                                    ? const Icon(Icons.person)
-                                    : null,
+                                child: avatarUrl.isNotEmpty
+                                    ? CircleAvatar(
+                                        backgroundImage: Image.network(
+                                          avatarUrl,
+                                          fit: BoxFit.cover,
+                                        ).image,
+                                        radius: 35,
+                                      )
+                                    : name != ''
+                                        ? Text(
+                                            name[0].toUpperCase(),
+                                            style:
+                                                const TextStyle(fontSize: 30),
+                                          )
+                                        : null,
                               ),
                               const SizedBox(width: 15),
                               Expanded(

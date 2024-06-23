@@ -28,7 +28,7 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
           padding: const EdgeInsets.all(8.0),
           child: Container(
             padding:
-                const EdgeInsets.only(left: 27, top: 19, bottom: 7, right: 27),
+                const EdgeInsets.only(left: 20, top: 19, bottom: 7, right: 20),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
@@ -47,21 +47,19 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
               children: [
                 Row(
                   children: [
-                    if (widget.data.feedbacks[0].avatar == '')
-                      const CircleAvatar(
-                        radius: 20,
-                        child: Icon(
-                          Icons.person,
-                        ),
-                      ),
-                    if (widget.data.feedbacks[0].avatar != '')
-                      CircleAvatar(
-                        backgroundImage: Image.network(
-                          widget.data.feedbacks[0].avatar,
-                          fit: BoxFit.cover,
-                        ).image,
-                        radius: 20,
-                      ),
+                    CircleAvatar(
+                      radius: 20,
+                      child: widget.data.feedbacks[0].avatar != ''
+                          ? CircleAvatar(
+                              backgroundImage: Image.network(
+                                widget.data.feedbacks[0].avatar,
+                                fit: BoxFit.cover,
+                              ).image,
+                              radius: 20,
+                            )
+                          : Text(widget.data.feedbacks[0].userName[0]
+                              .toUpperCase()),
+                    ),
                     const SizedBox(width: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,8 +90,11 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
                   ],
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  widget.data.feedbacks[0].content.toString(),
+                Padding(
+                  padding: const EdgeInsets.only(left: 5.0),
+                  child: Text(
+                    widget.data.feedbacks[0].content.toString(),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 // const Row(

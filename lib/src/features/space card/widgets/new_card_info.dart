@@ -840,23 +840,18 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
             const SizedBox(height: 15),
             Row(
               children: [
-                widget.space.locadorAvatarUrl != ''
-                    ? CircleAvatar(
-                        backgroundColor: const Color(0xffF3F3F3),
-                        backgroundImage: Image.network(
-                          widget.space.locadorAvatarUrl,
-                          fit: BoxFit.cover,
-                        ).image,
-                        radius: 25,
-                      )
-                    : const CircleAvatar(
-                        backgroundColor: Color(0xffF3F3F3),
-                        radius: 25,
-                        child: Icon(
-                          Icons.person,
-                          color: Colors.black,
-                        ),
-                      ),
+                CircleAvatar(
+                  radius: 20,
+                  child: widget.space.locadorAvatarUrl != ''
+                      ? CircleAvatar(
+                          backgroundImage: Image.network(
+                            widget.space.locadorAvatarUrl,
+                            fit: BoxFit.cover,
+                          ).image,
+                          radius: 100,
+                        )
+                      : Text(widget.space.locadorName[0].toUpperCase()),
+                ),
                 const SizedBox(width: 10),
                 Text(
                   widget.space.locadorName,
