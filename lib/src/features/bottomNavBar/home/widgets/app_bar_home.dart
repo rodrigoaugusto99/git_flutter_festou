@@ -42,19 +42,9 @@ class _AppBarMenuSpaceTypesState extends ConsumerState<AppBarHome> {
                   Expanded(
                     child: Row(
                       children: [
-                        if (userModel != null)
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 27,
-                                backgroundImage:
-                                    NetworkImage(userModel!.avatarUrl),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                            ],
-                          ),
+                        userModel != null
+                            ? userService.getAvatar(userModel!)
+                            : const CircularProgressIndicator(),
                         RichText(
                           text: TextSpan(
                             children: [

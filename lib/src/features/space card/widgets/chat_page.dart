@@ -187,23 +187,17 @@ class _ChatPageState extends State<ChatPage> {
           if (snapshot.exists) {
             Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
             if (data['senderID'] == userID) {
-              // Check if the message has already been deleted for the recipient
               if (data['deletionRecipient'] == true) {
-                // Delete the message from the collection
                 await messageCollection.doc(messageId).delete();
               } else {
-                // Mark the message as deleted for the sender
                 await messageCollection
                     .doc(messageId)
                     .update({'deletionSender': true});
               }
-              //await messageCollection.doc(messageId).delete();
             } else {
               if (data['deletionSender'] == true) {
-                // Delete the message from the collection
                 await messageCollection.doc(messageId).delete();
               } else {
-                // Mark the message as deleted for the recipient
                 await messageCollection
                     .doc(messageId)
                     .update({'deletionRecipient': true});
@@ -301,7 +295,6 @@ class _ChatPageState extends State<ChatPage> {
     return userData['avatar_url'];
   }
 
-  @override
   Widget build(BuildContext context) {
     String chatRoomID = _chatServices.getChatRoomId(userID, widget.receiverID);
 
@@ -358,60 +351,62 @@ class _ChatPageState extends State<ChatPage> {
             FutureBuilder<String>(
               future: getAvatarById(widget.receiverID),
               builder: (context, snapshotPhoto) {
-                return GestureDetector(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) {
-                        return FutureBuilder<String>(
-                            future: getNameById(widget.receiverID),
-                            builder: (context, snapshotName) {
-                              return Scaffold(
-                                appBar: AppBar(
-                                  title: Text(
-                                    snapshotName.data != null
-                                        ? "${snapshotName.data}"
-                                        : '',
-                                    style: const TextStyle(
-                                        overflow: TextOverflow.ellipsis),
-                                  ),
-                                  foregroundColor: Colors.white,
-                                  backgroundColor: Colors.transparent,
-                                  elevation: 0,
-                                ),
-                                backgroundColor: Colors.black,
-                                body: AlertDialog(
-                                    contentPadding: EdgeInsetsDirectional.zero,
-                                    content: Hero(
-                                      tag: 'x',
-                                      child: Image.network(
-                                        snapshotPhoto.data!,
-                                        fit: BoxFit.cover,
+                final avatarUrl = snapshotPhoto.data ?? '';
+                return avatarUrl.isNotEmpty
+                    ? GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) {
+                              return FutureBuilder<String>(
+                                  future: getNameById(widget.receiverID),
+                                  builder: (context, snapshotName) {
+                                    return Scaffold(
+                                      appBar: AppBar(
+                                        title: Text(
+                                          snapshotName.data != null
+                                              ? "${snapshotName.data}"
+                                              : '',
+                                          style: const TextStyle(
+                                              overflow: TextOverflow.ellipsis),
+                                        ),
+                                        foregroundColor: Colors.white,
+                                        backgroundColor: Colors.transparent,
+                                        elevation: 0,
                                       ),
-                                    )),
-                              );
-                            });
-                      },
-                    ),
-                  ),
-                  child: CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colors.transparent,
-                    child: ClipOval(
-                      child: snapshotPhoto.data != null
-                          ? Hero(
+                                      backgroundColor: Colors.black,
+                                      body: AlertDialog(
+                                          contentPadding:
+                                              EdgeInsetsDirectional.zero,
+                                          content: Hero(
+                                            tag: 'x',
+                                            child: Image.network(
+                                              avatarUrl,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          )),
+                                    );
+                                  });
+                            },
+                          ),
+                        ),
+                        child: CircleAvatar(
+                          radius: 20,
+                          backgroundColor: Colors.transparent,
+                          child: ClipOval(
+                            child: Hero(
                               tag: 'x',
                               child: Image.network(
-                                snapshotPhoto.data!,
+                                avatarUrl,
                                 fit: BoxFit.cover,
                                 width: 40,
                                 height: 40,
                               ),
-                            )
-                          : const Icon(Icons.person),
-                    ),
-                  ),
-                );
+                            ),
+                          ),
+                        ),
+                      )
+                    : Container();
               },
             ),
           ],
@@ -496,7 +491,6 @@ class _ChatPageState extends State<ChatPage> {
     if (data.containsKey('timestamp') && data['timestamp'] != null) {
       timestamp = data['timestamp'] as Timestamp;
     } else {
-      // Handle the case where the timestamp is null, for example by setting a default value
       timestamp = Timestamp.now();
     }
     bool isSeen = data['isSeen'] ?? false;

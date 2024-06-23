@@ -2,13 +2,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/app_bar_home.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/my_sliver_list_to_card_info.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_vm.dart';
-import 'package:git_flutter_festou/src/helpers/helpers.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 
@@ -180,8 +178,9 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final UserModel? userModel;
+  final userService = UserService();
 
-  const CustomAppBar({
+  CustomAppBar({
     super.key,
     required this.userModel,
   });
@@ -196,18 +195,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             Expanded(
               child: Row(
                 children: [
-                  if (userModel != null)
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 27,
-                          backgroundImage: NetworkImage(userModel!.avatarUrl),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                      ],
-                    ),
+                  userModel != null
+                      ? userService.getAvatar(userModel!)
+                      : const CircularProgressIndicator(),
                   RichText(
                     text: TextSpan(
                       children: [

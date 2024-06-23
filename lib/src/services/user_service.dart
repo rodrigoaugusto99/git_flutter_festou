@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/models/cupom_model.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
@@ -18,6 +19,40 @@ class UserService {
   //que vais er usado para a pesquisa, e nao o id do current.User
   //(sera usado p pegar user do feedback ou reserva etc.
   //)
+
+  Row getAvatar(UserModel userModel) {
+    return userModel.avatarUrl.isNotEmpty
+        ? Row(
+            children: [
+              CircleAvatar(
+                radius: 27,
+                backgroundImage: NetworkImage(userModel.avatarUrl),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+            ],
+          )
+        : Row(
+            children: [
+              CircleAvatar(
+                radius: 27,
+                child: userModel.name.isNotEmpty
+                    ? Text(
+                        userModel.name[0].toUpperCase(),
+                        style: const TextStyle(fontSize: 25),
+                      )
+                    : const Icon(
+                        Icons.person,
+                        size: 40,
+                      ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+            ],
+          );
+  }
 
   Future<UserModel?> getCurrentUserModel() async {
     User? firebaseUser = _auth.currentUser;
@@ -51,15 +86,12 @@ class UserService {
 
   Future<void> updateUserLocador(String userId, bool locador) async {
     try {
-      // Primeiro, obtenha o documento do usuário usando o campo 'uid'
       QuerySnapshot querySnapshot =
           await usersCollection.where('uid', isEqualTo: userId).get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        // Pegue o primeiro documento encontrado
         DocumentSnapshot userDoc = querySnapshot.docs.first;
 
-        // Atualize o campo 'locador' no documento do usuário
         await userDoc.reference.update({'locador': locador});
       } else {
         throw Exception("Usuário não encontrado");
@@ -70,7 +102,6 @@ class UserService {
     }
   }
 
-  //pega os dados do cupom
   Future<UserModel?> getCurrentUserModelById({required String id}) async {
     QuerySnapshot querySnapshot =
         await _firestore.collection('users').where('uid', isEqualTo: id).get();
@@ -97,7 +128,6 @@ class UserService {
     return null;
   }
 
-//pega os dados do cupom
   Future<CupomModel?> getCupom(String codigo) async {
     QuerySnapshot querySnapshot = await _firestore
         .collection('cupons')
@@ -122,7 +152,6 @@ class UserService {
     if (user == null) return;
 
     try {
-      // Fetch the user document using a query
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('users')
           .where('uid', isEqualTo: user.id)
@@ -133,23 +162,18 @@ class UserService {
         throw Exception("User does not exist!");
       }
 
-      // Since we used limit(1), there should only be one document in the querySnapshot
       DocumentSnapshot snapshot = querySnapshot.docs.first;
 
       List<dynamic> lastSeen = snapshot.get('last_seen') ?? [];
 
-      // Remove spaceId if it already exists
       lastSeen.remove(spaceId);
 
-      // Add the new spaceId to the front
       lastSeen.insert(0, spaceId);
 
-      // Ensure the array has at most 10 items
       if (lastSeen.length > 10) {
         lastSeen = lastSeen.sublist(0, 10);
       }
 
-      // Update the user document
       await snapshot.reference.update({'last_seen': lastSeen});
     } catch (error) {
       log("Failed to update last seen: $error");
@@ -159,7 +183,6 @@ class UserService {
   Future<List<SpaceModel>?> getLastSeenSpaces() async {
     final user = await getCurrentUserModel();
     if (user != null) {
-      // Fetch the user document using a query
       QuerySnapshot userSnapshot = await FirebaseFirestore.instance
           .collection('users')
           .where('uid', isEqualTo: user.id)
@@ -173,7 +196,6 @@ class UserService {
       DocumentSnapshot userDoc = userSnapshot.docs.first;
       List<dynamic> lastSeenIds = userDoc.get('last_seen') ?? [];
 
-      // Get user's favorite spaces
       final userSpacesFavorite = await getUserFavoriteSpaces(user.id);
 
       List<Future<SpaceModel>> futures = lastSeenIds.map((id) async {
@@ -203,7 +225,6 @@ class UserService {
     QueryDocumentSnapshot spaceDocument,
     bool isFavorited,
   ) async {
-    //pegando os dados necssarios antes de crior o card
     List<String> selectedTypes =
         List<String>.from(spaceDocument['selectedTypes'] ?? []);
     List<String> selectedServices =
@@ -213,12 +234,8 @@ class UserService {
     List<String> days = List<String>.from(spaceDocument['days'] ?? []);
 
     String spaceId = spaceDocument.get('space_id');
-    //String userId = spaceDocument.get('user_id');
     final averageRating = await getAverageRating(spaceId);
     final numComments = await getNumComments(spaceId);
-    //final locadorName = await getLocadorName(userId);
-
-//?função para capturar a lista de imagens desse espaço
 
     return SpaceModel(
       isFavorited: isFavorited,
@@ -264,7 +281,6 @@ class UserService {
       return averageRatingValue;
     }
 
-    // Trate o caso em que nenhum espaço foi encontrado.
     throw Exception("Espaço não encontrado");
   }
 
@@ -277,25 +293,20 @@ class UserService {
       return numComments;
     }
 
-    // Trate o caso em que nenhum espaço foi encontrado.
     throw Exception("Espaço não encontrado");
   }
 
-//retorna o documento do usuario atual
   Future<DocumentSnapshot> getUserDocument(String userId) async {
     final userDocument =
         await usersCollection.where('uid', isEqualTo: userId).get();
 
     if (userDocument.docs.isNotEmpty) {
-      return userDocument.docs[0]; // Retorna o primeiro documento encontrado.
+      return userDocument.docs[0];
     }
 
-    // Trate o caso em que nenhum usuário foi encontrado.
-    //se esse erro ocorrer la numm metodo que chama getUsrDocument, o (e) do catch vai ter essa msg
     throw Exception("Usuário n encontrado");
   }
 
-//retorna a lista de ids dos espaços favoritados pelo usuario
   Future<List<String>?> getUserFavoriteSpaces(String userId) async {
     final userDocument = await getUserDocument(userId);
 
