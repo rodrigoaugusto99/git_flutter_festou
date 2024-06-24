@@ -18,7 +18,7 @@ class NewCardInfoEditVm {
     required List<String> networkImagesToDelete,
     required List<String> networkVideosToDelete,
     required List<File> imageFilesToDownload,
-    required List<String> videosToDownload,
+    required List<File> videosToDownload,
   }) async {
     QuerySnapshot querySnapshot = await spacesCollection
         .where(
@@ -38,42 +38,6 @@ class NewCardInfoEditVm {
     } else if (querySnapshot.docs.isEmpty) {
       // Nenhum documento com o userId especificado foi encontrado
       log('Usuário não encontrado no firestore.');
-    }
-  }
-
-  void pickImage() async {
-    final List<File> imageFiles = [];
-    final imagePicker = ImagePicker();
-    final List<XFile> images = await imagePicker.pickMultiImage();
-    for (XFile image in images) {
-      final imageFile = File(image.path);
-      imageFiles.add(imageFile);
-    }
-  }
-
-  Future<LatLng> calculateLatLng(
-    String logradouro,
-    String numero,
-    String bairro,
-    String cidade,
-    String estado, // ou UF, dependendo da sua modelagem
-  ) async {
-    try {
-      String fullAddress = '$logradouro, $numero, $bairro, $cidade, $estado';
-      List<Location> locations = await locationFromAddress(fullAddress);
-
-      if (locations.isNotEmpty) {
-        return LatLng(
-          locations.first.latitude,
-          locations.first.longitude,
-        );
-      } else {
-        throw Exception(
-            'Não foi possível obter as coordenadas para o endereço: $fullAddress');
-      }
-    } catch (e) {
-      log('Erro ao calcular LatLng: $e');
-      rethrow;
     }
   }
 }

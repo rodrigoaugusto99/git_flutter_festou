@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/servicos_acomodacoes.dart';
 import 'package:search_cep/search_cep.dart';
@@ -178,7 +179,7 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
                   ),
                   InkWell(
                     onTap: () async {
-                      await spaceRegister.validateForm(
+                      final stringResponse = await spaceRegister.validateForm(
                         context,
                         formKey,
                         cepEC,
@@ -187,13 +188,16 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
                         bairroEC,
                         cidadeEC,
                       );
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ServicosAcomodacoes(),
-                        ),
-                      );
+                      if (stringResponse != null) {
+                        Messages.showError(stringResponse, context);
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ServicosAcomodacoes(),
+                          ),
+                        );
+                      }
                     },
                     child: Container(
                       decoration: BoxDecoration(

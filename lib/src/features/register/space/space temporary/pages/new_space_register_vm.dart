@@ -185,7 +185,7 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
     return Validatorless.required('Cidade obrigatorio');
   }
 
-  Future<void> validateForm(
+  Future<String?> validateForm(
     BuildContext context,
     formKey,
     cepEC,
@@ -195,6 +195,16 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
     cidadeEC,
   ) async {
     if (formKey.currentState?.validate() == true) {
+      try {
+        final response = await calculateLatLng(
+            logradouroEC.text, numeroEC.text, bairroEC.text, cidadeEC.text);
+        log(response.toString(), name: 'response do calculateLtn');
+      } on Exception catch (e) {
+        log(e.toString());
+        state = state.copyWith(status: NewSpaceRegisterStateStatus.invalidForm);
+        return 'Localização não existe';
+      }
+
       state = state.copyWith(
         status: NewSpaceRegisterStateStatus.success,
         cep: cepEC.text,
@@ -211,8 +221,10 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
       log(state.numero);
       log(state.bairro);
       log(state.cidade);
+      return null;
     } else {
       state = state.copyWith(status: NewSpaceRegisterStateStatus.invalidForm);
+      return 'Formulário invalido';
     }
   }
 
@@ -245,10 +257,10 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
     String numero,
     String bairro,
     String cidade,
-    String estado, // ou UF, dependendo da sua modelagem
+    // String estado, // ou UF, dependendo da sua modelagem
   ) async {
     try {
-      String fullAddress = '$logradouro, $numero, $bairro, $cidade, $estado';
+      String fullAddress = '$logradouro, $numero, $bairro, $cidade';
       List<Location> locations = await locationFromAddress(fullAddress);
 
       if (locations.isNotEmpty) {
@@ -297,7 +309,7 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
     final userId = user.uid;
 
     final LatLng latLng =
-        await calculateLatLng(logradouro, numero, bairro, cidade, 'RJ');
+        await calculateLatLng(logradouro, numero, bairro, cidade);
 
     final spaceData = (
       spaceId: spaceId,

@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/host%20feedback/host_feedback_register_page.dart';
@@ -22,6 +23,7 @@ import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dar
 import 'package:git_flutter_festou/src/helpers/helpers.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social_share/social_share.dart';
 import 'package:svg_flutter/svg.dart';
@@ -223,7 +225,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
         ruaEC.text = widget.space.logradouro;
         numeroEC.text = widget.space.numero;
         bairroEC.text = widget.space.bairro;
-        estadoEC.text = widget.space.estado;
+        cidadeEC.text = widget.space.cidade;
         selectedServices = widget.space.selectedServices as List<String>;
       });
     });
@@ -237,17 +239,66 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
   final ruaEC = TextEditingController();
   final numeroEC = TextEditingController();
   final bairroEC = TextEditingController();
-  final estadoEC = TextEditingController();
+  final cidadeEC = TextEditingController();
 
   //todo: verificacao da existencia do endereco.
 
-  void toggleEditing() {
+  double? latitude;
+  double? longitude;
+
+  Future<String?> validateForm() async {
+    try {
+      final response = await calculateLatLng(
+          ruaEC.text, numeroEC.text, bairroEC.text, cidadeEC.text);
+      latitude = response.latitude;
+      longitude = response.longitude;
+      log(response.toString(), name: 'response do calculateLtn');
+      return null;
+    } on Exception catch (e) {
+      log(e.toString());
+
+      return 'Localização não existe';
+    }
+  }
+
+  Future<LatLng> calculateLatLng(
+    String logradouro,
+    String numero,
+    String bairro,
+    String cidade,
+  ) async {
+    try {
+      String fullAddress = '$logradouro, $numero, $bairro, $cidade';
+      List<Location> locations = await locationFromAddress(fullAddress);
+
+      if (locations.isNotEmpty) {
+        return LatLng(
+          locations.first.latitude,
+          locations.first.longitude,
+        );
+      } else {
+        throw Exception(
+            'Não foi possível obter as coordenadas para o endereço: $fullAddress');
+      }
+    } catch (e) {
+      log('Erro ao calcular LatLng: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> toggleEditing() async {
     if (isEditing) {
-      final x = verificarCamposVazios();
+      final x = validada();
       if (x != null) {
         Messages.showError(x, context);
         return;
       }
+      final y = await validateForm();
+      if (y != null) {
+        Messages.showError(y, context);
+        return;
+      }
+
       saveChanges();
     }
     setState(() {
@@ -264,25 +315,32 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
   void saveChanges() {
     log(selectedServices.toString(), name: 'selectedServices');
     Map<String, dynamic> newSpaceInfos = {
-      //todo: addOrRemoveImage/video method
+      'latitude': latitude,
+      'longitude': longitude,
       'preco': precoEC.text,
       'selectedServices': selectedServices,
       'cep': cepEC.text,
       'logradouro': ruaEC.text,
       'numero': numeroEC.text,
       'bairro': bairroEC.text,
-      'cidade': cepEC.text,
+      'cidade': cidadeEC.text,
       'descricao': visaoGeralEC.text,
-      'estado': estadoEC.text,
     };
 
     if (newCardInfoEditVm != null) {
       Messages.showSuccess('Espaço atualizado com sucesso!', context);
+
       log(networkImagesToDelete.toString(), name: 'networkImagesToDelete');
       log(networkVideosToDelete.toString(), name: 'networkVideosToDelete');
       log(imageFilesToDownload.length.toString(), name: 'imageFilesToDownload');
       log(videosToDownload.length.toString(), name: 'videosToDownload');
-      //newCardInfoEditVm!.updateSpace(newSpaceInfos);
+      // newCardInfoEditVm!.updateSpace(
+      //   newSpaceInfos: newSpaceInfos,
+      //   networkImagesToDelete: networkImagesToDelete,
+      //   networkVideosToDelete: networkVideosToDelete,
+      //   imageFilesToDownload: imageFilesToDownload,
+      //   videosToDownload: videosToDownload,
+      // );
     }
   }
 
@@ -372,7 +430,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
     return Container();
   }
 
-  String? verificarCamposVazios() {
+  String? validada() {
     if (precoEC.text.isEmpty) {
       return 'O campo Preço está vazio.';
     }
@@ -391,9 +449,10 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
     if (bairroEC.text.isEmpty) {
       return 'O campo Bairro está vazio.';
     }
-    if (estadoEC.text.isEmpty) {
-      return 'O campo Estado está vazio.';
+    if (cidadeEC.text.isEmpty) {
+      return 'O campo Cidade está vazio.';
     }
+
     return null;
   }
 
@@ -1118,8 +1177,8 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                   const SizedBox(height: 10),
                   CustomTextformfield(
                     height: 40,
-                    hintText: 'Estado',
-                    controller: estadoEC,
+                    hintText: 'Cidade',
+                    controller: cidadeEC,
                     fillColor: const Color(0xffF0F0F0),
                   ),
                 ],
@@ -1346,10 +1405,9 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          //widget.space.titulo,
-                          'Cabana dos Alpes',
-                          style: TextStyle(
+                        Text(
+                          widget.space.titulo,
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
