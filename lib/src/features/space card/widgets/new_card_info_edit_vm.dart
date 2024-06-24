@@ -13,7 +13,13 @@ class NewCardInfoEditVm {
   final CollectionReference spacesCollection =
       FirebaseFirestore.instance.collection('spaces');
 
-  Future<void> updateSpace(Map<String, dynamic> newSpaceInfos) async {
+  Future<void> updateSpace({
+    required Map<String, dynamic> newSpaceInfos,
+    required List<String> networkImagesToDelete,
+    required List<String> networkVideosToDelete,
+    required List<File> imageFilesToDownload,
+    required List<String> videosToDownload,
+  }) async {
     QuerySnapshot querySnapshot = await spacesCollection
         .where(
           "space_id",

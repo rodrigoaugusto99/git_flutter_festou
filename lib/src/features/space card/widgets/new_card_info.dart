@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +19,10 @@ import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_all.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/single_video_page.dart';
 import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
+import 'package:git_flutter_festou/src/helpers/helpers.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:social_share/social_share.dart';
 import 'package:svg_flutter/svg.dart';
 import 'package:video_player/video_player.dart';
@@ -240,7 +243,6 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
 
   void toggleEditing() {
     if (isEditing) {
-      //todo: save method
       final x = verificarCamposVazios();
       if (x != null) {
         Messages.showError(x, context);
@@ -253,14 +255,17 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
     });
   }
 
+  List<String> networkImagesToDelete = [];
+  List<String> networkVideosToDelete = [];
+
+  List<File> imageFilesToDownload = [];
+  List<File> videosToDownload = [];
+
   void saveChanges() {
     log(selectedServices.toString(), name: 'selectedServices');
-    //todo: dto
     Map<String, dynamic> newSpaceInfos = {
       //todo: addOrRemoveImage/video method
-      // 'images_url': imagesData,
       'preco': precoEC.text,
-
       'selectedServices': selectedServices,
       'cep': cepEC.text,
       'logradouro': ruaEC.text,
@@ -269,20 +274,102 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
       'cidade': cepEC.text,
       'descricao': visaoGeralEC.text,
       'estado': estadoEC.text,
-      //'locador_assinatura': 'estatico ainda',
-      // 'latitude': spaceData.latitude,
-      // 'longitude': spaceData.longitude,
-      // 'startTime': spaceData.startTime,
-      // 'endTime': spaceData.endTime,
-      // 'days': spaceData.days,
     };
+
     if (newCardInfoEditVm != null) {
       Messages.showSuccess('Espaço atualizado com sucesso!', context);
-      //todo: ainda nao estou chamando, curioso
+      log(networkImagesToDelete.toString(), name: 'networkImagesToDelete');
+      log(networkVideosToDelete.toString(), name: 'networkVideosToDelete');
+      log(imageFilesToDownload.length.toString(), name: 'imageFilesToDownload');
+      log(videosToDownload.length.toString(), name: 'videosToDownload');
       //newCardInfoEditVm!.updateSpace(newSpaceInfos);
     }
+  }
 
-    //todo: call method from vm.
+  void pickImage() async {
+    final imagePicker = ImagePicker();
+    final List<XFile> images = await imagePicker.pickMultiImage();
+
+    int currentTotalImages =
+        widget.space.imagesUrl.length + imageFilesToDownload.length;
+    int remainingSlots = 6 - currentTotalImages;
+
+    if (remainingSlots > 0) {
+      for (int i = 0; i < images.length && i < remainingSlots; i++) {
+        final imageFile = File(images[i].path);
+        setState(() {
+          imageFilesToDownload.add(imageFile);
+        });
+      }
+    }
+  }
+
+  final List<VideoPlayerController> localControllers = [];
+
+  void pickVideo() async {
+    final videoPicker = ImagePicker();
+    final XFile? video =
+        await videoPicker.pickVideo(source: ImageSource.gallery);
+
+    if (video != null) {
+      int currentTotalVideos =
+          widget.space.videosUrl.length + videosToDownload.length;
+      int remainingSlots = 3 - currentTotalVideos;
+
+      if (remainingSlots > 0) {
+        final videoFile = File(video.path);
+        setState(() {
+          videosToDownload.add(videoFile);
+          VideoPlayerController controller =
+              VideoPlayerController.file(videoFile)
+                ..initialize().then((_) {
+                  setState(() {});
+                });
+          localControllers.add(controller);
+        });
+      }
+    }
+  }
+
+  Widget buildVideoPlayerFromFile(int index) {
+    final controller = localControllers[index];
+    if (controller.value.isInitialized) {
+      return GestureDetector(
+        onTap: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (BuildContext context) {
+              return SingleVideoPage(controller: controller);
+            },
+          );
+        },
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: AspectRatio(
+                aspectRatio: controller.value.aspectRatio,
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: SizedBox(
+                    width: controller.value.size.width,
+                    height: controller.value.size.height,
+                    child: VideoPlayer(controller),
+                  ),
+                ),
+              ),
+            ),
+            Icon(
+              Icons.play_circle_fill,
+              color: Colors.white.withOpacity(0.7),
+              size: 40,
+            )
+          ],
+        ),
+      );
+    }
+    return Container();
   }
 
   String? verificarCamposVazios() {
@@ -350,17 +437,6 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
               return SingleVideoPage(controller: controller);
             },
           );
-
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) {
-          //       return SingleVideoPage(
-          //         controller: controller,
-          //       );
-          //     },
-          //   ),
-          // );
         },
         child: Stack(
           fit: StackFit.expand,
@@ -389,44 +465,6 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
       );
     }
     return Container();
-    // return const Column(
-    //   children: [
-    //     // Row(
-    //     //   mainAxisAlignment: MainAxisAlignment.center,
-    //     //   children: [
-    //     //     IconButton(
-    //     //       icon: Icon(
-    //     //           controller.value.isPlaying ? Icons.pause : Icons.play_arrow),
-    //     //       onPressed: () {
-    //     //         setState(() {
-    //     //           controller.value.isPlaying
-    //     //               ? controller.pause()
-    //     //               : controller.play();
-    //     //         });
-    //     //       },
-    //     //     ),
-    //     //     IconButton(
-    //     //       icon: const Icon(Icons.stop),
-    //     //       onPressed: () {
-    //     //         setState(() {
-    //     //           controller.pause();
-    //     //           controller.seekTo(Duration.zero);
-    //     //         });
-    //     //       },
-    //     //     ),
-    //     //     IconButton(
-    //     //       icon: const Icon(Icons.replay),
-    //     //       onPressed: () {
-    //     //         setState(() {
-    //     //           controller.seekTo(Duration.zero);
-    //     //           controller.play();
-    //     //         });
-    //     //       },
-    //     //     ),
-    //     //   ],
-    //     // ),
-    //   ],
-    // );
   }
 
   Map<String, String> serviceIconPaths = {
@@ -682,7 +720,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                 ),
               ),
               Text(
-                '(${widget.space.imagesUrl.length} ${widget.space.imagesUrl.length == 1 ? 'foto' : 'fotos)'}',
+                '(${widget.space.imagesUrl.length} ${widget.space.imagesUrl.length == 1 ? 'foto)' : 'fotos)'}',
                 style: const TextStyle(
                   fontWeight: FontWeight.w400,
                   fontSize: 12,
@@ -703,29 +741,89 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
             ),
             itemCount: 6, // Sempre terá 6 itens no grid
             itemBuilder: (BuildContext context, int index) {
-              if (index < widget.space.imagesUrl.length) {
-                // Mostrar as imagens da lista
+              int networkImagesCount = widget.space.imagesUrl.length;
+              int localImagesCount = imageFilesToDownload.length;
+              int totalImagesCount = networkImagesCount + localImagesCount;
+              int maxImages = 6;
+
+              if (index < networkImagesCount) {
+                // Mostrar as imagens da lista de URLs
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                    widget.space.imagesUrl[index].toString(),
-                    fit: BoxFit.cover,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Image.network(
+                        widget.space.imagesUrl[index].toString(),
+                        fit: BoxFit.cover,
+                      ),
+                      if (isEditing)
+                        decContainer(
+                          color: Colors.black.withOpacity(0.5),
+                        ),
+                      if (isEditing)
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              networkImagesToDelete.add(
+                                  widget.space.imagesUrl[index].toString());
+                              widget.space.imagesUrl.removeAt(index);
+                            });
+                          },
+                          child: Image.asset(
+                            'lib/assets/images/Ellipse 37lixeira-foto.png',
+                            width: 40,
+                          ),
+                        ),
+                    ],
                   ),
                 );
-              } else if (index == widget.space.imagesUrl.length &&
-                  widget.space.imagesUrl.length < 6) {
+              } else if (index < networkImagesCount + localImagesCount) {
+                // Mostrar as imagens da lista de arquivos locais
+                int localIndex = index - networkImagesCount;
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Image.file(
+                        imageFilesToDownload[localIndex],
+                        fit: BoxFit.cover,
+                      ),
+                      if (isEditing)
+                        decContainer(
+                          color: Colors.black.withOpacity(0.5),
+                        ),
+                      if (isEditing)
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              imageFilesToDownload.removeAt(localIndex);
+                            });
+                          },
+                          child: Image.asset(
+                            'lib/assets/images/Ellipse 37lixeira-foto.png',
+                            width: 40,
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              } else if (index == totalImagesCount &&
+                  totalImagesCount < maxImages) {
                 // Mostrar a imagem do asset se estiver no próximo índice após a última imagem da lista
-                return GestureDetector(
-                  onTap: () {
-                    //todo: add photos
-                  },
-                  child: Image.asset(
-                    'lib/assets/images/Botao +botao_de_mais.png',
-                    width: 25,
-                  ),
-                );
+                if (isEditing) {
+                  return GestureDetector(
+                    onTap: pickImage,
+                    child: Image.asset(
+                      'lib/assets/images/Botao +botao_de_mais.png',
+                      width: 25,
+                    ),
+                  );
+                } else {
+                  return null;
+                }
               } else {
-                // Mostrar um container vazio para os slots restantes
                 return null;
               }
             },
@@ -763,21 +861,87 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
             ),
             itemCount: 3, // Sempre terá 3 itens no grid
             itemBuilder: (BuildContext context, int index) {
-              if (index < widget.space.videosUrl.length) {
-                // Mostrar os vídeos da lista
-                return buildVideoPlayer(index);
-              } else if (index == widget.space.videosUrl.length &&
-                  widget.space.videosUrl.length < 3) {
-                // Mostrar a imagem do asset se estiver no próximo índice após o último vídeo da lista
-                return GestureDetector(
-                  onTap: () {
-                    //todo: add video
-                  },
-                  child: Image.asset(
-                    'lib/assets/images/Botao +botao_de_mais.png',
-                    width: 25,
+              int networkVideosCount = widget.space.videosUrl.length;
+              int localVideosCount =
+                  videosToDownload.length > 3 ? 3 : videosToDownload.length;
+              int totalVideosCount = networkVideosCount + localVideosCount;
+              int maxVideos = 3;
+
+              if (index < networkVideosCount) {
+                // Mostrar os vídeos da lista de URLs
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      buildVideoPlayer(index),
+                      if (isEditing)
+                        Container(
+                          color: Colors.black.withOpacity(0.5),
+                        ),
+                      if (isEditing)
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              networkVideosToDelete
+                                  .add(widget.space.videosUrl[index]);
+                              widget.space.videosUrl.removeAt(index);
+                              controllers[index].dispose();
+                              controllers.removeAt(index);
+                            });
+                          },
+                          child: Image.asset(
+                            'lib/assets/images/Ellipse 37lixeira-foto.png',
+                            width: 40,
+                          ),
+                        ),
+                    ],
                   ),
                 );
+              } else if (index < networkVideosCount + localVideosCount) {
+                // Mostrar os vídeos da lista de arquivos locais
+                int localIndex = index - networkVideosCount;
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      buildVideoPlayerFromFile(localIndex),
+                      if (isEditing)
+                        Container(
+                          color: Colors.black.withOpacity(0.5),
+                        ),
+                      if (isEditing)
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              videosToDownload.removeAt(localIndex);
+                              localControllers[localIndex].dispose();
+                              localControllers.removeAt(localIndex);
+                            });
+                          },
+                          child: Image.asset(
+                            'lib/assets/images/Ellipse 37lixeira-foto.png',
+                            width: 40,
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              } else if (index == totalVideosCount &&
+                  totalVideosCount < maxVideos) {
+                // Mostrar a imagem do asset se estiver no próximo índice após o último vídeo da lista
+                if (isEditing) {
+                  return GestureDetector(
+                    onTap: pickVideo,
+                    child: Image.asset(
+                      'lib/assets/images/Botao +botao_de_mais.png',
+                      width: 25,
+                    ),
+                  );
+                } else {
+                  return null;
+                }
               } else {
                 return null;
               }
