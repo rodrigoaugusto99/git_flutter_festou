@@ -18,9 +18,15 @@ class TypePanel extends StatelessWidget {
     return SizedBox(
       child: Column(
         children: [
-          Text(text),
           const SizedBox(
             height: 16,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 27),
+            child: Text(text),
+          ),
+          const SizedBox(
+            height: 42,
           ),
           Wrap(
             spacing: 8,
@@ -69,8 +75,10 @@ class _ButtonTypeState extends State<ButtonType> {
   Widget build(BuildContext context) {
     final ButtonType(:onTypePressed, :label) = widget;
     //1 - variaveis esteticas que mudam com o clique
-    final textColor = widget.isSelected ? Colors.white : Colors.brown;
-    var buttonColor = widget.isSelected ? Colors.brown : Colors.white;
+    final textColor =
+        widget.isSelected ? const Color(0xff670090) : Colors.white;
+    var buttonColor =
+        widget.isSelected ? const Color(0xffE3D9E8) : const Color(0xffBABABA);
 
     return Padding(
       padding: const EdgeInsets.all(5.0),

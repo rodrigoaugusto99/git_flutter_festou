@@ -102,7 +102,12 @@ class _NewSpaceRegisterState extends State<NewSpaceRegister> {
                 ),
               ),
               child: GestureDetector(
-                onTap: () {},
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TipoEspaco(),
+                  ),
+                ),
                 child: Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
