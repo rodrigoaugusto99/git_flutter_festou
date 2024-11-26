@@ -812,9 +812,13 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      Image.network(
-                        widget.space.imagesUrl[index].toString(),
-                        fit: BoxFit.cover,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(
+                          height: 90,
+                          widget.space.imagesUrl[index].toString(),
+                          fit: BoxFit.cover,
+                        ),
                       ),
                       if (isEditing)
                         decContainer(

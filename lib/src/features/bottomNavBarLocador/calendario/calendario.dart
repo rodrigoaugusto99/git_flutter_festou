@@ -460,19 +460,6 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
             ],
           ),
         );
-        // return Column(
-        //   crossAxisAlignment: CrossAxisAlignment.start,
-        //   children: [
-        //     Text('Check-In: ${formatTime(reserva.checkInTime)}'),
-        //     Text('Check-Out: ${formatTime(reserva.checkOutTime)}'),
-        //     Text(
-        //         'Criado em: ${formatTimestamp(reserva.createdAt) ?? 'Data não disponível'}'),
-        //     Text('Data Selecionada: ${formatDateString(reserva.selectedDate)}'),
-        //     Text(
-        //         'Data Final Selecionada: ${formatDateString(reserva.selectedFinalDate)}'),
-        //     const Divider(), // To separate different reservations visually
-        //   ],
-        // );
       }).toList(),
     );
   }
