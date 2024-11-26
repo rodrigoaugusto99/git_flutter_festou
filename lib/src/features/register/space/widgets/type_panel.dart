@@ -23,7 +23,12 @@ class TypePanel extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(left: 27),
-            child: Text(text),
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontSize: 12,
+              ),
+            ),
           ),
           const SizedBox(
             height: 42,
