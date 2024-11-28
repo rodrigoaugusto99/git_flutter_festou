@@ -43,7 +43,7 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
         ),
         centerTitle: true,
         title: const Text(
-          'Cadastro de espaço',
+          'Cadastrar',
           style: TextStyle(
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
@@ -51,7 +51,7 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
         backgroundColor: Colors.white,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 38, vertical: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -59,15 +59,26 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Adicione algumas fotos da sua acomodaçao((tipo de espaço))',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  'Adicione algumas fotos e vídeos do seu espaço:',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Color(0xff4300B1),
+                  ),
+                ),
+                SizedBox(
+                  height: 19,
                 ),
                 Text(
-                    'voce precisara de cinco fotos para começar. voce pode adicionar outras imagens ou faer alterações mais tarde.'),
+                  'Você precisa de pelo menos cinco fotos para começar. Você pode adicionar outras imagens ou vídeos ou fazer alterações mais tarde.',
+                  style: TextStyle(
+                    fontSize: 12,
+                  ),
+                ),
               ],
             ),
             const SizedBox(
-              height: 20,
+              height: 32,
             ),
             ElevatedButton(
                 onPressed: () => spaceRegister.pickImage(),
