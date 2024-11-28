@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/semana_e_horas.dart';
+import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/textfield.dart';
 
 class Preco extends ConsumerStatefulWidget {
   const Preco({super.key});
@@ -17,7 +18,9 @@ class _PrecoState extends ConsumerState<Preco> {
   Widget build(BuildContext context) {
     final spaceRegister = ref.watch(newSpaceRegisterVmProvider.notifier);
     return Scaffold(
+      backgroundColor: const Color(0xffF8F8F8),
       appBar: AppBar(
+        backgroundColor: const Color(0xffF8F8F8),
         leading: Padding(
           padding: const EdgeInsets.only(left: 18.0),
           child: Container(
@@ -50,76 +53,116 @@ class _PrecoState extends ConsumerState<Preco> {
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
         elevation: 0,
-        backgroundColor: Colors.white,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 38.0, vertical: 20),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Agora, determine seu preço',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                ),
-                const Text('voce podera altera-lo quando quiser.'),
-                TextField(
-                  controller: precoEC,
-                  decoration: const InputDecoration(
-                    labelText: 'preco do espaco',
+                  'Agora, determine seu preço por hora:',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Color(0xff4300B1),
                   ),
                 ),
-                const Text('Preço para o hospede sem impostos: RS 227'),
+                const SizedBox(
+                  height: 19,
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 27),
+                  child: Text(
+                    'Você poderá alterá-lo quando quiser, porém sendo mantido o valor que estava em vigor no momento dos contratos que já foram firmados.',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 45,
+                ),
+                myRow(
+                  onlyNumber: true,
+                  prefix: 'R\$ ',
+                  validator: spaceRegister.validateBairro(),
+                  label: 'Preço do espaço',
+                  controller: precoEC,
+                ),
               ],
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: const Text(
-                      'Voltar',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 69, vertical: 40),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                alignment: Alignment.center,
+                height: 35,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xff9747FF),
+                      Color(0xff44300b1),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   ),
-                  InkWell(
-                    onTap: () {
-                      final result = spaceRegister.validatePreco(precoEC.text);
-                      if (result) {
-                        Messages.showSuccess('bom preco', context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SemanaEHoras(),
-                          ),
-                        );
-                      } else {
-                        Messages.showError('escreva preco', context);
-                      }
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.black,
-                          border: Border.all(),
-                          borderRadius: BorderRadius.circular(10)),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 10),
-                      child: const Text(
-                        'Avançar',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  )
-                ],
+                ),
+                child: const Text(
+                  'Voltar',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 9,
+            ),
+            GestureDetector(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SemanaEHoras(),
+                ),
+              ),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                alignment: Alignment.center,
+                height: 35,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xff9747FF),
+                      Color(0xff44300b1),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+                child: const Text(
+                  'Avançar',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           ],

@@ -5,9 +5,11 @@ Widget myRow({
   required TextEditingController controller,
   required String? Function(String?)? validator,
   Function(String)? onChanged,
+  String? prefix,
   int? maxLines,
   bool enabled = true,
   bool alwaysOnTop = false,
+  bool onlyNumber = false,
 }) {
   return Container(
     //  padding: const EdgeInsets.symmetric(v: 10),
@@ -16,6 +18,7 @@ Widget myRow({
       color: Colors.white,
     ),
     child: TextFormField(
+      keyboardType: onlyNumber ? TextInputType.number : null,
       onChanged: onChanged,
       validator: validator,
       textInputAction: TextInputAction.done,
@@ -36,6 +39,8 @@ Widget myRow({
           vertical: 12.0,
           horizontal: 5.0,
         ),
+        prefixText: prefix,
+        prefixStyle: const TextStyle(color: Color(0xff4300B1)),
         label: Text(label),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
