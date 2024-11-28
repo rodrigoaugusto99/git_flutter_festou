@@ -88,7 +88,7 @@ class _TituloState extends ConsumerState<Titulo> {
                 ),
                 myRow(
                   validator: spaceRegister.validateBairro(),
-                  label: 'Bairro',
+                  label: 'Nome do espaço',
                   controller: tituloEC,
                 ),
               ],
