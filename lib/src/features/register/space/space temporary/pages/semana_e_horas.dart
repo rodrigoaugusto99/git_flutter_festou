@@ -116,125 +116,187 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
         backgroundColor: Colors.white,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.symmetric(horizontal: 38.0, vertical: 20),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Align(
-              child: Text(
-                'os dias da semana que vc aluga',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            Column(
+              children: [
+                const Text(
+                  'Chegou a momento de cadastrar o calendário de aluguel:',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Color(0xff4300B1),
+                  ),
+                ),
+                const SizedBox(
+                  height: 19,
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 27),
+                  child: Text(
+                    'Você deve escolher os dias da semana e os horários que disponibilizará o espaço para alguel.Essas opções poderão ser alteradas posteriormente.',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 45,
+                ),
+                Row(
+                  children: [
+                    Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('Dia da semana'),
+                          ...daysOfWeek.map((day) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: RegisterWeekWidget(
+                                isSelected: selectedDays.contains(day),
+                                text: day,
+                                onTapCallback: handleDayTap,
+                              ),
+                            );
+                          }),
+                        ]),
+                    Column(
+                      children: [
+                        const Text('Os horarios (inicio e fim)'),
+                        DropdownButton<String>(
+                          hint: const Text('Select Start Time'),
+                          value: _startTime,
+                          items: hours
+                              .sublist(0, hours.length)
+                              .map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _startTime = newValue;
+                              _endTime =
+                                  null; // Reset end time when start time changes
+                            });
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        DropdownButton<String>(
+                          hint: const Text('Select End Time'),
+                          value: _endTime,
+                          items: getEndTimeOptions().map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: _startTime == null
+                              ? null
+                              : (String? newValue) {
+                                  setState(() {
+                                    _endTime = newValue;
+                                    log(_startTime.toString());
+                                    log(_endTime.toString());
+                                  });
+                                },
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 69, vertical: 40),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                alignment: Alignment.center,
+                height: 35,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xff9747FF),
+                      Color(0xff44300b1),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+                child: const Text(
+                  'Voltar',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
-            Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: daysOfWeek.map((day) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: RegisterWeekWidget(
-                        isSelected: selectedDays.contains(day),
-                        text: day,
-                        onTapCallback: handleDayTap,
+            const SizedBox(
+              height: 9,
+            ),
+            GestureDetector(
+              onTap: () {
+                if (_startTime != null && _endTime != null) {
+                  final result = spaceRegister.validateDiaEHoras(
+                      startTime: _startTime!,
+                      endTime: _endTime!,
+                      days: selectedDays);
+                  if (result) {
+                    // Messages.showSuccess(
+                    //     'semanas e horario escllfo', context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Revisao(),
                       ),
                     );
-                  }).toList(),
-                ),
-                Column(
-                  children: [
-                    const Text('Os horarios (inicio e fim)'),
-                    DropdownButton<String>(
-                      hint: const Text('Select Start Time'),
-                      value: _startTime,
-                      items: hours.sublist(0, hours.length).map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          _startTime = newValue;
-                          _endTime =
-                              null; // Reset end time when start time changes
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    DropdownButton<String>(
-                      hint: const Text('Select End Time'),
-                      value: _endTime,
-                      items: getEndTimeOptions().map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: _startTime == null
-                          ? null
-                          : (String? newValue) {
-                              setState(() {
-                                _endTime = newValue;
-                                log(_startTime.toString());
-                                log(_endTime.toString());
-                              });
-                            },
-                    ),
-                  ],
-                )
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                InkWell(
-                  onTap: () => Navigator.pop(context),
-                  child: const Text(
-                    'Voltar',
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                    ),
+                  } else {
+                    Messages.showError('Erro ao cadastrar calendário', context);
+                  }
+                } else {
+                  Messages.showError('Complete os horarios', context);
+                }
+              },
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                alignment: Alignment.center,
+                height: 35,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xff9747FF),
+                      Color(0xff44300b1),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   ),
                 ),
-                InkWell(
-                  onTap: () {
-                    if (_startTime != null && _endTime != null) {
-                      final result = spaceRegister.validateDiaEHoras(
-                          startTime: _startTime!,
-                          endTime: _endTime!,
-                          days: selectedDays);
-                      if (result) {
-                        // Messages.showSuccess(
-                        //     'semanas e horario escllfo', context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const Revisao(),
-                          ),
-                        );
-                      } else {
-                        Messages.showError(
-                            'Erro ao cadastrar calendário', context);
-                      }
-                    } else {
-                      Messages.showError('Complete os horarios', context);
-                    }
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.black,
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(10)),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 10),
-                    child: const Text(
-                      'Avançar',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                child: const Text(
+                  'Avançar',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
-                )
-              ],
+                ),
+              ),
             ),
           ],
         ),
@@ -262,20 +324,17 @@ class RegisterWeekWidget extends StatelessWidget {
       child: Container(
         alignment: Alignment.center,
         height: 30,
-        width: 70,
+        width: 85,
         decoration: BoxDecoration(
-          color: isSelected
-              ? Colors.blue
-              : const Color.fromARGB(255, 202, 200, 200),
+          color: isSelected ? const Color(0xffE3D9E8) : const Color(0xffBABABA),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(
           text,
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-          ),
+          style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: isSelected ? const Color(0xff670090) : Colors.white),
         ),
       ),
     );
