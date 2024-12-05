@@ -205,8 +205,8 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
                           endTime: _endTime!,
                           days: selectedDays);
                       if (result) {
-                        Messages.showSuccess(
-                            'semanas e horario escllfo', context);
+                        // Messages.showSuccess(
+                        //     'semanas e horario escllfo', context);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -214,7 +214,8 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
                           ),
                         );
                       } else {
-                        Messages.showError('deu ruim', context);
+                        Messages.showError(
+                            'Erro ao cadastrar calendário', context);
                       }
                     } else {
                       Messages.showError('Complete os horarios', context);
@@ -248,11 +249,11 @@ class RegisterWeekWidget extends StatelessWidget {
   final void Function(String) onTapCallback;
 
   const RegisterWeekWidget({
-    Key? key,
+    super.key,
     required this.text,
     required this.isSelected,
     required this.onTapCallback,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
