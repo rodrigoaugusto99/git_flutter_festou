@@ -34,7 +34,10 @@ Widget myRow({
       decoration: InputDecoration(
         floatingLabelBehavior:
             alwaysOnTop ? FloatingLabelBehavior.always : null,
-        labelStyle: const TextStyle(color: Colors.black, fontSize: 15),
+        labelStyle: const TextStyle(
+          color: Colors.black,
+          fontSize: 15,
+        ),
         contentPadding: const EdgeInsets.symmetric(
           vertical: 12.0,
           horizontal: 5.0,

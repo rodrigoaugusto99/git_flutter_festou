@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/home/home_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_state.dart';
 
@@ -22,7 +23,7 @@ class _RevisaoState extends ConsumerState<Revisao> {
           break;
 
         case SpaceRegisterState(status: SpaceRegisterStateStatus.success):
-          Messages.showSuccess('parabens', context);
+          Messages.showSuccess('Espaço cadastrado com sucesso!', context);
 
         case SpaceRegisterState(
             status: SpaceRegisterStateStatus.error,
@@ -68,62 +69,191 @@ class _RevisaoState extends ConsumerState<Revisao> {
         elevation: 0,
         backgroundColor: Colors.white,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            Text('Days: ${spaceRegisterState.days.toString()}'),
-            Text(
-                'Selected Services: ${spaceRegisterState.selectedServices.toString()}'),
-            Text(
-                'Selected Types: ${spaceRegisterState.selectedTypes.toString()}'),
-            Text('Bairro: ${spaceRegisterState.bairro}'),
-            Text('CEP: ${spaceRegisterState.cep}'),
-            Text('Cidade: ${spaceRegisterState.cidade}'),
-            Text('Descrição: ${spaceRegisterState.descricao}'),
-            Text('Logradouro: ${spaceRegisterState.logradouro}'),
-            Text('Número: ${spaceRegisterState.numero}'),
-            Text('Preço: ${spaceRegisterState.preco}'),
-            Text('Título: ${spaceRegisterState.titulo}'),
-            Text('Start Time: ${spaceRegisterState.startTime}'),
-            Text('End Time: ${spaceRegisterState.endTime}'),
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: const Text(
-                      'Voltar',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 38.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 20,
+              ),
+              const Text(
+                'Resumo do cadastro:',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Color(0xff4300B1),
+                ),
+              ),
+              const SizedBox(
+                height: 41,
+              ),
+              const Text(
+                'Categorias:',
+                style: TextStyle(color: Color(0xff4300B1)),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 24),
+                child: Text(spaceRegisterState.selectedTypes.join(', ')),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Endereço:',
+                style: TextStyle(color: Color(0xff4300B1)),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Bairro: ${spaceRegisterState.bairro}'),
+                    Text('CEP: ${spaceRegisterState.cep}'),
+                    Text('Cidade: ${spaceRegisterState.cidade}'),
+                    Text('Logradouro: ${spaceRegisterState.logradouro}'),
+                    Text('Número: ${spaceRegisterState.numero}'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Serviços:',
+                style: TextStyle(color: Color(0xff4300B1)),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 24),
+                child: Text(spaceRegisterState.selectedServices.join(', ')),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Fotos:',
+                style: TextStyle(color: Color(0xff4300B1)),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(left: 24),
+                child: Text('x fotos'),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Vídeos:',
+                style: TextStyle(color: Color(0xff4300B1)),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(left: 24),
+                child: Text('x vídeos'),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Nome do espaço:',
+                style: TextStyle(color: Color(0xff4300B1)),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 24),
+                child: Text(spaceRegisterState.titulo),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Descrição do espaço:',
+                style: TextStyle(color: Color(0xff4300B1)),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 24),
+                child: Text(spaceRegisterState.descricao),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Preço do espaço:',
+                style: TextStyle(color: Color(0xff4300B1)),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 24),
+                child: Text(spaceRegisterState.preco),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Calendário:',
+                style: TextStyle(color: Color(0xff4300B1)),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Days: ${spaceRegisterState.days.toString()}'),
+                    Text('Start Time: ${spaceRegisterState.startTime}'),
+                    Text('End Time: ${spaceRegisterState.endTime}'),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                  alignment: Alignment.center,
+                  height: 35,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xff9747FF),
+                        Color(0xff44300b1),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
                     ),
                   ),
-                  InkWell(
-                    onTap: () => newSpaceRegister.register(),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.black,
-                          border: Border.all(),
-                          borderRadius: BorderRadius.circular(10)),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 10),
-                      child: const Text(
-                        'Avançar',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                  child: const Text(
+                    'Voltar',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
-                  )
-                ],
+                  ),
+                ),
               ),
-            ),
-          ],
+              const SizedBox(
+                height: 9,
+              ),
+              GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HomePage(),
+                  ),
+                ),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                  alignment: Alignment.center,
+                  height: 35,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xff9747FF),
+                        Color(0xff44300b1),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                  child: const Text(
+                    'Concluir',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
