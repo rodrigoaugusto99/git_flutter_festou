@@ -133,12 +133,21 @@ class _TituloState extends ConsumerState<Titulo> {
               height: 9,
             ),
             GestureDetector(
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const Descricao(),
-                ),
-              ),
+              onTap: () {
+                final result = spaceRegister.validateTitulo(
+                  tituloEC.text,
+                );
+                if (result) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Descricao(),
+                    ),
+                  );
+                } else {
+                  Messages.showInfo('Escreva um título', context);
+                }
+              },
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 9),

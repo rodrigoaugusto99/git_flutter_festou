@@ -156,12 +156,21 @@ class _DescricaoState extends ConsumerState<Descricao> {
               height: 9,
             ),
             GestureDetector(
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const Preco(),
-                ),
-              ),
+              onTap: () {
+                final result = spaceRegister.validateDescricao(
+                  descricaoEC.text,
+                );
+                if (result) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Preco(),
+                    ),
+                  );
+                } else {
+                  Messages.showInfo('Escreva uma descrição', context);
+                }
+              },
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 9),

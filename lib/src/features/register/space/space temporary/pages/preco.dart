@@ -133,12 +133,21 @@ class _PrecoState extends ConsumerState<Preco> {
               height: 9,
             ),
             GestureDetector(
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SemanaEHoras(),
-                ),
-              ),
+              onTap: () {
+                final result = spaceRegister.validatePreco(
+                  precoEC.text,
+                );
+                if (result) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SemanaEHoras(),
+                    ),
+                  );
+                } else {
+                  Messages.showInfo('Escolha um preço', context);
+                }
+              },
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
