@@ -368,61 +368,6 @@ p decidir o isFavorited*/
 
 //build dos espaços
 //todo: buildar levando em conta espaços e lista de favoritos
-  Future<SpaceModel> mapSpaceDocumentToModel(
-    QueryDocumentSnapshot spaceDocument,
-    bool isFavorited,
-  ) async {
-    //pegando os dados necssarios antes de crior o card
-    List<String> selectedTypes =
-        List<String>.from(spaceDocument['selectedTypes'] ?? []);
-    List<String> selectedServices =
-        List<String>.from(spaceDocument['selectedServices'] ?? []);
-    List<String> imagesUrl =
-        List<String>.from(spaceDocument['images_url'] ?? []);
-    List<String> days = List<String>.from(spaceDocument['days'] ?? []);
-
-    String spaceId = spaceDocument.get('space_id');
-    //String userId = spaceDocument.get('user_id');
-    final averageRating = await getAverageRating(spaceId);
-    final numComments = await getNumComments(spaceId);
-    //final locadorName = await getLocadorName(userId);
-
-//?função para capturar a lista de imagens desse espaço
-
-    return SpaceModel(
-      videosUrl: List<String>.from(spaceDocument['videos'] ?? []),
-      isFavorited: isFavorited,
-      spaceId: spaceDocument['space_id'] ?? '',
-      userId: spaceDocument['user_id'] ?? '',
-      titulo: spaceDocument['titulo'] ?? '',
-      cep: spaceDocument['cep'] ?? '',
-      logradouro: spaceDocument['logradouro'] ?? '',
-      numero: spaceDocument['numero'] ?? '',
-      bairro: spaceDocument['bairro'] ?? '',
-      cidade: spaceDocument['cidade'] ?? '',
-      selectedTypes: selectedTypes,
-      selectedServices: selectedServices,
-      averageRating: averageRating,
-      numComments: numComments,
-      locadorName: spaceDocument['locador_name'] ?? '',
-      descricao: spaceDocument['descricao'] ?? '',
-      city: spaceDocument['city'] ?? '',
-      imagesUrl: imagesUrl,
-      latitude: spaceDocument['latitude'] ?? 0.0,
-      longitude: spaceDocument['longitude'] ?? 0.0,
-      locadorAvatarUrl: spaceDocument['locadorAvatarUrl'] ?? '',
-      startTime: spaceDocument['startTime'] ?? '',
-      endTime: spaceDocument['endTime'] ?? '',
-      days: days,
-      preco: spaceDocument['preco'] ?? '',
-      cnpjEmpresaLocadora: spaceDocument['cnpj_empresa_locadora'] ?? '',
-      estado: spaceDocument['estado'] ?? '',
-      locadorCpf: spaceDocument['locador_cpf'] ?? '',
-      nomeEmpresaLocadora: spaceDocument['nome_empresa_locadora'] ?? '',
-      locadorAssinatura: spaceDocument['locador_assinatura'] ?? '',
-      numLikes: spaceDocument['num_likes'] ?? 0,
-    );
-  }
 
   Future<String> getLocadorName(String userId) async {
     final userDocument =

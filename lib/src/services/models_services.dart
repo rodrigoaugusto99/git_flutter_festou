@@ -57,8 +57,39 @@ class ModelsServices {
         final userSpacesFavorite = await getUserFavoriteSpaces();
         final isFavorited =
             userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
+        final weekdays = Days(
+          monday: Hours(
+            from: spaceDocument['weekdays']['monday']['from'],
+            to: spaceDocument['weekdays']['monday']['to'],
+          ),
+          tuesday: Hours(
+            from: spaceDocument['weekdays']['tuesday']['from'],
+            to: spaceDocument['weekdays']['tuesday']['to'],
+          ),
+          wednesday: Hours(
+            from: spaceDocument['weekdays']['wednesday']['from'],
+            to: spaceDocument['weekdays']['wednesday']['to'],
+          ),
+          thursday: Hours(
+            from: spaceDocument['weekdays']['thursday']['from'],
+            to: spaceDocument['weekdays']['thursday']['to'],
+          ),
+          friday: Hours(
+            from: spaceDocument['weekdays']['friday']['from'],
+            to: spaceDocument['weekdays']['friday']['to'],
+          ),
+          saturday: Hours(
+            from: spaceDocument['weekdays']['saturday']['from'],
+            to: spaceDocument['weekdays']['saturday']['to'],
+          ),
+          sunday: Hours(
+            from: spaceDocument['weekdays']['sunday']['from'],
+            to: spaceDocument['weekdays']['sunday']['to'],
+          ),
+        );
 
         SpaceModel spaceModel = SpaceModel(
+          weekDays: weekdays,
           isFavorited: isFavorited,
           spaceId: spaceDocument['space_id'] ?? '',
           userId: spaceDocument['user_id'] ?? '',
