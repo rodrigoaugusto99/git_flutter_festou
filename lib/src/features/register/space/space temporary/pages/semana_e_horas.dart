@@ -99,14 +99,15 @@ class _TimePickerForDayState extends State<TimePickerForDay> {
                     radius: 30,
                   ),
                 ),
-                decContainer(
-                  //color: Colors.red,
-                  color: Colors.white,
-                  borderColor: Colors.white,
-                  borderWidth: 4,
-                  height: 30,
-                  width: 98,
-                  radius: 10,
+                IgnorePointer(
+                  child: decContainer(
+                    color: Colors.white,
+                    borderColor: Colors.white,
+                    borderWidth: 4,
+                    height: 30,
+                    width: 98,
+                    radius: 10,
+                  ),
                 ),
                 if (!widget.isFilled) ...[
                   decContainer(
@@ -130,21 +131,25 @@ class _TimePickerForDayState extends State<TimePickerForDay> {
                     ),
                   )
                 ] else ...[
-                  Padding(
-                    padding: const EdgeInsets.only(left: 18, top: 5),
-                    child: Text(_formatTime(fromtime)),
+                  IgnorePointer(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 18, top: 5),
+                      child: Text(_formatTime(fromtime)),
+                    ),
                   ),
                   Positioned(
                     right: 0,
-                    child: decContainer(
-                      color: const Color(0xffEEEEEE),
-                      height: 30,
-                      width: 22,
-                      radius: 10,
-                      align: Alignment.center,
-                      child: const Text(
-                        'v',
-                        style: TextStyle(color: Color(0xff787878)),
+                    child: IgnorePointer(
+                      child: decContainer(
+                        color: const Color(0xffEEEEEE),
+                        height: 30,
+                        width: 22,
+                        radius: 10,
+                        align: Alignment.center,
+                        child: const Text(
+                          'v',
+                          style: TextStyle(color: Color(0xff787878)),
+                        ),
                       ),
                     ),
                   )
@@ -174,21 +179,24 @@ class _TimePickerForDayState extends State<TimePickerForDay> {
                     onChange: _setToTime,
                   ),
                 ),
-                decContainer(
-                  //color: Colors.red,
-                  color: Colors.white,
-                  borderColor: Colors.white,
-                  borderWidth: 4,
-                  height: 30,
-                  width: 98,
-                  radius: 10,
-                ),
-                if (!widget.isFilled) ...[
-                  decContainer(
-                    color: const Color(0xffBABABA),
+                IgnorePointer(
+                  child: decContainer(
+                    color: Colors.white,
+                    borderColor: Colors.white,
+                    borderWidth: 4,
                     height: 30,
                     width: 98,
                     radius: 10,
+                  ),
+                ),
+                if (!widget.isFilled) ...[
+                  IgnorePointer(
+                    child: decContainer(
+                      color: const Color(0xffBABABA),
+                      height: 30,
+                      width: 98,
+                      radius: 10,
+                    ),
                   ),
                   Positioned(
                     right: 0,
@@ -205,21 +213,25 @@ class _TimePickerForDayState extends State<TimePickerForDay> {
                     ),
                   )
                 ] else ...[
-                  Padding(
-                    padding: const EdgeInsets.only(left: 18, top: 5),
-                    child: Text(_formatTime(totime)),
+                  IgnorePointer(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 18, top: 5),
+                      child: Text(_formatTime(totime)),
+                    ),
                   ),
                   Positioned(
                     right: 0,
-                    child: decContainer(
-                      color: const Color(0xffEEEEEE),
-                      height: 30,
-                      width: 22,
-                      radius: 10,
-                      align: Alignment.center,
-                      child: const Text(
-                        'v',
-                        style: TextStyle(color: Color(0xff787878)),
+                    child: IgnorePointer(
+                      child: decContainer(
+                        color: const Color(0xffEEEEEE),
+                        height: 30,
+                        width: 22,
+                        radius: 10,
+                        align: Alignment.center,
+                        child: const Text(
+                          'v',
+                          style: TextStyle(color: Color(0xff787878)),
+                        ),
                       ),
                     ),
                   )
