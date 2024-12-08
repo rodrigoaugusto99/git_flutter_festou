@@ -7,6 +7,7 @@ import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_state.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:image_picker/image_picker.dart';
@@ -113,34 +114,25 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
   }
 
   bool validateDiaEHoras({
-    required List<String> days,
-    required String startTime,
-    required String endTime,
+    required Days days,
   }) {
-    if (days.isEmpty || startTime == '' || endTime == '') {
-      return false;
-    } else {
-      state = state.copyWith(
-        status: NewSpaceRegisterStateStatus.success,
-        startTime: startTime,
-        endTime: endTime,
-        days: days,
-      );
-      log('----state atualizado----');
-      log('${state.selectedTypes}');
-      log('${state.selectedServices}');
-      log(state.cep, name: 'cpf');
-      log(state.logradouro, name: 'logradouro');
-      log(state.numero, name: 'numero');
-      log(state.bairro, name: 'bairro');
-      log(state.cidade, name: 'cidade');
-      log(state.titulo, name: 'titulo');
-      log(state.preco, name: 'preco');
-      log(state.startTime, name: 'startTime');
-      log(state.endTime, name: 'endTime');
-      log(state.days.toString(), name: 'days');
-      return true;
-    }
+    state = state.copyWith(
+      status: NewSpaceRegisterStateStatus.success,
+      days: days,
+    );
+    log('----state atualizado----');
+    log('${state.selectedTypes}');
+    log('${state.selectedServices}');
+    log(state.cep, name: 'cpf');
+    log(state.logradouro, name: 'logradouro');
+    log(state.numero, name: 'numero');
+    log(state.bairro, name: 'bairro');
+    log(state.cidade, name: 'cidade');
+    log(state.titulo, name: 'titulo');
+    log(state.preco, name: 'preco');
+
+    log(state.days.toString(), name: 'days');
+    return true;
   }
 
   bool validateDescricao(String descricao) {
@@ -297,8 +289,6 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
       :numero,
       :bairro,
       :cidade,
-      :startTime,
-      :endTime,
       :days,
       :descricao,
       :titulo,
@@ -324,9 +314,8 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
       selectedServices: selectedServices,
       imageFiles: imageFiles,
       descricao: descricao,
-      startTime: startTime,
-      endTime: endTime,
-      days: days,
+
+      days: days!,
       //city: 'teste',
       latitude: latLng.latitude,
       longitude: latLng.longitude,

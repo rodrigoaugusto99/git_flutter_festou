@@ -180,8 +180,6 @@ class _RevisaoState extends ConsumerState<Revisao> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Days: ${spaceRegisterState.days.toString()}'),
-                    Text('Start Time: ${spaceRegisterState.startTime}'),
-                    Text('End Time: ${spaceRegisterState.endTime}'),
                   ],
                 ),
               ),

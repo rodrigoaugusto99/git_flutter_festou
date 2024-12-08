@@ -48,9 +48,7 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
         String preco,
         double latitude,
         double longitude,
-        String startTime,
-        String endTime,
-        List<String> days,
+        Days days,
       }) spaceData) async {
     try {
       // Crie um novo espaço com os dados fornecidos
@@ -136,8 +134,6 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
               'latitude': spaceData.latitude,
               'longitude': spaceData.longitude,
               'locadorAvatarUrl': locadorAvatar,
-              'startTime': spaceData.startTime,
-              'endTime': spaceData.endTime,
               'days': spaceData.days,
               'preco': spaceData.preco,
               'cnpj_empresa_locadora': 'estatico ainda',

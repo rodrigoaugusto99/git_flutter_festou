@@ -19,13 +19,13 @@ class Days {
     required this.saturday,
     required this.sunday,
   });
-  Hours monday;
-  Hours tuesday;
-  Hours wednesday;
-  Hours thursday;
-  Hours friday;
-  Hours saturday;
-  Hours sunday;
+  Hours? monday;
+  Hours? tuesday;
+  Hours? wednesday;
+  Hours? thursday;
+  Hours? friday;
+  Hours? saturday;
+  Hours? sunday;
 }
 
 class SpaceModel {

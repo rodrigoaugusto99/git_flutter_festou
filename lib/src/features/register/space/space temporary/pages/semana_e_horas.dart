@@ -264,23 +264,19 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
     });
   }
 
-  void _createDaysObject() {
-    if (hoursMap.length == 7) {
-      final days = Days(
-        monday: hoursMap['monday']!,
-        tuesday: hoursMap['tuesday']!,
-        wednesday: hoursMap['wednesday']!,
-        thursday: hoursMap['thursday']!,
-        friday: hoursMap['friday']!,
-        saturday: hoursMap['saturday']!,
-        sunday: hoursMap['sunday']!,
-      );
-      // Agora você tem o objeto Days configurado
-      print(days);
-    } else {
-      // Nem todos os dias foram configurados
-      print('Please set hours for all days!');
-    }
+  Days _createDaysObject() {
+    final days = Days(
+      monday: hoursMap['monday'],
+      tuesday: hoursMap['tuesday'],
+      wednesday: hoursMap['wednesday'],
+      thursday: hoursMap['thursday'],
+      friday: hoursMap['friday'],
+      saturday: hoursMap['saturday'],
+      sunday: hoursMap['sunday'],
+    );
+    // Agora você tem o objeto Days configurado
+    print(days);
+    return days;
   }
 
   final List<String> selectedDays = [];
@@ -591,26 +587,23 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      if (_startTime != null && _endTime != null) {
-                        final result = spaceRegister.validateDiaEHoras(
-                            startTime: _startTime!,
-                            endTime: _endTime!,
-                            days: selectedDays);
-                        if (result) {
-                          // Messages.showSuccess(
-                          //     'semanas e horario escllfo', context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const Revisao(),
-                            ),
-                          );
-                        } else {
-                          Messages.showError(
-                              'Erro ao cadastrar calendário', context);
-                        }
+                      final days = _createDaysObject();
+
+                      final result = spaceRegister.validateDiaEHoras(
+                        days: days,
+                      );
+                      if (result) {
+                        // Messages.showSuccess(
+                        //     'semanas e horario escllfo', context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Revisao(),
+                          ),
+                        );
                       } else {
-                        Messages.showError('Complete os horarios', context);
+                        Messages.showError(
+                            'Erro ao cadastrar calendário', context);
                       }
                     },
                     child: Container(
