@@ -179,7 +179,8 @@ class _RevisaoState extends ConsumerState<Revisao> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Days: ${spaceRegisterState.days.toString()}'),
+                    Text(
+                        'Seg - ${spaceRegisterState.days!.monday!.from}h às ${spaceRegisterState.days!.monday!.to}h'),
                   ],
                 ),
               ),

@@ -266,16 +266,16 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
 
   Days _createDaysObject() {
     final days = Days(
-      monday: hoursMap['monday'],
-      tuesday: hoursMap['tuesday'],
-      wednesday: hoursMap['wednesday'],
-      thursday: hoursMap['thursday'],
-      friday: hoursMap['friday'],
-      saturday: hoursMap['saturday'],
-      sunday: hoursMap['sunday'],
+      monday: hoursMap['Seg'],
+      tuesday: hoursMap['Ter'],
+      wednesday: hoursMap['Qua'],
+      thursday: hoursMap['Qui'],
+      friday: hoursMap['Fri'],
+      saturday: hoursMap['Sáb'],
+      sunday: hoursMap['Dom'],
     );
     // Agora você tem o objeto Days configurado
-    print(days);
+    print(hoursMap);
     return days;
   }
 
@@ -284,51 +284,16 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
   void handleDayTap(String day) {
     setState(() {
       if (selectedDays.contains(day)) {
+        // Se o dia já está selecionado, remove o dia e os horários associados
         selectedDays.remove(day);
+        hoursMap.remove(day); // Remove o horário do mapa também
       } else {
+        // Se o dia não está selecionado, adiciona o dia com os horários padrão
         selectedDays.add(day);
+        _onSetHours(day, "00:00", "23:59"); // Define os horários padrão
       }
     });
     log(selectedDays.toString());
-  }
-
-  String? _startTime;
-  String? _endTime;
-
-  final List<String> hours = [
-    '04',
-    '05',
-    '06',
-    '07',
-    '08',
-    '09',
-    '10',
-    '11',
-    '12',
-    '13',
-    '14',
-    '15',
-    '16',
-    '17',
-    '18',
-    '19',
-    '20',
-    '21',
-    '22',
-    '23',
-    '00',
-    '01',
-    '02',
-    '03',
-    '04'
-  ];
-
-  List<String> getEndTimeOptions() {
-    if (_startTime == null) {
-      return [];
-    }
-    int startIndex = hours.indexOf(_startTime!) + 4;
-    return hours.sublist(startIndex);
   }
 
   @override
