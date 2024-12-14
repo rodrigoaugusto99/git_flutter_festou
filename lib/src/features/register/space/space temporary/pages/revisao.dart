@@ -4,6 +4,7 @@ import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/home_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_state.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class Revisao extends ConsumerStatefulWidget {
   const Revisao({super.key});
@@ -32,7 +33,17 @@ class _RevisaoState extends ConsumerState<Revisao> {
           Messages.showError(errorMessage, context);
       }
     });
+
     final spaceRegisterState = ref.watch(newSpaceRegisterVmProvider);
+    final dayHoursMap = {
+      'Seg': spaceRegisterState.days!.monday,
+      'Ter': spaceRegisterState.days!.tuesday,
+      'Qua': spaceRegisterState.days!.wednesday,
+      'Qui': spaceRegisterState.days!.thursday,
+      'Sex': spaceRegisterState.days!.friday,
+      'Sáb': spaceRegisterState.days!.saturday,
+      'Dom': spaceRegisterState.days!.sunday,
+    };
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
@@ -174,16 +185,37 @@ class _RevisaoState extends ConsumerState<Revisao> {
                 'Calendário:',
                 style: TextStyle(color: Color(0xff4300B1)),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              ...dayHoursMap.entries.map((entry) {
+                final dayName = entry.key;
+                final Hours? hours = entry.value;
+
+                return Row(
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 24),
+                      child: SizedBox(width: 40, child: Text(dayName)),
+                    ),
+                    // const SizedBox(
+                    //   width: 20,
+                    // ),
                     Text(
-                        'Seg - ${spaceRegisterState.days!.monday!.from}h às ${spaceRegisterState.days!.monday!.to}h'),
+                      hours != null
+                          ? " - ${hours.from}h às ${hours.to}h"
+                          : " - Fechado",
+                    ),
                   ],
-                ),
-              ),
+                );
+              }),
+              // Padding(
+              //   padding: const EdgeInsets.only(left: 24),
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       Text(
+              //           'Seg - ${spaceRegisterState.days!.monday!.from}h às ${spaceRegisterState.days!.monday!.to}h'),
+              //     ],
+              //   ),
+              // ),
               const SizedBox(
                 height: 30,
               ),

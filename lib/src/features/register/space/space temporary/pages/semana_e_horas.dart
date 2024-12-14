@@ -12,7 +12,7 @@ import 'package:time_picker_spinner_pop_up/time_picker_spinner_pop_up.dart';
 
 class TimePickerForDay extends StatefulWidget {
   final String dayOfWeek;
-  final Function(String day, String from, String to) onSetHours;
+  final Function(String day, String? from, String? to) onSetHours;
   final bool isFilled;
   final bool isFirst;
 
@@ -36,26 +36,24 @@ class _TimePickerForDayState extends State<TimePickerForDay> {
     setState(() {
       fromTime = dateTime;
     });
-    if (fromTime != null && toTime != null) {
-      widget.onSetHours(
-        widget.dayOfWeek,
-        _formatTime(fromTime!),
-        _formatTime(toTime!),
-      );
-    }
+    //if (fromTime != null && toTime != null) {
+    widget.onSetHours(
+      widget.dayOfWeek,
+      fromTime != null ? _formatTime(fromTime!) : '00:00',
+      toTime != null ? _formatTime(toTime!) : '23:59',
+    );
   }
 
   void _setToTime(DateTime dateTime) {
     setState(() {
       toTime = dateTime;
     });
-    if (fromTime != null && toTime != null) {
-      widget.onSetHours(
-        widget.dayOfWeek,
-        _formatTime(fromTime!),
-        _formatTime(toTime!),
-      );
-    }
+    // if (fromTime != null && toTime != null) {
+    widget.onSetHours(
+      widget.dayOfWeek,
+      fromTime != null ? _formatTime(fromTime!) : '00:00',
+      toTime != null ? _formatTime(toTime!) : '23:59',
+    );
   }
 
   String _formatTime(DateTime time) {
@@ -258,25 +256,42 @@ class SemanaEHoras extends ConsumerStatefulWidget {
 class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
   final Map<String, Hours> hoursMap = {};
 
-  void _onSetHours(String day, String from, String to) {
+  void _onSetHours(String day, String? from, String? to) {
+    log('_onSetHours');
+    log(day);
+
     setState(() {
-      hoursMap[day] = Hours(from: from, to: to);
+      hoursMap[day] = Hours(from: from ?? '00:00', to: to ?? '23:59');
+      // for (final day in hoursMap.entries) {
+      //   log('$day: ${day.value}');
+      // }
     });
+    print('hoursMap: $hoursMap');
   }
 
   Days _createDaysObject() {
-    final days = Days(
+    final days1 = Days(
+      monday: hoursMap['monday'],
+      tuesday: hoursMap['tuesday'],
+      wednesday: hoursMap['wednesday'],
+      thursday: hoursMap['thursday'],
+      friday: hoursMap['friday'],
+      saturday: hoursMap['saturday'],
+      sunday: hoursMap['sunday'],
+    );
+
+    final day2 = Days(
       monday: hoursMap['Seg'],
       tuesday: hoursMap['Ter'],
       wednesday: hoursMap['Qua'],
       thursday: hoursMap['Qui'],
-      friday: hoursMap['Fri'],
+      friday: hoursMap['Sex'],
       saturday: hoursMap['Sáb'],
       sunday: hoursMap['Dom'],
     );
     // Agora você tem o objeto Days configurado
-    print(hoursMap);
-    return days;
+    log('');
+    return days1;
   }
 
   final List<String> selectedDays = [];
@@ -286,14 +301,29 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
       if (selectedDays.contains(day)) {
         // Se o dia já está selecionado, remove o dia e os horários associados
         selectedDays.remove(day);
-        hoursMap.remove(day); // Remove o horário do mapa também
+        hoursMap.remove(day);
       } else {
         // Se o dia não está selecionado, adiciona o dia com os horários padrão
         selectedDays.add(day);
-        _onSetHours(day, "00:00", "23:59"); // Define os horários padrão
+        String dayy;
+        if (day == 'Dom') {
+          dayy = 'sunday';
+        } else if (day == 'Seg') {
+          dayy = 'monday';
+        } else if (day == 'Ter') {
+          dayy = 'tuesday';
+        } else if (day == 'Qua') {
+          dayy = 'wednesday';
+        } else if (day == 'Qui') {
+          dayy = 'thursday';
+        } else if (day == 'Sex') {
+          dayy = 'friday';
+        } else {
+          dayy = 'saturday';
+        }
+        _onSetHours(dayy, "00:00", "23:59"); // Define os horários padrão
       }
     });
-    log(selectedDays.toString());
   }
 
   @override
@@ -459,58 +489,8 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
                         onSetHours: _onSetHours,
                         isFilled: selectedDays.contains('Dom'),
                       ),
-                      // const SizedBox(height: 20),
-                      // ElevatedButton(
-                      //   onPressed: _createDaysObject,
-                      //   child: const Text('Create Days Object'),
-                      // ),
                     ],
                   ),
-
-                  // Column(
-                  //   children: [
-                  //     const Text('Os horarios (inicio e fim)'),
-                  //     DropdownButton<String>(
-                  //       hint: const Text('Select Start Time'),
-                  //       value: _startTime,
-                  //       items: hours
-                  //           .sublist(0, hours.length)
-                  //           .map((String value) {
-                  //         return DropdownMenuItem<String>(
-                  //           value: value,
-                  //           child: Text(value),
-                  //         );
-                  //       }).toList(),
-                  //       onChanged: (String? newValue) {
-                  //         setState(() {
-                  //           _startTime = newValue;
-                  //           _endTime =
-                  //               null; // Reset end time when start time changes
-                  //         });
-                  //       },
-                  //     ),
-                  //     const SizedBox(height: 20),
-                  //     DropdownButton<String>(
-                  //       hint: const Text('Select End Time'),
-                  //       value: _endTime,
-                  //       items: getEndTimeOptions().map((String value) {
-                  //         return DropdownMenuItem<String>(
-                  //           value: value,
-                  //           child: Text(value),
-                  //         );
-                  //       }).toList(),
-                  //       onChanged: _startTime == null
-                  //           ? null
-                  //           : (String? newValue) {
-                  //               setState(() {
-                  //                 _endTime = newValue;
-                  //                 log(_startTime.toString());
-                  //                 log(_endTime.toString());
-                  //               });
-                  //             },
-                  //     ),
-                  //   ],
-                  // )
                 ],
               ),
               const SizedBox(
@@ -557,6 +537,7 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
                       final result = spaceRegister.validateDiaEHoras(
                         days: days,
                       );
+
                       if (result) {
                         // Messages.showSuccess(
                         //     'semanas e horario escllfo', context);
