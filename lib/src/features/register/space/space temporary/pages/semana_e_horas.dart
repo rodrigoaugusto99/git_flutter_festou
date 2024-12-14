@@ -297,30 +297,33 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
   final List<String> selectedDays = [];
 
   void handleDayTap(String day) {
+    String dayy;
+    if (day == 'Dom') {
+      dayy = 'sunday';
+    } else if (day == 'Seg') {
+      dayy = 'monday';
+    } else if (day == 'Ter') {
+      dayy = 'tuesday';
+    } else if (day == 'Qua') {
+      dayy = 'wednesday';
+    } else if (day == 'Qui') {
+      dayy = 'thursday';
+    } else if (day == 'Sex') {
+      dayy = 'friday';
+    } else {
+      dayy = 'saturday';
+    }
     setState(() {
       if (selectedDays.contains(day)) {
         // Se o dia já está selecionado, remove o dia e os horários associados
         selectedDays.remove(day);
+        selectedDays.remove(dayy);
         hoursMap.remove(day);
+        hoursMap.remove(dayy);
       } else {
         // Se o dia não está selecionado, adiciona o dia com os horários padrão
         selectedDays.add(day);
-        String dayy;
-        if (day == 'Dom') {
-          dayy = 'sunday';
-        } else if (day == 'Seg') {
-          dayy = 'monday';
-        } else if (day == 'Ter') {
-          dayy = 'tuesday';
-        } else if (day == 'Qua') {
-          dayy = 'wednesday';
-        } else if (day == 'Qui') {
-          dayy = 'thursday';
-        } else if (day == 'Sex') {
-          dayy = 'friday';
-        } else {
-          dayy = 'saturday';
-        }
+
         _onSetHours(dayy, "00:00", "23:59"); // Define os horários padrão
       }
     });
