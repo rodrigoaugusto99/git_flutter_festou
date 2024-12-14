@@ -57,7 +57,7 @@ class ModelsServices {
         final userSpacesFavorite = await getUserFavoriteSpaces();
         final isFavorited =
             userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
-        final weekdays = Days(
+        final days = Days(
           monday: Hours(
             from: spaceDocument['weekdays']['monday']['from'],
             to: spaceDocument['weekdays']['monday']['to'],
@@ -89,7 +89,7 @@ class ModelsServices {
         );
 
         SpaceModel spaceModel = SpaceModel(
-          weekDays: weekdays,
+          days: days,
           isFavorited: isFavorited,
           spaceId: spaceDocument['space_id'] ?? '',
           userId: spaceDocument['user_id'] ?? '',
@@ -113,7 +113,6 @@ class ModelsServices {
           locadorAvatarUrl: spaceDocument['locadorAvatarUrl'] ?? '',
           startTime: spaceDocument['startTime'] ?? '',
           endTime: spaceDocument['endTime'] ?? '',
-          days: List<String>.from(spaceDocument['days'] ?? []),
           preco: spaceDocument['preco'] ?? '',
           cnpjEmpresaLocadora: spaceDocument['cnpj_empresa_locadora'] ?? '',
           estado: spaceDocument['estado'] ?? '',

@@ -56,7 +56,6 @@ class SpaceModel {
   final String locadorAvatarUrl;
   final String startTime;
   final String endTime;
-  final List<String> days;
   final String preco;
 
   final String cnpjEmpresaLocadora;
@@ -65,11 +64,11 @@ class SpaceModel {
   final String nomeEmpresaLocadora;
   final String locadorAssinatura;
   final int numLikes;
-  final Days? weekDays;
+  final Days? days;
 
   SpaceModel({
     required this.isFavorited,
-    required this.weekDays,
+    required this.days,
     required this.numLikes,
     required this.spaceId,
     required this.userId,
@@ -92,7 +91,6 @@ class SpaceModel {
     required this.locadorAvatarUrl,
     required this.startTime,
     required this.endTime,
-    required this.days,
     required this.preco,
     required this.cnpjEmpresaLocadora,
     required this.estado,
@@ -120,7 +118,7 @@ Future<SpaceModel> mapSpaceDocumentToModel2(
   final numComments = await getNumComments(spaceId);
 
   return SpaceModel(
-    weekDays: spaceDocument['weekdays'] == null
+    days: spaceDocument['weekdays'] == null
         ? null
         : Days(
             monday: Hours(
@@ -175,7 +173,6 @@ Future<SpaceModel> mapSpaceDocumentToModel2(
     locadorAvatarUrl: spaceDocument['locadorAvatarUrl'] ?? '',
     startTime: spaceDocument['startTime'] ?? '',
     endTime: spaceDocument['endTime'] ?? '',
-    days: days,
     preco: spaceDocument['preco'] ?? '',
     cnpjEmpresaLocadora: spaceDocument['cnpj_empresa_locadora'] ?? '',
     estado: spaceDocument['estado'] ?? '',
@@ -196,7 +193,7 @@ Future<SpaceModel> mapSpaceDocumentToModel(
   List<String> selectedServices =
       List<String>.from(spaceDocument['selectedServices'] ?? []);
   List<String> imagesUrl = List<String>.from(spaceDocument['images_url'] ?? []);
-  List<String> days = List<String>.from(spaceDocument['days'] ?? []);
+  // List<String> days = List<String>.from(spaceDocument['weekdays'] ?? []);
 
   String spaceId = spaceDocument.get('space_id');
   final averageRating = await getAverageRating(spaceId);
@@ -233,7 +230,7 @@ Future<SpaceModel> mapSpaceDocumentToModel(
   // );
 
   return SpaceModel(
-    weekDays: spaceDocument['weekdays'] == null
+    days: spaceDocument['weekdays'] == null
         ? null
         : Days(
             monday: Hours(
@@ -288,7 +285,6 @@ Future<SpaceModel> mapSpaceDocumentToModel(
     locadorAvatarUrl: spaceDocument['locadorAvatarUrl'] ?? '',
     startTime: spaceDocument['startTime'] ?? '',
     endTime: spaceDocument['endTime'] ?? '',
-    days: days,
     preco: spaceDocument['preco'] ?? '',
     cnpjEmpresaLocadora: spaceDocument['cnpj_empresa_locadora'] ?? '',
     estado: spaceDocument['estado'] ?? '',
