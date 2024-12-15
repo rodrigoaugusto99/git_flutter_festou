@@ -111,8 +111,6 @@ class ModelsServices {
           latitude: spaceDocument['latitude'] ?? 0.0,
           longitude: spaceDocument['longitude'] ?? 0.0,
           locadorAvatarUrl: spaceDocument['locadorAvatarUrl'] ?? '',
-          startTime: spaceDocument['startTime'] ?? '',
-          endTime: spaceDocument['endTime'] ?? '',
           preco: spaceDocument['preco'] ?? '',
           cnpjEmpresaLocadora: spaceDocument['cnpj_empresa_locadora'] ?? '',
           estado: spaceDocument['estado'] ?? '',

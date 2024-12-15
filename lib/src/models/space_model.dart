@@ -72,8 +72,6 @@ class SpaceModel {
   final double longitude;
 
   final String locadorAvatarUrl;
-  final String startTime;
-  final String endTime;
   final String preco;
 
   final String cnpjEmpresaLocadora;
@@ -107,8 +105,6 @@ class SpaceModel {
     required this.latitude,
     required this.longitude,
     required this.locadorAvatarUrl,
-    required this.startTime,
-    required this.endTime,
     required this.preco,
     required this.cnpjEmpresaLocadora,
     required this.estado,
@@ -188,8 +184,6 @@ Future<SpaceModel> mapSpaceDocumentToModel2(
     latitude: spaceDocument['latitude'] ?? 0.0,
     longitude: spaceDocument['longitude'] ?? 0.0,
     locadorAvatarUrl: spaceDocument['locadorAvatarUrl'] ?? '',
-    startTime: spaceDocument['startTime'] ?? '',
-    endTime: spaceDocument['endTime'] ?? '',
     preco: spaceDocument['preco'] ?? '',
     cnpjEmpresaLocadora: spaceDocument['cnpj_empresa_locadora'] ?? '',
     estado: spaceDocument['estado'] ?? '',
@@ -219,34 +213,48 @@ Future<SpaceModel> mapSpaceDocumentToModel(
     days: spaceDocument['weekdays'] == null
         ? null
         : Days(
-            monday: Hours(
-              from: spaceDocument['weekdays']['monday']['from'],
-              to: spaceDocument['weekdays']['monday']['to'],
-            ),
-            tuesday: Hours(
-              from: spaceDocument['weekdays']['tuesday']['from'],
-              to: spaceDocument['weekdays']['tuesday']['to'],
-            ),
-            wednesday: Hours(
-              from: spaceDocument['weekdays']['wednesday']['from'],
-              to: spaceDocument['weekdays']['wednesday']['to'],
-            ),
-            thursday: Hours(
-              from: spaceDocument['weekdays']['thursday']['from'],
-              to: spaceDocument['weekdays']['thursday']['to'],
-            ),
-            friday: Hours(
-              from: spaceDocument['weekdays']['friday']['from'],
-              to: spaceDocument['weekdays']['friday']['to'],
-            ),
-            saturday: Hours(
-              from: spaceDocument['weekdays']['saturday']['from'],
-              to: spaceDocument['weekdays']['saturday']['to'],
-            ),
-            sunday: Hours(
-              from: spaceDocument['weekdays']['sunday']['from'],
-              to: spaceDocument['weekdays']['sunday']['to'],
-            ),
+            monday: spaceDocument['weekdays']['monday'] == null
+                ? null
+                : Hours(
+                    from: spaceDocument['weekdays']['monday']['from'],
+                    to: spaceDocument['weekdays']['monday']['to'],
+                  ),
+            tuesday: spaceDocument['weekdays']['tuesday'] == null
+                ? null
+                : Hours(
+                    from: spaceDocument['weekdays']['tuesday']['from'],
+                    to: spaceDocument['weekdays']['tuesday']['to'],
+                  ),
+            wednesday: spaceDocument['weekdays']['wednesday'] == null
+                ? null
+                : Hours(
+                    from: spaceDocument['weekdays']['wednesday']['from'],
+                    to: spaceDocument['weekdays']['wednesday']['to'],
+                  ),
+            thursday: spaceDocument['weekdays']['thursday'] == null
+                ? null
+                : Hours(
+                    from: spaceDocument['weekdays']['thursday']['from'],
+                    to: spaceDocument['weekdays']['thursday']['to'],
+                  ),
+            friday: spaceDocument['weekdays']['friday'] == null
+                ? null
+                : Hours(
+                    from: spaceDocument['weekdays']['friday']['from'],
+                    to: spaceDocument['weekdays']['friday']['to'],
+                  ),
+            saturday: spaceDocument['weekdays']['saturday'] == null
+                ? null
+                : Hours(
+                    from: spaceDocument['weekdays']['saturday']['from'],
+                    to: spaceDocument['weekdays']['saturday']['to'],
+                  ),
+            sunday: spaceDocument['weekdays']['sunday'] == null
+                ? null
+                : Hours(
+                    from: spaceDocument['weekdays']['sunday']['from'],
+                    to: spaceDocument['weekdays']['sunday']['to'],
+                  ),
           ),
     videosUrl: List<String>.from(spaceDocument['videos'] ?? []),
     isFavorited: isFavorited,
@@ -269,8 +277,6 @@ Future<SpaceModel> mapSpaceDocumentToModel(
     latitude: spaceDocument['latitude'] ?? 0.0,
     longitude: spaceDocument['longitude'] ?? 0.0,
     locadorAvatarUrl: spaceDocument['locadorAvatarUrl'] ?? '',
-    startTime: spaceDocument['startTime'] ?? '',
-    endTime: spaceDocument['endTime'] ?? '',
     preco: spaceDocument['preco'] ?? '',
     cnpjEmpresaLocadora: spaceDocument['cnpj_empresa_locadora'] ?? '',
     estado: spaceDocument['estado'] ?? '',

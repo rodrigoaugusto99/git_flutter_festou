@@ -97,12 +97,12 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
-    int startHour = int.parse(widget.space.startTime);
-    int endHour = int.parse(widget.space.endTime);
-    if (endHour < startHour) {
-      endHour += 24;
-    }
-    int itemCount = endHour - startHour + 1;
+    // int startHour = int.parse(widget.space.startTime);
+    // int endHour = int.parse(widget.space.endTime);
+    // if (endHour < startHour) {
+    //   endHour += 24;
+    // }
+    // int itemCount = endHour - startHour + 1;
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
@@ -271,52 +271,52 @@ class _CalendarPageState extends State<CalendarPage> {
                   ],
                 ),
               ),
-              SizedBox(
-                height: 30,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: itemCount,
-                  itemBuilder: (BuildContext context, int index) {
-                    int hour = (startHour + index) % 24;
-                    bool isSelected =
-                        (hour == checkInTime) || (hour == checkOutTime);
-                    if (index == 0) {
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: GestureDetector(
-                          onTap: () => onSelectTime(hour),
-                          child: CalendarWidget(
-                            hour: hour.toString().padLeft(2, '0'),
-                            isSelected: isSelected,
-                          ),
-                        ),
-                      );
-                    }
-                    if (index == itemCount - 1) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 20),
-                        child: GestureDetector(
-                          onTap: () => onSelectTime(hour),
-                          child: CalendarWidget(
-                            hour: hour.toString().padLeft(2, '0'),
-                            isSelected: isSelected,
-                          ),
-                        ),
-                      );
-                    }
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: GestureDetector(
-                        onTap: () => onSelectTime(hour),
-                        child: CalendarWidget(
-                          hour: hour.toString().padLeft(2, '0'),
-                          isSelected: isSelected,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
+              // SizedBox(
+              //   height: 30,
+              //   child: ListView.builder(
+              //     scrollDirection: Axis.horizontal,
+              //     itemCount: itemCount,
+              //     itemBuilder: (BuildContext context, int index) {
+              //       int hour = (startHour + index) % 24;
+              //       bool isSelected =
+              //           (hour == checkInTime) || (hour == checkOutTime);
+              //       if (index == 0) {
+              //         return Padding(
+              //           padding: const EdgeInsets.only(left: 20),
+              //           child: GestureDetector(
+              //             onTap: () => onSelectTime(hour),
+              //             child: CalendarWidget(
+              //               hour: hour.toString().padLeft(2, '0'),
+              //               isSelected: isSelected,
+              //             ),
+              //           ),
+              //         );
+              //       }
+              //       if (index == itemCount - 1) {
+              //         return Padding(
+              //           padding: const EdgeInsets.only(right: 20),
+              //           child: GestureDetector(
+              //             onTap: () => onSelectTime(hour),
+              //             child: CalendarWidget(
+              //               hour: hour.toString().padLeft(2, '0'),
+              //               isSelected: isSelected,
+              //             ),
+              //           ),
+              //         );
+              //       }
+              //       return Padding(
+              //         padding: const EdgeInsets.symmetric(horizontal: 10),
+              //         child: GestureDetector(
+              //           onTap: () => onSelectTime(hour),
+              //           child: CalendarWidget(
+              //             hour: hour.toString().padLeft(2, '0'),
+              //             isSelected: isSelected,
+              //           ),
+              //         ),
+              //       );
+              //     },
+              //   ),
+              // ),
               if (checkInTime != null && checkOutTime != null)
                 Padding(
                   padding:
