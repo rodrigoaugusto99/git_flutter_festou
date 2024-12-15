@@ -134,7 +134,7 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
               'latitude': spaceData.latitude,
               'longitude': spaceData.longitude,
               'locadorAvatarUrl': locadorAvatar,
-              'days': spaceData.days,
+              'weekdays': spaceData.days.toMap(),
               'preco': spaceData.preco,
               'cnpj_empresa_locadora': 'estatico ainda',
               'estado': 'estatico ainda',

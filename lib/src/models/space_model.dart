@@ -7,6 +7,12 @@ class Hours {
   });
   String from;
   String to;
+  Map<String, String> toMap() {
+    return {
+      'from': from,
+      'to': to,
+    };
+  }
 }
 
 class Days {
@@ -26,6 +32,18 @@ class Days {
   Hours? friday;
   Hours? saturday;
   Hours? sunday;
+
+  Map<String, dynamic> toMap() {
+    return {
+      'monday': monday?.toMap(),
+      'tuesday': tuesday?.toMap(),
+      'wednesday': wednesday?.toMap(),
+      'thursday': thursday?.toMap(),
+      'friday': friday?.toMap(),
+      'saturday': saturday?.toMap(),
+      'sunday': sunday?.toMap(),
+    };
+  }
 }
 
 class SpaceModel {
@@ -111,7 +129,6 @@ Future<SpaceModel> mapSpaceDocumentToModel2(
   List<String> selectedServices =
       List<String>.from(spaceDocument['selectedServices'] ?? []);
   List<String> imagesUrl = List<String>.from(spaceDocument['images_url'] ?? []);
-  List<String> days = List<String>.from(spaceDocument['days'] ?? []);
 
   String spaceId = spaceDocument.get('space_id');
   final averageRating = await getAverageRating(spaceId);
@@ -198,37 +215,6 @@ Future<SpaceModel> mapSpaceDocumentToModel(
   String spaceId = spaceDocument.get('space_id');
   final averageRating = await getAverageRating(spaceId);
   final numComments = await getNumComments(spaceId);
-  // final weekdays = Days(
-  //   monday: Hours(
-  //     from: spaceDocument['weekdays']['monday']['from'],
-  //     to: spaceDocument['weekdays']['monday']['to'],
-  //   ),
-  //   tuesday: Hours(
-  //     from: spaceDocument['weekdays']['tuesday']['from'],
-  //     to: spaceDocument['weekdays']['tuesday']['to'],
-  //   ),
-  //   wednesday: Hours(
-  //     from: spaceDocument['weekdays']['wednesday']['from'],
-  //     to: spaceDocument['weekdays']['wednesday']['to'],
-  //   ),
-  //   thursday: Hours(
-  //     from: spaceDocument['weekdays']['thursday']['from'],
-  //     to: spaceDocument['weekdays']['thursday']['to'],
-  //   ),
-  //   friday: Hours(
-  //     from: spaceDocument['weekdays']['friday']['from'],
-  //     to: spaceDocument['weekdays']['friday']['to'],
-  //   ),
-  //   saturday: Hours(
-  //     from: spaceDocument['weekdays']['saturday']['from'],
-  //     to: spaceDocument['weekdays']['saturday']['to'],
-  //   ),
-  //   sunday: Hours(
-  //     from: spaceDocument['weekdays']['sunday']['from'],
-  //     to: spaceDocument['weekdays']['sunday']['to'],
-  //   ),
-  // );
-
   return SpaceModel(
     days: spaceDocument['weekdays'] == null
         ? null
