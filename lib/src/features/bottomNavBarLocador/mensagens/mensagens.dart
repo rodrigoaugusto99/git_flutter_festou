@@ -309,7 +309,7 @@ class _MensagensState extends State<Mensagens> {
         } else {
           UserModel user = snapshot.data!;
           return Scaffold(
-            backgroundColor: const Color(0XFFF0F0F0),
+            backgroundColor: const Color(0xfff8f8f8),
             appBar: AppBar(
               leading: !user.locador
                   ? Padding(
@@ -348,7 +348,7 @@ class _MensagensState extends State<Mensagens> {
                     color: Colors.black),
               ),
               elevation: 0,
-              backgroundColor: const Color(0XFFF0F0F0),
+              backgroundColor: const Color(0xfff8f8f8),
               actions: onLongPressSelection
                   ? [
                       IconButton(

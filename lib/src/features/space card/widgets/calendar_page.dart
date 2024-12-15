@@ -204,8 +204,65 @@ class _CalendarPageState extends State<CalendarPage> {
                                 DateTime.now().year + 3,
                                 DateTime.now().month + 2,
                                 DateTime.now().day + 10),
-                            selectableDayPredicate: (day) =>
-                                !day.difference(DateTime.now()).isNegative,
+                            selectableDayPredicate: (day) {
+                              // Primeiro, verifique se há alguma restrição de dias
+                              bool hasAnyDayRestriction =
+                                  widget.space.days.monday != null ||
+                                      widget.space.days.tuesday != null ||
+                                      widget.space.days.wednesday != null ||
+                                      widget.space.days.thursday != null ||
+                                      widget.space.days.friday != null ||
+                                      widget.space.days.saturday != null ||
+                                      widget.space.days.sunday != null;
+
+                              // Se não houver restrições, mantenha a lógica original
+                              if (!hasAnyDayRestriction) {
+                                return !day
+                                    .difference(DateTime.now())
+                                    .isNegative;
+                              }
+
+                              // Verificar se o dia atual está disponível
+                              switch (day.weekday) {
+                                case DateTime.monday:
+                                  return widget.space.days.monday != null &&
+                                      !day
+                                          .difference(DateTime.now())
+                                          .isNegative;
+                                case DateTime.tuesday:
+                                  return widget.space.days.tuesday != null &&
+                                      !day
+                                          .difference(DateTime.now())
+                                          .isNegative;
+                                case DateTime.wednesday:
+                                  return widget.space.days.wednesday != null &&
+                                      !day
+                                          .difference(DateTime.now())
+                                          .isNegative;
+                                case DateTime.thursday:
+                                  return widget.space.days.thursday != null &&
+                                      !day
+                                          .difference(DateTime.now())
+                                          .isNegative;
+                                case DateTime.friday:
+                                  return widget.space.days.friday != null &&
+                                      !day
+                                          .difference(DateTime.now())
+                                          .isNegative;
+                                case DateTime.saturday:
+                                  return widget.space.days.saturday != null &&
+                                      !day
+                                          .difference(DateTime.now())
+                                          .isNegative;
+                                case DateTime.sunday:
+                                  return widget.space.days.sunday != null &&
+                                      !day
+                                          .difference(DateTime.now())
+                                          .isNegative;
+                                default:
+                                  return false;
+                              }
+                            },
                           ),
                           value: [_selectedDate],
                           onValueChanged: (dates) {
@@ -271,52 +328,96 @@ class _CalendarPageState extends State<CalendarPage> {
                   ],
                 ),
               ),
-              // SizedBox(
-              //   height: 30,
-              //   child: ListView.builder(
-              //     scrollDirection: Axis.horizontal,
-              //     itemCount: itemCount,
-              //     itemBuilder: (BuildContext context, int index) {
-              //       int hour = (startHour + index) % 24;
-              //       bool isSelected =
-              //           (hour == checkInTime) || (hour == checkOutTime);
-              //       if (index == 0) {
-              //         return Padding(
-              //           padding: const EdgeInsets.only(left: 20),
-              //           child: GestureDetector(
-              //             onTap: () => onSelectTime(hour),
-              //             child: CalendarWidget(
-              //               hour: hour.toString().padLeft(2, '0'),
-              //               isSelected: isSelected,
-              //             ),
-              //           ),
-              //         );
-              //       }
-              //       if (index == itemCount - 1) {
-              //         return Padding(
-              //           padding: const EdgeInsets.only(right: 20),
-              //           child: GestureDetector(
-              //             onTap: () => onSelectTime(hour),
-              //             child: CalendarWidget(
-              //               hour: hour.toString().padLeft(2, '0'),
-              //               isSelected: isSelected,
-              //             ),
-              //           ),
-              //         );
-              //       }
-              //       return Padding(
-              //         padding: const EdgeInsets.symmetric(horizontal: 10),
-              //         child: GestureDetector(
-              //           onTap: () => onSelectTime(hour),
-              //           child: CalendarWidget(
-              //             hour: hour.toString().padLeft(2, '0'),
-              //             isSelected: isSelected,
-              //           ),
-              //         ),
-              //       );
-              //     },
-              //   ),
-              // ),
+              if (_selectedDate != null)
+                SizedBox(
+                  height: 30,
+                  child: Builder(
+                    builder: (context) {
+                      // Determinar os horários baseados no dia da semana
+                      Hours? dayHours;
+                      switch (_selectedDate!.weekday) {
+                        case DateTime.monday:
+                          dayHours = widget.space.days.monday;
+                          break;
+                        case DateTime.tuesday:
+                          dayHours = widget.space.days.tuesday;
+                          break;
+                        case DateTime.wednesday:
+                          dayHours = widget.space.days.wednesday;
+                          break;
+                        case DateTime.thursday:
+                          dayHours = widget.space.days.thursday;
+                          break;
+                        case DateTime.friday:
+                          dayHours = widget.space.days.friday;
+                          break;
+                        case DateTime.saturday:
+                          dayHours = widget.space.days.saturday;
+                          break;
+                        case DateTime.sunday:
+                          dayHours = widget.space.days.sunday;
+                          break;
+                      }
+
+                      // Se não houver horários definidos para esse dia, retornar um container vazio
+                      if (dayHours == null) {
+                        return Container();
+                      }
+
+                      // Converter horários de string para inteiros
+                      int startHour = int.parse(dayHours.from.split(':')[0]);
+                      int endHour = int.parse(dayHours.to.split(':')[0]);
+
+                      // Calcular quantidade de horas disponíveis
+                      int itemCount = endHour - startHour + 1;
+
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: itemCount,
+                        itemBuilder: (BuildContext context, int index) {
+                          int hour = (startHour + index) % 24;
+                          bool isSelected =
+                              (hour == checkInTime) || (hour == checkOutTime);
+
+                          if (index == 0) {
+                            return Padding(
+                              padding: const EdgeInsets.only(left: 20),
+                              child: GestureDetector(
+                                onTap: () => onSelectTime(hour),
+                                child: CalendarWidget(
+                                  hour: hour.toString().padLeft(2, '0'),
+                                  isSelected: isSelected,
+                                ),
+                              ),
+                            );
+                          }
+                          if (index == itemCount - 1) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 20),
+                              child: GestureDetector(
+                                onTap: () => onSelectTime(hour),
+                                child: CalendarWidget(
+                                  hour: hour.toString().padLeft(2, '0'),
+                                  isSelected: isSelected,
+                                ),
+                              ),
+                            );
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: GestureDetector(
+                              onTap: () => onSelectTime(hour),
+                              child: CalendarWidget(
+                                hour: hour.toString().padLeft(2, '0'),
+                                isSelected: isSelected,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
               if (checkInTime != null && checkOutTime != null)
                 Padding(
                   padding:

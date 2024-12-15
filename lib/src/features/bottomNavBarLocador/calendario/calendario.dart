@@ -1,21 +1,15 @@
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_locatario_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_assinado_page.dart';
-// import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_page.dart';
 import 'package:git_flutter_festou/src/helpers/helpers.dart';
 import 'package:git_flutter_festou/src/models/reservation_model.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:git_flutter_festou/src/services/reserva_service.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:intl/intl.dart';
-import 'package:svg_flutter/svg.dart';
 
 class Calendario extends StatefulWidget {
   const Calendario({super.key});
@@ -114,7 +108,7 @@ class _CalendarioState extends State<Calendario> {
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
         elevation: 0,
-        backgroundColor: const Color(0XFFF0F0F0),
+        backgroundColor: const Color(0xfff8f8f8),
       ),
       body: minhasReservas == null
           ? const CircularProgressIndicator()
