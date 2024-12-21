@@ -66,7 +66,10 @@ class MyApp extends StatelessWidget {
         return null;
       },
       theme: ThemeData(
-        appBarTheme: const AppBarTheme(color: Colors.purple),
+        appBarTheme: const AppBarTheme(
+          color: Colors.purple,
+          surfaceTintColor: Colors.transparent,
+        ),
         scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
         fontFamily: 'inter',
         primarySwatch: Colors.purple,

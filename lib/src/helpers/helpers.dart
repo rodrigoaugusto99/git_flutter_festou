@@ -17,10 +17,12 @@ Widget decContainer({
   Function()? onTap,
   Gradient? gradient,
   BoxShadow? boxShadow,
+  Alignment? align,
 }) {
   return GestureDetector(
     onTap: onTap,
     child: Container(
+      alignment: align,
       clipBehavior: Clip.antiAlias,
       foregroundDecoration: BoxDecoration(color: foregroundColor),
       padding: EdgeInsets.only(

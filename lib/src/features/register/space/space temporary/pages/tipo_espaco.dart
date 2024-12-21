@@ -54,17 +54,21 @@ class _TipoEspacoState extends ConsumerState<TipoEspaco> {
         backgroundColor: Colors.white,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 38.0, vertical: 20),
         child: Column(
           children: [
             Column(
               children: [
                 const Text(
-                  'Qual das seguintes opções descreve melhor seu espaço?',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  'Quais das seguintes opções descreve melhor seu espaço?',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Color(0xff4300B1)),
                 ),
                 TypePanel(
-                  text: 'Selecione o TIPO de espaço',
+                  text:
+                      'Selecione a(s) categoria(s) no qual seu espaço se enquadra',
                   onTypePressed: (value) {
                     log('onTypePressed: $value');
                     newSpaceRegister.addOrRemoveType(value);
@@ -73,41 +77,76 @@ class _TipoEspacoState extends ConsumerState<TipoEspaco> {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: const Text(
-                      'Voltar',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 69, vertical: 40),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                alignment: Alignment.center,
+                height: 35,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xff9747FF),
+                      Color(0xff44300b1),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   ),
-                  InkWell(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Localizacao(),
-                      ),
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.black,
-                          border: Border.all(),
-                          borderRadius: BorderRadius.circular(10)),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 10),
-                      child: const Text(
-                        'Avançar',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  )
-                ],
+                ),
+                child: const Text(
+                  'Voltar',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 9,
+            ),
+            GestureDetector(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Localizacao(),
+                ),
+              ),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                alignment: Alignment.center,
+                height: 35,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xff9747FF),
+                      Color(0xff44300b1),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+                child: const Text(
+                  'Avançar',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           ],
@@ -121,8 +160,7 @@ class GridItem extends StatelessWidget {
   final IconData icon;
   final String text;
 
-  const GridItem({Key? key, required this.icon, required this.text})
-      : super(key: key);
+  const GridItem({super.key, required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {

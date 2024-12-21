@@ -23,9 +23,7 @@ abstract interface class SpaceFirestoreRepository {
       String preco,
       double latitude,
       double longitude,
-      String startTime,
-      String endTime,
-      List<String> days,
+      Days days,
     }) spaceData,
   );
 

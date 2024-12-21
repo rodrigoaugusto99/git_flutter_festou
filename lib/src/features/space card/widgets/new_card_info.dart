@@ -19,6 +19,7 @@ import 'package:git_flutter_festou/src/features/register/feedback/feedback_regis
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_limited.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_all.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/single_video_page.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/utils.dart';
 import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
 import 'package:git_flutter_festou/src/helpers/helpers.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
@@ -389,47 +390,6 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
     }
   }
 
-  Widget buildVideoPlayerFromFile(int index) {
-    final controller = localControllers[index];
-    if (controller.value.isInitialized) {
-      return GestureDetector(
-        onTap: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (BuildContext context) {
-              return SingleVideoPage(controller: controller);
-            },
-          );
-        },
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: AspectRatio(
-                aspectRatio: controller.value.aspectRatio,
-                child: FittedBox(
-                  fit: BoxFit.cover,
-                  child: SizedBox(
-                    width: controller.value.size.width,
-                    height: controller.value.size.height,
-                    child: VideoPlayer(controller),
-                  ),
-                ),
-              ),
-            ),
-            Icon(
-              Icons.play_circle_fill,
-              color: Colors.white.withOpacity(0.7),
-              size: 40,
-            )
-          ],
-        ),
-      );
-    }
-    return Container();
-  }
-
   String? validada() {
     if (precoEC.text.isEmpty) {
       return 'O campo Preço está vazio.';
@@ -483,47 +443,6 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
         );
       },
     );
-  }
-
-  Widget buildVideoPlayer(int index) {
-    final controller = controllers[index];
-    if (controller.value.isInitialized) {
-      return GestureDetector(
-        onTap: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (BuildContext context) {
-              return SingleVideoPage(controller: controller);
-            },
-          );
-        },
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: AspectRatio(
-                aspectRatio: controller.value.aspectRatio,
-                child: FittedBox(
-                  fit: BoxFit.cover,
-                  child: SizedBox(
-                    width: controller.value.size.width,
-                    height: controller.value.size.height,
-                    child: VideoPlayer(controller),
-                  ),
-                ),
-              ),
-            ),
-            Icon(
-              Icons.play_circle_fill,
-              color: Colors.white.withOpacity(0.7),
-              size: 40,
-            )
-          ],
-        ),
-      );
-    }
-    return Container();
   }
 
   Map<String, String> serviceIconPaths = {
@@ -812,9 +731,13 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      Image.network(
-                        widget.space.imagesUrl[index].toString(),
-                        fit: BoxFit.cover,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(
+                          height: 90,
+                          widget.space.imagesUrl[index].toString(),
+                          fit: BoxFit.cover,
+                        ),
                       ),
                       if (isEditing)
                         decContainer(
@@ -933,7 +856,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      buildVideoPlayer(index),
+                      buildVideoPlayer(index, controllers, context),
                       if (isEditing)
                         Container(
                           color: Colors.black.withOpacity(0.5),
@@ -965,7 +888,8 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      buildVideoPlayerFromFile(localIndex),
+                      buildVideoPlayerFromFile(
+                          localIndex, context, controllers),
                       if (isEditing)
                         Container(
                           color: Colors.black.withOpacity(0.5),

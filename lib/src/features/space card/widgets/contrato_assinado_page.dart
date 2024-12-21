@@ -61,62 +61,74 @@ class _ContratoAssinadoPageState extends State<ContratoAssinadoPage> {
       body: Container(
         decoration: const BoxDecoration(),
         child: SingleChildScrollView(
-          child: Html(
-            data: widget.html,
-            style: {
-              'body': Style(
-                fontSize: FontSize(12.0),
-              ),
-              'p': Style(
-                margin: Margins.only(
-                  bottom: 8,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Html(
+              data: widget.html,
+              style: {
+                'body': Style(
+                  fontSize: FontSize(12.0),
                 ),
-              ),
-              'h2': Style(
-                color: const Color(0xff304571),
-                margin: Margins.only(
-                  bottom: 0,
+                'p': Style(
+                  margin: Margins.only(
+                    bottom: 8,
+                  ),
                 ),
-              ),
-            },
+                'h2': Style(
+                  color: const Color(0xff304571),
+                  margin: Margins.only(
+                    bottom: 0,
+                  ),
+                ),
+              },
+            ),
           ),
         ),
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.purple,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+        child: GestureDetector(
+          onTap: () {
+            if (widget.summaryData == null) {
+              Navigator.of(context).pop();
+            } else {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ResumoReservaPage(
+                    assinado: true,
+                    summaryData: widget.summaryData!,
+                    cupomModel: widget.cupomModel,
+                    html: widget.html,
+                  ),
                 ),
+              );
+            }
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+            alignment: Alignment.center,
+            height: 35,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(50),
+              gradient: const LinearGradient(
+                colors: [
+                  Color(0xff9747FF),
+                  Color(0xff44300b1),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
-              onPressed: () {
-                if (widget.summaryData == null) {
-                  Navigator.of(context).pop();
-                } else {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ResumoReservaPage(
-                        assinado: true,
-                        summaryData: widget.summaryData!,
-                        cupomModel: widget.cupomModel,
-                        html: widget.html,
-                      ),
-                    ),
-                  );
-                }
-              },
-              child: Text(
-                  widget.summaryData == null ? 'Voltar' : 'Continuar reserva'),
             ),
-          ],
+            child: Text(
+              widget.summaryData == null ? 'Voltar' : 'Continuar reserva',
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
         ),
       ),
     );

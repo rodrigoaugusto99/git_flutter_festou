@@ -156,7 +156,7 @@ class FilterAndOrderVm extends _$FilterAndOrderVm {
     spaceModels = await Future.wait(finalFiltered.map((spaceDocument) {
       final isFavorited =
           userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
-      return mapSpaceDocumentToModel(spaceDocument, isFavorited);
+      return mapSpaceDocumentToModel2(spaceDocument, isFavorited);
     }).toList());
     state = state.copyWith(
       status: FilterAndOrderStateStatus.success,
@@ -190,83 +190,5 @@ class FilterAndOrderVm extends _$FilterAndOrderVm {
     //! erro as vezes, se deletar a conta com google e criar de novo rapidao, o
     //!documento no firestore e auth estão certos, com o mesmo id, mas o objeto user do auth que o programa
     //!carrega primeiramente é o anterior já excluido, com o uid antigo
-  }
-
-  Future<String> getAverageRating(String spaceId) async {
-    final spaceDocument =
-        await spacesCollection.where('space_id', isEqualTo: spaceId).get();
-
-    if (spaceDocument.docs.isNotEmpty) {
-      String averageRatingValue = spaceDocument.docs.first['average_rating'];
-      return averageRatingValue;
-    }
-
-    // Trate o caso em que nenhum espaço foi encontrado.
-    throw Exception("Espaço não encontrado");
-  }
-
-  Future<String> getNumComments(String spaceId) async {
-    final spaceDocument =
-        await spacesCollection.where('space_id', isEqualTo: spaceId).get();
-
-    if (spaceDocument.docs.isNotEmpty) {
-      String numComments = spaceDocument.docs.first['num_comments'];
-      return numComments;
-    }
-
-    // Trate o caso em que nenhum espaço foi encontrado.
-    throw Exception("Espaço não encontrado");
-  }
-
-  Future<SpaceModel> mapSpaceDocumentToModel(
-    DocumentSnapshot spaceDocument,
-    bool isFavorited,
-  ) async {
-    // Pegando os dados necessários antes de criar o card
-    List<String> selectedTypes =
-        List<String>.from(spaceDocument['selectedTypes'] ?? []);
-    List<String> selectedServices =
-        List<String>.from(spaceDocument['selectedServices'] ?? []);
-    List<String> imagesUrl =
-        List<String>.from(spaceDocument['images_url'] ?? []);
-    List<String> days = List<String>.from(spaceDocument['days'] ?? []);
-
-    String spaceId = spaceDocument.get('space_id');
-    final averageRating = await getAverageRating(spaceId);
-    final numComments = await getNumComments(spaceId);
-
-    return SpaceModel(
-      videosUrl: List<String>.from(spaceDocument['videos'] ?? []),
-      isFavorited: isFavorited,
-      spaceId: spaceDocument['space_id'] ?? '',
-      userId: spaceDocument['user_id'] ?? '',
-      titulo: spaceDocument['titulo'] ?? '',
-      cep: spaceDocument['cep'] ?? '',
-      logradouro: spaceDocument['logradouro'] ?? '',
-      numero: spaceDocument['numero'] ?? '',
-      bairro: spaceDocument['bairro'] ?? '',
-      cidade: spaceDocument['cidade'] ?? '',
-      selectedTypes: selectedTypes,
-      selectedServices: selectedServices,
-      averageRating: averageRating,
-      numComments: numComments,
-      locadorName: spaceDocument['locador_name'] ?? '',
-      descricao: spaceDocument['descricao'] ?? '',
-      city: spaceDocument['city'] ?? '',
-      imagesUrl: imagesUrl,
-      latitude: spaceDocument['latitude'] ?? 0.0,
-      longitude: spaceDocument['longitude'] ?? 0.0,
-      locadorAvatarUrl: spaceDocument['locadorAvatarUrl'] ?? '',
-      startTime: spaceDocument['startTime'] ?? '',
-      endTime: spaceDocument['endTime'] ?? '',
-      days: days,
-      preco: spaceDocument['preco'] ?? '',
-      cnpjEmpresaLocadora: spaceDocument['cnpj_empresa_locadora'] ?? '',
-      estado: spaceDocument['estado'] ?? '',
-      locadorCpf: spaceDocument['locador_cpf'] ?? '',
-      nomeEmpresaLocadora: spaceDocument['nome_empresa_locadora'] ?? '',
-      locadorAssinatura: spaceDocument['locador_assinatura'] ?? '',
-      numLikes: spaceDocument['num_likes'] ?? 0,
-    );
   }
 }

@@ -57,8 +57,39 @@ class ModelsServices {
         final userSpacesFavorite = await getUserFavoriteSpaces();
         final isFavorited =
             userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
+        final days = Days(
+          monday: Hours(
+            from: spaceDocument['weekdays']['monday']['from'],
+            to: spaceDocument['weekdays']['monday']['to'],
+          ),
+          tuesday: Hours(
+            from: spaceDocument['weekdays']['tuesday']['from'],
+            to: spaceDocument['weekdays']['tuesday']['to'],
+          ),
+          wednesday: Hours(
+            from: spaceDocument['weekdays']['wednesday']['from'],
+            to: spaceDocument['weekdays']['wednesday']['to'],
+          ),
+          thursday: Hours(
+            from: spaceDocument['weekdays']['thursday']['from'],
+            to: spaceDocument['weekdays']['thursday']['to'],
+          ),
+          friday: Hours(
+            from: spaceDocument['weekdays']['friday']['from'],
+            to: spaceDocument['weekdays']['friday']['to'],
+          ),
+          saturday: Hours(
+            from: spaceDocument['weekdays']['saturday']['from'],
+            to: spaceDocument['weekdays']['saturday']['to'],
+          ),
+          sunday: Hours(
+            from: spaceDocument['weekdays']['sunday']['from'],
+            to: spaceDocument['weekdays']['sunday']['to'],
+          ),
+        );
 
         SpaceModel spaceModel = SpaceModel(
+          days: days,
           isFavorited: isFavorited,
           spaceId: spaceDocument['space_id'] ?? '',
           userId: spaceDocument['user_id'] ?? '',
@@ -80,9 +111,6 @@ class ModelsServices {
           latitude: spaceDocument['latitude'] ?? 0.0,
           longitude: spaceDocument['longitude'] ?? 0.0,
           locadorAvatarUrl: spaceDocument['locadorAvatarUrl'] ?? '',
-          startTime: spaceDocument['startTime'] ?? '',
-          endTime: spaceDocument['endTime'] ?? '',
-          days: List<String>.from(spaceDocument['days'] ?? []),
           preco: spaceDocument['preco'] ?? '',
           cnpjEmpresaLocadora: spaceDocument['cnpj_empresa_locadora'] ?? '',
           estado: spaceDocument['estado'] ?? '',

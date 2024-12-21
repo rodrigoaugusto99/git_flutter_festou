@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 
+import 'package:git_flutter_festou/src/models/space_model.dart';
+
 enum NewSpaceRegisterStateStatus { initial, success, error, invalidForm }
 
 class NewSpaceRegisterState {
@@ -18,9 +20,8 @@ class NewSpaceRegisterState {
 
   final List<File> imageFiles;
   final String? errorMessage;
-  final String startTime;
-  final String endTime;
-  final List<String> days;
+
+  final Days? days;
 
   NewSpaceRegisterState.initial()
       : this(
@@ -36,28 +37,25 @@ class NewSpaceRegisterState {
           bairro: '',
           cidade: '',
           preco: '',
-          startTime: '',
-          endTime: '',
-          days: [],
+          days: null,
         );
 
-  NewSpaceRegisterState(
-      {required this.status,
-      required this.selectedTypes,
-      required this.selectedServices,
-      required this.titulo,
-      required this.descricao,
-      required this.cep,
-      required this.logradouro,
-      required this.numero,
-      required this.bairro,
-      required this.cidade,
-      required this.imageFiles,
-      required this.preco,
-      required this.startTime,
-      required this.endTime,
-      required this.days,
-      this.errorMessage});
+  NewSpaceRegisterState({
+    required this.status,
+    required this.selectedTypes,
+    required this.selectedServices,
+    required this.titulo,
+    required this.descricao,
+    required this.cep,
+    required this.logradouro,
+    required this.numero,
+    required this.bairro,
+    required this.cidade,
+    required this.imageFiles,
+    required this.preco,
+    required this.days,
+    this.errorMessage,
+  });
 
   NewSpaceRegisterState copyWith(
       {NewSpaceRegisterStateStatus? status,
@@ -71,9 +69,7 @@ class NewSpaceRegisterState {
       String? bairro,
       String? cidade,
       String? preco,
-      String? startTime,
-      String? endTime,
-      List<String>? days,
+      Days? days,
       List<File>? imageFiles,
       ValueGetter<String?>? errorMessage}) {
     return NewSpaceRegisterState(
@@ -90,8 +86,6 @@ class NewSpaceRegisterState {
       imageFiles: imageFiles ?? this.imageFiles,
       errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
       preco: preco ?? this.preco,
-      startTime: startTime ?? this.startTime,
-      endTime: endTime ?? this.endTime,
       days: days ?? this.days,
     );
   }

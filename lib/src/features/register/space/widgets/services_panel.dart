@@ -19,7 +19,12 @@ class ServicesPanel extends StatelessWidget {
     return SizedBox(
       child: Column(
         children: [
-          Text(text),
+          Text(
+            text,
+            style: const TextStyle(
+              fontSize: 12,
+            ),
+          ),
           const SizedBox(
             height: 16,
           ),
@@ -73,8 +78,10 @@ class _ButtonTypeState extends State<ButtonType> {
   Widget build(BuildContext context) {
     final ButtonType(:onServicePressed, :label) = widget;
     //1 - variaveis esteticas que mudam com o clique
-    final textColor = widget.isSelected ? Colors.white : Colors.brown;
-    var buttonColor = widget.isSelected ? Colors.brown : Colors.white;
+    final textColor =
+        widget.isSelected ? const Color(0xff670090) : Colors.white;
+    var buttonColor =
+        widget.isSelected ? const Color(0xffE3D9E8) : const Color(0xffBABABA);
 
     return Padding(
       padding: const EdgeInsets.all(5.0),

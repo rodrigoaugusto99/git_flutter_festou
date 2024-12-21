@@ -26,7 +26,7 @@ class _MensagensState extends State<Mensagens> {
       FirebaseFirestore.instance.collection('chat_rooms');
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
-  Map<String, StreamSubscription> _messageListeners = {};
+  Map<String, StreamSubscription> messageListeners = {};
   late Stream<QuerySnapshot> chatsStream;
   Set<String> selectedChatRoomIds = {};
   bool onLongPressSelection = false;
@@ -45,10 +45,10 @@ class _MensagensState extends State<Mensagens> {
   }
 
   void _cancelAllMessageListeners() {
-    for (var listener in _messageListeners.values) {
+    for (var listener in messageListeners.values) {
       listener.cancel();
     }
-    _messageListeners.clear();
+    messageListeners.clear();
   }
 
   Stream<QuerySnapshot> getChatRooms() {
@@ -62,8 +62,8 @@ class _MensagensState extends State<Mensagens> {
   void listenForNewMessages(String chatRoomID) {
     final currentUserID = _auth.currentUser!.uid;
 
-    if (_messageListeners.containsKey(chatRoomID)) {
-      _messageListeners[chatRoomID]?.cancel();
+    if (messageListeners.containsKey(chatRoomID)) {
+      messageListeners[chatRoomID]?.cancel();
     }
 
     final subscription = _firestore
@@ -81,7 +81,7 @@ class _MensagensState extends State<Mensagens> {
       }
     });
 
-    _messageListeners[chatRoomID] = subscription;
+    messageListeners[chatRoomID] = subscription;
   }
 
   Stream<Map<String, dynamic>> getLastMessageAndUnreadCount(String chatRoomID) {
@@ -117,16 +117,16 @@ class _MensagensState extends State<Mensagens> {
           .snapshots()
           .map((snapshot) {
         int totalUnreadCount = 0;
-        snapshot.docs.forEach((messageDoc) {
+        for (var messageDoc in snapshot.docs) {
           var data = messageDoc.data();
           if ((data['senderID'] == currentUserID &&
                   data['deletionSender'] == true) ||
               (data['receiverID'] == currentUserID &&
                   data['deletionRecipient'] == true)) {
-            return;
+            continue;
           }
           totalUnreadCount++;
-        });
+        }
         return totalUnreadCount;
       }),
       (messages, unreadCount) {
@@ -161,16 +161,16 @@ class _MensagensState extends State<Mensagens> {
             .where('receiverID', isEqualTo: currentUserID)
             .get();
 
-        unreadMessagesCount.docs.forEach((messageDoc) {
+        for (var messageDoc in unreadMessagesCount.docs) {
           var data = messageDoc.data();
           if ((data['senderID'] == currentUserID &&
                   data['deletionSender'] == true) ||
               (data['receiverID'] == currentUserID &&
                   data['deletionRecipient'] == true)) {
-            return;
+            continue;
           }
           totalUnreadCount++;
-        });
+        }
       }
       return totalUnreadCount;
     });
@@ -309,7 +309,7 @@ class _MensagensState extends State<Mensagens> {
         } else {
           UserModel user = snapshot.data!;
           return Scaffold(
-            backgroundColor: const Color(0XFFF0F0F0),
+            backgroundColor: const Color(0xfff8f8f8),
             appBar: AppBar(
               leading: !user.locador
                   ? Padding(
@@ -348,7 +348,7 @@ class _MensagensState extends State<Mensagens> {
                     color: Colors.black),
               ),
               elevation: 0,
-              backgroundColor: const Color(0XFFF0F0F0),
+              backgroundColor: const Color(0xfff8f8f8),
               actions: onLongPressSelection
                   ? [
                       IconButton(
@@ -510,11 +510,11 @@ class _MensagensState extends State<Mensagens> {
                       for (var chat in messages) {
                         final lastMessageData = chat.data();
                         if (lastMessageData['senderID'] == currentUserID &&
-                            lastMessageData['deletionSender']) {
+                            (lastMessageData['deletionSender'] ?? false)) {
                           continue;
                         } else if (lastMessageData['receiverID'] ==
                                 currentUserID &&
-                            lastMessageData['deletionRecipient']) {
+                            (lastMessageData['deletionRecipient'] ?? false)) {
                           continue;
                         } else {
                           lastMessage = lastMessageData['message']
