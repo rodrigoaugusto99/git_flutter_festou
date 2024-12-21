@@ -276,7 +276,11 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
               MyRow(
-                widget: const Icon(Icons.password),
+                widget: Image.asset(
+                  'lib/assets/images/IconPassword.png',
+                  width: 26, // Ajuste conforme necessário
+                  height: 26,
+                ),
                 subtitle: 'Senha',
                 textButton: !isUpdatingPassword ? 'Atualizar' : 'Cancelar',
                 onTap: () {
@@ -413,7 +417,15 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                   : Container(),
               providers.isEmpty ||
                       (providers.length == 1 && providers.contains("password"))
-                  ? const Text('Nenhuma conta vinculada')
+                  ? MyRow(
+                      widget: Image.asset(
+                        'lib/assets/images/IconNetwork.png',
+                        width: 26, // Ajuste conforme necessário
+                        height: 26,
+                      ),
+                      subtitle: 'Nenhuma conta vinculada',
+                      onTap: () => (),
+                      textButton: '')
                   : Container(),
               const SizedBox(height: 30),
               const Text(
@@ -421,7 +433,11 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
               MyRow(
-                  widget: const Icon(Icons.person),
+                  widget: Image.asset(
+                    'lib/assets/images/IconAccountDelete.png',
+                    width: 26, // Ajuste conforme necessário
+                    height: 26,
+                  ),
                   subtitle: 'Desativar sua conta',
                   textButton: 'Desativar',
                   onTap: () async {
@@ -543,7 +559,8 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
               child: Text(
                 textButton,
                 style: const TextStyle(
-                  decoration: TextDecoration.underline,
+                  color: Color(0XFF4300B1),
+                  fontSize: 12,
                   fontWeight: FontWeight.bold,
                 ),
               ),
