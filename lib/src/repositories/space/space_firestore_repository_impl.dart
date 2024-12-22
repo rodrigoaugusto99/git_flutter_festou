@@ -142,6 +142,8 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
               'locador_cpf': 'estatico ainda',
               'nome_empresa_locadora': 'estatico ainda',
               'num_likes': 0,
+              'videos': [],
+              'createdAt': FieldValue.serverTimestamp(),
             };
             await spacesCollection.add(newSpace);
 

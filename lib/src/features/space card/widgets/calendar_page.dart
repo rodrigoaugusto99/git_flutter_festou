@@ -20,76 +20,101 @@ class _CalendarPageState extends State<CalendarPage> {
   int? checkInTime;
   int? checkOutTime;
   bool showWarning = false;
-  void onSelectTime(int selectedTime) {
-    log(selectedTime.toString());
+  // void onSelectTime(int selectedTime) {
+  //   log(selectedTime.toString());
+  //   setState(() {
+  //     if (checkInTime == selectedTime) {
+  //       // Se clicar novamente no mesmo checkInTime, limpar ambos
+  //       checkInTime = null;
+  //       checkOutTime = null;
+  //     } else if (checkOutTime == selectedTime) {
+  //       // Se clicar novamente no mesmo checkOutTime, limpar apenas ele
+  //       checkOutTime = null;
+  //     } else if (checkInTime == null) {
+  //       // Primeira seleção: definir checkInTime
+  //       checkInTime = selectedTime;
+  //     } else if (checkOutTime == null) {
+  //       // Segunda seleção: definir checkOutTime, garantindo que seja maior que checkInTime
+  //       if (selectedTime > checkInTime!) {
+  //         checkOutTime = selectedTime;
+  //       } else {
+  //         checkOutTime = checkInTime;
+  //         checkInTime = selectedTime;
+  //       }
+  //     } else {
+  //       // Limpar e definir novamente checkInTime
+  //       checkInTime = selectedTime;
+  //       checkOutTime = null;
+  //     }
+
+  //     showWarning = false;
+
+  //     if (checkInTime != null && checkOutTime != null) {
+  //       // Ajustar checkOutTime temporariamente para a validação
+  //       int adjustedCheckOutTime = checkOutTime!;
+  //       if (checkOutTime! >= 0 && checkOutTime! <= 4) {
+  //         adjustedCheckOutTime += 24;
+  //       }
+
+  //       if ((adjustedCheckOutTime - checkInTime!) < 4) {
+  //         setState(() {
+  //           showWarning = true;
+  //         });
+  //         return;
+  //       }
+
+  //       // Garantir que checkOutTime seja sempre maior que checkInTime,
+  //       // considerando a continuidade do dia
+  //       if (checkInTime! >= 1 &&
+  //           checkInTime! <= 4 &&
+  //           checkOutTime! > checkInTime!) {
+  //         // Do nothing, valid case
+  //       } else if (checkOutTime! >= 1 &&
+  //           checkOutTime! <= 4 &&
+  //           checkOutTime! < checkInTime!) {
+  //         // Valid case
+  //       } else if (checkInTime! >= 1 &&
+  //           checkInTime! <= 4 &&
+  //           checkOutTime! <= 4) {
+  //         int temp = checkInTime!;
+  //         checkInTime = checkOutTime;
+  //         checkOutTime = temp;
+  //       } else if (checkOutTime! < checkInTime!) {
+  //         int temp = checkInTime!;
+  //         checkInTime = checkOutTime;
+  //         checkOutTime = temp;
+  //       }
+
+  //       // Inverter valores se checkInTime for 00, 01, 02, 03 ou 04
+  //       if (checkInTime! >= 0 && checkInTime! <= 4) {
+  //         int temp = checkInTime!;
+  //         checkInTime = checkOutTime;
+  //         checkOutTime = temp;
+  //       }
+  //     }
+  //   });
+  // }
+  void onSelectTime(int selectedTime, {required bool isCheckIn}) {
     setState(() {
-      if (checkInTime == selectedTime) {
-        // Se clicar novamente no mesmo checkInTime, limpar ambos
-        checkInTime = null;
-        checkOutTime = null;
-      } else if (checkOutTime == selectedTime) {
-        // Se clicar novamente no mesmo checkOutTime, limpar apenas ele
-        checkOutTime = null;
-      } else if (checkInTime == null) {
-        // Primeira seleção: definir checkInTime
+      if (isCheckIn) {
+        // Se for o horário de entrada
         checkInTime = selectedTime;
-      } else if (checkOutTime == null) {
-        // Segunda seleção: definir checkOutTime, garantindo que seja maior que checkInTime
-        if (selectedTime > checkInTime!) {
-          checkOutTime = selectedTime;
-        } else {
-          checkOutTime = checkInTime;
-          checkInTime = selectedTime;
-        }
+        checkOutTime = null; // Limpa o horário de saída
       } else {
-        // Limpar e definir novamente checkInTime
-        checkInTime = selectedTime;
-        checkOutTime = null;
-      }
+        // Se for o horário de saída
+        if (checkInTime != null) {
+          int adjustedCheckInTime = checkInTime!;
 
-      showWarning = false;
+          // Ajusta para considerar o dia seguinte
+          if (selectedTime < adjustedCheckInTime) {
+            selectedTime += 24;
+          }
 
-      if (checkInTime != null && checkOutTime != null) {
-        // Ajustar checkOutTime temporariamente para a validação
-        int adjustedCheckOutTime = checkOutTime!;
-        if (checkOutTime! >= 0 && checkOutTime! <= 4) {
-          adjustedCheckOutTime += 24;
-        }
-
-        if ((adjustedCheckOutTime - checkInTime!) < 4) {
-          setState(() {
-            showWarning = true;
-          });
-          return;
-        }
-
-        // Garantir que checkOutTime seja sempre maior que checkInTime,
-        // considerando a continuidade do dia
-        if (checkInTime! >= 1 &&
-            checkInTime! <= 4 &&
-            checkOutTime! > checkInTime!) {
-          // Do nothing, valid case
-        } else if (checkOutTime! >= 1 &&
-            checkOutTime! <= 4 &&
-            checkOutTime! < checkInTime!) {
-          // Valid case
-        } else if (checkInTime! >= 1 &&
-            checkInTime! <= 4 &&
-            checkOutTime! <= 4) {
-          int temp = checkInTime!;
-          checkInTime = checkOutTime;
-          checkOutTime = temp;
-        } else if (checkOutTime! < checkInTime!) {
-          int temp = checkInTime!;
-          checkInTime = checkOutTime;
-          checkOutTime = temp;
-        }
-
-        // Inverter valores se checkInTime for 00, 01, 02, 03 ou 04
-        if (checkInTime! >= 0 && checkInTime! <= 4) {
-          int temp = checkInTime!;
-          checkInTime = checkOutTime;
-          checkOutTime = temp;
+          // Verifica se o horário de saída está pelo menos 4 horas após o check-in
+          if (selectedTime >= adjustedCheckInTime + 4) {
+            checkOutTime = selectedTime %
+                24; // Ajusta para armazenar o horário no formato de 24 horas
+          }
         }
       }
     });
@@ -329,94 +354,145 @@ class _CalendarPageState extends State<CalendarPage> {
                 ),
               ),
               if (_selectedDate != null)
-                SizedBox(
-                  height: 30,
-                  child: Builder(
-                    builder: (context) {
-                      // Determinar os horários baseados no dia da semana
-                      Hours? dayHours;
-                      switch (_selectedDate!.weekday) {
-                        case DateTime.monday:
-                          dayHours = widget.space.days.monday;
-                          break;
-                        case DateTime.tuesday:
-                          dayHours = widget.space.days.tuesday;
-                          break;
-                        case DateTime.wednesday:
-                          dayHours = widget.space.days.wednesday;
-                          break;
-                        case DateTime.thursday:
-                          dayHours = widget.space.days.thursday;
-                          break;
-                        case DateTime.friday:
-                          dayHours = widget.space.days.friday;
-                          break;
-                        case DateTime.saturday:
-                          dayHours = widget.space.days.saturday;
-                          break;
-                        case DateTime.sunday:
-                          dayHours = widget.space.days.sunday;
-                          break;
-                      }
+                Builder(
+                  builder: (context) {
+                    // Determinar os horários baseados no dia da semana
+                    Hours? dayHours;
+                    switch (_selectedDate!.weekday) {
+                      case DateTime.monday:
+                        dayHours = widget.space.days.monday;
+                        break;
+                      case DateTime.tuesday:
+                        dayHours = widget.space.days.tuesday;
+                        break;
+                      case DateTime.wednesday:
+                        dayHours = widget.space.days.wednesday;
+                        break;
+                      case DateTime.thursday:
+                        dayHours = widget.space.days.thursday;
+                        break;
+                      case DateTime.friday:
+                        dayHours = widget.space.days.friday;
+                        break;
+                      case DateTime.saturday:
+                        dayHours = widget.space.days.saturday;
+                        break;
+                      case DateTime.sunday:
+                        dayHours = widget.space.days.sunday;
+                        break;
+                    }
 
-                      // Se não houver horários definidos para esse dia, retornar um container vazio
-                      if (dayHours == null) {
-                        return Container();
-                      }
+                    // Se não houver horários definidos para esse dia, retornar um container vazio
+                    if (dayHours == null) {
+                      return Container();
+                    }
 
-                      // Converter horários de string para inteiros
-                      int startHour = int.parse(dayHours.from.split(':')[0]);
-                      int endHour = int.parse(dayHours.to.split(':')[0]);
+                    // Converter horários de string para inteiros
+                    int startHour = int.parse(dayHours.from.split(':')[0]);
+                    int endHour = int.parse(dayHours.to.split(':')[0]);
 
-                      // Calcular quantidade de horas disponíveis
-                      int itemCount = endHour - startHour + 1;
+                    // Calcular a quantidade de horas disponíveis para a entrada (de 00:00 até 23:59 ou conforme definido)
+                    int itemCount = endHour - startHour + 1;
 
-                      return ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: itemCount,
-                        itemBuilder: (BuildContext context, int index) {
-                          int hour = (startHour + index) % 24;
-                          bool isSelected =
-                              (hour == checkInTime) || (hour == checkOutTime);
+                    // Se o horário de entrada já foi selecionado, então calcular os horários de saída
+                    int checkInOffset = checkInTime ??
+                        -1; // Se não tiver checkInTime, definir como -1
+                    int minExitHour = (checkInOffset + 4) %
+                        24; // Horário mínimo de saída (4h após o check-in)
 
-                          if (index == 0) {
-                            return Padding(
-                              padding: const EdgeInsets.only(left: 20),
-                              child: GestureDetector(
-                                onTap: () => onSelectTime(hour),
-                                child: CalendarWidget(
-                                  hour: hour.toString().padLeft(2, '0'),
-                                  isSelected: isSelected,
+                    // Se checkInTime for definido, então o horário de saída vai até 24h após o check-in
+                    int availableExitHours = 24 +
+                        (checkInOffset -
+                            minExitHour); // Horários de saída até 24 horas depois do horário de entrada
+
+                    // Garantir que o valor de availableExitHours nunca seja negativo
+                    availableExitHours =
+                        availableExitHours < 0 ? 0 : availableExitHours;
+
+                    return Column(
+                      children: [
+                        // Lista de Horários de Entrada
+
+                        SizedBox(
+                          height: 30,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: itemCount,
+                            itemBuilder: (BuildContext context, int index) {
+                              int hour = (startHour + index) % 24;
+                              bool isSelected = hour == checkInTime;
+
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: GestureDetector(
+                                  onTap: () =>
+                                      onSelectTime(hour, isCheckIn: true),
+                                  child: CalendarWidget(
+                                    hour:
+                                        '${hour.toString().padLeft(2, '0')}:00',
+                                    isSelected: isSelected,
+                                  ),
                                 ),
-                              ),
-                            );
-                          }
-                          if (index == itemCount - 1) {
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 20),
-                              child: GestureDetector(
-                                onTap: () => onSelectTime(hour),
-                                child: CalendarWidget(
-                                  hour: hour.toString().padLeft(2, '0'),
-                                  isSelected: isSelected,
-                                ),
-                              ),
-                            );
-                          }
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: GestureDetector(
-                              onTap: () => onSelectTime(hour),
-                              child: CalendarWidget(
-                                hour: hour.toString().padLeft(2, '0'),
-                                isSelected: isSelected,
-                              ),
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        // Lista de Horários de Saída (exibida após o horário de entrada ser selecionado)
+                        if (checkInTime != null)
+                          SizedBox(
+                            height: 50,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount:
+                                  availableExitHours, // Agora o itemCount de saída é ajustado
+                              itemBuilder: (BuildContext context, int index) {
+                                int hour = (minExitHour + index) %
+                                    24; // Calcula horários de saída com intervalo de 4 horas
+                                bool isSelected = hour == checkOutTime;
+
+                                // Verifica se o horário é do dia seguinte
+                                bool isNextDay = (minExitHour + index) >= 24;
+
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  child: Container(
+                                    // color: Colors.red,
+                                    child: GestureDetector(
+                                      onTap: () =>
+                                          onSelectTime(hour, isCheckIn: false),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          if (isNextDay)
+                                            const Text(
+                                              'Dia seguinte',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          CalendarWidget(
+                                            hour:
+                                                '${hour.toString().padLeft(2, '0')}:59',
+                                            isSelected: isSelected,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        },
-                      );
-                    },
-                  ),
+                          ),
+                      ],
+                    );
+                  },
                 ),
               if (checkInTime != null && checkOutTime != null)
                 Padding(
