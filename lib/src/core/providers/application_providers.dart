@@ -15,6 +15,7 @@ import 'package:git_flutter_festou/src/services/user_login/user_login_service.da
 import 'package:git_flutter_festou/src/services/user_login/user_login_service_impl.dart';
 import 'package:git_flutter_festou/src/services/user_register/user_register_service.dart';
 import 'package:git_flutter_festou/src/services/user_register/user_register_service_impl.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'application_providers.g.dart';
@@ -61,8 +62,6 @@ FeedbackFirestoreRepository feedbackFirestoreRepository(
         FeedbackFirestoreRepositoryRef ref) =>
     FeedbackFirestoreRepositoryImpl();
 
-
-
 @riverpod
 Future<void> logout(LogoutRef ref) async {
   ref.invalidate(userFirestoreRepositoryProvider);
@@ -73,6 +72,7 @@ Future<void> logout(LogoutRef ref) async {
   //ref.invalidate(reservationFirestoreRepositoryProvider);
 
   FirebaseAuth.instance.signOut();
+  await GoogleSignIn().signOut().catchError((_) => null);
 
   Navigator.of(FestouNavGlobalKey.instance.navKey.currentContext!)
       .pushNamedAndRemoveUntil('/login', (route) => false);
