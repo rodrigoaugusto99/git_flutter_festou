@@ -2,20 +2,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
 
-class ServiceTermsPage extends StatefulWidget {
+class ServiceTermsPage extends ConsumerStatefulWidget {
   final bool duringLogin;
 
-  const ServiceTermsPage({Key? key, this.duringLogin = false})
-      : super(key: key);
+  const ServiceTermsPage({super.key, this.duringLogin = false});
 
   @override
-  _ServiceTermsPageState createState() => _ServiceTermsPageState();
+  ConsumerState<ServiceTermsPage> createState() => _ServiceTermsPageState();
 }
 
-class _ServiceTermsPageState extends State<ServiceTermsPage> {
+class _ServiceTermsPageState extends ConsumerState<ServiceTermsPage> {
   final String serviceTermsHtml = '''
   <h1>Termos de Serviço do Festou</h1>
   <h2>1. Introdução</h2>
@@ -115,7 +116,7 @@ class _ServiceTermsPageState extends State<ServiceTermsPage> {
               return AlertDialog(
                 title: const Text('Sair do Festou'),
                 content: const Text(
-                    'Desmarcar essa opção resultará no seu logout. Deseja continuar?'),
+                    'Não aceitar os Termos de Serviço resultará no seu logout. Deseja continuar?'),
                 actions: <Widget>[
                   TextButton(
                     child: const Text('Cancelar'),
@@ -127,6 +128,9 @@ class _ServiceTermsPageState extends State<ServiceTermsPage> {
                     child: const Text('Confirmar'),
                     onPressed: () {
                       Navigator.of(context).pop(true);
+                      ref.invalidate(userFirestoreRepositoryProvider);
+                      ref.invalidate(userAuthRepositoryProvider);
+                      ref.read(logoutProvider.future);
                     },
                   ),
                 ],
@@ -269,6 +273,9 @@ class _ServiceTermsPageState extends State<ServiceTermsPage> {
               GestureDetector(
                 onTap: () async {
                   await FirebaseAuth.instance.signOut();
+                  ref.invalidate(userFirestoreRepositoryProvider);
+                  ref.invalidate(userAuthRepositoryProvider);
+                  ref.read(logoutProvider.future);
                   Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(builder: (context) => const LoginPage()),
                     (Route<dynamic> route) => false,
