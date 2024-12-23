@@ -3,7 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/exceptions/auth_exception.dart';
+import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
+import 'package:git_flutter_festou/src/core/fp/nil.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
@@ -13,7 +15,7 @@ class AuthService {
     required this.context,
   });
   /*como já veifiquei se o email ja esta cadastrado, entao nao preciso mais passar por essa verificacao, posso chamar o sveUser direto. */
-  /*Future<Either<RepositoryException, Nil>> saveUserWithGoogle(User user) async {
+  Future<Either<RepositoryException, Nil>> saveUserWithGoogle(User user) async {
 // Verificar se o usuário possui um documento no Firestore
     try {
       final userDocument =
@@ -67,18 +69,18 @@ class AuthService {
       return Failure(RepositoryException(
           message: 'Erro ao cadastrar usuario no banco de dados'));
     }
-  }*/
+  }
 
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
 
   //todo:resolver email ja usado pra google - nao pode usar p email/senha
   //todo!:rsolver depois de criar conta com email/snha, se logar com google com o mesmmo mail, nao pode mais usar email/senha
-//todo!:resolver, se logar com email/senha, depois logar com google, se descinvuclar o google, nao consegue logar com email e senha
-//todo! bug de as vezes cadastrar por email/login e dar erro no primeiro login (usuario n encontrado)
+  //todo!:resolver, se logar com email/senha, depois logar com google, se descinvuclar o google, nao consegue logar com email e senha
+  //todo! bug de as vezes cadastrar por email/login e dar erro no primeiro login (usuario n encontrado)
 
-//se ja fez, boom. se não fez, chamar o onChngedProvider na page.
-//todo: logica para ver se o usuario já fez login com essa conta do google.(silenty)
+  //se ja fez, boom. se não fez, chamar o onChngedProvider na page.
+  //todo: logica para ver se o usuario já fez login com essa conta do google.(silenty)
 
   /*Future<String?> getGoogleUserEmail() async {
     try {
@@ -128,7 +130,7 @@ class AuthService {
       return Success(userCredential);
     } catch (e) {
       log('Erro ao logar com Google: $e');
-      return Failure(AuthError(message: 'Erro ao logar com Google.'));
+      return Failure(AuthError(message: 'Erro ao logar com Google: $e'));
     }
   }
 }
