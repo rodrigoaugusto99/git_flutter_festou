@@ -2,20 +2,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/login/login_page.dart';
 
-class PrivacyPolicyPage extends StatefulWidget {
+class PrivacyPolicyPage extends ConsumerStatefulWidget {
   final bool duringLogin;
 
-  const PrivacyPolicyPage({Key? key, this.duringLogin = false})
-      : super(key: key);
+  const PrivacyPolicyPage({super.key, this.duringLogin = false});
 
   @override
-  _PrivacyPolicyPageState createState() => _PrivacyPolicyPageState();
+  ConsumerState<PrivacyPolicyPage> createState() => _PrivacyPolicyPageState();
 }
 
-class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
+class _PrivacyPolicyPageState extends ConsumerState<PrivacyPolicyPage> {
   final String privacyPolicyHtml = '''
   <h1>Política de Privacidade do Festou</h1>
   <p>A presente Política de Privacidade contém informações sobre a coleta, uso, armazenamento, tratamento e proteção dos dados pessoais dos usuários e/ou visitantes do Festou, com a finalidade de demonstrar absoluta transparência quanto ao assunto e esclarecer a todos os interessados sobre os tipos de dados que são coletados, os motivos da coleta e a forma como os usuários podem gerenciar ou excluir suas informações pessoais.</p>
@@ -113,6 +114,9 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
                     child: const Text('Confirmar'),
                     onPressed: () {
                       Navigator.of(context).pop(true);
+                      ref.invalidate(userFirestoreRepositoryProvider);
+                      ref.invalidate(userAuthRepositoryProvider);
+                      ref.read(logoutProvider.future);
                     },
                   ),
                 ],
@@ -255,6 +259,9 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
               GestureDetector(
                 onTap: () async {
                   await FirebaseAuth.instance.signOut();
+                  ref.invalidate(userFirestoreRepositoryProvider);
+                  ref.invalidate(userAuthRepositoryProvider);
+                  ref.read(logoutProvider.future);
                   Navigator.of(context).pushReplacementNamed('/login');
                 },
                 child: Padding(

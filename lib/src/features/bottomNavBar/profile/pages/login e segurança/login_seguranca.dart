@@ -15,6 +15,10 @@ class LoginSeguranca extends ConsumerStatefulWidget {
 
 class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
     with WidgetsBindingObserver {
+  final TextEditingController novaSenhaController = TextEditingController();
+  final TextEditingController confirmarSenhaController =
+      TextEditingController();
+
   @override
   void initState() {
     // Adiciona o observer para monitorar mudanças de ciclo de vida do widget
@@ -24,6 +28,8 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
 
   @override
   void dispose() {
+    novaSenhaController.dispose();
+    confirmarSenhaController.dispose();
     // Remove o observer ao destruir o widget
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -58,6 +64,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
     try {
       // Obtenha o usuário atualmente autenticado
       final user = FirebaseAuth.instance.currentUser!;
+      providers = [];
 
       // Obtém a lista de provedores associados ao usuário
 
@@ -94,37 +101,10 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
         InkWell(
           onTap: () {},
           child: const Text(
-            'Desconectar',
+            'Desvincular',
             style: TextStyle(
-              decoration: TextDecoration.underline,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget buildFacebookWidget() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Image.asset(
-              'lib/assets/images/Facebook_icon.svg.png.png',
-              width: 24, // Ajuste conforme necessário
-              height: 24,
-            ),
-            const Text("Facebook"),
-          ],
-        ),
-        InkWell(
-          onTap: () {},
-          child: const Text(
-            'Desconectar',
-            style: TextStyle(
-              decoration: TextDecoration.underline,
+              color: Color(0XFF4300B1),
+              fontSize: 12,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -151,77 +131,172 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
     }
   }
 
-  Future areYouSureOnlyGoogle() async {
+  Future<void> areYouSureOnlyGoogle(BuildContext context) async {
     final user = FirebaseAuth.instance.currentUser;
 
-    if (user != null) {
+    if (user == null) {
+      log('Usuário não autenticado');
+      return;
+    }
+
+    final providers = await user.providerData;
+    if (providers.length == 1 && providers[0].providerId == "google.com") {
+      // Exibe o diálogo de confirmação
       await showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Tem certeza?'),
-            content: const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                    'O google é seu único provedor, se você desvincular, para usar essa conta, terá que criar uma senha com esse email.\n'),
-              ],
-            ),
-            actions: <Widget>[
+            title: const Text('Confirmação de Desvinculação'),
+            content: const Text(
+                'O Google é seu único provedor. Se você desvincular, precisará configurar uma senha para continuar acessando sua conta.'),
+            actions: [
               TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Fecha o diálogo
-                },
+                onPressed: () => Navigator.of(context).pop(),
                 child: const Text('Cancelar'),
               ),
               TextButton(
                 onPressed: () async {
-                  Navigator.of(context).pop(); // Fecha o diálogo
+                  Navigator.of(context).pop(); // Fecha o diálogo de confirmação
 
-                  try {
-                    // Exclua a conta do usuário
-                    await user.unlink("google.com");
+                  // Abre o pop-up para cadastrar nova senha
+                  await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      final _newPasswordController = TextEditingController();
+                      final _confirmPasswordController =
+                          TextEditingController();
 
-                    //todo:
-                    /* logica para deletar o usuario que tem apenas o goole como provedor,
-                    pois: 1) se desvincular, ficará apenas o usuario lá no auth com provedor vazio, 
-                    eu queria excluir tudo ali; 2) pra deletar de fato, precisa de reautenticacao sem senha,
-                    pois só há google, nao há email/senha, entao precisaria de reautenticar com link.
-                    seria com link mesmo? há um problema em deixar o provedor la vazio?*/
-                    //?
+                      return AlertDialog(
+                        title: const Center(
+                          child: Text(
+                            'Cadastrar senha',
+                          ),
+                        ),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(bottom: 20),
+                              child: Text(
+                                "Agora você deve cadastrar uma senha para login com e-mail:",
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            ),
+                            TextField(
+                              controller: _newPasswordController,
+                              decoration: const InputDecoration(
+                                labelText: 'Nova senha',
+                                labelStyle: TextStyle(fontSize: 14),
+                                border: OutlineInputBorder(),
+                              ),
+                              obscureText: true,
+                            ),
+                            const SizedBox(height: 16),
+                            TextField(
+                              controller: _confirmPasswordController,
+                              decoration: const InputDecoration(
+                                labelText: 'Confirmar senha',
+                                labelStyle: TextStyle(fontSize: 14),
+                                border: OutlineInputBorder(),
+                              ),
+                              obscureText: true,
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: const Text('Cancelar'),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              final newPassword =
+                                  _newPasswordController.text.trim();
+                              final confirmPassword =
+                                  _confirmPasswordController.text.trim();
 
-                    //?
-                    // Redirecione o usuário para a tela de login ou execute outras ações necessárias
-                    /*await ref
-                        .read(userFirestoreRepositoryProvider)
-                        .deleteUserDocument(user);*/
-                    //ref.read(logoutProvider.future);
-                    //log('Conta excluída com sucesso.');
-                    // Indica que o usuário confirmou a exclusão
+                              if (newPassword.isEmpty ||
+                                  confirmPassword.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'Os campos não podem estar vazios.'),
+                                  ),
+                                );
+                                return;
+                              }
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content:
-                            Text('Conta do Google desvinculada com sucesso!'),
-                      ),
-                    );
-                  } on FirebaseAuthException catch (e) {
-                    log('Erro ao excluir a conta: ${e.code}, ${e.message}');
-                    // Trate os erros conforme necessário, exiba mensagens ao usuário, etc.
-                  } catch (e) {
-                    log('Erro desconhecido ao excluir a conta: $e');
-                    // Trate outros erros conforme necessário.
-                  }
+                              if (newPassword.length < 6) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'A senha deve conter no mínimo 6 caracteres.'),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              if (newPassword != confirmPassword) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('As senhas não coincidem.'),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              try {
+                                // Atualiza a senha do usuário
+                                await user.updatePassword(newPassword);
+                                await user.unlink("google.com");
+
+                                setState(() {
+                                  displayAuthProviderList();
+                                });
+
+                                Navigator.of(context)
+                                    .pop(); // Fecha o pop-up de senha
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'Senha cadastrada e Google desvinculado com sucesso!'),
+                                  ),
+                                );
+                              } on FirebaseAuthException catch (e) {
+                                log('Erro ao cadastrar senha: ${e.code}, ${e.message}');
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Erro ao cadastrar senha: ${e.message}',
+                                    ),
+                                  ),
+                                );
+                              } catch (e) {
+                                log('Erro desconhecido ao cadastrar senha: $e');
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'Erro desconhecido ao cadastrar senha.'),
+                                  ),
+                                );
+                              }
+                            },
+                            child: const Text('Cadastrar'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 },
-                child: const Text('Deletar conta'),
+                child: const Text('Confirmar'),
               ),
             ],
           );
         },
       );
     } else {
-      log('Usuario não autenticado');
+      log('O usuário possui outros provedores ou nenhum.');
     }
   }
 
@@ -323,8 +398,78 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                     ),
                     const SizedBox(height: 0),
                     ElevatedButton(
-                      onPressed: () {
-                        // Implemente a lógica para "Alterar Senha"
+                      onPressed: () async {
+                        final user = FirebaseAuth.instance.currentUser;
+                        if (user != null) {
+                          try {
+                            // Obtenha as novas senhas dos campos de texto
+                            String novaSenha = novaSenhaController.text;
+                            String confirmarSenha =
+                                confirmarSenhaController.text;
+
+                            if (novaSenha != confirmarSenha) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('As senhas não coincidem.')),
+                              );
+                              return;
+                            }
+
+                            // Atualiza a senha do usuário
+                            await user.updatePassword(novaSenha);
+
+                            // Reautentica o usuário com a nova senha
+                            AuthCredential credential =
+                                EmailAuthProvider.credential(
+                              email: user.email!,
+                              password: novaSenha,
+                            );
+                            await user.reauthenticateWithCredential(credential);
+
+                            // Verifica se o Google está vinculado e remove
+                            if (user.providerData.any(
+                                (info) => info.providerId == "google.com")) {
+                              await user.unlink("google.com");
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content:
+                                      Text('Senha atualizada com sucesso.'),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content:
+                                      Text('Senha atualizada com sucesso.'),
+                                ),
+                              );
+                            }
+
+                            setState(() {
+                              isUpdatingPassword =
+                                  false; // Fecha o formulário de atualização
+                            });
+                          } on FirebaseAuthException catch (e) {
+                            if (e.code == 'weak-password') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('A senha é muito fraca.')),
+                              );
+                            } else if (e.code == 'requires-recent-login') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'Reautenticação necessária. Faça login novamente.'),
+                                ),
+                              );
+                            } else {
+                              log('Erro ao atualizar a senha: ${e.code}, ${e.message}');
+                            }
+                          } catch (e) {
+                            log('Erro desconhecido ao atualizar a senha: $e');
+                          }
+                        }
                       },
                       child: const Text('Alterar Senha'),
                     ),
@@ -367,20 +512,41 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                 onTap: () async {
                                   final user =
                                       FirebaseAuth.instance.currentUser;
-
                                   if (user != null) {
                                     try {
-                                      // Verifica se o usuário está vinculado ao provedor do Google
+                                      // Verifica se o usuário está vinculado ao Google
                                       if (user.providerData.any((info) =>
                                           info.providerId == "google.com")) {
-                                        if (user.providerData.any((info) =>
-                                            info.providerId != "password")) {
-                                          //se desvincular, deve deletar o usuario, pois só há google como provedor.
+                                        // Checa se o Google é o único provedor vinculado
+                                        bool hasOnlyGoogle = user.providerData
+                                            .every((info) =>
+                                                info.providerId ==
+                                                    "google.com" ||
+                                                info.providerId == "firebase");
 
-                                          await areYouSureOnlyGoogle();
+                                        if (hasOnlyGoogle) {
+                                          // Se Google for o único provedor, alerta avisando que é único provedor
+                                          await areYouSureOnlyGoogle(context);
                                         } else {
-                                          // Desvincula a conta do Google
+                                          // Caso contrário, desvincula o Google
                                           await user.unlink("google.com");
+
+                                          // Força a atualização do estado da tela
+                                          setState(
+                                              () {}); // Atualiza a UI para refletir a desconexão
+
+                                          // Recarrega o usuário
+                                          await FirebaseAuth
+                                              .instance.currentUser
+                                              ?.reload();
+
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                  'Conta do Google desvinculada com sucesso.'),
+                                            ),
+                                          );
                                         }
                                       } else {
                                         // Caso o usuário não esteja vinculado ao provedor do Google
@@ -393,15 +559,28 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                         );
                                       }
                                     } on FirebaseAuthException catch (e) {
-                                      // Trata exceções específicas, se necessário
-                                      log('Erro ao desvincular conta do Google, usuario nao autenticado: ${e.message}');
+                                      if (e.code == 'requires-recent-login') {
+                                        // Solicita ao usuário que faça login novamente
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                'Reautenticação necessária. Por favor, faça login novamente.'),
+                                          ),
+                                        );
+                                      } else {
+                                        log('Erro ao desvincular conta do Google: ${e.message}');
+                                      }
+                                    } catch (e) {
+                                      log('Erro desconhecido ao desvincular conta do Google: $e');
                                     }
                                   }
                                 },
                                 child: const Text(
-                                  'Desconectar',
+                                  'Desvincular',
                                   style: TextStyle(
-                                    decoration: TextDecoration.underline,
+                                    color: Color(0XFF4300B1),
+                                    fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -411,9 +590,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                         ),
                       ],
                     )
-                  : Container(),
-              providers.contains("facebook.com")
-                  ? buildFacebookWidget()
                   : Container(),
               providers.isEmpty ||
                       (providers.length == 1 && providers.contains("password"))
@@ -503,10 +679,8 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                     log('Conta excluída com sucesso.');
                                   } on FirebaseAuthException catch (e) {
                                     log('Erro ao excluir a conta: ${e.code}, ${e.message}');
-                                    // Trate os erros conforme necessário, exiba mensagens ao usuário, etc.
                                   } catch (e) {
                                     log('Erro desconhecido ao excluir a conta: $e');
-                                    // Trate outros erros conforme necessário.
                                   }
                                 },
                                 child: const Text('Deletar conta'),
@@ -517,7 +691,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                       );
                     } else {
                       log('Usuário não autenticado');
-                      // Se o usuário não estiver autenticado, trate conforme necessário.
                     }
                   }),
             ],
