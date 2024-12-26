@@ -164,50 +164,122 @@ class _CalendarPageState extends State<CalendarPage> {
     return unavailableHours.toSet().toList()..sort();
   }
 
-  // bool _isInCleaningPeriod(int hour, List<ReservationModel> reservations) {
-  //   if (_selectedDate == null) return false;
+  List<int> _getUnavailableCheckOutHours() {
+    if (_selectedDate == null) return [];
 
-  //   for (var reservation in reservations) {
-  //     // Verifica se é hora de limpeza antes ou depois de alguma reserva
-  //     if (hour == (reservation.checkInTime - 1) % 24 ||
-  //         hour == reservation.checkOutTime % 24) {
-  //       return true;
-  //     }
-  //   }
-  //   return false;
-  // }
+    final List<int> unavailableCheckOutHours = [];
 
-  Widget _buildTimeSelectionRow({
+    // Função auxiliar para obter a data em string no mesmo formato das reservas
+    String getDateString(DateTime date) {
+      return date.toString();
+    }
+
+    // Obtém a data do dia seguinte
+    final nextDate = _selectedDate!.add(const Duration(days: 1));
+
+    // Verifica reservas do dia atual
+    for (var reservation in reservasDoEspaco) {
+      if (reservation.selectedDate == getDateString(_selectedDate!)) {
+        // Adiciona os horários da reserva no dia atual
+        for (int i = reservation.checkInTime;
+            i < reservation.checkOutTime;
+            i++) {
+          unavailableCheckOutHours.add(i % 24);
+        }
+      }
+    }
+
+    // Verifica reservas do dia seguinte
+    for (var reservation in reservasDoEspaco) {
+      if (reservation.selectedDate == getDateString(nextDate)) {
+        // Adiciona os horários da reserva no dia seguinte
+        for (int i = reservation.checkInTime;
+            i < reservation.checkOutTime;
+            i++) {
+          unavailableCheckOutHours.add(i % 24);
+        }
+      }
+    }
+
+    // Remove duplicatas e ordena os horários
+    return unavailableCheckOutHours.toSet().toList()..sort();
+  }
+
+  Widget _buildTimeSelectionRowCheckIn({
     required int startHour,
     required int endHour,
-    required bool isCheckIn,
     required List<int> unavailableHours,
   }) {
     return SizedBox(
       height: 50,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: isCheckIn ? endHour - startHour + 1 : 24,
+        itemCount: endHour > startHour
+            ? endHour - startHour + 1
+            : (24 - startHour + endHour + 1),
         itemBuilder: (context, index) {
-          final int hour =
-              isCheckIn ? startHour + index : (startHour + index) % 24;
+          final int hour = (startHour + index) % 24;
 
-          // Verifica se o horário está indisponível apenas para horários de check-in
-          final bool isUnavailable =
-              isCheckIn ? unavailableHours.contains(hour) : false;
-
-          final bool isNextDay = !isCheckIn && (startHour + index) >= 24;
+          final bool isUnavailable = unavailableHours.contains(hour);
 
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                if (isUnavailable && isCheckIn)
+                if (isUnavailable)
                   const Text(
                     'Indisponível',
                     style: TextStyle(fontSize: 12, color: Colors.red),
                   ),
+                GestureDetector(
+                  onTap: isUnavailable
+                      ? null
+                      : () => onSelectTime(hour, isCheckIn: true),
+                  child: CalendarWidget(
+                    hour: '${hour.toString().padLeft(2, '0')}:00',
+                    isSelected: hour == checkInTime,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildTimeSelectionRowCheckOut({
+    required int startHour,
+    required int endHour,
+    required List<int> unavailableHours,
+  }) {
+    bool reachedLimit = false;
+    return SizedBox(
+      height: 50,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: endHour > startHour
+            ? endHour - startHour + 1
+            : (24 - startHour + endHour + 1),
+        itemBuilder: (context, index) {
+          final int hour = (startHour + index) % 24;
+
+          final bool isUnavailable = unavailableHours.contains(hour);
+          final bool isNextDay = (startHour + index) >= 24;
+          if (isUnavailable) {
+            reachedLimit = true;
+            return const SizedBox();
+          }
+          if (reachedLimit) {
+            return const SizedBox();
+          }
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
                 if (isNextDay)
                   const Text(
                     'Dia seguinte',
@@ -216,12 +288,10 @@ class _CalendarPageState extends State<CalendarPage> {
                 GestureDetector(
                   onTap: isUnavailable
                       ? null
-                      : () => onSelectTime(hour, isCheckIn: isCheckIn),
+                      : () => onSelectTime(hour, isCheckIn: false),
                   child: CalendarWidget(
-                    hour:
-                        '${hour.toString().padLeft(2, '0')}:${isCheckIn ? '00' : '59'}',
-                    isSelected:
-                        isCheckIn ? hour == checkInTime : hour == checkOutTime,
+                    hour: '${hour.toString().padLeft(2, '0')}:59',
+                    isSelected: hour == checkOutTime,
                   ),
                 ),
               ],
@@ -241,22 +311,21 @@ class _CalendarPageState extends State<CalendarPage> {
     final startHour = int.parse(dayHours.from.split(':')[0]);
     final endHour = int.parse(dayHours.to.split(':')[0]);
     final unavailableHours = _getUnavailableHours();
+    final unavailableHoursCheckout = _getUnavailableCheckOutHours();
 
     return Column(
       children: [
-        _buildTimeSelectionRow(
+        _buildTimeSelectionRowCheckIn(
           startHour: startHour,
           endHour: endHour,
-          isCheckIn: true,
           unavailableHours: unavailableHours,
         ),
         const SizedBox(height: 10),
         if (checkInTime != null)
-          _buildTimeSelectionRow(
+          _buildTimeSelectionRowCheckOut(
             startHour: (checkInTime! + 4) % 24,
             endHour: (checkInTime! + 24) % 24,
-            isCheckIn: false,
-            unavailableHours: unavailableHours,
+            unavailableHours: unavailableHoursCheckout,
           ),
       ],
     );
@@ -265,6 +334,86 @@ class _CalendarPageState extends State<CalendarPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+        child: GestureDetector(
+          onTap: () {
+            if (_selectedDate == null ||
+                checkInTime == null ||
+                checkOutTime == null) {
+              log('ha variaveis nulas');
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text('Selecione uma data e horarios')));
+              return;
+            }
+
+            // Verificação com ajuste temporário para checkOutTime
+            int adjustedCheckOutTime = checkOutTime!;
+            if (checkOutTime! >= 0 && checkOutTime! <= 4) {
+              adjustedCheckOutTime += 24;
+            }
+
+            if ((adjustedCheckOutTime - checkInTime!) < 4) {
+              setState(() {
+                showWarning = true;
+              });
+              return;
+            }
+
+            SummaryData summaryData = SummaryData(
+              dataAtual: null,
+              selectedDate: _selectedDate!,
+              selectedFinalDate: null, //todo: arrumar
+              spaceModel: widget.space,
+              checkInTime: checkInTime!,
+              checkOutTime: checkOutTime!,
+
+              totalHours: null,
+              valorTotalDasHoras: null,
+              valorDaTaxaConcierge: null,
+
+              valorTotalAPagar: null,
+              valorDaMultaPorHoraExtrapolada: null,
+              nomeDoCliente: null,
+              cpfDoCliente: null,
+              nomeDoLocador: null,
+              cpfDoLocador: null,
+            );
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ResumoReservaPage(
+                  summaryData: summaryData,
+                  cupomModel: null,
+                  html: null,
+                ),
+              ),
+            );
+          },
+          child: Container(
+              alignment: Alignment.center,
+              height: 35,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xff9747FF),
+                    Color(0xff44300b1),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+              child: const Text(
+                'Prosseguir',
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white),
+              )),
+        ),
+      ),
       appBar: AppBar(
         leading: Padding(
           padding: const EdgeInsets.only(left: 18.0),
