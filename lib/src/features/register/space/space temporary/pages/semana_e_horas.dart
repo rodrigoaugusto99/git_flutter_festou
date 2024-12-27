@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
@@ -9,6 +11,61 @@ import 'package:git_flutter_festou/src/features/register/space/space%20temporary
 import 'package:git_flutter_festou/src/helpers/helpers.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:time_picker_spinner_pop_up/time_picker_spinner_pop_up.dart';
+
+class TimeSelector extends StatelessWidget {
+  final List<String> times;
+
+  const TimeSelector({super.key, required this.times});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 100,
+      ),
+      child: Dialog(
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          height: 400,
+          child: ListView.builder(
+            itemCount: times.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.pop(context, times[index]);
+                },
+                child: Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    child: Text(times[index])),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+List<String> generateHourlyTimes() {
+  List<String> times = [];
+  for (int hour = 0; hour < 24; hour++) {
+    String formattedHour = hour.toString().padLeft(2, '0');
+    times.add('$formattedHour:00');
+  }
+  return times;
+}
+
+List<String> generateHourly59Times() {
+  List<String> times = [];
+  for (int hour = 0; hour < 24; hour++) {
+    String formattedHour = hour.toString().padLeft(2, '0');
+    times.add('$formattedHour:59');
+  }
+  return times;
+}
 
 class TimePickerForDay extends StatefulWidget {
   final String dayOfWeek;
@@ -29,45 +86,73 @@ class TimePickerForDay extends StatefulWidget {
 }
 
 class _TimePickerForDayState extends State<TimePickerForDay> {
-  DateTime? fromTime;
-  DateTime? toTime;
+  String? fromTime;
+  String? toTime;
 
-  void _setFromTime(DateTime dateTime) {
+  // void _setFromTime(DateTime dateTime) {
+  //   setState(() {
+  //     fromTime = dateTime;
+  //   });
+  //   //if (fromTime != null && toTime != null) {
+  //   widget.onSetHours(
+  //     widget.dayOfWeek,
+  //     fromTime != null ? _formatTime(fromTime!) : '00:00',
+  //     toTime != null ? _formatTime(toTime!) : '23:59',
+  //   );
+  // }
+
+  // void _setToTime(DateTime dateTime) {
+  //   setState(() {
+  //     toTime = dateTime;
+  //   });
+  //   // if (fromTime != null && toTime != null) {
+  //   widget.onSetHours(
+  //     widget.dayOfWeek,
+  //     fromTime != null ? _formatTime(fromTime!) : '00:00',
+  //     toTime != null ? _formatTime(toTime!) : '23:59',
+  //   );
+  // }
+
+  void _setFromTime(String date) {
     setState(() {
-      fromTime = dateTime;
+      fromTime = date;
     });
     //if (fromTime != null && toTime != null) {
     widget.onSetHours(
       widget.dayOfWeek,
-      fromTime != null ? _formatTime(fromTime!) : '00:00',
-      toTime != null ? _formatTime(toTime!) : '23:59',
+      fromTime ?? '00:00',
+      toTime ?? '23:59',
     );
   }
 
-  void _setToTime(DateTime dateTime) {
+  void _setToTime(String date) {
     setState(() {
-      toTime = dateTime;
+      toTime = date;
     });
     // if (fromTime != null && toTime != null) {
     widget.onSetHours(
       widget.dayOfWeek,
-      fromTime != null ? _formatTime(fromTime!) : '00:00',
-      toTime != null ? _formatTime(toTime!) : '23:59',
+      fromTime ?? '00:00',
+      toTime ?? '23:59',
     );
   }
 
-  String _formatTime(DateTime time) {
-    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
-  }
+  // String _formatTime(DateTime time) {
+  //   return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+  // }
 
   @override
   Widget build(BuildContext context) {
-    DateTime fromtime = fromTime ??
-        DateTime.now().copyWith(hour: 0, minute: 0, second: 0, millisecond: 0);
+    // DateTime fromtime = fromTime ??
+    //     DateTime.now().copyWith(hour: 0, minute: 0, second: 0, millisecond: 0);
 
-    DateTime totime = toTime ??
-        DateTime.now()
-            .copyWith(hour: 23, minute: 59, second: 0, millisecond: 0);
+    // DateTime totime = toTime ??
+    //     DateTime.now()
+    //         .copyWith(hour: 23, minute: 59, second: 0, millisecond: 0);
+
+    String fromtime = fromTime ?? '00:00';
+
+    String totime = toTime ?? '23:59';
     return Column(
       children: [
         Row(
@@ -75,29 +160,41 @@ class _TimePickerForDayState extends State<TimePickerForDay> {
           children: [
             Stack(
               children: [
-                SizedBox(
-                  height: 30,
-                  width: 98,
-                  child: TimePickerSpinnerPopUp(
-                    iconSize: 0,
+                AbsorbPointer(
+                  child: SizedBox(
+                    height: 30,
+                    width: 98,
+                    child: TimePickerSpinnerPopUp(
+                      iconSize: 0,
 
-                    paddingHorizontalOverlay: 50,
-                    enable: widget.isFilled,
-                    mode: CupertinoDatePickerMode.time,
-                    //initTime: fromTime ?? DateTime.now(),
-                    initTime: fromtime,
-                    barrierColor: Colors.black12,
-                    minuteInterval: 1,
-                    padding: const EdgeInsets.all(12),
-                    cancelText: 'Cancel',
-                    confirmText: 'OK',
-                    pressType: PressType.singlePress,
-                    timeFormat: 'HH:mm',
-                    onChange: _setFromTime,
-                    radius: 30,
+                      paddingHorizontalOverlay: 50,
+                      enable: widget.isFilled,
+                      mode: CupertinoDatePickerMode.time,
+                      //initTime: fromTime ?? DateTime.now(),
+                      // initTime: fromtime,
+                      barrierColor: Colors.black12,
+                      // minuteInterval: 60,
+                      padding: const EdgeInsets.all(12),
+                      cancelText: 'Cancel',
+                      confirmText: 'OK',
+                      pressType: PressType.singlePress,
+                      timeFormat: 'mm',
+                      //onChange: _setFromTime,
+                      radius: 30,
+                    ),
                   ),
                 ),
-                IgnorePointer(
+                GestureDetector(
+                  onTap: () async {
+                    final x = await showDialog(
+                      context: context,
+                      builder: (context) =>
+                          TimeSelector(times: generateHourlyTimes()),
+                    );
+                    if (x != null) {
+                      _setFromTime(x);
+                    }
+                  },
                   child: decContainer(
                     color: Colors.white,
                     borderColor: Colors.white,
@@ -132,7 +229,7 @@ class _TimePickerForDayState extends State<TimePickerForDay> {
                   IgnorePointer(
                     child: Padding(
                       padding: const EdgeInsets.only(left: 18, top: 5),
-                      child: Text(_formatTime(fromtime)),
+                      child: Text(fromtime),
                     ),
                   ),
                   Positioned(
@@ -162,22 +259,36 @@ class _TimePickerForDayState extends State<TimePickerForDay> {
                 decContainer(
                   height: 30,
                   width: 98,
-                  child: TimePickerSpinnerPopUp(
-                    enable: widget.isFilled, iconSize: 0,
-                    mode: CupertinoDatePickerMode.time,
-                    //   initTime: toTime ?? DateTime.now(),
-                    initTime: totime,
-                    barrierColor: Colors.black12,
-                    minuteInterval: 1,
-                    padding: const EdgeInsets.all(12),
-                    cancelText: 'Cancel',
-                    confirmText: 'OK',
-                    pressType: PressType.singlePress,
-                    timeFormat: 'HH:mm',
-                    onChange: _setToTime,
+                  child: AbsorbPointer(
+                    child: TimePickerSpinnerPopUp(
+                      enable: widget.isFilled,
+                      iconSize: 0,
+                      mode: CupertinoDatePickerMode.time,
+                      //   initTime: toTime ?? DateTime.now(),
+                      //  initTime: totime,
+                      barrierColor: Colors.black12,
+
+                      //minuteInterval: 2,
+                      padding: const EdgeInsets.all(12),
+                      cancelText: 'Cancel',
+                      confirmText: 'OK',
+                      pressType: PressType.singlePress,
+                      timeFormat: 'mm',
+                      // onChange: _setToTime,
+                    ),
                   ),
                 ),
-                IgnorePointer(
+                GestureDetector(
+                  onTap: () async {
+                    final x = await showDialog(
+                      context: context,
+                      builder: (context) =>
+                          TimeSelector(times: generateHourly59Times()),
+                    );
+                    if (x != null) {
+                      _setToTime(x);
+                    }
+                  },
                   child: decContainer(
                     color: Colors.white,
                     borderColor: Colors.white,
@@ -214,7 +325,7 @@ class _TimePickerForDayState extends State<TimePickerForDay> {
                   IgnorePointer(
                     child: Padding(
                       padding: const EdgeInsets.only(left: 18, top: 5),
-                      child: Text(_formatTime(totime)),
+                      child: Text(totime),
                     ),
                   ),
                   Positioned(
