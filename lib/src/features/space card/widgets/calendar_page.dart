@@ -164,45 +164,78 @@ class _CalendarPageState extends State<CalendarPage> {
     return unavailableHours.toSet().toList()..sort();
   }
 
-  List<int> _getUnavailableCheckOutHours() {
-    if (_selectedDate == null) return [];
+  // List<int> _getUnavailableCheckOutHours() {
+  //   if (_selectedDate == null) return [];
 
-    final List<int> unavailableCheckOutHours = [];
+  //   final List<int> unavailableCheckOutHours = [];
 
-    // Função auxiliar para obter a data em string no mesmo formato das reservas
-    String getDateString(DateTime date) {
-      return date.toString();
-    }
+  //   // Função auxiliar para obter a data em string no mesmo formato das reservas
+  //   String getDateString(DateTime date) {
+  //     return date.toString();
+  //   }
 
-    // Obtém a data do dia seguinte
+  //   // Obtém a data do dia seguinte
+  //   final nextDate = _selectedDate!.add(const Duration(days: 1));
+
+  //   // Verifica reservas do dia atual
+  //   for (var reservation in reservasDoEspaco) {
+  //     if (reservation.selectedDate == getDateString(_selectedDate!)) {
+  //       // Adiciona os horários da reserva no dia atual
+  //       for (int i = reservation.checkInTime;
+  //           i < reservation.checkOutTime;
+  //           i++) {
+  //         unavailableCheckOutHours.add(i % 24);
+  //       }
+  //     }
+  //   }
+
+  //   // Verifica reservas do dia seguinte
+  //   for (var reservation in reservasDoEspaco) {
+  //     if (reservation.selectedDate == getDateString(nextDate)) {
+  //       // Adiciona os horários da reserva no dia seguinte
+  //       for (int i = reservation.checkInTime;
+  //           i < reservation.checkOutTime;
+  //           i++) {
+  //         unavailableCheckOutHours.add(i % 24);
+  //       }
+  //     }
+  //   }
+
+  //   // Remove duplicatas e ordena os horários
+  //   return unavailableCheckOutHours.toSet().toList()..sort();
+  // }
+
+  Map<String, List<int>> _getUnavailableCheckOutHours() {
+    if (_selectedDate == null) return {'currentDay': [], 'nextDay': []};
+
+    final List<int> unavailableCurrentDayHours = [];
+    final List<int> unavailableNextDayHours = [];
+
+    String getDateString(DateTime date) => date.toString();
+
     final nextDate = _selectedDate!.add(const Duration(days: 1));
 
-    // Verifica reservas do dia atual
     for (var reservation in reservasDoEspaco) {
       if (reservation.selectedDate == getDateString(_selectedDate!)) {
-        // Adiciona os horários da reserva no dia atual
         for (int i = reservation.checkInTime;
             i < reservation.checkOutTime;
             i++) {
-          unavailableCheckOutHours.add(i % 24);
+          unavailableCurrentDayHours.add(i % 24);
         }
       }
-    }
-
-    // Verifica reservas do dia seguinte
-    for (var reservation in reservasDoEspaco) {
       if (reservation.selectedDate == getDateString(nextDate)) {
-        // Adiciona os horários da reserva no dia seguinte
         for (int i = reservation.checkInTime;
             i < reservation.checkOutTime;
             i++) {
-          unavailableCheckOutHours.add(i % 24);
+          unavailableNextDayHours.add(i % 24);
         }
       }
     }
 
-    // Remove duplicatas e ordena os horários
-    return unavailableCheckOutHours.toSet().toList()..sort();
+    return {
+      'currentDay': unavailableCurrentDayHours.toSet().toList()..sort(),
+      'nextDay': unavailableNextDayHours.toSet().toList()..sort(),
+    };
   }
 
   Widget _buildTimeSelectionRowCheckIn({
@@ -249,59 +282,189 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
+  // Widget _buildTimeSelectionRowCheckOut({
+  //   required int startHour,
+  //   required int endHour,
+  //   required List<int> unavailableHours,
+  // }) {
+  //   bool reachedLimit = false;
+  //   bool reachedNextDay = false;
+  //   final itemCount = endHour > startHour
+  //       ? endHour - startHour + 1
+  //       : (24 - startHour + endHour + 1);
+
+  //   return SizedBox(
+  //     height: 50,
+  //     child: SingleChildScrollView(
+  //       scrollDirection: Axis.horizontal,
+  //       child: Row(
+  //         children: List.generate(itemCount, (index) => index)
+  //             .asMap()
+  //             .entries
+  //             .map((entry) {
+  //           final int index = entry.key;
+  //           final int hour = (startHour + index) % 24;
+
+  //           final bool isUnavailable = unavailableHours.contains(hour);
+
+  //           final bool isNextDay = (startHour + index) >= 24;
+  //           if (isUnavailable) {
+  //             reachedLimit = true;
+  //           }
+
+  //           if (isNextDay) {
+  //             reachedNextDay = true;
+  //           }
+
+  //           return Padding(
+  //             padding: const EdgeInsets.symmetric(horizontal: 10),
+  //             child: Column(
+  //               mainAxisAlignment: MainAxisAlignment.end,
+  //               children: [
+  //                 if (reachedLimit) ...[
+  //                   const Text(
+  //                     'Indisponível',
+  //                     style: TextStyle(fontSize: 12, color: Colors.red),
+  //                   ),
+  //                 ] else if (reachedNextDay && !reachedLimit) ...[
+  //                   const Text(
+  //                     'Dia seguinte',
+  //                     style: TextStyle(fontSize: 12, color: Colors.grey),
+  //                   ),
+  //                 ] else if (reachedNextDay) ...[
+  //                   const Text(
+  //                     'Dia seguinte',
+  //                     style: TextStyle(fontSize: 12, color: Colors.grey),
+  //                   ),
+  //                 ],
+  //                 GestureDetector(
+  //                   onTap: isUnavailable
+  //                       ? null
+  //                       : () => onSelectTime(hour, isCheckIn: false),
+  //                   child: CalendarWidget(
+  //                     hour: '${hour.toString().padLeft(2, '0')}:59',
+  //                     isSelected: hour == checkOutTime,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           );
+  //         }).toList(),
+  //       ),
+  //     ),
+  //   );
+  // }
+
   Widget _buildTimeSelectionRowCheckOut({
     required int startHour,
     required int endHour,
-    required List<int> unavailableHours,
+    required List<int> unavailableHoursCurrentDay,
+    required List<int> unavailableHoursNextDay,
   }) {
     bool reachedLimit = false;
+
+    final itemCount = endHour > startHour
+        ? endHour - startHour + 1
+        : (24 - startHour + endHour + 1);
+
     return SizedBox(
       height: 50,
-      child: ListView.builder(
+      child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        itemCount: endHour > startHour
-            ? endHour - startHour + 1
-            : (24 - startHour + endHour + 1),
-        itemBuilder: (context, index) {
-          final int hour = (startHour + index) % 24;
+        child: Row(
+          children: List.generate(itemCount, (index) => index)
+              .asMap()
+              .entries
+              .map((entry) {
+            log(startHour.toString());
+            final int index = entry.key;
+            final int hour = (startHour + index) % 24;
 
-          final bool isUnavailable = unavailableHours.contains(hour);
-          final bool isNextDay = (startHour + index) >= 24;
-          if (isUnavailable) {
-            reachedLimit = true;
-            return const SizedBox();
-          }
-          if (reachedLimit) {
-            return const SizedBox();
-          }
+            // Corrigida a lógica para identificar "dia seguinte"
+            final bool isNextDay;
+            if (startHour >= 0 && startHour <= 3) {
+              // Para startHour de 0 a 3, considera como "Dia seguinte" se hour < startHour
+              isNextDay = true;
+            } else {
+              // Lógica padrão para outros horários
+              isNextDay = (startHour + index) >= 24;
+            }
 
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                if (isNextDay)
-                  const Text(
-                    'Dia seguinte',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
+            // Determina a lista de indisponibilidade com base no dia
+            final bool isUnavailable = reachedLimit ||
+                (isNextDay
+                    ? unavailableHoursNextDay.contains(hour)
+                    : unavailableHoursCurrentDay.contains(hour));
+
+            // Marca como indisponível se já tiver atingido o limite
+            if (isUnavailable) {
+              reachedLimit = true;
+            }
+
+            // Exibe "Dia seguinte" no início de cada hora do próximo dia
+            bool showNextDayLabel = isNextDay && !isUnavailable;
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (showNextDayLabel)
+                    const Text(
+                      'Dia seguinte',
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                  if (isUnavailable)
+                    const Text(
+                      'Indisponível',
+                      style: TextStyle(fontSize: 12, color: Colors.red),
+                    ),
+                  GestureDetector(
+                    onTap: isUnavailable
+                        ? null
+                        : () => onSelectTime(hour, isCheckIn: false),
+                    child: CalendarWidget(
+                      hour: '${hour.toString().padLeft(2, '0')}:59',
+                      isSelected: hour == checkOutTime,
+                    ),
                   ),
-                GestureDetector(
-                  onTap: isUnavailable
-                      ? null
-                      : () => onSelectTime(hour, isCheckIn: false),
-                  child: CalendarWidget(
-                    hour: '${hour.toString().padLeft(2, '0')}:59',
-                    isSelected: hour == checkOutTime,
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
+                ],
+              ),
+            );
+          }).toList(),
+        ),
       ),
     );
   }
 
+  // Widget _buildTimeSelection() {
+  //   if (_selectedDate == null) return const SizedBox();
+
+  //   final dayHours = _getDayHours(_selectedDate!);
+  //   if (dayHours == null) return const SizedBox();
+
+  //   final startHour = int.parse(dayHours.from.split(':')[0]);
+  //   final endHour = int.parse(dayHours.to.split(':')[0]);
+  //   final unavailableHours = _getUnavailableHours();
+  //   final unavailableHoursCheckout = _getUnavailableCheckOutHours();
+
+  //   return Column(
+  //     children: [
+  //       _buildTimeSelectionRowCheckIn(
+  //         startHour: startHour,
+  //         endHour: endHour,
+  //         unavailableHours: unavailableHours,
+  //       ),
+  //       const SizedBox(height: 10),
+  //       if (checkInTime != null)
+  //         _buildTimeSelectionRowCheckOut(
+  //           startHour: (checkInTime! + 4) % 24,
+  //           endHour: (checkInTime! + 24) % 24,
+  //           unavailableHours: unavailableHoursCheckout,
+  //         ),
+  //     ],
+  //   );
+  // }
   Widget _buildTimeSelection() {
     if (_selectedDate == null) return const SizedBox();
 
@@ -325,7 +488,8 @@ class _CalendarPageState extends State<CalendarPage> {
           _buildTimeSelectionRowCheckOut(
             startHour: (checkInTime! + 4) % 24,
             endHour: (checkInTime! + 24) % 24,
-            unavailableHours: unavailableHoursCheckout,
+            unavailableHoursCurrentDay: unavailableHoursCheckout['currentDay']!,
+            unavailableHoursNextDay: unavailableHoursCheckout['nextDay']!,
           ),
       ],
     );
