@@ -25,6 +25,7 @@ class AuthService {
         final userDataFirestore = (
           id: user.uid.toString(),
           email: user.email.toString(),
+          nome: user.displayName,
         );
         // Se o usuário não tiver um documento, salvar as informações no Firestore
         await saveUser(userDataFirestore);
@@ -41,6 +42,7 @@ class AuthService {
       ({
         String id,
         String email,
+        String? nome,
       }) userData) async {
     try {
 // Crie um novo usuario com os dados fornecidos
@@ -48,7 +50,7 @@ class AuthService {
         'uid': userData.id,
         'email': userData.email,
         'userType': 'LOCATARIO',
-        'nome': '',
+        'nome': userData.nome ?? '',
         'telefone': '',
         'user_address': {
           'cep': '',
