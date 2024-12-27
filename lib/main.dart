@@ -37,50 +37,60 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      navigatorKey: FestouNavGlobalKey.instance.navKey,
-      routes: {
-        '/home': (_) => const BottomNavBarLocatarioPage(),
-        '/emailVerification': (_) => const VerifyEmailPage(),
-        '/auth': (_) => const AuthPage(),
-        '/login': (_) => const LoginPage(),
-        '/forgot_password': (_) => const ForgotPasswordPage(),
-        '/register/user': (_) => const UserRegisterPage(),
-        '/register/user/infos': (_) => const UserRegisterInfosPage(),
-        '/account/help': (_) => const HelpPage(),
-        '/account/favorites': (_) => const MyFavoriteSpacePage(),
-        '/home/my_spaces': (_) => const MySpacesPage(),
-        '/home/all_spaces': (_) => const AllSpacesPage(),
-        '/home/search_page': (_) => const SearchPage(),
-        '/mensagens': (_) => const Mensagens(),
-      },
-      onGenerateRoute: (settings) {
-        if (settings.name == '/home2') {
-          final initialIndex = settings.arguments as int? ?? 0;
-          return MaterialPageRoute(
-            builder: (context) =>
-                BottomNavBarLocadorPage(initialIndex: initialIndex),
-          );
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        final currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus &&
+            currentFocus.focusedChild != null) {
+          FocusManager.instance.primaryFocus?.unfocus();
         }
-        return null;
       },
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(
-          color: Colors.purple,
-          surfaceTintColor: Colors.transparent,
-        ),
-        scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        fontFamily: 'inter',
-        primarySwatch: Colors.purple,
-        dialogTheme: DialogTheme(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        navigatorKey: FestouNavGlobalKey.instance.navKey,
+        routes: {
+          '/home': (_) => const BottomNavBarLocatarioPage(),
+          '/emailVerification': (_) => const VerifyEmailPage(),
+          '/auth': (_) => const AuthPage(),
+          '/login': (_) => const LoginPage(),
+          '/forgot_password': (_) => const ForgotPasswordPage(),
+          '/register/user': (_) => const UserRegisterPage(),
+          '/register/user/infos': (_) => const UserRegisterInfosPage(),
+          '/account/help': (_) => const HelpPage(),
+          '/account/favorites': (_) => const MyFavoriteSpacePage(),
+          '/home/my_spaces': (_) => const MySpacesPage(),
+          '/home/all_spaces': (_) => const AllSpacesPage(),
+          '/home/search_page': (_) => const SearchPage(),
+          '/mensagens': (_) => const Mensagens(),
+        },
+        onGenerateRoute: (settings) {
+          if (settings.name == '/home2') {
+            final initialIndex = settings.arguments as int? ?? 0;
+            return MaterialPageRoute(
+              builder: (context) =>
+                  BottomNavBarLocadorPage(initialIndex: initialIndex),
+            );
+          }
+          return null;
+        },
+        theme: ThemeData(
+          appBarTheme: const AppBarTheme(
+            color: Colors.purple,
+            surfaceTintColor: Colors.transparent,
+          ),
+          scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
+          fontFamily: 'inter',
+          primarySwatch: Colors.purple,
+          dialogTheme: DialogTheme(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24),
+            ),
           ),
         ),
+        home: const SplashPage(),
       ),
-      home: const SplashPage(),
     );
   }
 }
