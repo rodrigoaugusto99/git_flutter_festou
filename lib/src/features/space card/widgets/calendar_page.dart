@@ -477,20 +477,30 @@ class _CalendarPageState extends State<CalendarPage> {
     final unavailableHoursCheckout = _getUnavailableCheckOutHours();
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        const Padding(
+          padding: EdgeInsets.only(left: 40),
+          child: Text('Início em:'),
+        ),
         _buildTimeSelectionRowCheckIn(
           startHour: startHour,
           endHour: endHour,
           unavailableHours: unavailableHours,
         ),
         const SizedBox(height: 10),
-        if (checkInTime != null)
+        if (checkInTime != null) ...[
+          const Padding(
+            padding: EdgeInsets.only(left: 40),
+            child: Text('Fim em:'),
+          ),
           _buildTimeSelectionRowCheckOut(
             startHour: (checkInTime! + 4) % 24,
             endHour: (checkInTime! + 24) % 24,
             unavailableHoursCurrentDay: unavailableHoursCheckout['currentDay']!,
             unavailableHoursNextDay: unavailableHoursCheckout['nextDay']!,
           ),
+        ],
       ],
     );
   }
