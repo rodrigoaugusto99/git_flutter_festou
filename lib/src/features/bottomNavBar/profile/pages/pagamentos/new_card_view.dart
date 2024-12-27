@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class NewCardView extends StatefulWidget {
   bool? isNew;
@@ -13,12 +14,33 @@ class NewCardView extends StatefulWidget {
 }
 
 class _NewCardViewState extends State<NewCardView> {
-  final nameEC = TextEditingController(text: 'Emília Faria M Souza');
-  final cardNumberEC = TextEditingController(text: '7894 1234 4568 2580');
-  final validateDateEC = TextEditingController(text: '01/29');
-  final cvvEC = TextEditingController(text: '100');
-  final flagEC = TextEditingController(text: 'Cartão Master 2');
+  // final nameEC = TextEditingController(text: 'Emília Faria M Souza');
+  // final cardNumberEC = TextEditingController(text: '7894 1234 4568 2580');
+  // final validateDateEC = TextEditingController(text: '01/29');
+  // final cvvEC = TextEditingController(text: '100');
+  // final flagEC = TextEditingController(text: 'Cartão Master 2');
+  TextEditingController nameEC = TextEditingController();
+  TextEditingController cardNumberEC = TextEditingController();
+  TextEditingController validateDateEC = TextEditingController();
+  TextEditingController cvvEC = TextEditingController();
+  TextEditingController flagEC = TextEditingController();
   bool _isChecked = false;
+
+  var dateMaskFormatter = MaskTextInputFormatter(
+    mask: '##/##',
+    filter: {"#": RegExp(r'[0-9]')},
+    type: MaskAutoCompletionType.lazy,
+  );
+  var cvvFormatter = MaskTextInputFormatter(
+    mask: '###',
+    filter: {"#": RegExp('[0-9]')},
+    type: MaskAutoCompletionType.lazy,
+  );
+  var cardNumberFormatter = MaskTextInputFormatter(
+    mask: '#### #### #### ####',
+    filter: {"#": RegExp('[0-9]')},
+    type: MaskAutoCompletionType.lazy,
+  );
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -74,13 +96,13 @@ class _NewCardViewState extends State<NewCardView> {
                       color: const Color(0xff4300B1),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Padding(
-                      padding: EdgeInsets.only(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
                           left: 31, right: 22, top: 22, bottom: 11),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
@@ -93,10 +115,10 @@ class _NewCardViewState extends State<NewCardView> {
                               ),
                             ],
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Text(
-                            '7894 **** **** 2580',
-                            style: TextStyle(
+                            cardNumberEC.text,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 20,
                               fontWeight: FontWeight.w700,
@@ -108,7 +130,7 @@ class _NewCardViewState extends State<NewCardView> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
+                                  const Text(
                                     'PORTADOR',
                                     style: TextStyle(
                                       color: Colors.white,
@@ -117,8 +139,8 @@ class _NewCardViewState extends State<NewCardView> {
                                     ),
                                   ),
                                   Text(
-                                    'EMILIA FARIA M SOUZA',
-                                    style: TextStyle(
+                                    nameEC.text,
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 14,
                                       fontWeight: FontWeight.w700,
@@ -129,7 +151,7 @@ class _NewCardViewState extends State<NewCardView> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Text(
+                                  const Text(
                                     'VALIDADE',
                                     style: TextStyle(
                                       color: Colors.white,
@@ -138,8 +160,8 @@ class _NewCardViewState extends State<NewCardView> {
                                     ),
                                   ),
                                   Text(
-                                    '01/29',
-                                    style: TextStyle(
+                                    validateDateEC.text,
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 14,
                                       fontWeight: FontWeight.w700,
@@ -197,6 +219,7 @@ class _NewCardViewState extends State<NewCardView> {
               child: Column(
                 children: [
                   CustomTextformfield(
+                    onChanged: (p0) => setState(() {}),
                     ddd: 10,
                     svgPath: 'lib/assets/images/image 6perssoa.png',
                     label: '',
@@ -204,9 +227,12 @@ class _NewCardViewState extends State<NewCardView> {
                   ),
                   const SizedBox(height: 15),
                   CustomTextformfield(
+                    onChanged: (p0) => setState(() {}),
                     ddd: 5,
                     label: '',
+                    keyboardType: TextInputType.number,
                     controller: cardNumberEC,
+                    inputFormatters: [cardNumberFormatter],
                     svgPath: 'lib/assets/images/image 4card.png',
                   ),
                   const SizedBox(height: 15),
@@ -214,25 +240,32 @@ class _NewCardViewState extends State<NewCardView> {
                     children: [
                       Expanded(
                         child: CustomTextformfield(
-                          ddd: 2,
-                          svgPath: 'lib/assets/images/image 4calendarrrr.png',
+                          onChanged: (p0) => setState(() {}),
+                          ddd: 10,
+                          svgPath: 'lib/assets/images/image 5cardcvv.png',
                           label: '',
-                          controller: validateDateEC,
+                          controller: cvvEC,
+                          inputFormatters: [cvvFormatter],
+                          keyboardType: TextInputType.number,
                         ),
                       ),
                       const SizedBox(width: 20),
                       Expanded(
                         child: CustomTextformfield(
-                          ddd: 10,
-                          svgPath: 'lib/assets/images/image 5cardcvv.png',
+                          onChanged: (p0) => setState(() {}),
+                          ddd: 2,
+                          svgPath: 'lib/assets/images/image 4calendarrrr.png',
                           label: '',
-                          controller: cvvEC,
+                          keyboardType: TextInputType.number,
+                          controller: validateDateEC,
+                          inputFormatters: [dateMaskFormatter],
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 15),
                   CustomTextformfield(
+                    onChanged: (p0) => setState(() {}),
                     ddd: 10,
                     svgPath: 'lib/assets/images/image 7passa.png',
                     label: '',
