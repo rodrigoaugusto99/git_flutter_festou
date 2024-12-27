@@ -1,6 +1,12 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
+import 'package:git_flutter_festou/src/models/card_model.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:validatorless/validatorless.dart';
 
 class NewCardView extends StatefulWidget {
   bool? isNew;
@@ -83,35 +89,18 @@ class _NewCardViewState extends State<NewCardView> {
     );
   }
 
-  void showCardFlagsPopup(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Select a card flag'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: cardFlags.map((flag) {
-              return ListTile(
-                title: Text(flag),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  onFlagSelected(flag);
-                },
-              );
-            }).toList(),
-          ),
-        );
-      },
-    );
-  }
-
   void onFlagSelected(String? flag) {
     if (flag != null) {
       setState(() {
         flagEC.text = flag;
       });
     }
+  }
+
+  final formKey = GlobalKey<FormState>();
+
+  FormFieldValidator<String> validate() {
+    return Validatorless.required('Campo obrigatório');
   }
 
   @override
@@ -289,87 +278,94 @@ class _NewCardViewState extends State<NewCardView> {
             const SizedBox(height: 45),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 17),
-              child: Column(
-                children: [
-                  CustomTextformfield(
-                    onChanged: (p0) => setState(() {}),
-                    ddd: 10,
-                    svgPath: 'lib/assets/images/image 6perssoa.png',
-                    hintText: 'Nome',
-                    controller: nameEC,
-                  ),
-                  const SizedBox(height: 15),
-                  CustomTextformfield(
-                    onChanged: (p0) => setState(() {}),
-                    ddd: 5,
-                    hintText: 'Cartão',
-                    keyboardType: TextInputType.number,
-                    controller: cardNumberEC,
-                    inputFormatters: [cardNumberFormatter],
-                    svgPath: 'lib/assets/images/image 4card.png',
-                  ),
-                  const SizedBox(height: 15),
-                  Row(
-                    children: [
-                      Expanded(
+              child: Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    CustomTextformfield(
+                      onChanged: (p0) => setState(() {}),
+                      ddd: 10,
+                      svgPath: 'lib/assets/images/image 6perssoa.png',
+                      hintText: 'Nome',
+                      controller: nameEC,
+                      validator: validate(),
+                    ),
+                    const SizedBox(height: 15),
+                    CustomTextformfield(
+                      onChanged: (p0) => setState(() {}),
+                      ddd: 5,
+                      hintText: 'Cartão',
+                      keyboardType: TextInputType.number,
+                      controller: cardNumberEC,
+                      inputFormatters: [cardNumberFormatter],
+                      svgPath: 'lib/assets/images/image 4card.png',
+                      validator: validate(),
+                    ),
+                    const SizedBox(height: 15),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextformfield(
+                            onChanged: (p0) => setState(() {}),
+                            ddd: 10,
+                            svgPath: 'lib/assets/images/image 5cardcvv.png',
+                            controller: cvvEC,
+                            inputFormatters: [cvvFormatter],
+                            validator: validate(),
+                            keyboardType: TextInputType.number,
+                            hintText: 'CVV',
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        Expanded(
+                          child: CustomTextformfield(
+                            onChanged: (p0) => setState(() {}),
+                            ddd: 2, validator: validate(),
+                            svgPath: 'lib/assets/images/image 4calendarrrr.png',
+                            //label: 'aa',
+                            keyboardType: TextInputType.number,
+                            controller: validateDateEC,
+                            inputFormatters: [dateMaskFormatter],
+                            hintText: 'Validade',
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 15),
+                    GestureDetector(
+                      // onTap: () {
+                      //   if (selectedFlag != null) {
+                      //     final message = 'Selected Card Flag: $selectedFlag';
+                      //     ScaffoldMessenger.of(context).showSnackBar(
+                      //       SnackBar(content: Text(message)),
+                      //     );
+                      //   } else {
+                      //     ScaffoldMessenger.of(context).showSnackBar(
+                      //       const SnackBar(
+                      //           content: Text('Please select a card flag first')),
+                      //     );
+                      //   }
+                      // },
+                      child: GestureDetector(
+                        onTapDown: (TapDownDetails details) {
+                          showPopupMenu(
+                            context: context,
+                            offset: details.globalPosition,
+                          );
+                        },
                         child: CustomTextformfield(
-                          onChanged: (p0) => setState(() {}),
+                          validator: validate(),
+                          enable: false,
+                          //  onChanged: (p0) => setState(() {}),
                           ddd: 10,
-                          svgPath: 'lib/assets/images/image 5cardcvv.png',
-                          controller: cvvEC,
-                          inputFormatters: [cvvFormatter],
-                          keyboardType: TextInputType.number,
-                          hintText: 'CVV',
+                          svgPath: 'lib/assets/images/image 7passa.png',
+                          controller: flagEC,
+                          hintText: 'Bandeira',
                         ),
-                      ),
-                      const SizedBox(width: 20),
-                      Expanded(
-                        child: CustomTextformfield(
-                          onChanged: (p0) => setState(() {}),
-                          ddd: 2,
-                          svgPath: 'lib/assets/images/image 4calendarrrr.png',
-                          //label: 'aa',
-                          keyboardType: TextInputType.number,
-                          controller: validateDateEC,
-                          inputFormatters: [dateMaskFormatter],
-                          hintText: 'Validade',
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-                  GestureDetector(
-                    // onTap: () {
-                    //   if (selectedFlag != null) {
-                    //     final message = 'Selected Card Flag: $selectedFlag';
-                    //     ScaffoldMessenger.of(context).showSnackBar(
-                    //       SnackBar(content: Text(message)),
-                    //     );
-                    //   } else {
-                    //     ScaffoldMessenger.of(context).showSnackBar(
-                    //       const SnackBar(
-                    //           content: Text('Please select a card flag first')),
-                    //     );
-                    //   }
-                    // },
-                    child: GestureDetector(
-                      onTapDown: (TapDownDetails details) {
-                        showPopupMenu(
-                          context: context,
-                          offset: details.globalPosition,
-                        );
-                      },
-                      child: CustomTextformfield(
-                        enable: false,
-                        //  onChanged: (p0) => setState(() {}),
-                        ddd: 10,
-                        svgPath: 'lib/assets/images/image 7passa.png',
-                        controller: flagEC,
-                        hintText: 'Bandeira',
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 15),
@@ -408,8 +404,28 @@ class _NewCardViewState extends State<NewCardView> {
               ),
             ),
             GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
+              onTap: () async {
+                if (formKey.currentState?.validate() == false) {
+                  //  Messages.showError('Formulár', context);
+                  return;
+                }
+                CardModel card = CardModel(
+                  bandeira: flagEC.text,
+                  cvv: cvvEC.text,
+                  name: nameEC.text,
+                  number: cardNumberEC.text,
+                  validate: validateDateEC.text,
+                );
+                try {
+                  final cardId = await card.saveToFirestore();
+
+                  card.id = cardId;
+
+                  Navigator.pop(context, card);
+                } on Exception catch (e) {
+                  log(e.toString());
+                  Messages.showError('Erro ao cadastrar cartão', context);
+                }
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 10),

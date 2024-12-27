@@ -11,6 +11,7 @@ import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_pa
 import 'package:git_flutter_festou/src/features/space%20card/widgets/html_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/summary_data.dart';
+import 'package:git_flutter_festou/src/models/card_model.dart';
 import 'package:git_flutter_festou/src/models/cupom_model.dart';
 import 'package:git_flutter_festou/src/models/reservation_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
@@ -183,6 +184,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     super.initState();
   }
 
+  CardModel? card;
   void getUser() async {
     UserService userService = UserService();
     userModel = await userService.getCurrentUserModel();
@@ -1165,15 +1167,17 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                     const SizedBox(
                       width: 5,
                     ),
-                    const Text(
-                      'Cartão Master **** 2580',
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                    Text(
+                      card != null
+                          ? "Cartão ${card!.number.substring(0, 4)}"
+                          : 'Nenhum',
+                      style: const TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.bold),
                     ),
                     const Spacer(),
                     GestureDetector(
-                      onTap: () {
-                        Navigator.push(
+                      onTap: () async {
+                        CardModel? response = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) {
@@ -1181,6 +1185,9 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                             },
                           ),
                         );
+                        if (response == null) return;
+                        card = response;
+                        setState(() {});
                       },
                       child: const Text(
                         'Trocar',
@@ -1215,6 +1222,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                       MaterialPageRoute(
                         builder: (context) => HtmlPage(
                           html: widget.html!,
+                          card: card,
                         ),
                       ),
                     );
@@ -1333,6 +1341,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                 selectedFinalDate:
                     widget.summaryData.selectedFinalDate.toString(),
                 contratoHtml: widget.html!,
+                cardId: card!.id,
               );
               ReservaService()
                   .saveReservation(reservationModel: reservationModel);

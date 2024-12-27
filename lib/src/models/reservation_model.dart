@@ -13,6 +13,7 @@ class ReservationModel {
   final String selectedDate;
   final String selectedFinalDate;
   final String contratoHtml;
+  final String? cardId;
 
   ReservationModel({
     required this.spaceId,
@@ -24,6 +25,7 @@ class ReservationModel {
     required this.selectedFinalDate,
     this.createdAt,
     required this.contratoHtml,
+    this.cardId,
   });
 
   factory ReservationModel.fromMap(Map<String, dynamic> map) {
@@ -37,6 +39,7 @@ class ReservationModel {
       selectedDate: map['selectedDate'],
       selectedFinalDate: map['selectedFinalDate'],
       contratoHtml: map['contratoHtml'],
+      cardId: map['cardId'],
     );
   }
 }
