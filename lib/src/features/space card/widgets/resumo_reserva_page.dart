@@ -20,7 +20,7 @@ import 'package:intl/intl.dart';
 class DialogBubble extends StatelessWidget {
   final String text;
 
-  const DialogBubble({Key? key, required this.text}) : super(key: key);
+  const DialogBubble({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -377,7 +377,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     //dev.log(name: 'widget.cupomModel!.codigo', widget.cupomModel!.codigo);
     //dev.log(name: 'cupomModel!.codigo', cupomModel!.codigo);
     int hoursDifference =
-        widget.summaryData.checkOutTime - widget.summaryData.checkInTime;
+        widget.summaryData.checkOutTime - widget.summaryData.checkInTime + 1;
     if (hoursDifference < 0) {
       hoursDifference += 24; // Adjust for crossing midnight
     }
@@ -747,7 +747,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                               child: Row(
                                 children: [
                                   Text(
-                                    '${widget.summaryData.checkOutTime}:00h ',
+                                    '${widget.summaryData.checkOutTime}:59h ',
                                     style: const TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w700),
@@ -779,6 +779,9 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                 const Text(' horas',
                                     style: TextStyle(fontSize: 12)),
                               ],
+                            ),
+                            const SizedBox(
+                              height: 16,
                             ),
                           ],
                         ),

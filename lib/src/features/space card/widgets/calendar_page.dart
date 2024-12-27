@@ -481,7 +481,10 @@ class _CalendarPageState extends State<CalendarPage> {
       children: [
         const Padding(
           padding: EdgeInsets.only(left: 40),
-          child: Text('Início em:'),
+          child: Text(
+            'Início em:',
+            style: TextStyle(fontSize: 12),
+          ),
         ),
         _buildTimeSelectionRowCheckIn(
           startHour: startHour,
@@ -492,7 +495,10 @@ class _CalendarPageState extends State<CalendarPage> {
         if (checkInTime != null) ...[
           const Padding(
             padding: EdgeInsets.only(left: 40),
-            child: Text('Fim em:'),
+            child: Text(
+              'Fim em:',
+              style: TextStyle(fontSize: 12),
+            ),
           ),
           _buildTimeSelectionRowCheckOut(
             startHour: (checkInTime! + 4) % 24,
@@ -647,19 +653,19 @@ class _CalendarPageState extends State<CalendarPage> {
                     _buildCalendarPicker(),
                     const SizedBox(height: 47),
                     _buildTimeSelectionHeader(),
-                    if (_selectedDate != null)
-                      Text(
-                        '      No dia ${DateFormat('d \'de\' MMMM \'de\' y', 'pt_BR').format(_selectedDate!)}:',
-                        style: const TextStyle(fontWeight: FontWeight.w500),
-                      ),
+                    // if (_selectedDate != null)
+                    //   Text(
+                    //     '      No dia ${DateFormat('d \'de\' MMMM \'de\' y', 'pt_BR').format(_selectedDate!)}:',
+                    //     style: const TextStyle(fontWeight: FontWeight.w500),
+                    //   ),
                     const SizedBox(height: 8),
                   ],
                 ),
               ),
               _buildTimeSelection(),
               if (checkInTime != null && checkOutTime != null)
-                _buildSelectedTimeDisplay(),
-              _buildReminderText(),
+                //_buildSelectedTimeDisplay(),
+                _buildReminderText(),
               const SizedBox(height: 20),
             ],
           ),
@@ -763,8 +769,8 @@ class _CalendarPageState extends State<CalendarPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Text(
-        'Horario de check-in: ${checkInTime.toString().padLeft(2, '0')}, '
-        'Horario de saida: ${(checkOutTime! % 24).toString().padLeft(2, '0')}',
+        'Horario de check-in: ${checkInTime.toString().padLeft(2, '0')}:00, '
+        'Horario de saida: ${(checkOutTime! % 24).toString().padLeft(2, '0')}:59',
         style: const TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
