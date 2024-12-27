@@ -5,11 +5,13 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/constants2.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/html_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/summary_data.dart';
+import 'package:git_flutter_festou/src/models/card_model.dart';
 import 'package:git_flutter_festou/src/models/cupom_model.dart';
 import 'package:git_flutter_festou/src/models/reservation_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
@@ -20,7 +22,7 @@ import 'package:intl/intl.dart';
 class DialogBubble extends StatelessWidget {
   final String text;
 
-  const DialogBubble({Key? key, required this.text}) : super(key: key);
+  const DialogBubble({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -182,6 +184,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     super.initState();
   }
 
+  CardModel? card;
   void getUser() async {
     UserService userService = UserService();
     userModel = await userService.getCurrentUserModel();
@@ -377,7 +380,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     //dev.log(name: 'widget.cupomModel!.codigo', widget.cupomModel!.codigo);
     //dev.log(name: 'cupomModel!.codigo', cupomModel!.codigo);
     int hoursDifference =
-        widget.summaryData.checkOutTime - widget.summaryData.checkInTime;
+        widget.summaryData.checkOutTime - widget.summaryData.checkInTime + 1;
     if (hoursDifference < 0) {
       hoursDifference += 24; // Adjust for crossing midnight
     }
@@ -747,7 +750,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                               child: Row(
                                 children: [
                                   Text(
-                                    '${widget.summaryData.checkOutTime}:00h ',
+                                    '${widget.summaryData.checkOutTime}:59h ',
                                     style: const TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w700),
@@ -779,6 +782,9 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                 const Text(' horas',
                                     style: TextStyle(fontSize: 12)),
                               ],
+                            ),
+                            const SizedBox(
+                              height: 16,
                             ),
                           ],
                         ),
@@ -1161,18 +1167,36 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                     const SizedBox(
                       width: 5,
                     ),
-                    const Text(
-                      'Cartão Master **** 2580',
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                    Text(
+                      card != null
+                          ? "Cartão ${card!.number.substring(0, 4)}"
+                          : 'Nenhum',
+                      style: const TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.bold),
                     ),
                     const Spacer(),
-                    const Text(
-                      'Trocar',
-                      style: TextStyle(
+                    GestureDetector(
+                      onTap: () async {
+                        CardModel? response = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return const Pagamentos();
+                            },
+                          ),
+                        );
+                        if (response == null) return;
+                        card = response;
+                        setState(() {});
+                      },
+                      child: const Text(
+                        'Trocar',
+                        style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline),
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -1198,6 +1222,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                       MaterialPageRoute(
                         builder: (context) => HtmlPage(
                           html: widget.html!,
+                          card: card,
                         ),
                       ),
                     );
@@ -1316,6 +1341,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                 selectedFinalDate:
                     widget.summaryData.selectedFinalDate.toString(),
                 contratoHtml: widget.html!,
+                cardId: card!.id,
               );
               ReservaService()
                   .saveReservation(reservationModel: reservationModel);

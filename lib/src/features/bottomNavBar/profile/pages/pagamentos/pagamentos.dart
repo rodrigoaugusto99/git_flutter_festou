@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/new_card_view.dart';
+import 'package:git_flutter_festou/src/models/card_model.dart';
 
 class Pagamentos extends StatefulWidget {
   const Pagamentos({super.key});
@@ -13,6 +15,31 @@ class Pagamentos extends StatefulWidget {
 class _PagamentosState extends State<Pagamentos> {
   bool isExpanded = false;
   List<bool> selectedRows = [false, false, false];
+
+  static Future<List<CardModel>> fetchFromFirestore() async {
+    try {
+      final collection = FirebaseFirestore.instance.collection('cards');
+      final querySnapshot = await collection.get();
+      return querySnapshot.docs.map((doc) {
+        return CardModel.fromMap(doc.data(), doc.id);
+      }).toList();
+    } catch (e) {
+      throw Exception('Failed to fetch cards from Firestore: $e');
+    }
+  }
+
+  List<CardModel> cards = [];
+  @override
+  void initState() {
+    getCards();
+    super.initState();
+  }
+
+  Future<void> getCards() async {
+    cards = await fetchFromFirestore();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,53 +133,41 @@ class _PagamentosState extends State<Pagamentos> {
                             child: Image.asset(
                                 'lib/assets/images/image 4carotn.png')),
                         const SizedBox(width: 10),
-                        Text('Pagar com Cartao de crédito',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: isExpanded ? Colors.white : Colors.black,
-                            )),
+                        Text(
+                          'Pagar com Cartao de crédito',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: isExpanded ? Colors.white : Colors.black,
+                          ),
+                        ),
                       ],
                     ),
                     children: <Widget>[
-                      MyRow(
-                          hasMargin: true,
-                          color: Colors.white,
-                          text: 'Cartao de crédito',
-                          icon: Image.asset(
-                              'lib/assets/images/image 4carotn.png'),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => NewCardView(),
-                              ),
-                            );
-                          },
-                          textColor: const Color(0xff4300B1)),
+                      ...cards.map((card) {
+                        return Column(
+                          children: [
+                            MyRow(
+                              hasMargin: true,
+                              color: Colors.white,
+                              text: 'Cartao ${card.number.substring(0, 4)}',
+                              icon: Image.asset(
+                                  'lib/assets/images/image 4carotn.png'),
+                              onTap: () {
+                                Navigator.pop(context, card);
+                              },
+                              textColor: const Color(0xff4300B1),
+                            ),
+                          ],
+                        );
+                      }),
 
-                      //const SizedBox(height: 12),
-                      MyRow(
-                          color: Colors.white,
-                          text: 'Cartão Visa',
-                          icon: Image.asset(
-                              'lib/assets/images/image 4carotn.png'),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => NewCardView(),
-                              ),
-                            );
-                          },
-                          textColor: const Color(0xff4300B1)),
-                      //const SizedBox(height: 12),
                       MyRow(
                         color: null,
                         text: 'Adicionar novo cartão de crédito',
                         icon:
                             Image.asset('lib/assets/images/image 4xxdfad.png'),
-                        onTap: () {
-                          Navigator.push(
+                        onTap: () async {
+                          final response = await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => NewCardView(
@@ -160,6 +175,9 @@ class _PagamentosState extends State<Pagamentos> {
                               ),
                             ),
                           );
+
+                          if (response == null) return;
+                          Navigator.pop(context, response);
                         },
                         textColor: null,
                       ),
