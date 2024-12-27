@@ -41,6 +41,79 @@ class _NewCardViewState extends State<NewCardView> {
     filter: {"#": RegExp('[0-9]')},
     type: MaskAutoCompletionType.lazy,
   );
+
+  // List of card flags
+  final List<String> cardFlags = [
+    'Visa',
+    'MasterCard',
+    'American Express',
+    'Discover'
+  ];
+
+  void showPopupMenu({
+    required BuildContext context,
+    required Offset offset,
+  }) async {
+    await showMenu(
+      popUpAnimationStyle: AnimationStyle(
+        curve: Curves.fastOutSlowIn,
+        duration: const Duration(milliseconds: 500),
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      // shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      context: context,
+      position: RelativeRect.fromLTRB(
+        offset.dx,
+        offset.dy + 10,
+        offset.dx,
+        offset.dy,
+      ),
+
+      items: cardFlags.map((flag) {
+        return PopupMenuItem(
+          child: ListTile(
+            title: Text(flag),
+            onTap: () {
+              Navigator.of(context).pop();
+              onFlagSelected(flag);
+            },
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  void showCardFlagsPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Select a card flag'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: cardFlags.map((flag) {
+              return ListTile(
+                title: Text(flag),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  onFlagSelected(flag);
+                },
+              );
+            }).toList(),
+          ),
+        );
+      },
+    );
+  }
+
+  void onFlagSelected(String? flag) {
+    if (flag != null) {
+      setState(() {
+        flagEC.text = flag;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -222,14 +295,14 @@ class _NewCardViewState extends State<NewCardView> {
                     onChanged: (p0) => setState(() {}),
                     ddd: 10,
                     svgPath: 'lib/assets/images/image 6perssoa.png',
-                    label: '',
+                    hintText: 'Nome',
                     controller: nameEC,
                   ),
                   const SizedBox(height: 15),
                   CustomTextformfield(
                     onChanged: (p0) => setState(() {}),
                     ddd: 5,
-                    label: '',
+                    hintText: 'Cartão',
                     keyboardType: TextInputType.number,
                     controller: cardNumberEC,
                     inputFormatters: [cardNumberFormatter],
@@ -243,10 +316,10 @@ class _NewCardViewState extends State<NewCardView> {
                           onChanged: (p0) => setState(() {}),
                           ddd: 10,
                           svgPath: 'lib/assets/images/image 5cardcvv.png',
-                          label: '',
                           controller: cvvEC,
                           inputFormatters: [cvvFormatter],
                           keyboardType: TextInputType.number,
+                          hintText: 'CVV',
                         ),
                       ),
                       const SizedBox(width: 20),
@@ -255,21 +328,46 @@ class _NewCardViewState extends State<NewCardView> {
                           onChanged: (p0) => setState(() {}),
                           ddd: 2,
                           svgPath: 'lib/assets/images/image 4calendarrrr.png',
-                          label: '',
+                          //label: 'aa',
                           keyboardType: TextInputType.number,
                           controller: validateDateEC,
                           inputFormatters: [dateMaskFormatter],
+                          hintText: 'Validade',
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 15),
-                  CustomTextformfield(
-                    onChanged: (p0) => setState(() {}),
-                    ddd: 10,
-                    svgPath: 'lib/assets/images/image 7passa.png',
-                    label: '',
-                    controller: flagEC,
+                  GestureDetector(
+                    // onTap: () {
+                    //   if (selectedFlag != null) {
+                    //     final message = 'Selected Card Flag: $selectedFlag';
+                    //     ScaffoldMessenger.of(context).showSnackBar(
+                    //       SnackBar(content: Text(message)),
+                    //     );
+                    //   } else {
+                    //     ScaffoldMessenger.of(context).showSnackBar(
+                    //       const SnackBar(
+                    //           content: Text('Please select a card flag first')),
+                    //     );
+                    //   }
+                    // },
+                    child: GestureDetector(
+                      onTapDown: (TapDownDetails details) {
+                        showPopupMenu(
+                          context: context,
+                          offset: details.globalPosition,
+                        );
+                      },
+                      child: CustomTextformfield(
+                        enable: false,
+                        //  onChanged: (p0) => setState(() {}),
+                        ddd: 10,
+                        svgPath: 'lib/assets/images/image 7passa.png',
+                        controller: flagEC,
+                        hintText: 'Bandeira',
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -309,25 +407,30 @@ class _NewCardViewState extends State<NewCardView> {
                 ],
               ),
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xff9747FF),
-                      Color(0xff4300B1),
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                  borderRadius: BorderRadius.circular(50)),
-              child: const Text(
-                'Adicionar cartão',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 12),
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xff9747FF),
+                        Color(0xff4300B1),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                    borderRadius: BorderRadius.circular(50)),
+                child: const Text(
+                  'Adicionar cartão',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 12),
+                ),
               ),
             ),
           ],
