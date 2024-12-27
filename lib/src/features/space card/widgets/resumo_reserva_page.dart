@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/constants2.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/html_page.dart';
@@ -1170,12 +1171,25 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                           TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                     ),
                     const Spacer(),
-                    const Text(
-                      'Trocar',
-                      style: TextStyle(
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return const Pagamentos();
+                            },
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'Trocar',
+                        style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline),
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
                     ),
                   ],
                 ),
