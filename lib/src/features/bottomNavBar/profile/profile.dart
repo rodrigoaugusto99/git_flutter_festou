@@ -230,6 +230,7 @@ class _ProfileState extends ConsumerState<Profile> {
                   id: userModel.id,
                   avatarUrl: data['avatar_url'] ?? '',
                   locador: data['locador'] ?? false,
+                  estado: data['user_address']?['estado'] ?? '',
                 );
 
                 return SingleChildScrollView(

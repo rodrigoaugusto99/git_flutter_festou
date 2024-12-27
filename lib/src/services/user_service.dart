@@ -66,6 +66,7 @@ class UserService {
         DocumentSnapshot userDoc = querySnapshot.docs.first;
         final data = userDoc.data() as Map<String, dynamic>;
         return UserModel(
+          estado: data['user_address']?['estado'] ?? '',
           fantasyName: data['fantasy_name'] ?? '',
           email: data['email'] ?? '',
           name: data['name'] ?? '',
@@ -118,6 +119,7 @@ class UserService {
         telefone: data['telefone'] ?? '',
         bairro: data['user_address']?['bairro'] ?? '',
         cidade: data['user_address']?['cidade'] ?? '',
+        estado: data['user_address']?['estado'] ?? '',
         id: data['uid'] ?? '',
         avatarUrl: data['avatar_url'] ?? '',
         fantasyName: data['avatar_url'] ?? '',

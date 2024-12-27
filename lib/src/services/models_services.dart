@@ -30,6 +30,7 @@ class ModelsServices {
           telefone: data['telefone'] ?? '',
           bairro: data['user_address']?['bairro'] ?? '',
           cidade: data['user_address']?['cidade'] ?? '',
+          estado: data['user_address']?['estado'] ?? '',
           id: userId,
           avatarUrl: data['avatar_url'] ?? '',
           locador: data['locador'] ?? false,

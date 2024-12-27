@@ -10,6 +10,7 @@ class UserModel {
   final String cidade;
   final String id;
   final String avatarUrl;
+  final String estado;
   late final bool locador;
 
   UserModel({
@@ -25,6 +26,7 @@ class UserModel {
     required this.id,
     required this.avatarUrl,
     required this.locador,
+    required this.estado,
   });
 
   factory UserModel.fromMap(Map<String, dynamic> data, String documentId) {
@@ -40,6 +42,7 @@ class UserModel {
       cidade: data['cidade'] ?? '',
       id: documentId,
       avatarUrl: data['avatar_url'] ?? '',
+      estado: data['estado'] ?? '',
       locador: data['locador'] ?? false,
     );
   }

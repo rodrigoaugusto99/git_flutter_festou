@@ -8,6 +8,8 @@ import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_state.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:image_picker/image_picker.dart';
@@ -185,6 +187,7 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
     numeroEC,
     bairroEC,
     cidadeEC,
+    uf,
   ) async {
     if (formKey.currentState?.validate() == true) {
       try {
@@ -204,6 +207,7 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
         numero: numeroEC.text,
         bairro: bairroEC.text,
         cidade: cidadeEC.text,
+        estado: uf,
       );
       log('----state atualizado----');
       log('${state.selectedTypes}');
@@ -213,6 +217,7 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
       log(state.numero);
       log(state.bairro);
       log(state.cidade);
+      log(state.estado);
       return null;
     } else {
       state = state.copyWith(status: NewSpaceRegisterStateStatus.invalidForm);
@@ -271,15 +276,15 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
   }
 
   Future<void> register() async {
-    log('----state atualizado----');
-    log('${state.selectedTypes}');
-    log('${state.selectedServices}');
-    log(state.cep);
-    log(state.logradouro);
-    log(state.numero);
-    log(state.bairro);
-    log(state.cidade);
-    log(state.preco);
+    // log('----state atualizado----');
+    // log('${state.selectedTypes}');
+    // log('${state.selectedServices}');
+    // log(state.cep);
+    // log(state.logradouro);
+    // log(state.numero);
+    // log(state.bairro);
+    // log(state.cidade);
+    // log(state.preco);
     final NewSpaceRegisterState(
       :selectedTypes,
       :selectedServices,
@@ -293,10 +298,12 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
       :descricao,
       :titulo,
       :preco,
+      :estado,
     ) = state;
 
     final spaceId = uuid.v4();
     final userId = user.uid;
+    UserModel? userModel = await UserService().getCurrentUserModel();
 
     final LatLng latLng =
         await calculateLatLng(logradouro, numero, bairro, cidade);
@@ -314,12 +321,17 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
       selectedServices: selectedServices,
       imageFiles: imageFiles,
       descricao: descricao,
-
+      estado: estado,
       days: days!,
       //city: 'teste',
       latitude: latLng.latitude,
       longitude: latLng.longitude,
-      preco: preco
+      preco: preco,
+      //todo:
+      cnpjEmpresaLocadora: userModel != null ? userModel.name : '',
+      locadorCpf: userModel != null ? userModel.name : '',
+      nomeEmpresaLocadora: userModel != null ? userModel.name : '',
+      locadorAssinatura: userModel != null ? userModel.name : '',
     );
 
     final spaceFirestoreRepository = ref.read(spaceFirestoreRepositoryProvider);
