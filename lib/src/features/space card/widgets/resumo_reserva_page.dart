@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/constants2.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_page.dart';
@@ -1327,7 +1328,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: GestureDetector(
-          onTap: () {
+          onTap: () async {
             dev.log(widget.summaryData.selectedFinalDate.toString());
             if (widget.assinado && widget.html != null && userModel != null) {
               //todo: pode reservar
@@ -1343,9 +1344,18 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                 contratoHtml: widget.html!,
                 cardId: card!.id,
               );
-              ReservaService()
-                  .saveReservation(reservationModel: reservationModel);
-              dev.log('Pode reservar.');
+              try {
+                dev.log('Pode reservar.');
+                await ReservaService()
+                    .saveReservation(reservationModel: reservationModel);
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Messages.showSuccess('Reserva concluída com sucesso', context);
+              } on Exception catch (e) {
+                Messages.showError(
+                    'Não foi possível concluir a reserva', context);
+              }
             } else {
               //todo: nao pode reservar
               dev.log('NAO pode reservar.');
