@@ -368,110 +368,143 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                 // Container com os campos de atualização da senha
                 Column(
                   children: [
-                    const TextField(
-                      decoration: InputDecoration(labelText: 'Senha Atual'),
-                      obscureText: true,
-                    ),
-                    const SizedBox(height: 0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        InkWell(
-                            onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const EsqueciSenha(),
+                    if (providers.contains("password")) ...[
+                      const TextField(
+                        style:
+                            TextStyle(color: Color(0XFF4300B1), fontSize: 14),
+                        decoration: InputDecoration(
+                          labelText: 'Senha Atual',
+                          labelStyle: TextStyle(
+                            fontSize: 14,
+                            color: Color(0XFF4300B1),
+                          ),
+                        ),
+                        obscureText: true,
+                      ),
+                      const SizedBox(height: 10),
+                      const SizedBox(height: 0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          InkWell(
+                              onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const EsqueciSenha(),
+                                    ),
                                   ),
-                                ),
-                            child: const Text('Esqueci minha senha')),
-                      ],
-                    ),
+                              child: const Text('Esqueci minha senha')),
+                        ],
+                      ),
+                    ],
                     const SizedBox(height: 0),
                     const TextField(
-                      decoration: InputDecoration(labelText: 'Nova Senha'),
+                      style: TextStyle(color: Color(0XFF4300B1), fontSize: 14),
+                      decoration: InputDecoration(
+                        labelText: 'Nova Senha',
+                        labelStyle: TextStyle(
+                          fontSize: 14,
+                          color: Color(0XFF4300B1),
+                        ),
+                      ),
                       obscureText: true,
                     ),
                     const SizedBox(height: 0),
                     const TextField(
-                      decoration: InputDecoration(labelText: 'Confirmar Senha'),
+                      style: TextStyle(color: Color(0XFF4300B1), fontSize: 14),
+                      decoration: InputDecoration(
+                        labelText: 'Confirmar Senha',
+                        labelStyle: TextStyle(
+                          fontSize: 14,
+                          color: Color(0XFF4300B1),
+                        ),
+                      ),
                       obscureText: true,
                     ),
                     const SizedBox(height: 0),
-                    ElevatedButton(
-                      onPressed: () async {
-                        final user = FirebaseAuth.instance.currentUser;
-                        if (user != null) {
-                          try {
-                            // Obtenha as novas senhas dos campos de texto
-                            String novaSenha = novaSenhaController.text;
-                            String confirmarSenha =
-                                confirmarSenhaController.text;
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          final user = FirebaseAuth.instance.currentUser;
+                          if (user != null) {
+                            try {
+                              // Obtenha as novas senhas dos campos de texto
+                              String novaSenha = novaSenhaController.text;
+                              String confirmarSenha =
+                                  confirmarSenhaController.text;
 
-                            if (novaSenha != confirmarSenha) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('As senhas não coincidem.')),
+                              if (novaSenha != confirmarSenha) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content:
+                                          Text('As senhas não coincidem.')),
+                                );
+                                return;
+                              }
+
+                              // Atualiza a senha do usuário
+                              await user.updatePassword(novaSenha);
+
+                              // Reautentica o usuário com a nova senha
+                              AuthCredential credential =
+                                  EmailAuthProvider.credential(
+                                email: user.email!,
+                                password: novaSenha,
                               );
-                              return;
+                              await user
+                                  .reauthenticateWithCredential(credential);
+
+                              // Verifica se o Google está vinculado e remove
+                              if (user.providerData.any(
+                                  (info) => info.providerId == "google.com")) {
+                                await user.unlink("google.com");
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content:
+                                        Text('Senha atualizada com sucesso.'),
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content:
+                                        Text('Senha atualizada com sucesso.'),
+                                  ),
+                                );
+                              }
+
+                              setState(() {
+                                isUpdatingPassword =
+                                    false; // Fecha o formulário de atualização
+                              });
+                            } on FirebaseAuthException catch (e) {
+                              if (e.code == 'weak-password') {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('A senha é muito fraca.')),
+                                );
+                              } else if (e.code == 'requires-recent-login') {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'Reautenticação necessária. Faça login novamente.'),
+                                  ),
+                                );
+                              } else {
+                                log('Erro ao atualizar a senha: ${e.code}, ${e.message}');
+                              }
+                            } catch (e) {
+                              log('Erro desconhecido ao atualizar a senha: $e');
                             }
-
-                            // Atualiza a senha do usuário
-                            await user.updatePassword(novaSenha);
-
-                            // Reautentica o usuário com a nova senha
-                            AuthCredential credential =
-                                EmailAuthProvider.credential(
-                              email: user.email!,
-                              password: novaSenha,
-                            );
-                            await user.reauthenticateWithCredential(credential);
-
-                            // Verifica se o Google está vinculado e remove
-                            if (user.providerData.any(
-                                (info) => info.providerId == "google.com")) {
-                              await user.unlink("google.com");
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content:
-                                      Text('Senha atualizada com sucesso.'),
-                                ),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content:
-                                      Text('Senha atualizada com sucesso.'),
-                                ),
-                              );
-                            }
-
-                            setState(() {
-                              isUpdatingPassword =
-                                  false; // Fecha o formulário de atualização
-                            });
-                          } on FirebaseAuthException catch (e) {
-                            if (e.code == 'weak-password') {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('A senha é muito fraca.')),
-                              );
-                            } else if (e.code == 'requires-recent-login') {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                      'Reautenticação necessária. Faça login novamente.'),
-                                ),
-                              );
-                            } else {
-                              log('Erro ao atualizar a senha: ${e.code}, ${e.message}');
-                            }
-                          } catch (e) {
-                            log('Erro desconhecido ao atualizar a senha: $e');
                           }
-                        }
-                      },
-                      child: const Text('Alterar Senha'),
+                        },
+                        child: providers.contains("password")
+                            ? const Text('Alterar Senha')
+                            : const Text('Cadastrar Senha'),
+                      ),
                     ),
                   ],
                 ),
