@@ -27,6 +27,7 @@ class _RegisterSignatureState extends State<RegisterSignature> {
   final cnpjEmpresaLocadoraEC = TextEditingController();
   final formKey = GlobalKey<FormState>();
   ui.Image? signature;
+  String? signatureString;
   Future<String> imageToBase64(ui.Image image) async {
     final ByteData? byteData =
         await image.toByteData(format: ui.ImageByteFormat.png);
@@ -229,7 +230,8 @@ class _RegisterSignatureState extends State<RegisterSignature> {
                                   setState(() {
                                     signature = response;
                                   });
-
+                                  signatureString =
+                                      await imageToBase64(signature!);
                                   log('Signature captured', name: 'response');
                                 } else {
                                   log('No signature captured',
@@ -283,9 +285,15 @@ class _RegisterSignatureState extends State<RegisterSignature> {
           mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
-              onTap: () {
+              onTap: () async {
+                if (signatureString == null) return;
                 try {
-                  final response = await updateLocadorInfos()
+                  await updateLocadorInfos(
+                    cpf: cpfEC.text,
+                    cnpj: cnpjEmpresaLocadoraEC.text,
+                    empresaName: nomeEmpresaLocadoraEC.text,
+                    assinatura: signatureString!,
+                  );
                   Navigator.of(context).pop(true);
                 } on Exception catch (e) {
                   log(e.toString());
