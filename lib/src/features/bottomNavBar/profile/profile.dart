@@ -145,6 +145,7 @@ class _ProfileState extends ConsumerState<Profile> {
                       builder: (context) => const RegisterSignature(),
                     ),
                   );
+                  if (response == null) return;
                   if (response) {
                     Navigator.of(context).pop();
                     Navigator.pushReplacement(
@@ -226,21 +227,7 @@ class _ProfileState extends ConsumerState<Profile> {
 
                 final data =
                     snapshot.data!.docs[0].data() as Map<String, dynamic>;
-                final updatedUserModel = UserModel(
-                  fantasyName: data['fantasy_name'],
-                  email: data['email'] ?? '',
-                  name: data['name'] ?? '',
-                  cpfOuCnpj: data['cpf'] ?? '',
-                  cep: data['user_address']?['cep'] ?? '',
-                  logradouro: data['user_address']?['logradouro'] ?? '',
-                  telefone: data['telefone'] ?? '',
-                  bairro: data['user_address']?['bairro'] ?? '',
-                  cidade: data['user_address']?['cidade'] ?? '',
-                  id: userModel.id,
-                  avatarUrl: data['avatar_url'] ?? '',
-                  locador: data['locador'] ?? false,
-                  estado: data['user_address']?['estado'] ?? '',
-                );
+                UserModel updatedUserModel = UserModel.fromMap(data);
 
                 return SingleChildScrollView(
                   child: Column(

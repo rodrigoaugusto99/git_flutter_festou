@@ -106,11 +106,11 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
               'locadorAvatarUrl': locadorAvatar,
               'weekdays': spaceData.days.toMap(),
               'preco': spaceData.preco,
-              'cnpj_empresa_locadora': spaceData.cnpjEmpresaLocadora,
+              'cnpj_empresa_locadora': locadorModel!.cnpj,
               'estado': spaceData.estado,
-              'locador_assinatura': spaceData.locadorAssinatura,
-              'locador_cpf': spaceData.locadorCpf,
-              'nome_empresa_locadora': spaceData.nomeEmpresaLocadora,
+              'locador_assinatura': locadorModel.assinatura,
+              'locador_cpf': locadorModel.cpf,
+              'nome_empresa_locadora': locadorModel.fantasyName,
               'num_likes': 0,
               //todo: videos
               'videos': [],
@@ -369,24 +369,11 @@ p decidir o isFavorited*/
         await usersCollection.where('uid', isEqualTo: userId).get();
 
     if (userDocument.docs.isNotEmpty) {
-      final data = userDocument.docs.first.data();
+      final doc = userDocument.docs.first;
+      final data = doc.data();
 
       if (data is Map<String, dynamic>) {
-        UserModel userModel = UserModel(
-          fantasyName: data['fantasy_name'] ?? '',
-          email: data['email'] ?? '',
-          name: data['name'] ?? '',
-          cpfOuCnpj: data['cpf'] ?? '',
-          cep: data['user_address']?['cep'] ?? '',
-          logradouro: data['user_address']?['logradouro'] ?? '',
-          telefone: data['telefone'] ?? '',
-          estado: data['estado'] ?? '',
-          bairro: data['user_address']?['bairro'] ?? '',
-          cidade: data['user_address']?['cidade'] ?? '',
-          id: userId,
-          avatarUrl: data['avatar_url'] ?? '',
-          locador: data['locador'] ?? false,
-        );
+        UserModel userModel = UserModel.fromMap(data);
 
         return userModel;
       } else {

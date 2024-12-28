@@ -251,7 +251,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     modifiedHtml = modifiedHtml.replaceAll('{Hora de Início do Evento}',
         '<b>${widget.summaryData.checkInTime}:00h</b>');
     modifiedHtml = modifiedHtml.replaceAll('{Hora de Término do Evento}',
-        '<b>${widget.summaryData.checkOutTime}:00h</b>');
+        '<b>${widget.summaryData.checkOutTime}:59h</b>');
     modifiedHtml = modifiedHtml.replaceAll('{Data de Início do Evento}',
         '<b>${DateFormat('d \'de\' MMMM \'de\' y', 'pt_BR').format(widget.summaryData.selectedDate)}</b>');
 
@@ -303,8 +303,8 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
         '<b>${widget.summaryData.spaceModel.bairro}, ${widget.summaryData.spaceModel.cidade}</b>');
     modifiedHtml = modifiedHtml.replaceAll(
         '{Nome do Cliente}', '<b>${userModel!.name}</b>');
-    modifiedHtml = modifiedHtml.replaceAll(
-        '{CPF do Cliente}', '<b>${userModel!.cpfOuCnpj}</b>');
+    modifiedHtml =
+        modifiedHtml.replaceAll('{CPF do Cliente}', '<b>${userModel!.cpf}</b>');
 
     modifiedHtml = modifiedHtml.replaceAll('{CPF do responsável pelo espaço}',
         '<b>${widget.summaryData.spaceModel.locadorCpf}</b>');

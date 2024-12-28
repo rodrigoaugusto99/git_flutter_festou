@@ -81,12 +81,20 @@ class _EachLastSeenState extends State<EachLastSeen> {
                         borderRadius: BorderRadius.circular(16.0),
                         child: Stack(
                           children: [
-                            Image.network(
-                              width: 250,
-                              height: 150,
-                              widget.space.imagesUrl[0],
-                              fit: BoxFit.cover,
-                            ),
+                            if (widget.space.imagesUrl.isNotEmpty) ...[
+                              Image.network(
+                                width: 250,
+                                height: 150,
+                                widget.space.imagesUrl[0],
+                                fit: BoxFit.cover,
+                              ),
+                            ] else ...[
+                              Container(
+                                width: 250,
+                                height: 150,
+                                color: Colors.grey,
+                              ),
+                            ],
                             Align(
                               alignment: Alignment.centerRight,
                               child: Row(

@@ -12,6 +12,7 @@ import 'package:git_flutter_festou/src/features/login/forgot_email_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/signature_dialog.dart';
 import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:validatorless/validatorless.dart';
 
 class RegisterSignature extends StatefulWidget {
@@ -56,7 +57,7 @@ class _RegisterSignatureState extends State<RegisterSignature> {
         Map<String, dynamic> newInfo = {
           'cpf': cpf,
           'cnpj': cnpj,
-          'empresaName': empresaName,
+          'fantasy_name': empresaName,
           'assinatura': assinatura,
         };
 
@@ -77,6 +78,18 @@ class _RegisterSignatureState extends State<RegisterSignature> {
       throw Exception('Erro ao atualizar informações de usuário.');
     }
   }
+
+  var cpfFormatter = MaskTextInputFormatter(
+    mask: '###.###.###-##',
+    filter: {"#": RegExp(r'[0-9]')},
+    type: MaskAutoCompletionType.lazy,
+  );
+
+  var cnpjFormatter = MaskTextInputFormatter(
+    mask: '##.###.###/####-##',
+    filter: {"#": RegExp(r'[0-9]')},
+    type: MaskAutoCompletionType.lazy,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -181,21 +194,21 @@ class _RegisterSignatureState extends State<RegisterSignature> {
                     CustomTextformfield(
                       label: 'CPF',
                       controller: cpfEC,
-                      validator: Validatorless.required(cpfEC.text),
+                      inputFormatters: [cpfFormatter],
+                      validator: Validatorless.required('Campo obrigatório'),
                     ),
                     const SizedBox(height: 10),
                     CustomTextformfield(
                       label: 'Nome da empresa',
                       controller: nomeEmpresaLocadoraEC,
-                      validator:
-                          Validatorless.required(nomeEmpresaLocadoraEC.text),
+                      validator: Validatorless.required('Campo obrigatório'),
                     ),
                     const SizedBox(height: 10),
                     CustomTextformfield(
                       label: 'CNPJ da empresa',
                       controller: cnpjEmpresaLocadoraEC,
-                      validator:
-                          Validatorless.required(cnpjEmpresaLocadoraEC.text),
+                      inputFormatters: [cnpjFormatter],
+                      validator: Validatorless.required('Campo obrigatório'),
                     ),
                     const SizedBox(height: 20),
                     GestureDetector(
@@ -286,7 +299,13 @@ class _RegisterSignatureState extends State<RegisterSignature> {
           children: [
             GestureDetector(
               onTap: () async {
-                if (signatureString == null) return;
+                if (!formKey.currentState!.validate()) {
+                  return;
+                }
+                if (signatureString == null) {
+                  Messages.showInfo('Registre sua assinatura', context);
+                  return;
+                }
                 try {
                   await updateLocadorInfos(
                     cpf: cpfEC.text,

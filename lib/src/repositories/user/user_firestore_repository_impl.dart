@@ -187,21 +187,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
 
       final userData = userDocument.data() as Map<String, dynamic>;
       final user = FirebaseAuth.instance.currentUser!;
-      final UserModel userModel = UserModel(
-        fantasyName: userData['fantasy_name'] ?? '',
-        email: userData['email'] ?? '',
-        name: userData['name'] ?? '',
-        estado: userData['user_address']?['estado'] ?? '',
-        cpfOuCnpj: userData['cpf'] ?? '',
-        cep: userData['user_address']?['cep'] ?? '',
-        logradouro: userData['user_address']?['logradouro'] ?? '',
-        telefone: userData['telefone'] ?? '',
-        bairro: userData['user_address']?['bairro'] ?? '',
-        cidade: userData['user_address']?['cidade'] ?? '',
-        id: user.uid,
-        avatarUrl: userData['avatar_url'] ?? '',
-        locador: userData['locador'] ?? false,
-      );
+      UserModel userModel = UserModel.fromMap(userData);
 
       return Success(userModel);
 
@@ -221,21 +207,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
 
       final userData = userDocument.data() as Map<String, dynamic>;
 
-      final UserModel userModel = UserModel(
-        fantasyName: userData['fantasy_name'] ?? '',
-        email: userData['email'] ?? '',
-        name: userData['name'] ?? '',
-        cpfOuCnpj: userData['cpf'] ?? '',
-        cep: userData['user_address']?['cep'] ?? '',
-        logradouro: userData['user_address']?['logradouro'] ?? '',
-        telefone: userData['telefone'] ?? '',
-        bairro: userData['user_address']?['bairro'] ?? '',
-        cidade: userData['user_address']?['cidade'] ?? '',
-        estado: userData['user_address']?['estado'] ?? '',
-        id: userId,
-        avatarUrl: userData['avatar_url'] ?? '',
-        locador: userData['locador'] ?? false,
-      );
+      UserModel userModel = UserModel.fromMap(userData);
 //gambiarra - colocando dados do firestore e do storage aqui
 //esses swqitchs sao pra pegar os storags(cada um)
 
