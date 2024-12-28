@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/esqueci_senha.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/passwordField.dart';
+import 'package:git_flutter_festou/src/services/auth_services.dart';
 
 class LoginSeguranca extends ConsumerStatefulWidget {
   const LoginSeguranca({super.key});
@@ -18,6 +20,8 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
   final TextEditingController novaSenhaController = TextEditingController();
   final TextEditingController confirmarSenhaController =
       TextEditingController();
+  final TextEditingController senhaAtualController = TextEditingController();
+  bool isPasswordVisible = false;
 
   @override
   void initState() {
@@ -162,9 +166,8 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                   await showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      final _newPasswordController = TextEditingController();
-                      final _confirmPasswordController =
-                          TextEditingController();
+                      final newPasswordController = TextEditingController();
+                      final confirmPasswordController = TextEditingController();
 
                       return AlertDialog(
                         title: const Center(
@@ -183,7 +186,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                               ),
                             ),
                             TextField(
-                              controller: _newPasswordController,
+                              controller: newPasswordController,
                               decoration: const InputDecoration(
                                 labelText: 'Nova senha',
                                 labelStyle: TextStyle(fontSize: 14),
@@ -193,7 +196,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                             ),
                             const SizedBox(height: 16),
                             TextField(
-                              controller: _confirmPasswordController,
+                              controller: confirmPasswordController,
                               decoration: const InputDecoration(
                                 labelText: 'Confirmar senha',
                                 labelStyle: TextStyle(fontSize: 14),
@@ -211,9 +214,9 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                           TextButton(
                             onPressed: () async {
                               final newPassword =
-                                  _newPasswordController.text.trim();
+                                  newPasswordController.text.trim();
                               final confirmPassword =
-                                  _confirmPasswordController.text.trim();
+                                  confirmPasswordController.text.trim();
 
                               if (newPassword.isEmpty ||
                                   confirmPassword.isEmpty) {
@@ -365,24 +368,15 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                 },
               ),
               if (isUpdatingPassword) ...[
-                // Container com os campos de atualização da senha
                 Column(
+                  key: const ValueKey('updatePasswordFields'),
                   children: [
                     if (providers.contains("password")) ...[
-                      const TextField(
-                        style:
-                            TextStyle(color: Color(0XFF4300B1), fontSize: 14),
-                        decoration: InputDecoration(
-                          labelText: 'Senha Atual',
-                          labelStyle: TextStyle(
-                            fontSize: 14,
-                            color: Color(0XFF4300B1),
-                          ),
-                        ),
-                        obscureText: true,
+                      PasswordField(
+                        controller: senhaAtualController,
+                        label: 'Senha atual',
                       ),
                       const SizedBox(height: 10),
-                      const SizedBox(height: 0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -394,33 +388,21 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                           const EsqueciSenha(),
                                     ),
                                   ),
-                              child: const Text('Esqueci minha senha')),
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Text('Esqueci minha senha'),
+                              )),
                         ],
                       ),
                     ],
-                    const SizedBox(height: 0),
-                    const TextField(
-                      style: TextStyle(color: Color(0XFF4300B1), fontSize: 14),
-                      decoration: InputDecoration(
-                        labelText: 'Nova Senha',
-                        labelStyle: TextStyle(
-                          fontSize: 14,
-                          color: Color(0XFF4300B1),
-                        ),
-                      ),
-                      obscureText: true,
+                    const SizedBox(height: 10),
+                    PasswordField(
+                      controller: novaSenhaController,
+                      label: 'Nova Senha',
                     ),
-                    const SizedBox(height: 0),
-                    const TextField(
-                      style: TextStyle(color: Color(0XFF4300B1), fontSize: 14),
-                      decoration: InputDecoration(
-                        labelText: 'Confirmar Senha',
-                        labelStyle: TextStyle(
-                          fontSize: 14,
-                          color: Color(0XFF4300B1),
-                        ),
-                      ),
-                      obscureText: true,
+                    PasswordField(
+                      controller: confirmarSenhaController,
+                      label: 'Confirmar Senha',
                     ),
                     const SizedBox(height: 0),
                     Padding(
@@ -430,10 +412,21 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                           final user = FirebaseAuth.instance.currentUser;
                           if (user != null) {
                             try {
-                              // Obtenha as novas senhas dos campos de texto
                               String novaSenha = novaSenhaController.text;
                               String confirmarSenha =
                                   confirmarSenhaController.text;
+                              String senhaAtual = providers.contains("password")
+                                  ? senhaAtualController.text
+                                  : '';
+
+                              if (novaSenha.isEmpty || confirmarSenha.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'As senhas não podem estar vazias.')),
+                                );
+                                return;
+                              }
 
                               if (novaSenha != confirmarSenha) {
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -444,42 +437,45 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                 return;
                               }
 
+                              if (providers.contains("password")) {
+                                // Reautentica o usuário com a nova senha
+                                AuthCredential credential =
+                                    EmailAuthProvider.credential(
+                                  email: user.email!,
+                                  password: senhaAtual,
+                                );
+                                await user
+                                    .reauthenticateWithCredential(credential);
+                              } else {
+                                // Verifica se o Google está vinculado
+                                await AuthService(context: context)
+                                    .signInWithGoogle();
+                              }
+
                               // Atualiza a senha do usuário
                               await user.updatePassword(novaSenha);
 
-                              // Reautentica o usuário com a nova senha
-                              AuthCredential credential =
-                                  EmailAuthProvider.credential(
-                                email: user.email!,
-                                password: novaSenha,
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: providers.contains("password")
+                                      ? const Text(
+                                          'Senha atualizada com sucesso.')
+                                      : const Text(
+                                          'Senha cadastrada com sucesso.'),
+                                ),
                               );
-                              await user
-                                  .reauthenticateWithCredential(credential);
-
-                              // Verifica se o Google está vinculado e remove
-                              if (user.providerData.any(
-                                  (info) => info.providerId == "google.com")) {
-                                await user.unlink("google.com");
-
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content:
-                                        Text('Senha atualizada com sucesso.'),
-                                  ),
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content:
-                                        Text('Senha atualizada com sucesso.'),
-                                  ),
-                                );
-                              }
 
                               setState(() {
-                                isUpdatingPassword =
-                                    false; // Fecha o formulário de atualização
+                                isUpdatingPassword = false;
                               });
+
+                              // Recarregar a página atual
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        super.widget),
+                              );
                             } on FirebaseAuthException catch (e) {
                               if (e.code == 'weak-password') {
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -507,7 +503,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                       ),
                     ),
                   ],
-                ),
+                )
               ],
               const SizedBox(height: 30),
               const Text(
