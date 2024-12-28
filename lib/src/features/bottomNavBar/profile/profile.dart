@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarLocatarioPage.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/central/central_de_ajuda.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/register_signature.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarLocadorPage.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
@@ -137,14 +138,22 @@ class _ProfileState extends ConsumerState<Profile> {
                 child: const Text('Cancelar'),
               ),
               TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.pushReplacement(
+                onPressed: () async {
+                  final response = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const BottomNavBarLocadorPage(),
+                      builder: (context) => const RegisterSignature(),
                     ),
                   );
+                  if (response) {
+                    Navigator.of(context).pop();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const BottomNavBarLocadorPage(),
+                      ),
+                    );
+                  }
                 },
                 child: const Text('Confirmar'),
               ),

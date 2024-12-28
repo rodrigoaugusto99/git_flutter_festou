@@ -6,6 +6,7 @@ import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:git_flutter_festou/src/repositories/images/images_storage_repository.dart';
+import 'package:git_flutter_festou/src/services/user_service.dart';
 import './user_firestore_repository.dart';
 
 class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
@@ -77,6 +78,51 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       log('Erro ao adicionar informações de usuário no Firestore: $e');
       return Failure(RepositoryException(
           message: 'Erro ao cadastrar usuario no banco de dados'));
+    }
+  }
+
+  Future<Either<RepositoryException, Nil>> updateLocadorInfos({
+    required String cpf,
+    required String cnpj,
+    required String empresaName,
+    required String assinatura,
+  }) async {
+    try {
+      final user = await UserService().getCurrentUserModel();
+
+      QuerySnapshot querySnapshot =
+          await usersCollection.where("uid", isEqualTo: user!.id).get();
+
+      if (querySnapshot.docs.length == 1) {
+        DocumentReference userDocRef = querySnapshot.docs[0].reference;
+        Map<String, dynamic> newInfo = {
+          'cpf': cpf,
+          'cnpj': cnpj,
+          'empresaName': empresaName,
+          'assinatura': assinatura,
+        };
+
+        // Atualize o documento do usuário com os novos dados
+        await userDocRef.update(newInfo);
+
+        log('Informações de usuário adicionadas com sucesso!');
+
+        return Success(nil);
+      } else if (querySnapshot.docs.isEmpty) {
+        // Nenhum documento com o userId especificado foi encontrado
+        log('Usuário não encontrado no firestore.');
+        return Failure(RepositoryException(
+            message: 'Usuário não encontrado no banco de dados.'));
+      } else {
+        // Mais de um documento com o mesmo userId foi encontrado (situação incomum)
+        log('Mais de um documento com o mesmo userId foi encontrado no firestore.');
+        return Failure(RepositoryException(
+            message: 'Conflito de dados no bando de dados.'));
+      }
+    } catch (e) {
+      log('Erro ao adicionar informações de usuário no firestore: $e');
+      return Failure(RepositoryException(
+          message: 'Erro ao atualizar informações de usuário.'));
     }
   }
 
