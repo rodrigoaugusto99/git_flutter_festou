@@ -16,6 +16,7 @@ class NewSpaceRegisterState {
   final String numero;
   final String bairro;
   final String cidade;
+  final String estado;
   final String preco;
 
   final List<File> imageFiles;
@@ -37,6 +38,7 @@ class NewSpaceRegisterState {
           bairro: '',
           cidade: '',
           preco: '',
+          estado: '',
           days: null,
         );
 
@@ -54,6 +56,7 @@ class NewSpaceRegisterState {
     required this.imageFiles,
     required this.preco,
     required this.days,
+    required this.estado,
     this.errorMessage,
   });
 
@@ -68,6 +71,7 @@ class NewSpaceRegisterState {
       String? numero,
       String? bairro,
       String? cidade,
+      String? estado,
       String? preco,
       Days? days,
       List<File>? imageFiles,
@@ -86,6 +90,7 @@ class NewSpaceRegisterState {
       imageFiles: imageFiles ?? this.imageFiles,
       errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
       preco: preco ?? this.preco,
+      estado: estado ?? this.estado,
       days: days ?? this.days,
     );
   }

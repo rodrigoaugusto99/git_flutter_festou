@@ -42,7 +42,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
     super.initState();
     fantasyNameEC = TextEditingController(text: widget.userModel.fantasyName);
     nameEC = TextEditingController(text: widget.userModel.name);
-    cpfEC = TextEditingController(text: widget.userModel.cpfOuCnpj);
+    cpfEC = TextEditingController(text: widget.userModel.cpf);
     emailEC = TextEditingController(text: widget.userModel.email);
     telefoneEC = TextEditingController(text: widget.userModel.telefone);
     cepEC = TextEditingController(text: widget.userModel.cep);

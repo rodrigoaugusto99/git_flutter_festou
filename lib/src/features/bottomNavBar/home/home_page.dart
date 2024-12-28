@@ -15,7 +15,7 @@ import 'package:git_flutter_festou/src/features/show%20spaces/surrounding%20spac
 class HomePage extends ConsumerStatefulWidget {
   final String? previousRoute;
 
-  const HomePage({this.previousRoute, Key? key}) : super(key: key);
+  const HomePage({this.previousRoute, super.key});
 
   @override
   ConsumerState<HomePage> createState() => _HomePageState();

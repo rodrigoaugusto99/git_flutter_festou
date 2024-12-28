@@ -6,6 +6,7 @@ import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:git_flutter_festou/src/repositories/images/images_storage_repository.dart';
+import 'package:git_flutter_festou/src/services/user_service.dart';
 import './user_firestore_repository.dart';
 
 class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
@@ -80,6 +81,51 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
     }
   }
 
+  Future<Either<RepositoryException, Nil>> updateLocadorInfos({
+    required String cpf,
+    required String cnpj,
+    required String empresaName,
+    required String assinatura,
+  }) async {
+    try {
+      final user = await UserService().getCurrentUserModel();
+
+      QuerySnapshot querySnapshot =
+          await usersCollection.where("uid", isEqualTo: user!.id).get();
+
+      if (querySnapshot.docs.length == 1) {
+        DocumentReference userDocRef = querySnapshot.docs[0].reference;
+        Map<String, dynamic> newInfo = {
+          'cpf': cpf,
+          'cnpj': cnpj,
+          'empresaName': empresaName,
+          'assinatura': assinatura,
+        };
+
+        // Atualize o documento do usuário com os novos dados
+        await userDocRef.update(newInfo);
+
+        log('Informações de usuário adicionadas com sucesso!');
+
+        return Success(nil);
+      } else if (querySnapshot.docs.isEmpty) {
+        // Nenhum documento com o userId especificado foi encontrado
+        log('Usuário não encontrado no firestore.');
+        return Failure(RepositoryException(
+            message: 'Usuário não encontrado no banco de dados.'));
+      } else {
+        // Mais de um documento com o mesmo userId foi encontrado (situação incomum)
+        log('Mais de um documento com o mesmo userId foi encontrado no firestore.');
+        return Failure(RepositoryException(
+            message: 'Conflito de dados no bando de dados.'));
+      }
+    } catch (e) {
+      log('Erro ao adicionar informações de usuário no firestore: $e');
+      return Failure(RepositoryException(
+          message: 'Erro ao atualizar informações de usuário.'));
+    }
+  }
+
   @override
   Future<Either<RepositoryException, Nil>> saveUserInfos(
       ({
@@ -141,20 +187,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
 
       final userData = userDocument.data() as Map<String, dynamic>;
       final user = FirebaseAuth.instance.currentUser!;
-      final UserModel userModel = UserModel(
-        fantasyName: userData['fantasy_name'] ?? '',
-        email: userData['email'] ?? '',
-        name: userData['name'] ?? '',
-        cpfOuCnpj: userData['cpf'] ?? '',
-        cep: userData['user_address']?['cep'] ?? '',
-        logradouro: userData['user_address']?['logradouro'] ?? '',
-        telefone: userData['telefone'] ?? '',
-        bairro: userData['user_address']?['bairro'] ?? '',
-        cidade: userData['user_address']?['cidade'] ?? '',
-        id: user.uid,
-        avatarUrl: userData['avatar_url'] ?? '',
-        locador: userData['locador'] ?? false,
-      );
+      UserModel userModel = UserModel.fromMap(userData);
 
       return Success(userModel);
 
@@ -174,20 +207,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
 
       final userData = userDocument.data() as Map<String, dynamic>;
 
-      final UserModel userModel = UserModel(
-        fantasyName: userData['fantasy_name'] ?? '',
-        email: userData['email'] ?? '',
-        name: userData['name'] ?? '',
-        cpfOuCnpj: userData['cpf'] ?? '',
-        cep: userData['user_address']?['cep'] ?? '',
-        logradouro: userData['user_address']?['logradouro'] ?? '',
-        telefone: userData['telefone'] ?? '',
-        bairro: userData['user_address']?['bairro'] ?? '',
-        cidade: userData['user_address']?['cidade'] ?? '',
-        id: userId,
-        avatarUrl: userData['avatar_url'] ?? '',
-        locador: userData['locador'] ?? false,
-      );
+      UserModel userModel = UserModel.fromMap(userData);
 //gambiarra - colocando dados do firestore e do storage aqui
 //esses swqitchs sao pra pegar os storags(cada um)
 

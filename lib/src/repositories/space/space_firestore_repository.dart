@@ -24,6 +24,11 @@ abstract interface class SpaceFirestoreRepository {
       double latitude,
       double longitude,
       Days days,
+      String cnpjEmpresaLocadora,
+      String estado,
+      String locadorCpf,
+      String nomeEmpresaLocadora,
+      String locadorAssinatura,
     }) spaceData,
   );
 
