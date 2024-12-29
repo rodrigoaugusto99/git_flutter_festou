@@ -124,6 +124,7 @@ class _RevisaoState extends ConsumerState<Revisao> {
                     Text('Cidade: ${spaceRegisterState.cidade}'),
                     Text('Logradouro: ${spaceRegisterState.logradouro}'),
                     Text('Número: ${spaceRegisterState.numero}'),
+                    Text('Estado: ${spaceRegisterState.estado}'),
                   ],
                 ),
               ),

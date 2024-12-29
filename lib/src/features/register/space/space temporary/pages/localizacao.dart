@@ -39,6 +39,8 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
     cidadeEC.dispose();
   }
 
+  String? uf;
+
   void onChangedCep(cep) async {
     if (cep.isEmpty) {
       setState(() {
@@ -56,6 +58,7 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
             logradouroEC.text = infoCepJSON.logradouro ?? '';
             bairroEC.text = infoCepJSON.bairro ?? '';
             cidadeEC.text = infoCepJSON.localidade ?? '';
+            uf = infoCepJSON.uf ?? '';
             isCepAutoCompleted = true;
           });
         },
@@ -236,6 +239,7 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
                   numeroEC,
                   bairroEC,
                   cidadeEC,
+                  uf,
                 );
                 if (stringResponse != null) {
                   Messages.showError(stringResponse, context);

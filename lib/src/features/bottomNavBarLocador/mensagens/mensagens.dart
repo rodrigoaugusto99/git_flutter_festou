@@ -179,7 +179,7 @@ class _MensagensState extends State<Mensagens> {
   Future<UserModel> getUserById(String id) async {
     final userDocument = await getUserDocumentById(id);
     final userData = userDocument.data() as Map<String, dynamic>;
-    return UserModel.fromMap(userData, userDocument.id);
+    return UserModel.fromMap(userData);
   }
 
   Future<String> getNameById(String id) async {
