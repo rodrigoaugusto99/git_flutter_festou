@@ -5,6 +5,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarLocatar
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/home_page.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_state.dart';
+import 'package:git_flutter_festou/src/helpers/helpers.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class Revisao extends ConsumerStatefulWidget {
@@ -142,9 +143,9 @@ class _RevisaoState extends ConsumerState<Revisao> {
                 'Fotos:',
                 style: TextStyle(color: Color(0xff4300B1)),
               ),
-              const Padding(
-                padding: EdgeInsets.only(left: 24),
-                child: Text('x fotos'),
+              Padding(
+                padding: const EdgeInsets.only(left: 24),
+                child: Text('${spaceRegisterState.imageFiles.length} fotos'),
               ),
               const SizedBox(height: 8),
               const Text(
@@ -180,7 +181,8 @@ class _RevisaoState extends ConsumerState<Revisao> {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 24),
-                child: Text(spaceRegisterState.preco),
+                child: Text(
+                    'R\$ ${trocarPontoPorVirgula(spaceRegisterState.preco)}'),
               ),
               const SizedBox(height: 8),
               const Text(

@@ -225,8 +225,8 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
     }
   }
 
-  void pickImage() async {
-    final List<File> imageFiles = [];
+  final List<File> imageFiles = [];
+  Future<int> pickImage() async {
     final imagePicker = ImagePicker();
     final List<XFile> images = await imagePicker.pickMultiImage();
     for (XFile image in images) {
@@ -246,7 +246,8 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
     log(state.numero);
     log(state.bairro);
     log(state.cidade);
-    log('${state.imageFiles}');
+    log('${state.imageFiles.length}');
+    return state.imageFiles.length;
   }
 
   Future<LatLng> calculateLatLng(
