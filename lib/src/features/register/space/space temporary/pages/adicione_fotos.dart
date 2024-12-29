@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/titulo.dart';
 import 'package:video_player/video_player.dart';
@@ -228,12 +229,20 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
                     height: 9,
                   ),
                   GestureDetector(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Titulo(),
-                      ),
-                    ),
+                    onTap: () {
+                      if (spaceRegister.imageFiles.isEmpty) {
+                        Messages.showInfo(
+                            'Adicione pelo menos uma foto', context);
+                        return;
+                      }
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Titulo(),
+                        ),
+                      );
+                    },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 9),
