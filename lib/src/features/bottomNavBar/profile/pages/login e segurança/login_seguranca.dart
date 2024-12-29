@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +8,7 @@ import 'package:git_flutter_festou/src/core/providers/application_providers.dart
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/esqueci_senha.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/passwordField.dart';
 import 'package:git_flutter_festou/src/services/auth_services.dart';
+import 'package:git_flutter_festou/src/services/user_service.dart';
 
 class LoginSeguranca extends ConsumerStatefulWidget {
   const LoginSeguranca({super.key});
@@ -748,37 +750,31 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                     width: 26, // Ajuste conforme necessário
                     height: 26,
                   ),
-                  subtitle: 'Desativar sua conta',
-                  textButton: 'Desativar',
+                  subtitle: 'Excluir minha conta',
+                  textButton: 'Excluir',
                   onTap: () async {
                     final user = FirebaseAuth.instance.currentUser;
 
                     if (user != null) {
-                      // Mostra um diálogo de confirmação antes de excluir a conta
-
                       await Future.delayed(Duration.zero);
                       await showDialog(
                         context: context,
                         builder: (BuildContext context) {
+                          final BuildContext context2 =
+                              Navigator.of(context).context;
+                          final BuildContext context3 =
+                              Navigator.of(context).context;
                           TextEditingController passwordController =
                               TextEditingController();
 
                           return AlertDialog(
-                            title: const Text('Tem certeza?'),
-                            content: Column(
+                            title: const Text('Exclusão de Conta'),
+                            content: const Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Text(
-                                    'Tem certeza de que deseja excluir sua conta?'),
-                                const Text(
-                                    'Confirme sua senha para prosseguir'),
-                                TextFormField(
-                                  controller: passwordController,
-                                  obscureText: true,
-                                  decoration:
-                                      const InputDecoration(labelText: 'Senha'),
-                                ),
+                                Text(
+                                    'Sua conta será excluída e todos os seus dados serão perdidos, sem possibilidade de recuperação. Deseja continuar?'),
                               ],
                             ),
                             actions: <Widget>[
@@ -792,32 +788,188 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                 onPressed: () async {
                                   Navigator.of(context).pop();
 
-                                  try {
-                                    // Reautentica o usuário antes de excluir a conta
-                                    AuthCredential credential =
-                                        EmailAuthProvider.credential(
-                                      email: user.email!,
-                                      password: passwordController.text,
+                                  if (!providers.contains("password")) {
+                                    await showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text('Ops...'),
+                                          content: const Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                  'É necessário possuir uma senha cadastrada para prosseguir com exclusão de conta.'),
+                                            ],
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: const Text('Ok'),
+                                            ),
+                                          ],
+                                        );
+                                      },
                                     );
-                                    await user.reauthenticateWithCredential(
-                                        credential);
-
-                                    // Exclua a conta do usuário após a reautenticação
-                                    await user.delete();
-
-                                    // Redirecione o usuário para a tela de login ou execute outras ações necessárias
-                                    await ref
-                                        .read(userFirestoreRepositoryProvider)
-                                        .deleteUserDocument(user);
-                                    ref.read(logoutProvider.future);
-                                    log('Conta excluída com sucesso.');
-                                  } on FirebaseAuthException catch (e) {
-                                    log('Erro ao excluir a conta: ${e.code}, ${e.message}');
-                                  } catch (e) {
-                                    log('Erro desconhecido ao excluir a conta: $e');
+                                    return;
                                   }
+
+                                  //Primeiro validar se não há contrato ativo ou espaço cadastrado
+                                  final userModel =
+                                      await UserService().getCurrentUserModel();
+
+                                  final queryReservationsSnapshot =
+                                      await FirebaseFirestore.instance
+                                          .collection('reservations')
+                                          .where('client_id',
+                                              isEqualTo: userModel!.id)
+                                          .where('selectedFinalDate',
+                                              isGreaterThan: DateTime.now())
+                                          .limit(1)
+                                          .get(); // Limita para apenas verificar se existe um contrato ativo
+                                  if (queryReservationsSnapshot
+                                      .docs.isNotEmpty) {
+                                    await showDialog(
+                                      context: context2,
+                                      builder: (BuildContext context2) {
+                                        return AlertDialog(
+                                          title: const Text('Ops...'),
+                                          content: const Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                  'O usuário possui reservas não consumadas.'),
+                                            ],
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context2).pop();
+                                              },
+                                              child: const Text('Ok'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                    return;
+                                  }
+
+                                  final querySpacesSnapshot =
+                                      await FirebaseFirestore.instance
+                                          .collection('spaces')
+                                          .where('user_id',
+                                              isEqualTo: userModel.id)
+                                          .limit(1)
+                                          .get(); // Limita para apenas verificar se existe um espacço cadastrado
+
+                                  if (querySpacesSnapshot.docs.isNotEmpty) {
+                                    await showDialog(
+                                      context: context2,
+                                      builder: (BuildContext context2) {
+                                        return AlertDialog(
+                                          title: const Text('Ops...'),
+                                          content: const Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                  'O usuário possui espaço cadastrado.'),
+                                            ],
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context2).pop();
+                                              },
+                                              child: const Text('Ok'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                    return;
+                                  }
+
+                                  await showDialog(
+                                      context: context3,
+                                      builder: (BuildContext context3) {
+                                        return AlertDialog(
+                                          title:
+                                              const Text('Exclusão de Conta'),
+                                          content: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const Text(
+                                                  'Confirme sua senha para prosseguir'),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 16.0),
+                                                child: PasswordField(
+                                                  controller:
+                                                      passwordController,
+                                                  label: 'Senha',
+                                                  padding: 0,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context3).pop();
+                                              },
+                                              child: const Text('Cancelar'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () async {
+                                                Navigator.of(context3).pop();
+
+                                                try {
+                                                  // Reautentica o usuário antes de excluir a conta
+                                                  AuthCredential credential =
+                                                      EmailAuthProvider
+                                                          .credential(
+                                                    email: userModel.email,
+                                                    password:
+                                                        passwordController.text,
+                                                  );
+                                                  await user
+                                                      .reauthenticateWithCredential(
+                                                          credential);
+
+                                                  // Exclua a conta do usuário após a reautenticação
+                                                  await user.delete();
+
+                                                  // Redirecione o usuário para a tela de login ou execute outras ações necessárias
+                                                  await ref
+                                                      .read(
+                                                          userFirestoreRepositoryProvider)
+                                                      .deleteUserDocument(user);
+                                                  ref.read(
+                                                      logoutProvider.future);
+                                                  log('Conta excluída com sucesso.');
+                                                } on FirebaseAuthException catch (e) {
+                                                  log('Erro ao excluir a conta: ${e.code}, ${e.message}');
+                                                } catch (e) {
+                                                  log('Erro desconhecido ao excluir a conta: $e');
+                                                }
+                                              },
+                                              child: const Text('Confirmar'),
+                                            ),
+                                          ],
+                                        );
+                                      });
                                 },
-                                child: const Text('Deletar conta'),
+                                child: const Text('Confirmar'),
                               ),
                             ],
                           );
