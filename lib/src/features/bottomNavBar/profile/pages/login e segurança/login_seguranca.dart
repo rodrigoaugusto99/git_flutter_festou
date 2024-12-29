@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/esqueci_senha.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/passwordField.dart';
+import 'package:git_flutter_festou/src/services/auth_services.dart';
 
 class LoginSeguranca extends ConsumerStatefulWidget {
   const LoginSeguranca({super.key});
@@ -18,6 +20,8 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
   final TextEditingController novaSenhaController = TextEditingController();
   final TextEditingController confirmarSenhaController =
       TextEditingController();
+  final TextEditingController senhaAtualController = TextEditingController();
+  bool isPasswordVisible = false;
 
   @override
   void initState() {
@@ -131,24 +135,88 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
     }
   }
 
-  Future<void> areYouSureOnlyGoogle(BuildContext context) async {
+  Future<bool> reauthentication(User user, String senhaAtual) async {
+    try {
+      if (providers.contains("google.com") && senhaAtual == '') {
+        await AuthService(context: context).signInWithGoogle();
+        return true; // Retorna true se a reautenticação foi bem-sucedida
+      } else {
+        // Reautentica o usuário com a nova senha
+        AuthCredential credential = EmailAuthProvider.credential(
+          email: user.email!,
+          password: senhaAtual,
+        );
+        await user.reauthenticateWithCredential(credential);
+        return true; // Retorna true se a reautenticação foi bem-sucedida
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'invalid-credential') {
+        await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Ops...'),
+                content: const Text('Senha atual inválida!'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Fechar'),
+                  ),
+                ],
+              );
+            });
+        return false; // Retorna false se a senha for inválida
+      } else {
+        await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Ops...'),
+                content: const Text(
+                    'Não foi possível reautenticar. Refaça o login.'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Fechar'),
+                  ),
+                ],
+              );
+            });
+        log('Erro ao reautenticar: $e');
+        return false; // Retorna false para qualquer outro erro
+      }
+    }
+  }
+
+  Future<void> areYouSureAboutDisconnect(BuildContext context) async {
     final user = FirebaseAuth.instance.currentUser;
+    final providersData = user?.providerData;
+    bool onlyGoogle = false;
 
     if (user == null) {
       log('Usuário não autenticado');
       return;
     }
 
-    final providers = await user.providerData;
-    if (providers.length == 1 && providers[0].providerId == "google.com") {
+    if (providersData!.length == 1 &&
+        providersData[0].providerId == "google.com") {
+      onlyGoogle = true;
+    }
+
+    await reauthentication(user, '');
+
+    if (providers.contains("google.com")) {
       // Exibe o diálogo de confirmação
       await showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Confirmação de Desvinculação'),
-            content: const Text(
-                'O Google é seu único provedor. Se você desvincular, precisará configurar uma senha para continuar acessando sua conta.'),
+            content: onlyGoogle
+                ? const Text(
+                    'O Google é seu único provedor. Se você desvincular, precisará configurar uma senha para continuar acessando sua conta.')
+                : const Text(
+                    'Tem certeza de que deseja desvincular o Google? O login só poderá ser realizado via e-mail e senha.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
@@ -159,135 +227,178 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                   Navigator.of(context).pop(); // Fecha o diálogo de confirmação
 
                   // Abre o pop-up para cadastrar nova senha
-                  await showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      final _newPasswordController = TextEditingController();
-                      final _confirmPasswordController =
-                          TextEditingController();
+                  if (onlyGoogle) {
+                    await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        final newPasswordController = TextEditingController();
+                        final confirmPasswordController =
+                            TextEditingController();
 
-                      return AlertDialog(
-                        title: const Center(
-                          child: Text(
-                            'Cadastrar senha',
+                        return AlertDialog(
+                          title: const Center(
+                            child: Text(
+                              'Cadastrar senha',
+                            ),
                           ),
-                        ),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(bottom: 20),
-                              child: Text(
-                                "Agora você deve cadastrar uma senha para login com e-mail:",
-                                style: TextStyle(fontSize: 14),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(bottom: 20),
+                                child: Text(
+                                  "Agora você deve cadastrar uma senha para login com e-mail:",
+                                  style: TextStyle(fontSize: 14),
+                                ),
                               ),
+                              TextField(
+                                controller: newPasswordController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Nova senha',
+                                  labelStyle: TextStyle(fontSize: 14),
+                                  border: OutlineInputBorder(),
+                                ),
+                                obscureText: true,
+                              ),
+                              const SizedBox(height: 16),
+                              TextField(
+                                controller: confirmPasswordController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Confirmar senha',
+                                  labelStyle: TextStyle(fontSize: 14),
+                                  border: OutlineInputBorder(),
+                                ),
+                                obscureText: true,
+                              ),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: const Text('Cancelar'),
                             ),
-                            TextField(
-                              controller: _newPasswordController,
-                              decoration: const InputDecoration(
-                                labelText: 'Nova senha',
-                                labelStyle: TextStyle(fontSize: 14),
-                                border: OutlineInputBorder(),
-                              ),
-                              obscureText: true,
-                            ),
-                            const SizedBox(height: 16),
-                            TextField(
-                              controller: _confirmPasswordController,
-                              decoration: const InputDecoration(
-                                labelText: 'Confirmar senha',
-                                labelStyle: TextStyle(fontSize: 14),
-                                border: OutlineInputBorder(),
-                              ),
-                              obscureText: true,
+                            TextButton(
+                              onPressed: () async {
+                                final newPassword =
+                                    newPasswordController.text.trim();
+                                final confirmPassword =
+                                    confirmPasswordController.text.trim();
+
+                                if (newPassword.isEmpty ||
+                                    confirmPassword.isEmpty) {
+                                  await showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                            title: const Text('Ops...'),
+                                            content: const Text(
+                                                'Os campos não podem estar vazios.'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () =>
+                                                    Navigator.of(context).pop(),
+                                                child: const Text('Fechar'),
+                                              ),
+                                            ]);
+                                      });
+                                  return;
+                                }
+
+                                if (newPassword.length < 6) {
+                                  await showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                            title: const Text('Ops...'),
+                                            content: const Text(
+                                                'A senha deve conter no mínimo 6 caracteres.'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () =>
+                                                    Navigator.of(context).pop(),
+                                                child: const Text('Fechar'),
+                                              ),
+                                            ]);
+                                      });
+                                  return;
+                                }
+
+                                if (newPassword != confirmPassword) {
+                                  await showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                            title: const Text('Ops...'),
+                                            content: const Text(
+                                                'As senhas não coincidem.'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () =>
+                                                    Navigator.of(context).pop(),
+                                                child: const Text('Fechar'),
+                                              ),
+                                            ]);
+                                      });
+                                  return;
+                                }
+
+                                try {
+                                  // Atualiza a senha do usuário
+                                  await user.updatePassword(newPassword);
+                                  await user.unlink("google.com");
+
+                                  setState(() {
+                                    displayAuthProviderList();
+                                  });
+
+                                  Navigator.of(context)
+                                      .pop(); // Fecha o pop-up de senha
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Senha cadastrada e Google desvinculado com sucesso!'),
+                                    ),
+                                  );
+                                } on FirebaseAuthException catch (e) {
+                                  log('Erro ao cadastrar senha: ${e.code}, ${e.message}');
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Erro ao cadastrar senha: ${e.message}',
+                                      ),
+                                    ),
+                                  );
+                                } catch (e) {
+                                  log('Erro desconhecido ao cadastrar senha: $e');
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Erro desconhecido ao cadastrar senha.'),
+                                    ),
+                                  );
+                                }
+                              },
+                              child: const Text('Cadastrar'),
                             ),
                           ],
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: const Text('Cancelar'),
-                          ),
-                          TextButton(
-                            onPressed: () async {
-                              final newPassword =
-                                  _newPasswordController.text.trim();
-                              final confirmPassword =
-                                  _confirmPasswordController.text.trim();
+                        );
+                      },
+                    );
+                  } else {
+                    await user.unlink("google.com");
 
-                              if (newPassword.isEmpty ||
-                                  confirmPassword.isEmpty) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        'Os campos não podem estar vazios.'),
-                                  ),
-                                );
-                                return;
-                              }
+                    setState(() {
+                      displayAuthProviderList();
+                    });
 
-                              if (newPassword.length < 6) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        'A senha deve conter no mínimo 6 caracteres.'),
-                                  ),
-                                );
-                                return;
-                              }
-
-                              if (newPassword != confirmPassword) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('As senhas não coincidem.'),
-                                  ),
-                                );
-                                return;
-                              }
-
-                              try {
-                                // Atualiza a senha do usuário
-                                await user.updatePassword(newPassword);
-                                await user.unlink("google.com");
-
-                                setState(() {
-                                  displayAuthProviderList();
-                                });
-
-                                Navigator.of(context)
-                                    .pop(); // Fecha o pop-up de senha
-
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        'Senha cadastrada e Google desvinculado com sucesso!'),
-                                  ),
-                                );
-                              } on FirebaseAuthException catch (e) {
-                                log('Erro ao cadastrar senha: ${e.code}, ${e.message}');
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'Erro ao cadastrar senha: ${e.message}',
-                                    ),
-                                  ),
-                                );
-                              } catch (e) {
-                                log('Erro desconhecido ao cadastrar senha: $e');
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        'Erro desconhecido ao cadastrar senha.'),
-                                  ),
-                                );
-                              }
-                            },
-                            child: const Text('Cadastrar'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content:
+                            Text('Conta do Google desvinculada com sucesso!'),
+                      ),
+                    );
+                  }
                 },
                 child: const Text('Confirmar'),
               ),
@@ -296,7 +407,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
         },
       );
     } else {
-      log('O usuário possui outros provedores ou nenhum.');
+      log('O usuário não possui o provedor Google associado.');
     }
   }
 
@@ -365,116 +476,189 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                 },
               ),
               if (isUpdatingPassword) ...[
-                // Container com os campos de atualização da senha
                 Column(
+                  key: const ValueKey('updatePasswordFields'),
                   children: [
-                    const TextField(
-                      decoration: InputDecoration(labelText: 'Senha Atual'),
-                      obscureText: true,
+                    if (providers.contains("password")) ...[
+                      PasswordField(
+                        controller: senhaAtualController,
+                        label: 'Senha atual',
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          InkWell(
+                              onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const EsqueciSenha(),
+                                    ),
+                                  ),
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Text('Esqueci minha senha'),
+                              )),
+                        ],
+                      ),
+                    ],
+                    const SizedBox(height: 10),
+                    PasswordField(
+                      controller: novaSenhaController,
+                      label: 'Nova Senha',
+                    ),
+                    PasswordField(
+                      controller: confirmarSenhaController,
+                      label: 'Confirmar Senha',
                     ),
                     const SizedBox(height: 0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        InkWell(
-                            onTap: () => Navigator.push(
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          final user = FirebaseAuth.instance.currentUser;
+                          if (user != null) {
+                            try {
+                              String novaSenha = novaSenhaController.text;
+                              String confirmarSenha =
+                                  confirmarSenhaController.text;
+                              String senhaAtual = '';
+                              bool itsRegister = true;
+
+                              if (providers.contains("password")) {
+                                senhaAtual = senhaAtualController.text;
+                                itsRegister = false;
+                              }
+
+                              if (novaSenha.isEmpty || confirmarSenha.isEmpty) {
+                                await showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Ops...'),
+                                      content: const Text(
+                                          'As senhas não podem estar vazias.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          child: const Text('Fechar'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                                return;
+                              }
+
+                              if (novaSenha != confirmarSenha) {
+                                await showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Ops...'),
+                                      content: const Text(
+                                          'As senhas não coincidem.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          child: const Text('Fechar'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                                return;
+                              }
+
+                              if (senhaAtual.isNotEmpty || itsRegister) {
+                                // Verifica se a reautenticação foi bem-sucedida
+                                bool reauthenticated =
+                                    await reauthentication(user, senhaAtual);
+                                if (!reauthenticated) {
+                                  return; // Se falhou na reautenticação, retorna sem continuar
+                                }
+
+                                // Atualiza a senha do usuário
+                                await user.updatePassword(novaSenha);
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: providers.contains("password")
+                                        ? const Text(
+                                            'Senha atualizada com sucesso.')
+                                        : const Text(
+                                            'Senha cadastrada com sucesso.'),
+                                  ),
+                                );
+
+                                setState(() {
+                                  isUpdatingPassword = false;
+                                });
+
+                                // Recarregar a página atual
+                                Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const EsqueciSenha(),
-                                  ),
-                                ),
-                            child: const Text('Esqueci minha senha')),
-                      ],
-                    ),
-                    const SizedBox(height: 0),
-                    const TextField(
-                      decoration: InputDecoration(labelText: 'Nova Senha'),
-                      obscureText: true,
-                    ),
-                    const SizedBox(height: 0),
-                    const TextField(
-                      decoration: InputDecoration(labelText: 'Confirmar Senha'),
-                      obscureText: true,
-                    ),
-                    const SizedBox(height: 0),
-                    ElevatedButton(
-                      onPressed: () async {
-                        final user = FirebaseAuth.instance.currentUser;
-                        if (user != null) {
-                          try {
-                            // Obtenha as novas senhas dos campos de texto
-                            String novaSenha = novaSenhaController.text;
-                            String confirmarSenha =
-                                confirmarSenhaController.text;
-
-                            if (novaSenha != confirmarSenha) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('As senhas não coincidem.')),
-                              );
-                              return;
+                                      builder: (BuildContext context) =>
+                                          super.widget),
+                                );
+                              } else {
+                                await showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Ops...'),
+                                      content: const Text(
+                                          'É necessário informar a senha atual.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          child: const Text('Fechar'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                                return;
+                              }
+                            } on FirebaseAuthException catch (e) {
+                              if (e.code == 'weak-password') {
+                                await showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Ops...'),
+                                      content: const Text(
+                                          'A senha fornecida é muito fraca.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          child: const Text('Fechar'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              } else {
+                                log('Erro ao atualizar a senha: ${e.code}, ${e.message}');
+                              }
+                            } catch (e) {
+                              log('Erro desconhecido ao atualizar a senha: $e');
                             }
-
-                            // Atualiza a senha do usuário
-                            await user.updatePassword(novaSenha);
-
-                            // Reautentica o usuário com a nova senha
-                            AuthCredential credential =
-                                EmailAuthProvider.credential(
-                              email: user.email!,
-                              password: novaSenha,
-                            );
-                            await user.reauthenticateWithCredential(credential);
-
-                            // Verifica se o Google está vinculado e remove
-                            if (user.providerData.any(
-                                (info) => info.providerId == "google.com")) {
-                              await user.unlink("google.com");
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content:
-                                      Text('Senha atualizada com sucesso.'),
-                                ),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content:
-                                      Text('Senha atualizada com sucesso.'),
-                                ),
-                              );
-                            }
-
-                            setState(() {
-                              isUpdatingPassword =
-                                  false; // Fecha o formulário de atualização
-                            });
-                          } on FirebaseAuthException catch (e) {
-                            if (e.code == 'weak-password') {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('A senha é muito fraca.')),
-                              );
-                            } else if (e.code == 'requires-recent-login') {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                      'Reautenticação necessária. Faça login novamente.'),
-                                ),
-                              );
-                            } else {
-                              log('Erro ao atualizar a senha: ${e.code}, ${e.message}');
-                            }
-                          } catch (e) {
-                            log('Erro desconhecido ao atualizar a senha: $e');
                           }
-                        }
-                      },
-                      child: const Text('Alterar Senha'),
+                        },
+                        child: providers.contains("password")
+                            ? const Text('Alterar Senha')
+                            : const Text('Cadastrar Senha'),
+                      ),
                     ),
                   ],
-                ),
+                )
               ],
               const SizedBox(height: 30),
               const Text(
@@ -514,63 +698,13 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                       FirebaseAuth.instance.currentUser;
                                   if (user != null) {
                                     try {
-                                      // Verifica se o usuário está vinculado ao Google
-                                      if (user.providerData.any((info) =>
-                                          info.providerId == "google.com")) {
-                                        // Checa se o Google é o único provedor vinculado
-                                        bool hasOnlyGoogle = user.providerData
-                                            .every((info) =>
-                                                info.providerId ==
-                                                    "google.com" ||
-                                                info.providerId == "firebase");
+                                      await areYouSureAboutDisconnect(context);
 
-                                        if (hasOnlyGoogle) {
-                                          // Se Google for o único provedor, alerta avisando que é único provedor
-                                          await areYouSureOnlyGoogle(context);
-                                        } else {
-                                          // Caso contrário, desvincula o Google
-                                          await user.unlink("google.com");
-
-                                          // Força a atualização do estado da tela
-                                          setState(
-                                              () {}); // Atualiza a UI para refletir a desconexão
-
-                                          // Recarrega o usuário
-                                          await FirebaseAuth
-                                              .instance.currentUser
-                                              ?.reload();
-
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                  'Conta do Google desvinculada com sucesso.'),
-                                            ),
-                                          );
-                                        }
-                                      } else {
-                                        // Caso o usuário não esteja vinculado ao provedor do Google
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                            content: Text(
-                                                'Usuário não está vinculado ao Google.'),
-                                          ),
-                                        );
-                                      }
+                                      // Recarrega o usuário
+                                      await FirebaseAuth.instance.currentUser
+                                          ?.reload();
                                     } on FirebaseAuthException catch (e) {
-                                      if (e.code == 'requires-recent-login') {
-                                        // Solicita ao usuário que faça login novamente
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                            content: Text(
-                                                'Reautenticação necessária. Por favor, faça login novamente.'),
-                                          ),
-                                        );
-                                      } else {
-                                        log('Erro ao desvincular conta do Google: ${e.message}');
-                                      }
+                                      log('Erro ao desvincular conta do Google: ${e.message}');
                                     } catch (e) {
                                       log('Erro desconhecido ao desvincular conta do Google: $e');
                                     }

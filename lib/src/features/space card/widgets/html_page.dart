@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:git_flutter_festou/src/models/card_model.dart';
 
 class HtmlPage extends StatelessWidget {
   final String html;
+  final CardModel? card;
 
-  const HtmlPage({super.key, required this.html});
+  const HtmlPage({
+    super.key,
+    required this.html,
+    required this.card,
+  });
 
   @override
   Widget build(BuildContext context) {

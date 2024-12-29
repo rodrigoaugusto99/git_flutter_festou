@@ -26,6 +26,7 @@ class ReservaService {
         'selectedDate': reservationModel.selectedDate,
         'selectedFinalDate': reservationModel.selectedFinalDate,
         'contratoHtml': reservationModel.contratoHtml,
+        'cardId': reservationModel.cardId,
         'createdAt': Timestamp.now(),
       };
 

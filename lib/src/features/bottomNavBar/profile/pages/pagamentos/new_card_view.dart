@@ -1,5 +1,12 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
+import 'package:git_flutter_festou/src/models/card_model.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:validatorless/validatorless.dart';
 
 class NewCardView extends StatefulWidget {
   bool? isNew;
@@ -13,12 +20,89 @@ class NewCardView extends StatefulWidget {
 }
 
 class _NewCardViewState extends State<NewCardView> {
-  final nameEC = TextEditingController(text: 'Emília Faria M Souza');
-  final cardNumberEC = TextEditingController(text: '7894 1234 4568 2580');
-  final validateDateEC = TextEditingController(text: '01/29');
-  final cvvEC = TextEditingController(text: '100');
-  final flagEC = TextEditingController(text: 'Cartão Master 2');
+  // final nameEC = TextEditingController(text: 'Emília Faria M Souza');
+  // final cardNumberEC = TextEditingController(text: '7894 1234 4568 2580');
+  // final validateDateEC = TextEditingController(text: '01/29');
+  // final cvvEC = TextEditingController(text: '100');
+  // final flagEC = TextEditingController(text: 'Cartão Master 2');
+  TextEditingController nameEC = TextEditingController();
+  TextEditingController cardNumberEC = TextEditingController();
+  TextEditingController validateDateEC = TextEditingController();
+  TextEditingController cvvEC = TextEditingController();
+  TextEditingController flagEC = TextEditingController();
   bool _isChecked = false;
+
+  var dateMaskFormatter = MaskTextInputFormatter(
+    mask: '##/##',
+    filter: {"#": RegExp(r'[0-9]')},
+    type: MaskAutoCompletionType.lazy,
+  );
+  var cvvFormatter = MaskTextInputFormatter(
+    mask: '###',
+    filter: {"#": RegExp('[0-9]')},
+    type: MaskAutoCompletionType.lazy,
+  );
+  var cardNumberFormatter = MaskTextInputFormatter(
+    mask: '#### #### #### ####',
+    filter: {"#": RegExp('[0-9]')},
+    type: MaskAutoCompletionType.lazy,
+  );
+
+  // List of card flags
+  final List<String> cardFlags = [
+    'Visa',
+    'MasterCard',
+    'American Express',
+    'Discover'
+  ];
+
+  void showPopupMenu({
+    required BuildContext context,
+    required Offset offset,
+  }) async {
+    await showMenu(
+      popUpAnimationStyle: AnimationStyle(
+        curve: Curves.fastOutSlowIn,
+        duration: const Duration(milliseconds: 500),
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      // shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      context: context,
+      position: RelativeRect.fromLTRB(
+        offset.dx,
+        offset.dy + 10,
+        offset.dx,
+        offset.dy,
+      ),
+
+      items: cardFlags.map((flag) {
+        return PopupMenuItem(
+          child: ListTile(
+            title: Text(flag),
+            onTap: () {
+              Navigator.of(context).pop();
+              onFlagSelected(flag);
+            },
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  void onFlagSelected(String? flag) {
+    if (flag != null) {
+      setState(() {
+        flagEC.text = flag;
+      });
+    }
+  }
+
+  final formKey = GlobalKey<FormState>();
+
+  FormFieldValidator<String> validate() {
+    return Validatorless.required('Campo obrigatório');
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -74,13 +158,13 @@ class _NewCardViewState extends State<NewCardView> {
                       color: const Color(0xff4300B1),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Padding(
-                      padding: EdgeInsets.only(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
                           left: 31, right: 22, top: 22, bottom: 11),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
@@ -93,10 +177,10 @@ class _NewCardViewState extends State<NewCardView> {
                               ),
                             ],
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Text(
-                            '7894 **** **** 2580',
-                            style: TextStyle(
+                            cardNumberEC.text,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 20,
                               fontWeight: FontWeight.w700,
@@ -108,7 +192,7 @@ class _NewCardViewState extends State<NewCardView> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
+                                  const Text(
                                     'PORTADOR',
                                     style: TextStyle(
                                       color: Colors.white,
@@ -117,8 +201,8 @@ class _NewCardViewState extends State<NewCardView> {
                                     ),
                                   ),
                                   Text(
-                                    'EMILIA FARIA M SOUZA',
-                                    style: TextStyle(
+                                    nameEC.text,
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 14,
                                       fontWeight: FontWeight.w700,
@@ -129,7 +213,7 @@ class _NewCardViewState extends State<NewCardView> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Text(
+                                  const Text(
                                     'VALIDADE',
                                     style: TextStyle(
                                       color: Colors.white,
@@ -138,8 +222,8 @@ class _NewCardViewState extends State<NewCardView> {
                                     ),
                                   ),
                                   Text(
-                                    '01/29',
-                                    style: TextStyle(
+                                    validateDateEC.text,
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 14,
                                       fontWeight: FontWeight.w700,
@@ -194,51 +278,94 @@ class _NewCardViewState extends State<NewCardView> {
             const SizedBox(height: 45),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 17),
-              child: Column(
-                children: [
-                  CustomTextformfield(
-                    ddd: 10,
-                    svgPath: 'lib/assets/images/image 6perssoa.png',
-                    label: '',
-                    controller: nameEC,
-                  ),
-                  const SizedBox(height: 15),
-                  CustomTextformfield(
-                    ddd: 5,
-                    label: '',
-                    controller: cardNumberEC,
-                    svgPath: 'lib/assets/images/image 4card.png',
-                  ),
-                  const SizedBox(height: 15),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CustomTextformfield(
-                          ddd: 2,
-                          svgPath: 'lib/assets/images/image 4calendarrrr.png',
-                          label: '',
-                          controller: validateDateEC,
+              child: Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    CustomTextformfield(
+                      onChanged: (p0) => setState(() {}),
+                      ddd: 10,
+                      svgPath: 'lib/assets/images/image 6perssoa.png',
+                      hintText: 'Nome',
+                      controller: nameEC,
+                      validator: validate(),
+                    ),
+                    const SizedBox(height: 15),
+                    CustomTextformfield(
+                      onChanged: (p0) => setState(() {}),
+                      ddd: 5,
+                      hintText: 'Cartão',
+                      keyboardType: TextInputType.number,
+                      controller: cardNumberEC,
+                      inputFormatters: [cardNumberFormatter],
+                      svgPath: 'lib/assets/images/image 4card.png',
+                      validator: validate(),
+                    ),
+                    const SizedBox(height: 15),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextformfield(
+                            onChanged: (p0) => setState(() {}),
+                            ddd: 10,
+                            svgPath: 'lib/assets/images/image 5cardcvv.png',
+                            controller: cvvEC,
+                            inputFormatters: [cvvFormatter],
+                            validator: validate(),
+                            keyboardType: TextInputType.number,
+                            hintText: 'CVV',
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 20),
-                      Expanded(
+                        const SizedBox(width: 20),
+                        Expanded(
+                          child: CustomTextformfield(
+                            onChanged: (p0) => setState(() {}),
+                            ddd: 2, validator: validate(),
+                            svgPath: 'lib/assets/images/image 4calendarrrr.png',
+                            //label: 'aa',
+                            keyboardType: TextInputType.number,
+                            controller: validateDateEC,
+                            inputFormatters: [dateMaskFormatter],
+                            hintText: 'Validade',
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 15),
+                    GestureDetector(
+                      // onTap: () {
+                      //   if (selectedFlag != null) {
+                      //     final message = 'Selected Card Flag: $selectedFlag';
+                      //     ScaffoldMessenger.of(context).showSnackBar(
+                      //       SnackBar(content: Text(message)),
+                      //     );
+                      //   } else {
+                      //     ScaffoldMessenger.of(context).showSnackBar(
+                      //       const SnackBar(
+                      //           content: Text('Please select a card flag first')),
+                      //     );
+                      //   }
+                      // },
+                      child: GestureDetector(
+                        onTapDown: (TapDownDetails details) {
+                          showPopupMenu(
+                            context: context,
+                            offset: details.globalPosition,
+                          );
+                        },
                         child: CustomTextformfield(
+                          validator: validate(),
+                          enable: false,
+                          //  onChanged: (p0) => setState(() {}),
                           ddd: 10,
-                          svgPath: 'lib/assets/images/image 5cardcvv.png',
-                          label: '',
-                          controller: cvvEC,
+                          svgPath: 'lib/assets/images/image 7passa.png',
+                          controller: flagEC,
+                          hintText: 'Bandeira',
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-                  CustomTextformfield(
-                    ddd: 10,
-                    svgPath: 'lib/assets/images/image 7passa.png',
-                    label: '',
-                    controller: flagEC,
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 15),
@@ -276,25 +403,50 @@ class _NewCardViewState extends State<NewCardView> {
                 ],
               ),
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xff9747FF),
-                      Color(0xff4300B1),
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                  borderRadius: BorderRadius.circular(50)),
-              child: const Text(
-                'Adicionar cartão',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 12),
+            GestureDetector(
+              onTap: () async {
+                if (formKey.currentState?.validate() == false) {
+                  //  Messages.showError('Formulár', context);
+                  return;
+                }
+                CardModel card = CardModel(
+                  bandeira: flagEC.text,
+                  cvv: cvvEC.text,
+                  name: nameEC.text,
+                  number: cardNumberEC.text,
+                  validate: validateDateEC.text,
+                );
+                try {
+                  final cardId = await card.saveToFirestore();
+
+                  card.id = cardId;
+
+                  Navigator.pop(context, card);
+                } on Exception catch (e) {
+                  log(e.toString());
+                  Messages.showError('Erro ao cadastrar cartão', context);
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xff9747FF),
+                        Color(0xff4300B1),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                    borderRadius: BorderRadius.circular(50)),
+                child: const Text(
+                  'Adicionar cartão',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 12),
+                ),
               ),
             ),
           ],
