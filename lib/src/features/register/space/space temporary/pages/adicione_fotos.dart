@@ -96,23 +96,14 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
             // Exibe o botão de adicionar no último slot
             return GestureDetector(
               onTap: onAddPressed,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0), // Arredonda as bordas
-                child: GestureDetector(
-                  onTap: () async {
-                    await spaceRegister.pickImage();
-                    setState(() {});
-                  },
-                  child: Image.asset(
-                    'lib/assets/images/Botao +botao_de_mais.png',
-                    width: 25,
-                  ),
-                ),
+              child: Image.asset(
+                'lib/assets/images/Botao +botao_de_mais.png',
+                scale: 1.5,
               ),
             );
           }
         },
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
       );
     }
 
@@ -160,6 +151,7 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
         padding: const EdgeInsets.symmetric(horizontal: 38.0, vertical: 20),
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
                 'Adicione algumas fotos e vídeos do seu espaço:',
@@ -184,6 +176,27 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
               const SizedBox(
                 height: 45,
               ),
+              Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '(${spaceRegister.imageFiles.length} fotos)',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 10,
+                        color: Color(0xff5E5E5E),
+                      ),
+                    ),
+                  ],
+                  text: 'Fotos ',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 14,
+              ),
               customGrid(
                 onDelete: (index) {
                   spaceRegister.imageFiles.removeAt(index);
@@ -193,6 +206,9 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
                   photosLength = await spaceRegister.pickImage();
                   setState(() {});
                 },
+              ),
+              const SizedBox(
+                height: 50,
               ),
               Column(
                 mainAxisSize: MainAxisSize.min,
