@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/titulo.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/utils.dart';
 import 'package:video_player/video_player.dart';
 
 class AdicioneFotos extends ConsumerStatefulWidget {
@@ -15,14 +16,93 @@ class AdicioneFotos extends ConsumerStatefulWidget {
 }
 
 class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
-  final List<VideoPlayerController> localControllers = [];
-
   int photosLength = 0;
   int? selectedPhotoIndex;
+  int? selectedVideoIndex;
 
   @override
   Widget build(BuildContext context) {
     final spaceRegister = ref.watch(newSpaceRegisterVmProvider.notifier);
+
+    Widget customVideoGrid({
+      required List<File> videoFiles,
+      required VoidCallback onAddPressed,
+      required List<VideoPlayerController> controllers,
+      required Function(int index) onDelete,
+    }) {
+      return GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3, // 3 itens por linha
+          crossAxisSpacing: 8.0,
+          mainAxisSpacing: 8.0,
+        ),
+        itemCount:
+            videoFiles.length + 1, // Adiciona espaço para o botão de adicionar
+        itemBuilder: (context, index) {
+          if (index < videoFiles.length) {
+            // Exibe a imagem se for um item da lista
+            return GestureDetector(
+              onTap: () {
+                selectedVideoIndex = index;
+                setState(() {});
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: selectedVideoIndex == index
+                            ? Colors.black.withOpacity(0.5) // Fundo preto opaco
+                            : Colors.transparent,
+                      ),
+                      child:
+                          buildVideoPlayerFromFile(index, context, controllers),
+                    ),
+                    if (selectedVideoIndex == index)
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Colors.black
+                                .withOpacity(0.5) // Fundo preto opaco
+
+                            ),
+                      ),
+                    if (selectedVideoIndex == index)
+                      Positioned(
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              // Aqui você pode implementar a lógica para excluir a imagem
+                              onDelete(index);
+                            });
+                          },
+                          child: Image.asset(
+                            'lib/assets/images/Ellipse 37lixeira-foto.png',
+                            width: 40,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            // Exibe o botão de adicionar no último slot
+            return GestureDetector(
+              onTap: onAddPressed,
+              child: Image.asset(
+                'lib/assets/images/Botao +botao_de_mais.png',
+                scale: 1.5,
+              ),
+            );
+          }
+        },
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      );
+    }
 
     Widget customGrid({
       required List<File> imageFiles,
@@ -206,6 +286,41 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
                   photosLength = await spaceRegister.pickImage();
                   setState(() {});
                 },
+              ),
+              const SizedBox(
+                height: 45,
+              ),
+              Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '(${spaceRegister.imageFiles.length} vídeos)',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 10,
+                        color: Color(0xff5E5E5E),
+                      ),
+                    ),
+                  ],
+                  text: 'Vídeos ',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 14,
+              ),
+              customVideoGrid(
+                onDelete: (index) {
+                  spaceRegister.videos.removeAt(index);
+                },
+                videoFiles: spaceRegister.videos,
+                onAddPressed: () async {
+                  await spaceRegister.pickVideo();
+                  setState(() {});
+                },
+                controllers: spaceRegister.localControllers,
               ),
               const SizedBox(
                 height: 50,

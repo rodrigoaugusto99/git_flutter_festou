@@ -43,6 +43,52 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
   }
 
   @override
+  Future<void> uploadSpaceVideos({
+    required List<File> videoFiles,
+    required String spaceId,
+  }) async {
+    try {
+      // Crie um prefixo para os vídeos com base no espaçoId
+      final prefix = 'espaços/$spaceId';
+
+      // Faça o upload de cada vídeo individualmente
+      for (int i = 0; i < videoFiles.length; i++) {
+        final videoFile = videoFiles[i];
+        var storageRef = storage.ref().child('$prefix/video_$i.mp4');
+
+        await storageRef.putFile(videoFile);
+      }
+
+      log('Vídeos do espaço $spaceId enviados com sucesso para o Firebase Storage');
+    } catch (e) {
+      log('Erro ao enviar vídeos para o Firebase Storage: $e');
+    }
+  }
+
+  @override
+  Future<List<String>> getSpaceVideos(String spaceId) async {
+    try {
+      // Crie um prefixo para os vídeos com base no spaceId
+      final prefix = 'espaços/$spaceId';
+
+      // Recupere a lista de itens no Firebase Storage com o prefixo
+      final ListResult result = await storage.ref().child(prefix).listAll();
+      final videosUrl = <String>[];
+
+      // Extraia as URLs dos vídeos da lista de itens
+      for (var item in result.items) {
+        final downloadURL = await item.getDownloadURL();
+        videosUrl.add(downloadURL);
+      }
+      log('Vídeos do espaço $spaceId recuperados com sucesso do Firebase Storage');
+      return videosUrl;
+    } catch (e) {
+      log('Erro ao recuperar vídeos do Firebase Storage: $e');
+      throw Exception('Erro ao salvar vídeos');
+    }
+  }
+
+  @override
   Future<Either<RepositoryException, List<String>>> getSpaceImages(
       String spaceId) async {
     try {
