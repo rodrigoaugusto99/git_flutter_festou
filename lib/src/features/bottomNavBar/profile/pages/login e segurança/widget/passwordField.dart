@@ -3,15 +3,17 @@ import 'package:flutter/material.dart';
 class PasswordField extends StatefulWidget {
   final TextEditingController controller;
   final String label;
+  final double padding;
 
   const PasswordField({
-    Key? key,
+    super.key,
     required this.controller,
     required this.label,
-  }) : super(key: key);
+    this.padding = 16.0, // Valor padrão para o padding
+  });
 
   @override
-  _PasswordFieldState createState() => _PasswordFieldState();
+  State<PasswordField> createState() => _PasswordFieldState();
 }
 
 class _PasswordFieldState extends State<PasswordField> {
@@ -20,7 +22,7 @@ class _PasswordFieldState extends State<PasswordField> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: EdgeInsets.symmetric(horizontal: widget.padding),
       child: TextField(
         controller: widget.controller,
         obscureText: !isPasswordVisible,
