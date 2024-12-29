@@ -135,10 +135,11 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
     }
   }
 
-  Future<void> reauthentication(user, senhaAtual) async {
+  Future<bool> reauthentication(User user, String senhaAtual) async {
     try {
       if (providers.contains("google.com") && senhaAtual == '') {
         await AuthService(context: context).signInWithGoogle();
+        return true; // Retorna true se a reautenticação foi bem-sucedida
       } else {
         // Reautentica o usuário com a nova senha
         AuthCredential credential = EmailAuthProvider.credential(
@@ -146,6 +147,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
           password: senhaAtual,
         );
         await user.reauthenticateWithCredential(credential);
+        return true; // Retorna true se a reautenticação foi bem-sucedida
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'invalid-credential') {
@@ -153,31 +155,35 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                  title: const Text('Ops...'),
-                  content: const Text('Senha atual inválida!'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Fechar'),
-                    ),
-                  ]);
+                title: const Text('Ops...'),
+                content: const Text('Senha atual inválida!'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Fechar'),
+                  ),
+                ],
+              );
             });
+        return false; // Retorna false se a senha for inválida
       } else {
         await showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                  title: const Text('Ops...'),
-                  content: const Text(
-                      'Não foi possível reautenticar. Refaça o login.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Fechar'),
-                    ),
-                  ]);
+                title: const Text('Ops...'),
+                content: const Text(
+                    'Não foi possível reautenticar. Refaça o login.'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Fechar'),
+                  ),
+                ],
+              );
             });
-        log('Erro ao atualizar a senha: $e');
+        log('Erro ao reautenticar: $e');
+        return false; // Retorna false para qualquer outro erro
       }
     }
   }
@@ -527,104 +533,117 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
 
                               if (novaSenha.isEmpty || confirmarSenha.isEmpty) {
                                 await showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                          title: const Text('Ops...'),
-                                          content: const Text(
-                                              'As senhas não podem estar vazias.'),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () =>
-                                                  Navigator.of(context).pop(),
-                                              child: const Text('Fechar'),
-                                            ),
-                                          ]);
-                                    });
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Ops...'),
+                                      content: const Text(
+                                          'As senhas não podem estar vazias.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          child: const Text('Fechar'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
                                 return;
                               }
 
                               if (novaSenha != confirmarSenha) {
                                 await showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                          title: const Text('Ops...'),
-                                          content: const Text(
-                                              'As senhas não coincidem.'),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () =>
-                                                  Navigator.of(context).pop(),
-                                              child: const Text('Fechar'),
-                                            ),
-                                          ]);
-                                    });
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Ops...'),
+                                      content: const Text(
+                                          'As senhas não coincidem.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          child: const Text('Fechar'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
                                 return;
                               }
 
                               if (senhaAtual.isNotEmpty || itsRegister) {
-                                await reauthentication(user, senhaAtual);
+                                // Verifica se a reautenticação foi bem-sucedida
+                                bool reauthenticated =
+                                    await reauthentication(user, senhaAtual);
+                                if (!reauthenticated) {
+                                  return; // Se falhou na reautenticação, retorna sem continuar
+                                }
+
+                                // Atualiza a senha do usuário
+                                await user.updatePassword(novaSenha);
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: providers.contains("password")
+                                        ? const Text(
+                                            'Senha atualizada com sucesso.')
+                                        : const Text(
+                                            'Senha cadastrada com sucesso.'),
+                                  ),
+                                );
+
+                                setState(() {
+                                  isUpdatingPassword = false;
+                                });
+
+                                // Recarregar a página atual
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          super.widget),
+                                );
                               } else {
                                 await showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                          title: const Text('Ops...'),
-                                          content: const Text(
-                                              'É necessário informar a senha atual.'),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () =>
-                                                  Navigator.of(context).pop(),
-                                              child: const Text('Fechar'),
-                                            ),
-                                          ]);
-                                    });
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Ops...'),
+                                      content: const Text(
+                                          'É necessário informar a senha atual.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          child: const Text('Fechar'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
                                 return;
                               }
-
-                              // Atualiza a senha do usuário
-                              await user.updatePassword(novaSenha);
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: providers.contains("password")
-                                      ? const Text(
-                                          'Senha atualizada com sucesso.')
-                                      : const Text(
-                                          'Senha cadastrada com sucesso.'),
-                                ),
-                              );
-
-                              setState(() {
-                                isUpdatingPassword = false;
-                              });
-
-                              // Recarregar a página atual
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        super.widget),
-                              );
                             } on FirebaseAuthException catch (e) {
                               if (e.code == 'weak-password') {
                                 await showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                          title: const Text('Ops...'),
-                                          content: const Text(
-                                              'A senha fornecida é muito fraca.'),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () =>
-                                                  Navigator.of(context).pop(),
-                                              child: const Text('Fechar'),
-                                            ),
-                                          ]);
-                                    });
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Ops...'),
+                                      content: const Text(
+                                          'A senha fornecida é muito fraca.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          child: const Text('Fechar'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
                               } else {
                                 log('Erro ao atualizar a senha: ${e.code}, ${e.message}');
                               }
