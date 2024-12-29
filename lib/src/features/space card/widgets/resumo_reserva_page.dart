@@ -4,6 +4,7 @@ import 'dart:developer' as dev;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
@@ -1344,9 +1345,10 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                 clientId: userModel!.id,
                 checkInTime: widget.summaryData.checkInTime,
                 checkOutTime: widget.summaryData.checkOutTime,
-                selectedDate: widget.summaryData.selectedDate.toString(),
+                selectedDate:
+                    Timestamp.fromDate(widget.summaryData.selectedDate),
                 selectedFinalDate:
-                    widget.summaryData.selectedFinalDate.toString(),
+                    Timestamp.fromDate(widget.summaryData.selectedFinalDate!),
                 contratoHtml: widget.html!,
                 cardId: card!.id,
               );
