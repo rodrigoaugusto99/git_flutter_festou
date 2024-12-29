@@ -1,9 +1,11 @@
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/semana_e_horas.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/textfield.dart';
+import 'package:git_flutter_festou/src/helpers/helpers.dart';
 
 class Preco extends ConsumerStatefulWidget {
   const Preco({super.key});
@@ -13,6 +15,14 @@ class Preco extends ConsumerStatefulWidget {
 }
 
 class _PrecoState extends ConsumerState<Preco> {
+  int extrairNumerosComoInteiro(String texto) {
+    // Remove todos os caracteres não numéricos da string
+    String apenasNumeros = texto.replaceAll(RegExp(r'[^0-9]'), '');
+
+    // Converte a string resultante em um inteiro
+    return int.tryParse(apenasNumeros) ?? 0;
+  }
+
   final precoEC = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -85,8 +95,14 @@ class _PrecoState extends ConsumerState<Preco> {
                   height: 45,
                 ),
                 myRow(
+                  inputFormatters: [
+                    CurrencyTextInputFormatter.currency(
+                      locale: 'pt-BR',
+                      symbol: 'R\$',
+                    )
+                  ],
                   onlyNumber: true,
-                  prefix: 'R\$ ',
+                  // prefix: 'R\$ ',
                   validator: spaceRegister.validateBairro(),
                   label: 'Preço do espaço',
                   controller: precoEC,
@@ -134,8 +150,10 @@ class _PrecoState extends ConsumerState<Preco> {
             ),
             GestureDetector(
               onTap: () {
+                final formattedPrice =
+                    transformarParaFormatoDecimal2(precoEC.text);
                 final result = spaceRegister.validatePreco(
-                  precoEC.text,
+                  formattedPrice,
                 );
                 if (result) {
                   Navigator.push(

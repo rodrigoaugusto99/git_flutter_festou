@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 Widget myRow({
   required String label,
@@ -10,6 +11,7 @@ Widget myRow({
   bool enabled = true,
   bool alwaysOnTop = false,
   bool onlyNumber = false,
+  List<TextInputFormatter>? inputFormatters,
 }) {
   return Container(
     //  padding: const EdgeInsets.symmetric(v: 10),
@@ -24,7 +26,7 @@ Widget myRow({
       textInputAction: TextInputAction.done,
       enabled: enabled,
       controller: controller,
-
+      inputFormatters: inputFormatters,
       maxLines: maxLines, //
       style: TextStyle(
         fontSize: 15,
