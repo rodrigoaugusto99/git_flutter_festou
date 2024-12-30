@@ -451,13 +451,13 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                 'Login',
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
-              ButtonOption(
+              PatternedButton(
                 widget: Image.asset(
                   'lib/assets/images/IconPassword.png',
                   width: 26,
                   height: 26,
                 ),
-                subtitle: 'Senha',
+                title: 'Senha',
                 textButton: !isUpdatingPassword ? 'Atualizar' : 'Cancelar',
                 onTap: () {
                   setState(() {
@@ -717,13 +717,13 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                   : Container(),
               providers.isEmpty ||
                       (providers.length == 1 && providers.contains("password"))
-                  ? ButtonOption(
+                  ? PatternedButton(
                       widget: Image.asset(
                         'lib/assets/images/IconNetwork.png',
                         width: 26, // Ajuste conforme necessário
                         height: 26,
                       ),
-                      subtitle: 'Nenhuma conta vinculada',
+                      title: 'Nenhuma conta vinculada',
                       onTap: () => (),
                       textButton: '')
                   : Container(),
@@ -732,13 +732,13 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                 'Conta',
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
-              ButtonOption(
+              PatternedButton(
                   widget: Image.asset(
                     'lib/assets/images/IconAccountDelete.png',
                     width: 26, // Ajuste conforme necessário
                     height: 26,
                   ),
-                  subtitle: 'Excluir minha conta',
+                  title: 'Excluir minha conta',
                   textButton: 'Excluir',
                   onTap: () async {
                     final user = FirebaseAuth.instance.currentUser;

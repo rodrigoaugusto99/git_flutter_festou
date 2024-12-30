@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/buttonOption.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/new_card_view.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/pix_page.dart';
 import 'package:git_flutter_festou/src/models/card_model.dart';
 
 class Pagamentos extends StatefulWidget {
@@ -104,16 +105,22 @@ class _PagamentosState extends State<Pagamentos>
                 'Pix',
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
-              ButtonOption(
+              PatternedButton(
                 widget: Image.asset(
-                  'lib/assets/images/Pix Imagepix.png',
+                  'lib/assets/images/icon_pix.png',
                   width: 26,
                   height: 26,
                 ),
-                subtitle: 'Pagar com Pix',
+                title: 'Pagar com Pix',
                 textButton: '',
+                buttonWithTextLink: false,
                 onTap: () {
-                  setState(() {});
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PixPage(),
+                    ),
+                  );
                 },
               ),
               const SizedBox(height: 30),
@@ -184,9 +191,9 @@ class _PagamentosState extends State<Pagamentos>
                               return Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 16.0),
-                                child: ButtonOption(
+                                child: PatternedButton(
                                   textButton: '',
-                                  subtitle:
+                                  title:
                                       'Cartao ${card.number.substring(0, 4)}',
                                   widget: Image.asset(
                                     'lib/assets/images/image 4carotn.png',
@@ -202,9 +209,9 @@ class _PagamentosState extends State<Pagamentos>
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: ButtonOption(
+                              child: PatternedButton(
                                 textButton: '',
-                                subtitle: 'Adicionar novo cartão de crédito',
+                                title: 'Adicionar novo cartão de crédito',
                                 widget: Image.asset(
                                     'lib/assets/images/image 4xxdfad.png'),
                                 onTap: () async {
