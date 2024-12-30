@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/esqueci_senha.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/buttonOption.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/passwordField.dart';
 import 'package:git_flutter_festou/src/services/auth_services.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
@@ -463,7 +464,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                 'Login',
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
-              MyRow(
+              ButtonOption(
                 widget: Image.asset(
                   'lib/assets/images/IconPassword.png',
                   width: 26, // Ajuste conforme necessário
@@ -729,7 +730,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                   : Container(),
               providers.isEmpty ||
                       (providers.length == 1 && providers.contains("password"))
-                  ? MyRow(
+                  ? ButtonOption(
                       widget: Image.asset(
                         'lib/assets/images/IconNetwork.png',
                         width: 26, // Ajuste conforme necessário
@@ -744,7 +745,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                 'Conta',
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
-              MyRow(
+              ButtonOption(
                   widget: Image.asset(
                     'lib/assets/images/IconAccountDelete.png',
                     width: 26, // Ajuste conforme necessário
@@ -981,50 +982,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                   }),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget MyRow({
-    required String subtitle,
-    required String textButton,
-    Widget? widget,
-    required final VoidCallback onTap,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.white,
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-        child: Row(
-          children: [
-            if (widget != null)
-              Row(
-                children: [
-                  widget,
-                  const SizedBox(
-                    width: 10,
-                  ),
-                ],
-              ),
-            Text(subtitle),
-            const Spacer(),
-            InkWell(
-              onTap: onTap,
-              child: Text(
-                textButton,
-                style: const TextStyle(
-                  color: Color(0XFF4300B1),
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );
