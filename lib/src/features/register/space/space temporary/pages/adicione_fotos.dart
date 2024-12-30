@@ -59,8 +59,9 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
                             ? Colors.black.withOpacity(0.5) // Fundo preto opaco
                             : Colors.transparent,
                       ),
-                      child:
-                          buildVideoPlayerFromFile(index, context, controllers),
+                      child: AbsorbPointer(
+                          child: buildVideoPlayerFromFile(
+                              index, context, controllers)),
                     ),
                     if (selectedVideoIndex == index)
                       Container(
@@ -314,6 +315,7 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
               customVideoGrid(
                 onDelete: (index) {
                   spaceRegister.videos.removeAt(index);
+                  setState(() {});
                 },
                 videoFiles: spaceRegister.videos,
                 onAddPressed: () async {
