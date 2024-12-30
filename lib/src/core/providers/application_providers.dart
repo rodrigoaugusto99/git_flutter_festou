@@ -11,6 +11,7 @@ import 'package:git_flutter_festou/src/repositories/user/user_auth_repository.da
 import 'package:git_flutter_festou/src/repositories/user/user_auth_repository_impl.dart';
 import 'package:git_flutter_festou/src/repositories/user/user_firestore_repository.dart';
 import 'package:git_flutter_festou/src/repositories/user/user_firestore_repository_impl.dart';
+import 'package:git_flutter_festou/src/services/auth_services.dart';
 import 'package:git_flutter_festou/src/services/user_login/user_login_service.dart';
 import 'package:git_flutter_festou/src/services/user_login/user_login_service_impl.dart';
 import 'package:git_flutter_festou/src/services/user_register/user_register_service.dart';
@@ -66,6 +67,7 @@ FeedbackFirestoreRepository feedbackFirestoreRepository(
 Future<void> logout(LogoutRef ref) async {
   ref.invalidate(userFirestoreRepositoryProvider);
   ref.invalidate(userAuthRepositoryProvider);
+  ref.invalidate(spaceFirestoreRepositoryProvider);
   //ref.invalidate(spaceFirestoreRepositoryProvider);
   //ref.invalidate(imagesStorageRepositoryProvider);
   //ref.invalidate(feedbackFirestoreRepositoryProvider);
