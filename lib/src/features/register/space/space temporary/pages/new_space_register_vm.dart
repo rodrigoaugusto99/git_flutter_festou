@@ -264,9 +264,7 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
 
       videos.add(videoFile);
       VideoPlayerController controller = VideoPlayerController.file(videoFile)
-        ..initialize().then((_) {
-          // setState(() {});
-        });
+        ..initialize().then((_) {});
       localControllers.add(controller);
     }
   }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -16,6 +17,28 @@ class AdicioneFotos extends ConsumerStatefulWidget {
 }
 
 class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Cria um Timer que atualiza o estado a cada 5 segundos
+    _timer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
+      setState(() {
+        // Atualize qualquer estado necessário aqui
+        print("setState chamado");
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    // Cancele o timer ao descartar o widget para evitar problemas
+    _timer?.cancel();
+    super.dispose();
+  }
+
   int photosLength = 0;
   int? selectedPhotoIndex;
   int? selectedVideoIndex;
@@ -315,11 +338,13 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
               customVideoGrid(
                 onDelete: (index) {
                   spaceRegister.videos.removeAt(index);
+                  spaceRegister.localControllers.removeAt(index);
                   setState(() {});
                 },
                 videoFiles: spaceRegister.videos,
                 onAddPressed: () async {
                   await spaceRegister.pickVideo();
+                  // await Future.delayed(const Duration(seconds: 1));
                   setState(() {});
                 },
                 controllers: spaceRegister.localControllers,
