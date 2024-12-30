@@ -13,6 +13,13 @@ abstract interface class ImagesStorageRepository {
   Future<Either<RepositoryException, Nil>> uploadDocImages(
       {required List<File> imageFiles, required String userId});
 
+  Future<void> uploadSpaceVideos({
+    required List<File> videoFiles,
+    required String spaceId,
+  });
+
+  Future<List<String>> getSpaceVideos(String spaceId);
+
   Future<Either<RepositoryException, List<String>>> getDocImages(String userId);
 
   Future<Either<RepositoryException, Nil>> deleteDocImage({

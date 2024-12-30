@@ -1,4 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+// "R\$ 2.229,00"; =222900
+int extrairNumerosComoInteiro(String texto) {
+  // Remove todos os caracteres não numéricos da string
+  String apenasNumeros = texto.replaceAll(RegExp(r'[^0-9]'), '');
+
+  // Converte a string resultante em um inteiro
+  return int.tryParse(apenasNumeros) ?? 0;
+}
+
+//123456 -"R$ 1.234,56"
+String formatarCentavosParaReais(int centavos) {
+  double reais = centavos / 100.0;
+  NumberFormat formatoMoeda = NumberFormat.simpleCurrency(locale: 'pt_BR');
+  return formatoMoeda.format(reais);
+}
+
+//"R\$ 2.229,00" -"2229.00"
+double? transformarParaFormatoDecimal(String valor) {
+  // Remove o símbolo de moeda, pontos e espaços
+  String semFormatacao = valor.replaceAll(RegExp(r'[^\d,]'), '');
+
+  // Substitui a vírgula por ponto para o formato decimal
+  String formatoDecimal = semFormatacao.replaceAll(',', '.');
+
+  return double.tryParse(formatoDecimal);
+}
+
+String transformarParaFormatoDecimal2(String valor) {
+  // Remove o símbolo de moeda, pontos e espaços
+  String semFormatacao = valor.replaceAll(RegExp(r'[^\d,]'), '');
+
+  // Substitui a vírgula por ponto para o formato decimal
+  String formatoDecimal = semFormatacao.replaceAll(',', '.');
+
+  return formatoDecimal;
+}
+
+String trocarPontoPorVirgula(String valor) {
+  // Substitui o ponto por vírgula
+  String formatado = valor.replaceAll('.', ',');
+
+  // Verifica se já existe uma vírgula no final
+  if (!formatado.contains(',')) {
+    formatado += ',00'; // Adiciona a vírgula e os dois zeros
+  } else {
+    // Garante que há dois dígitos após a vírgula
+    List<String> partes = formatado.split(',');
+    if (partes.length == 2 && partes[1].length == 1) {
+      formatado += '0'; // Adiciona um zero se só houver um dígito
+    } else if (partes.length == 1) {
+      formatado += '00'; // Adiciona dois zeros se não houver fração
+    }
+  }
+
+  return formatado;
+}
 
 Widget decContainer({
   double? radius,

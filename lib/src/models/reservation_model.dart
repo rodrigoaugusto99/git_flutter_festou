@@ -10,8 +10,8 @@ class ReservationModel {
   final int checkInTime;
   final int checkOutTime;
   final Timestamp? createdAt;
-  final String selectedDate;
-  final String selectedFinalDate;
+  final Timestamp selectedDate;
+  final Timestamp selectedFinalDate;
   final String contratoHtml;
   final String? cardId;
 

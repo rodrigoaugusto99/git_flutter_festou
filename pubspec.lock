@@ -329,6 +329,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  currency_text_input_formatter:
+    dependency: "direct main"
+    description:
+      name: currency_text_input_formatter
+      sha256: e2dda73e5ddbe2b70b898ece09aeb661a10808e084f776bebf81e07e8d57b29c
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.6"
   custom_lint:
     dependency: transitive
     description:

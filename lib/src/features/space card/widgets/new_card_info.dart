@@ -1364,7 +1364,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                                     color: Color(0xff9747FF),
                                     fontSize: 14,
                                     fontWeight: FontWeight.w700),
-                                "R\$${widget.space.preco}",
+                                "R\$ ${trocarPontoPorVirgula(widget.space.preco)}",
                               ),
                               const Text('Por hora'),
                             ],

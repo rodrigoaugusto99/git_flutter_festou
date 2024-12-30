@@ -20,6 +20,7 @@ class NewSpaceRegisterState {
   final String preco;
 
   final List<File> imageFiles;
+  final List<File> videoFiles;
   final String? errorMessage;
 
   final Days? days;
@@ -32,6 +33,7 @@ class NewSpaceRegisterState {
           titulo: '',
           descricao: '',
           imageFiles: <File>[],
+          videoFiles: <File>[],
           cep: '',
           logradouro: '',
           numero: '',
@@ -57,6 +59,7 @@ class NewSpaceRegisterState {
     required this.preco,
     required this.days,
     required this.estado,
+    required this.videoFiles,
     this.errorMessage,
   });
 
@@ -75,6 +78,7 @@ class NewSpaceRegisterState {
       String? preco,
       Days? days,
       List<File>? imageFiles,
+      List<File>? videoFiles,
       ValueGetter<String?>? errorMessage}) {
     return NewSpaceRegisterState(
       status: status ?? this.status,
@@ -88,6 +92,7 @@ class NewSpaceRegisterState {
       bairro: bairro ?? this.bairro,
       cidade: cidade ?? this.cidade,
       imageFiles: imageFiles ?? this.imageFiles,
+      videoFiles: videoFiles ?? this.videoFiles,
       errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
       preco: preco ?? this.preco,
       estado: estado ?? this.estado,

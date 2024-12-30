@@ -44,16 +44,17 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
         List<String> selectedTypes,
         List<String> selectedServices,
         List<File> imageFiles,
+        List<File> videoFiles,
         String descricao,
         String preco,
         double latitude,
         double longitude,
         Days days,
-        String cnpjEmpresaLocadora,
+        //String cnpjEmpresaLocadora,
         String estado,
-        String locadorCpf,
-        String nomeEmpresaLocadora,
-        String locadorAssinatura,
+        // String locadorCpf,
+        // String nomeEmpresaLocadora,
+        // String locadorAssinatura,
       }) spaceData) async {
     try {
       // Crie um novo espaço com os dados fornecidos
@@ -75,10 +76,18 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
           spaceId: spaceData.spaceId,
         );
 
-        final spaceResult =
+        final spaceImagesUrls =
             await imagesStorageRepository.getSpaceImages(spaceData.spaceId);
 
-        switch (spaceResult) {
+        await imagesStorageRepository.uploadSpaceVideos(
+          videoFiles: spaceData.videoFiles,
+          spaceId: spaceData.spaceId,
+        );
+
+        final spaceVideosUrls =
+            await imagesStorageRepository.getSpaceVideos(spaceData.spaceId);
+
+        switch (spaceImagesUrls) {
           case Success(value: final imagesData):
             final locadorName = await getLocadorName(spaceData.userId);
             final locadorAvatar = await getLocadorAvatar(spaceData.userId);
@@ -100,7 +109,6 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
               'locador_name': locadorName,
               'descricao': spaceData.descricao,
               'city': 'xxx',
-              'images_url': imagesData,
               'latitude': spaceData.latitude,
               'longitude': spaceData.longitude,
               'locadorAvatarUrl': locadorAvatar,
@@ -112,8 +120,8 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
               'locador_cpf': locadorModel.cpf,
               'nome_empresa_locadora': locadorModel.fantasyName,
               'num_likes': 0,
-              //todo: videos
-              'videos': [],
+              'images_url': imagesData,
+              'videos': spaceVideosUrls,
               'createdAt': FieldValue.serverTimestamp(),
             };
             await spacesCollection.add(newSpace);

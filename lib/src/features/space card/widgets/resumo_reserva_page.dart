@@ -4,6 +4,7 @@ import 'dart:developer' as dev;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
@@ -12,6 +13,7 @@ import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_pa
 import 'package:git_flutter_festou/src/features/space%20card/widgets/html_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/summary_data.dart';
+import 'package:git_flutter_festou/src/helpers/helpers.dart';
 import 'package:git_flutter_festou/src/models/card_model.dart';
 import 'package:git_flutter_festou/src/models/cupom_model.dart';
 import 'package:git_flutter_festou/src/models/reservation_model.dart';
@@ -270,8 +272,8 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
         '<b>${DateFormat('d \'de\' MMMM \'de\' y', 'pt_BR').format(dataTermino!)}</b>');
     modifiedHtml =
         modifiedHtml.replaceAll('{Número de Horas}', '<b>$hoursDifference</b>');
-    modifiedHtml = modifiedHtml.replaceAll(
-        '{Valor por Hora}', '<b>${widget.summaryData.spaceModel.preco}</b>');
+    modifiedHtml = modifiedHtml.replaceAll('{Valor por Hora}',
+        '<b>${trocarPontoPorVirgula(widget.summaryData.spaceModel.preco)}</b>');
     modifiedHtml = modifiedHtml.replaceAll('{Valor Total das Horas}',
         '<b>${widget.summaryData.valorTotalDasHoras}</b>');
     modifiedHtml = modifiedHtml.replaceAll('{Valor da Taxa Concierge}',
@@ -395,11 +397,16 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
         : formattedDate;
 
     // Convert price string to double
-    double price = double.tryParse(widget.summaryData.spaceModel.preco
-            .replaceAll(RegExp(r'[^0-9,]'), '')
-            .replaceAll(',', '.')) ??
-        0.0;
-    double totalPrice = hoursDifference * price;
+    // double price = double.tryParse(widget.summaryData.spaceModel.preco
+    //         .replaceAll(RegExp(r'[^0-9,]'), '')
+    //         .replaceAll(',', '.')) ??
+    //     0.0;
+
+    double? price = double.tryParse(widget.summaryData.spaceModel.preco);
+    // double? price =
+    //     transformarParaFormatoDecimal(widget.summaryData.spaceModel.preco);
+
+    double totalPrice = hoursDifference * (price ?? 200.00);
 
     // Calculate 3.5% of total price
     double feePercentage = 3.5 / 100;
@@ -672,7 +679,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                                             fontWeight:
                                                                 FontWeight
                                                                     .w700),
-                                                        "R\$${widget.summaryData.spaceModel.preco},00/h",
+                                                        "R\$ ${trocarPontoPorVirgula(widget.summaryData.spaceModel.preco)}/h",
                                                       ),
                                                     ],
                                                   ),
@@ -1009,8 +1016,8 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                   ),
                                 ),
                                 TextSpan(
-                                  text:
-                                      '${widget.summaryData.spaceModel.preco},00',
+                                  text: trocarPontoPorVirgula(
+                                      widget.summaryData.spaceModel.preco),
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 12,
@@ -1338,9 +1345,10 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                 clientId: userModel!.id,
                 checkInTime: widget.summaryData.checkInTime,
                 checkOutTime: widget.summaryData.checkOutTime,
-                selectedDate: widget.summaryData.selectedDate.toString(),
+                selectedDate:
+                    Timestamp.fromDate(widget.summaryData.selectedDate),
                 selectedFinalDate:
-                    widget.summaryData.selectedFinalDate.toString(),
+                    Timestamp.fromDate(widget.summaryData.selectedFinalDate!),
                 contratoHtml: widget.html!,
                 cardId: card!.id,
               );

@@ -56,10 +56,17 @@ class _CalendarioState extends State<Calendario> {
     DateTime dayAfterTomorrow = today.add(const Duration(days: 2));
 
     return reservations.where((reservation) {
-      DateTime selectedDate = DateTime.parse(reservation.selectedDate);
-      return selectedDate.isAtSameMomentAs(today) ||
-          selectedDate.isAtSameMomentAs(tomorrow) ||
-          selectedDate.isAtSameMomentAs(dayAfterTomorrow);
+      DateTime selectedDate =
+          reservation.selectedDate.toDate(); // Converte Timestamp para DateTime
+      DateTime selectedDateOnly = DateTime(
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+      ); // Remove horas, minutos e segundos
+
+      return selectedDateOnly.isAtSameMomentAs(today) ||
+          selectedDateOnly.isAtSameMomentAs(tomorrow) ||
+          selectedDateOnly.isAtSameMomentAs(dayAfterTomorrow);
     }).toList();
   }
 
@@ -164,8 +171,14 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
     return '$hourStr:00h';
   }
 
-  String formatDateString(String dateStr) {
-    DateTime date = DateTime.parse(dateStr);
+  // String formatDateString(String dateStr) {
+  //   DateTime date = DateTime.parse(dateStr);
+  //   DateFormat formatter = DateFormat('d \'de\' MMMM \'de\' yyyy', 'pt_BR');
+  //   return formatter.format(date);
+  // }
+
+  String formatDateTimestamp(Timestamp timestamp) {
+    DateTime date = timestamp.toDate(); // Converte o Timestamp para DateTime
     DateFormat formatter = DateFormat('d \'de\' MMMM \'de\' yyyy', 'pt_BR');
     return formatter.format(date);
   }
@@ -177,8 +190,14 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
     return formatter.format(date);
   }
 
-  bool isDateInFuture(String dateStr) {
-    DateTime date = DateTime.parse(dateStr);
+  // bool isDateInFuture(String dateStr) {
+  //   DateTime date = DateTime.parse(dateStr);
+  //   DateTime now = DateTime.now();
+  //   return date.isAfter(now);
+  // }
+
+  bool isDateInFuture(Timestamp timestamp) {
+    DateTime date = timestamp.toDate(); // Converte o Timestamp para DateTime
     DateTime now = DateTime.now();
     return date.isAfter(now);
   }
@@ -339,7 +358,7 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
                                       ),
                                       const TextSpan(text: ' do dia '),
                                       TextSpan(
-                                        text: formatDateString(
+                                        text: formatDateTimestamp(
                                             reserva.selectedDate),
                                         style: const TextStyle(
                                             fontWeight: FontWeight.bold),
@@ -362,7 +381,7 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
                                       ),
                                       const TextSpan(text: ' do dia '),
                                       TextSpan(
-                                        text: formatDateString(
+                                        text: formatDateTimestamp(
                                             reserva.selectedFinalDate),
                                         style: const TextStyle(
                                             fontWeight: FontWeight.bold),

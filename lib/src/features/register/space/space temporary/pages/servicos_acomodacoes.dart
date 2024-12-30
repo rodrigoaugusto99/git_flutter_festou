@@ -58,33 +58,35 @@ class _ServicosAcomodacoesState extends ConsumerState<ServicosAcomodacoes> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 38.0, vertical: 20),
-        child: Column(
-          children: [
-            Column(
-              children: [
-                const Text(
-                  'Informe aos locatários o que seu espaço tem para oferecer:',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Color(0xff4300B1),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Column(
+                children: [
+                  const Text(
+                    'Informe aos locatários o que seu espaço tem para oferecer:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Color(0xff4300B1),
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 19,
-                ),
-                ServicesPanel(
-                  text:
-                      'Você pode editar os serviços mesmo após publicar, adicionando ou removendo comodidades.\n\nSelecione os serviços do espaço:',
-                  onServicePressed: (value) {
-                    log('onServicePressed: $value');
-                    newSpaceRegister.addOrRemoveService(value);
-                  },
-                  selectedServices: const [],
-                ),
-              ],
-            ),
-          ],
+                  const SizedBox(
+                    height: 19,
+                  ),
+                  ServicesPanel(
+                    text:
+                        'Você pode editar os serviços mesmo após publicar, adicionando ou removendo comodidades.\n\nSelecione os serviços do espaço:',
+                    onServicePressed: (value) {
+                      log('onServicePressed: $value');
+                      newSpaceRegister.addOrRemoveService(value);
+                    },
+                    selectedServices: const [],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: Padding(

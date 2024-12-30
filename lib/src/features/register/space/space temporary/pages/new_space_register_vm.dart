@@ -16,6 +16,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
 import 'package:validatorless/validatorless.dart';
+import 'package:video_player/video_player.dart';
 
 part 'new_space_register_vm.g.dart';
 
@@ -225,8 +226,8 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
     }
   }
 
-  void pickImage() async {
-    final List<File> imageFiles = [];
+  final List<File> imageFiles = [];
+  Future<int> pickImage() async {
     final imagePicker = ImagePicker();
     final List<XFile> images = await imagePicker.pickMultiImage();
     for (XFile image in images) {
@@ -246,7 +247,26 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
     log(state.numero);
     log(state.bairro);
     log(state.cidade);
-    log('${state.imageFiles}');
+    log('${state.imageFiles.length}');
+    return state.imageFiles.length;
+  }
+
+  final List<VideoPlayerController> localControllers = [];
+  final List<File> videos = [];
+
+  Future<void> pickVideo() async {
+    final videoPicker = ImagePicker();
+    final XFile? video =
+        await videoPicker.pickVideo(source: ImageSource.gallery);
+
+    if (video != null) {
+      final videoFile = File(video.path);
+
+      videos.add(videoFile);
+      VideoPlayerController controller = VideoPlayerController.file(videoFile)
+        ..initialize().then((_) {});
+      localControllers.add(controller);
+    }
   }
 
   Future<LatLng> calculateLatLng(
@@ -299,11 +319,12 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
       :titulo,
       :preco,
       :estado,
+      :videoFiles,
     ) = state;
 
     final spaceId = uuid.v4();
     final userId = user.uid;
-    UserModel? userModel = await UserService().getCurrentUserModel();
+    // UserModel? userModel = await UserService().getCurrentUserModel();
 
     final LatLng latLng =
         await calculateLatLng(logradouro, numero, bairro, cidade);
@@ -320,6 +341,7 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
       selectedTypes: selectedTypes,
       selectedServices: selectedServices,
       imageFiles: imageFiles,
+      videoFiles: videoFiles,
       descricao: descricao,
       estado: estado,
       days: days!,
@@ -327,11 +349,10 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
       latitude: latLng.latitude,
       longitude: latLng.longitude,
       preco: preco,
-      //todo:
-      cnpjEmpresaLocadora: userModel != null ? userModel.name : '',
-      locadorCpf: userModel != null ? userModel.name : '',
-      nomeEmpresaLocadora: userModel != null ? userModel.name : '',
-      locadorAssinatura: userModel != null ? userModel.name : '',
+      // cnpjEmpresaLocadora: userModel != null ? userModel.name : '',
+      // locadorCpf: userModel != null ? userModel.name : '',
+      // nomeEmpresaLocadora: userModel != null ? userModel.name : '',
+      // locadorAssinatura: userModel != null ? userModel.name : '',
     );
 
     final spaceFirestoreRepository = ref.read(spaceFirestoreRepositoryProvider);

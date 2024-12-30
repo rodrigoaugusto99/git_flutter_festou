@@ -1,9 +1,12 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/textfield.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/titulo.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/utils.dart';
 import 'package:video_player/video_player.dart';
 
 class AdicioneFotos extends ConsumerStatefulWidget {
@@ -14,287 +17,200 @@ class AdicioneFotos extends ConsumerStatefulWidget {
 }
 
 class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
-  final List<VideoPlayerController> localControllers = [];
+  Timer? _timer;
 
-  // void pickVideo() async {
-  //   final videoPicker = ImagePicker();
-  //   final XFile? video =
-  //       await videoPicker.pickVideo(source: ImageSource.gallery);
+  @override
+  void initState() {
+    super.initState();
 
-  //   if (video != null) {
-  //     int currentTotalVideos =
-  //         widget.space.videosUrl.length + videosToDownload.length;
-  //     int remainingSlots = 3 - currentTotalVideos;
+    // Cria um Timer que atualiza o estado a cada 5 segundos
+    _timer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
+      setState(() {
+        // Atualize qualquer estado necessário aqui
+        print("setState chamado");
+      });
+    });
+  }
 
-  //     if (remainingSlots > 0) {
-  //       final videoFile = File(video.path);
-  //       setState(() {
-  //         videosToDownload.add(videoFile);
-  //         VideoPlayerController controller =
-  //             VideoPlayerController.file(videoFile)
-  //               ..initialize().then((_) {
-  //                 setState(() {});
-  //               });
-  //         localControllers.add(controller);
-  //       });
-  //     }
-  //   }
-  // }
+  @override
+  void dispose() {
+    // Cancele o timer ao descartar o widget para evitar problemas
+    _timer?.cancel();
+    super.dispose();
+  }
 
-  // Widget mySecondWidget() {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     mainAxisSize: MainAxisSize.min,
-  //     children: [
-  //       Row(
-  //         crossAxisAlignment: CrossAxisAlignment.end,
-  //         children: [
-  //           const Text(
-  //             'Fotos ',
-  //             style: TextStyle(
-  //               fontWeight: FontWeight.w700,
-  //               fontSize: 14,
-  //             ),
-  //           ),
-  //           Text(
-  //             '(${widget.space.imagesUrl.length} ${widget.space.imagesUrl.length == 1 ? 'foto)' : 'fotos)'}',
-  //             style: const TextStyle(
-  //               fontWeight: FontWeight.w400,
-  //               fontSize: 12,
-  //               color: Color(0xff5E5E5E),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //       const SizedBox(height: 13),
-  //       GridView.builder(
-  //         padding: EdgeInsets.zero,
-  //         shrinkWrap: true,
-  //         physics: const NeverScrollableScrollPhysics(),
-  //         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-  //           mainAxisSpacing: 13,
-  //           crossAxisSpacing: 13,
-  //           crossAxisCount: 3,
-  //         ),
-  //         itemCount: 6, // Sempre terá 6 itens no grid
-  //         itemBuilder: (BuildContext context, int index) {
-  //           int networkImagesCount = widget.space.imagesUrl.length;
-  //           int localImagesCount = imageFilesToDownload.length;
-  //           int totalImagesCount = networkImagesCount + localImagesCount;
-  //           int maxImages = 6;
-
-  //           if (index < networkImagesCount) {
-  //             // Mostrar as imagens da lista de URLs
-  //             return ClipRRect(
-  //               borderRadius: BorderRadius.circular(10),
-  //               child: Stack(
-  //                 alignment: Alignment.center,
-  //                 children: [
-  //                   ClipRRect(
-  //                     borderRadius: BorderRadius.circular(10),
-  //                     child: Image.network(
-  //                       height: 90,
-  //                       widget.space.imagesUrl[index].toString(),
-  //                       fit: BoxFit.cover,
-  //                     ),
-  //                   ),
-  //                   if (isEditing)
-  //                     decContainer(
-  //                       color: Colors.black.withOpacity(0.5),
-  //                     ),
-  //                   if (isEditing)
-  //                     GestureDetector(
-  //                       onTap: () {
-  //                         setState(() {
-  //                           networkImagesToDelete
-  //                               .add(widget.space.imagesUrl[index].toString());
-  //                           widget.space.imagesUrl.removeAt(index);
-  //                         });
-  //                       },
-  //                       child: Image.asset(
-  //                         'lib/assets/images/Ellipse 37lixeira-foto.png',
-  //                         width: 40,
-  //                       ),
-  //                     ),
-  //                 ],
-  //               ),
-  //             );
-  //           } else if (index < networkImagesCount + localImagesCount) {
-  //             // Mostrar as imagens da lista de arquivos locais
-  //             int localIndex = index - networkImagesCount;
-  //             return ClipRRect(
-  //               borderRadius: BorderRadius.circular(10),
-  //               child: Stack(
-  //                 alignment: Alignment.center,
-  //                 children: [
-  //                   Image.file(
-  //                     imageFilesToDownload[localIndex],
-  //                     fit: BoxFit.cover,
-  //                   ),
-  //                   if (isEditing)
-  //                     decContainer(
-  //                       color: Colors.black.withOpacity(0.5),
-  //                     ),
-  //                   if (isEditing)
-  //                     GestureDetector(
-  //                       onTap: () {
-  //                         setState(() {
-  //                           imageFilesToDownload.removeAt(localIndex);
-  //                         });
-  //                       },
-  //                       child: Image.asset(
-  //                         'lib/assets/images/Ellipse 37lixeira-foto.png',
-  //                         width: 40,
-  //                       ),
-  //                     ),
-  //                 ],
-  //               ),
-  //             );
-  //           } else if (index == totalImagesCount &&
-  //               totalImagesCount < maxImages) {
-  //             // Mostrar a imagem do asset se estiver no próximo índice após a última imagem da lista
-  //             if (isEditing) {
-  //               return GestureDetector(
-  //                 onTap: pickImage,
-  //                 child: Image.asset(
-  //                   'lib/assets/images/Botao +botao_de_mais.png',
-  //                   width: 25,
-  //                 ),
-  //               );
-  //             } else {
-  //               return null;
-  //             }
-  //           } else {
-  //             return null;
-  //           }
-  //         },
-  //       ),
-  //       const SizedBox(height: 26),
-  //       Row(
-  //         crossAxisAlignment: CrossAxisAlignment.end,
-  //         children: [
-  //           const Text(
-  //             'Vídeos ',
-  //             style: TextStyle(
-  //               fontWeight: FontWeight.w700,
-  //               fontSize: 14,
-  //             ),
-  //           ),
-  //           Text(
-  //             '(${widget.space.videosUrl.length} ${widget.space.videosUrl.length == 1 ? 'vídeo' : 'vídeos)'}',
-  //             style: const TextStyle(
-  //               fontWeight: FontWeight.w400,
-  //               fontSize: 12,
-  //               color: Color(0xff5E5E5E),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //       const SizedBox(height: 13),
-  //       GridView.builder(
-  //         padding: EdgeInsets.zero,
-  //         shrinkWrap: true,
-  //         physics: const NeverScrollableScrollPhysics(),
-  //         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-  //           mainAxisSpacing: 13,
-  //           crossAxisSpacing: 13,
-  //           crossAxisCount: 3,
-  //         ),
-  //         itemCount: 3, // Sempre terá 3 itens no grid
-  //         itemBuilder: (BuildContext context, int index) {
-  //           int networkVideosCount = widget.space.videosUrl.length;
-  //           int localVideosCount =
-  //               videosToDownload.length > 3 ? 3 : videosToDownload.length;
-  //           int totalVideosCount = networkVideosCount + localVideosCount;
-  //           int maxVideos = 3;
-
-  //           if (index < networkVideosCount) {
-  //             // Mostrar os vídeos da lista de URLs
-  //             return ClipRRect(
-  //               borderRadius: BorderRadius.circular(10),
-  //               child: Stack(
-  //                 alignment: Alignment.center,
-  //                 children: [
-  //                   buildVideoPlayer(index),
-  //                   if (isEditing)
-  //                     Container(
-  //                       color: Colors.black.withOpacity(0.5),
-  //                     ),
-  //                   if (isEditing)
-  //                     GestureDetector(
-  //                       onTap: () {
-  //                         setState(() {
-  //                           networkVideosToDelete
-  //                               .add(widget.space.videosUrl[index]);
-  //                           widget.space.videosUrl.removeAt(index);
-  //                           controllers[index].dispose();
-  //                           controllers.removeAt(index);
-  //                         });
-  //                       },
-  //                       child: Image.asset(
-  //                         'lib/assets/images/Ellipse 37lixeira-foto.png',
-  //                         width: 40,
-  //                       ),
-  //                     ),
-  //                 ],
-  //               ),
-  //             );
-  //           } else if (index < networkVideosCount + localVideosCount) {
-  //             // Mostrar os vídeos da lista de arquivos locais
-  //             int localIndex = index - networkVideosCount;
-  //             return ClipRRect(
-  //               borderRadius: BorderRadius.circular(10),
-  //               child: Stack(
-  //                 alignment: Alignment.center,
-  //                 children: [
-  //                   buildVideoPlayerFromFile(localIndex),
-  //                   if (isEditing)
-  //                     Container(
-  //                       color: Colors.black.withOpacity(0.5),
-  //                     ),
-  //                   if (isEditing)
-  //                     GestureDetector(
-  //                       onTap: () {
-  //                         setState(() {
-  //                           videosToDownload.removeAt(localIndex);
-  //                           localControllers[localIndex].dispose();
-  //                           localControllers.removeAt(localIndex);
-  //                         });
-  //                       },
-  //                       child: Image.asset(
-  //                         'lib/assets/images/Ellipse 37lixeira-foto.png',
-  //                         width: 40,
-  //                       ),
-  //                     ),
-  //                 ],
-  //               ),
-  //             );
-  //           } else if (index == totalVideosCount &&
-  //               totalVideosCount < maxVideos) {
-  //             // Mostrar a imagem do asset se estiver no próximo índice após o último vídeo da lista
-  //             if (isEditing) {
-  //               return GestureDetector(
-  //                 onTap: pickVideo,
-  //                 child: Image.asset(
-  //                   'lib/assets/images/Botao +botao_de_mais.png',
-  //                   width: 25,
-  //                 ),
-  //               );
-  //             } else {
-  //               return null;
-  //             }
-  //           } else {
-  //             return null;
-  //           }
-  //         },
-  //       ),
-  //     ],
-  //   );
-  // }
+  int photosLength = 0;
+  int? selectedPhotoIndex;
+  int? selectedVideoIndex;
 
   @override
   Widget build(BuildContext context) {
     final spaceRegister = ref.watch(newSpaceRegisterVmProvider.notifier);
+
+    Widget customVideoGrid({
+      required List<File> videoFiles,
+      required VoidCallback onAddPressed,
+      required List<VideoPlayerController> controllers,
+      required Function(int index) onDelete,
+    }) {
+      return GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3, // 3 itens por linha
+          crossAxisSpacing: 8.0,
+          mainAxisSpacing: 8.0,
+        ),
+        itemCount:
+            videoFiles.length + 1, // Adiciona espaço para o botão de adicionar
+        itemBuilder: (context, index) {
+          if (index < videoFiles.length) {
+            // Exibe a imagem se for um item da lista
+            return GestureDetector(
+              onTap: () {
+                selectedVideoIndex = index;
+                setState(() {});
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: selectedVideoIndex == index
+                            ? Colors.black.withOpacity(0.5) // Fundo preto opaco
+                            : Colors.transparent,
+                      ),
+                      child: AbsorbPointer(
+                          child: buildVideoPlayerFromFile(
+                              index, context, controllers)),
+                    ),
+                    if (selectedVideoIndex == index)
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Colors.black
+                                .withOpacity(0.5) // Fundo preto opaco
+
+                            ),
+                      ),
+                    if (selectedVideoIndex == index)
+                      Positioned(
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              // Aqui você pode implementar a lógica para excluir a imagem
+                              onDelete(index);
+                            });
+                          },
+                          child: Image.asset(
+                            'lib/assets/images/Ellipse 37lixeira-foto.png',
+                            width: 40,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            // Exibe o botão de adicionar no último slot
+            return GestureDetector(
+              onTap: onAddPressed,
+              child: Image.asset(
+                'lib/assets/images/Botao +botao_de_mais.png',
+                scale: 1.5,
+              ),
+            );
+          }
+        },
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      );
+    }
+
+    Widget customGrid({
+      required List<File> imageFiles,
+      required VoidCallback onAddPressed,
+      required Function(int index) onDelete,
+    }) {
+      return GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3, // 3 itens por linha
+          crossAxisSpacing: 8.0,
+          mainAxisSpacing: 8.0,
+        ),
+        itemCount:
+            imageFiles.length + 1, // Adiciona espaço para o botão de adicionar
+        itemBuilder: (context, index) {
+          if (index < imageFiles.length) {
+            // Exibe a imagem se for um item da lista
+            return GestureDetector(
+              onTap: () {
+                selectedPhotoIndex = index;
+                setState(() {});
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: selectedPhotoIndex == index
+                            ? Colors.black.withOpacity(0.5) // Fundo preto opaco
+                            : Colors.transparent,
+                      ),
+                      child: Image.file(
+                        imageFiles[index],
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                      ),
+                    ),
+                    if (selectedPhotoIndex == index)
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Colors.black
+                                .withOpacity(0.5) // Fundo preto opaco
+
+                            ),
+                      ),
+                    if (selectedPhotoIndex == index)
+                      Positioned(
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              // Aqui você pode implementar a lógica para excluir a imagem
+                              onDelete(index);
+                            });
+                          },
+                          child: Image.asset(
+                            'lib/assets/images/Ellipse 37lixeira-foto.png',
+                            width: 40,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            // Exibe o botão de adicionar no último slot
+            return GestureDetector(
+              onTap: onAddPressed,
+              child: Image.asset(
+                'lib/assets/images/Botao +botao_de_mais.png',
+                scale: 1.5,
+              ),
+            );
+          }
+        },
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      );
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xffF8F8F8),
       appBar: AppBar(
@@ -337,231 +253,194 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 38.0, vertical: 20),
-        child: Column(
-          children: [
-            Column(
-              children: [
-                const Text(
-                  'Adicione algumas fotos e vídeos do seu espaço:',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Color(0xff4300B1),
-                  ),
-                ),
-                const SizedBox(
-                  height: 19,
-                ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 27),
-                  child: Text(
-                    'Você precisa de pelo menos cinco fotos para começar. Você pode adicionar outras imagens ou vídeos ou fazer alterações mais tarde.',
-                    style: TextStyle(
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 45,
-                ),
-                ElevatedButton(
-                    onPressed: () => spaceRegister.pickImage(),
-                    child: const Text('Adicionar fotos')),
-                ElevatedButton(
-                    onPressed: () {}, child: const Text('Tirar novas fotos')),
-                const SizedBox(
-                  height: 20,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 69, vertical: 40),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
-                alignment: Alignment.center,
-                height: 35,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xff9747FF),
-                      Color(0xff44300b1),
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                ),
-                child: const Text(
-                  'Voltar',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Adicione algumas fotos e vídeos do seu espaço:',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Color(0xff4300B1),
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 9,
-            ),
-            GestureDetector(
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const Titulo(),
-                ),
+              const SizedBox(
+                height: 19,
               ),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
-                alignment: Alignment.center,
-                height: 35,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xff9747FF),
-                      Color(0xff44300b1),
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                ),
-                child: const Text(
-                  'Avançar',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-    return Scaffold(
-      appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 18.0),
-          child: Container(
-            decoration: BoxDecoration(
-              //color: Colors.white.withOpacity(0.7),
-              color: Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 2,
-                  blurRadius: 5,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: InkWell(
-              onTap: () => Navigator.of(context).pop(),
-              child: const Icon(
-                Icons.arrow_back,
-                color: Colors.black,
-              ),
-            ),
-          ),
-        ),
-        centerTitle: true,
-        title: const Text(
-          'Cadastrar',
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 38, vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Adicione algumas fotos e vídeos do seu espaço:',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Color(0xff4300B1),
-                  ),
-                ),
-                SizedBox(
-                  height: 19,
-                ),
-                Text(
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 27),
+                child: Text(
                   'Você precisa de pelo menos cinco fotos para começar. Você pode adicionar outras imagens ou vídeos ou fazer alterações mais tarde.',
                   style: TextStyle(
                     fontSize: 12,
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(
-              height: 32,
-            ),
-            ElevatedButton(
-                onPressed: () => spaceRegister.pickImage(),
-                child: const Text('Adicionar fotos')),
-            ElevatedButton(
-                onPressed: () {}, child: const Text('Tirar novas fotos')),
-            const SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              ),
+              const SizedBox(
+                height: 45,
+              ),
+              Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '(${spaceRegister.imageFiles.length} fotos)',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 10,
+                        color: Color(0xff5E5E5E),
+                      ),
+                    ),
+                  ],
+                  text: 'Fotos ',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 14,
+              ),
+              customGrid(
+                onDelete: (index) {
+                  spaceRegister.imageFiles.removeAt(index);
+                },
+                imageFiles: spaceRegister.imageFiles,
+                onAddPressed: () async {
+                  photosLength = await spaceRegister.pickImage();
+                  setState(() {});
+                },
+              ),
+              const SizedBox(
+                height: 45,
+              ),
+              Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '(${spaceRegister.imageFiles.length} vídeos)',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 10,
+                        color: Color(0xff5E5E5E),
+                      ),
+                    ),
+                  ],
+                  text: 'Vídeos ',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 14,
+              ),
+              customVideoGrid(
+                onDelete: (index) {
+                  spaceRegister.videos.removeAt(index);
+                  spaceRegister.localControllers.removeAt(index);
+                  setState(() {});
+                },
+                videoFiles: spaceRegister.videos,
+                onAddPressed: () async {
+                  await spaceRegister.pickVideo();
+                  // await Future.delayed(const Duration(seconds: 1));
+                  setState(() {});
+                },
+                controllers: spaceRegister.localControllers,
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  InkWell(
+                  GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: const Text(
-                      'Voltar',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 9),
+                      alignment: Alignment.center,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xff9747FF),
+                            Color(0xff44300b1),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                      ),
+                      child: const Text(
+                        'Voltar',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
-                  InkWell(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Titulo(),
-                      ),
-                    ),
+                  const SizedBox(
+                    height: 9,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      if (spaceRegister.imageFiles.isEmpty) {
+                        Messages.showInfo(
+                            'Adicione pelo menos uma foto', context);
+                        return;
+                      }
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Titulo(),
+                        ),
+                      );
+                    },
                     child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.black,
-                          border: Border.all(),
-                          borderRadius: BorderRadius.circular(10)),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 10),
+                          horizontal: 20, vertical: 9),
+                      alignment: Alignment.center,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xff9747FF),
+                            Color(0xff44300b1),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                      ),
                       child: const Text(
                         'Avançar',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
-            ),
-          ],
+              // ElevatedButton(
+              //   onPressed: () async {
+              //     photosLength = await spaceRegister.pickImage();
+              //     setState(() {});
+              //   },
+              //   child: const Text('Adicionar fotos'),
+              // ),
+              const SizedBox(
+                height: 20,
+              ),
+            ],
+          ),
         ),
       ),
     );
