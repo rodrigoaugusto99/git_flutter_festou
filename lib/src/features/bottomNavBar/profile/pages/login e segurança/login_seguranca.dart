@@ -37,7 +37,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
   void dispose() {
     novaSenhaController.dispose();
     confirmarSenhaController.dispose();
-    // Remove o observer ao destruir o widget
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -46,11 +45,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // Este bloco de código será executado depois da construção completa da árvore de widgets.
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Este bloco de código será executado após a construção completa da árvore de widgets.
-
       yourFunctionToBeCalled();
       displayAuthProviderList();
       showUserProvider();
@@ -59,7 +54,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
   }
 
   void yourFunctionToBeCalled() {
-    // Faça algo aqui
     log("\nTela completamente construída!");
   }
 
@@ -74,7 +68,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
       providers = [];
 
       // Obtém a lista de provedores associados ao usuário
-
       for (UserInfo userInfo in user.providerData) {
         providers.add(userInfo.providerId);
       }
@@ -86,8 +79,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
     }
   }
 
-  // Verifica se "google.com" está na lista de provedores
-  // bool isGoogleConnected = providers.contains("google.com");
   Widget buildGoogleWidget() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -96,7 +87,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
           children: [
             Image.asset(
               'lib/assets/images/google.png',
-              width: 24, // Ajuste conforme necessário
+              width: 24,
               height: 24,
             ),
             const SizedBox(
@@ -120,7 +111,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
     );
   }
 
-//providerData para obter os detalhes do usuario autenticado.
   void showUserProvider() {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -354,8 +344,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                     displayAuthProviderList();
                                   });
 
-                                  Navigator.of(context)
-                                      .pop(); // Fecha o pop-up de senha
+                                  Navigator.of(context).pop();
 
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -423,7 +412,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
           padding: const EdgeInsets.only(left: 18.0),
           child: Container(
             decoration: BoxDecoration(
-              //color: Colors.white.withOpacity(0.7),
               color: Colors.white,
               shape: BoxShape.circle,
               boxShadow: [
@@ -431,7 +419,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                   color: Colors.grey.withOpacity(0.5),
                   spreadRadius: 2,
                   blurRadius: 5,
-                  offset: const Offset(0, 2), // changes position of shadow
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
@@ -455,11 +443,10 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(17.0),
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 50),
               const Text(
                 'Login',
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
@@ -467,7 +454,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
               ButtonOption(
                 widget: Image.asset(
                   'lib/assets/images/IconPassword.png',
-                  width: 26, // Ajuste conforme necessário
+                  width: 26,
                   height: 26,
                 ),
                 subtitle: 'Senha',

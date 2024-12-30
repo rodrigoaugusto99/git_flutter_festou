@@ -96,11 +96,10 @@ class _PagamentosState extends State<Pagamentos>
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(17.0),
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 50),
               const Text(
                 'Pix',
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
