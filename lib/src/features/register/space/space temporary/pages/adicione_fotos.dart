@@ -7,6 +7,7 @@ import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/titulo.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/utils.dart';
+import 'package:git_flutter_festou/src/helpers/keys.dart';
 import 'package:video_player/video_player.dart';
 
 class AdicioneFotos extends ConsumerStatefulWidget {
@@ -387,12 +388,13 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
                     height: 9,
                   ),
                   GestureDetector(
+                    key: Keys.k5creenButton,
                     onTap: () {
-                      if (spaceRegister.imageFiles.isEmpty) {
-                        Messages.showInfo(
-                            'Adicione pelo menos uma foto', context);
-                        return;
-                      }
+                      // if (spaceRegister.imageFiles.isEmpty) {
+                      //   Messages.showInfo(
+                      //       'Adicione pelo menos uma foto', context);
+                      //   return;
+                      // }
 
                       Navigator.push(
                         context,

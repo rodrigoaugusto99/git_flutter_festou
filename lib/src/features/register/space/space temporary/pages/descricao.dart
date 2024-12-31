@@ -4,6 +4,7 @@ import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/preco.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/textfield.dart';
+import 'package:git_flutter_festou/src/helpers/keys.dart';
 
 class Descricao extends ConsumerStatefulWidget {
   const Descricao({super.key});
@@ -156,6 +157,7 @@ class _DescricaoState extends ConsumerState<Descricao> {
               height: 9,
             ),
             GestureDetector(
+              key: Keys.k7ScreenButton,
               onTap: () {
                 final result = spaceRegister.validateDescricao(
                   descricaoEC.text,

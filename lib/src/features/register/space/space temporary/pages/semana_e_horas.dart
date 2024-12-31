@@ -9,6 +9,7 @@ import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/revisao.dart';
 import 'package:git_flutter_festou/src/helpers/helpers.dart';
+import 'package:git_flutter_festou/src/helpers/keys.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:time_picker_spinner_pop_up/time_picker_spinner_pop_up.dart';
 
@@ -495,7 +496,7 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
           child: Column(
             children: [
               const Text(
-                'Chegou a momento de cadastrar o calendário de aluguel:',
+                'Chegou o momento de cadastrar o calendário de aluguel:',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
@@ -551,6 +552,7 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
                         return Column(
                           children: [
                             RegisterWeekWidget(
+                              customKey: Keys.kSelectDayIndex(index),
                               isSelected: selectedDays.contains(day),
                               text: day,
                               onTapCallback: handleDayTap,
@@ -645,6 +647,7 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
                     height: 9,
                   ),
                   GestureDetector(
+                    key: Keys.k9ScreenButton,
                     onTap: () {
                       final days = _createDaysObject();
 
@@ -706,17 +709,20 @@ class RegisterWeekWidget extends StatelessWidget {
   final String text;
   final bool isSelected;
   final void Function(String) onTapCallback;
+  final Key customKey;
 
   const RegisterWeekWidget({
     super.key,
     required this.text,
     required this.isSelected,
     required this.onTapCallback,
+    required this.customKey,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      key: customKey,
       onTap: () => onTapCallback(text),
       child: Container(
         alignment: Alignment.center,

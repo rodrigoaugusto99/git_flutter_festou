@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/localizacao.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/type_panel.dart';
+import 'package:git_flutter_festou/src/helpers/keys.dart';
 
 class TipoEspaco extends ConsumerStatefulWidget {
   const TipoEspaco({super.key});
@@ -117,6 +118,7 @@ class _TipoEspacoState extends ConsumerState<TipoEspaco> {
               height: 9,
             ),
             GestureDetector(
+              key: Keys.kSecondScreenButton,
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(

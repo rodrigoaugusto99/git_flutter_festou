@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:git_flutter_festou/src/helpers/keys.dart';
 
 Widget myRow({
   required String label,
@@ -20,6 +21,7 @@ Widget myRow({
       color: Colors.white,
     ),
     child: TextFormField(
+      key: Keys.kTextFormField,
       keyboardType: onlyNumber ? TextInputType.number : null,
       onChanged: onChanged,
       validator: validator,
