@@ -151,7 +151,7 @@ class _PagamentosState extends State<Pagamentos>
                           });
                         },
                         child: Container(
-                          height: 50,
+                          height: 55,
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           child: Row(
                             children: [
