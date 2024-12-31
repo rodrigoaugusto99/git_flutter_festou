@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/patternedButton.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/new_card_view.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/pix_page.dart';
 import 'package:git_flutter_festou/src/models/card_model.dart';
 
 class Pagamentos extends StatefulWidget {
@@ -12,9 +12,13 @@ class Pagamentos extends StatefulWidget {
   State<Pagamentos> createState() => _PagamentosState();
 }
 
-class _PagamentosState extends State<Pagamentos> {
+class _PagamentosState extends State<Pagamentos>
+    with SingleTickerProviderStateMixin {
   bool isExpanded = false;
   List<bool> selectedRows = [false, false, false];
+  late AnimationController _animationController;
+  late Animation<double> _iconRotationAnimation;
+  List<CardModel> cards = [];
 
   static Future<List<CardModel>> fetchFromFirestore() async {
     try {
@@ -28,11 +32,22 @@ class _PagamentosState extends State<Pagamentos> {
     }
   }
 
-  List<CardModel> cards = [];
   @override
   void initState() {
-    getCards();
     super.initState();
+    getCards();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    _iconRotationAnimation = Tween<double>(begin: 0, end: 0.5)
+        .animate(_animationController); // 0 a 0.5 (180° de rotação)
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   Future<void> getCards() async {
@@ -57,7 +72,7 @@ class _PagamentosState extends State<Pagamentos> {
                   color: Colors.grey.withOpacity(0.5),
                   spreadRadius: 2,
                   blurRadius: 5,
-                  offset: const Offset(0, 2), // changes position of shadow
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
@@ -80,213 +95,150 @@ class _PagamentosState extends State<Pagamentos> {
         elevation: 0,
         backgroundColor: Colors.white,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(40),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Pix',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(
-              height: 17,
-            ),
-            MyRow(
-              text: 'Pix',
-              icon: Image.asset('lib/assets/images/Pix Imagepix.png'),
-              onTap: () {},
-              textColor: null,
-            ),
-            const SizedBox(height: 27),
-            const Text(
-              'Cartões',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(
-              height: 17,
-            ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Stack(
-                children: [
-                  ExpansionTile(
-                    clipBehavior: Clip.none,
-                    trailing: Container(
-                      color: Colors.transparent,
-                      width: 1,
-                      height: 1,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Pix',
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+              ),
+              PatternedButton(
+                widget: Image.asset(
+                  'lib/assets/images/icon_pix.png',
+                  width: 26,
+                  height: 26,
+                ),
+                title: 'Pagar com Pix',
+                textButton: '',
+                buttonWithTextLink: false,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PixPage(),
                     ),
-                    collapsedShape: const RoundedRectangleBorder(
-                      side: BorderSide.none,
-                    ),
-                    shape: const RoundedRectangleBorder(
-                      side: BorderSide.none,
-                    ),
-                    backgroundColor: const Color(0xff4300B1),
-                    title: Stack(
-                      clipBehavior: Clip.none,
-                      alignment: Alignment.center,
-                      children: [
-                        Align(
-                            alignment: Alignment.centerLeft,
-                            child: Image.asset(
-                                'lib/assets/images/image 4carotn.png')),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Pagar com Cartao de crédito',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: isExpanded ? Colors.white : Colors.black,
+                  );
+                },
+              ),
+              const SizedBox(height: 30),
+              const Text(
+                'Cartões',
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 5),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  decoration: BoxDecoration(
+                    color: isExpanded ? const Color(0xff4300B1) : Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            isExpanded = !isExpanded;
+                            if (isExpanded) {
+                              _animationController.forward();
+                            } else {
+                              _animationController.reverse();
+                            }
+                          });
+                        },
+                        child: Container(
+                          height: 55,
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                'lib/assets/images/image 4carotn.png',
+                                height: 26,
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  'Pagar com Cartao de Crédito',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: isExpanded
+                                        ? Colors.white
+                                        : Colors.black,
+                                  ),
+                                ),
+                              ),
+                              RotationTransition(
+                                turns: _iconRotationAnimation,
+                                child: Icon(
+                                  Icons.expand_more,
+                                  color:
+                                      isExpanded ? Colors.white : Colors.black,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                    children: <Widget>[
-                      ...cards.map((card) {
-                        return Column(
+                      ),
+                      SizeTransition(
+                        sizeFactor: _animationController,
+                        child: Column(
                           children: [
-                            MyRow(
-                              hasMargin: true,
-                              color: Colors.white,
-                              text: 'Cartao ${card.number.substring(0, 4)}',
-                              icon: Image.asset(
-                                  'lib/assets/images/image 4carotn.png'),
-                              onTap: () {
-                                Navigator.pop(context, card);
-                              },
-                              textColor: const Color(0xff4300B1),
-                            ),
-                          ],
-                        );
-                      }),
-
-                      MyRow(
-                        color: null,
-                        text: 'Adicionar novo cartão de crédito',
-                        icon:
-                            Image.asset('lib/assets/images/image 4xxdfad.png'),
-                        onTap: () async {
-                          final response = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => NewCardView(
-                                isNew: true,
+                            ...cards.map((card) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                child: PatternedButton(
+                                  textButton: '',
+                                  title:
+                                      'Cartao ${card.number.substring(0, 4)}',
+                                  widget: Image.asset(
+                                    'lib/assets/images/image 4carotn.png',
+                                    width: 26,
+                                    height: 26,
+                                  ),
+                                  onTap: () {
+                                    Navigator.pop(context, card);
+                                  },
+                                ),
+                              );
+                            }),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: PatternedButton(
+                                textButton: '',
+                                title: 'Adicionar novo cartão de crédito',
+                                widget: Image.asset(
+                                    'lib/assets/images/image 4xxdfad.png'),
+                                onTap: () async {
+                                  final response = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => NewCardView(
+                                        isNew: true,
+                                      ),
+                                    ),
+                                  );
+                                  if (response == null) return;
+                                  Navigator.pop(context, response);
+                                },
                               ),
                             ),
-                          );
-
-                          if (response == null) return;
-                          Navigator.pop(context, response);
-                        },
-                        textColor: null,
-                      ),
-                      // Adicione mais opções conforme necessário
-                    ],
-                    onExpansionChanged: (bool expanded) {
-                      setState(() {
-                        isExpanded = expanded;
-                      });
-                    },
-                  ),
-                  if (isExpanded)
-                    Positioned(
-                      top: 43,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: const Color(0xff4300B1),
+                          ],
                         ),
-                        height: 20,
                       ),
-                    ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget MyRow({
-    required String text,
-    required Widget icon,
-    required Function()? onTap,
-    bool? hasMargin,
-    Color? color,
-    required Color? textColor,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (hasMargin == true)
-            Container(
-              color: const Color(0XFFF8F8F8),
-              height: 20,
-            ),
-          Container(
-            height: 50,
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(0),
-              color: const Color(0XFFF8F8F8),
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: color ?? Colors.white,
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
-                children: [
-                  icon,
-                  const SizedBox(
-                    width: 10,
+                    ],
                   ),
-                  Text(
-                    text,
-                    style: TextStyle(fontSize: 12, color: textColor),
-                  ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 }
-
-
-/*
-SizedBox(
-      height: 50,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.black,
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          backgroundColor: color ?? Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          elevation: 5,
-        ),
-        onPressed: onTap,
-        child: Row(
-          children: [
-            icon,
-            const SizedBox(
-              width: 10,
-            ),
-            Text(text),
-          ],
-        ),
-      ),
-    );
-     */
-/* */
