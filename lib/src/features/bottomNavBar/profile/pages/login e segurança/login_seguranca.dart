@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/esqueci_senha.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/buttonOption.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/patternedButton.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/passwordField.dart';
 import 'package:git_flutter_festou/src/services/auth_services.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
@@ -196,8 +196,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
       onlyGoogle = true;
     }
 
-    await reauthentication(user, '');
-
     if (providers.contains("google.com")) {
       // Exibe o diálogo de confirmação
       await showDialog(
@@ -218,6 +216,8 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
               TextButton(
                 onPressed: () async {
                   Navigator.of(context).pop(); // Fecha o diálogo de confirmação
+
+                  await reauthentication(user, '');
 
                   // Abre o pop-up para cadastrar nova senha
                   if (onlyGoogle) {
@@ -657,62 +657,29 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
               ),
               const SizedBox(height: 5),
               providers.contains("google.com")
-                  ? Column(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 14),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Image.asset(
-                                    'lib/assets/images/google.png',
-                                    width: 24, // Ajuste conforme necessário
-                                    height: 24,
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  const Text("Google"),
-                                ],
-                              ),
-                              InkWell(
-                                onTap: () async {
-                                  final user =
-                                      FirebaseAuth.instance.currentUser;
-                                  if (user != null) {
-                                    try {
-                                      await areYouSureAboutDisconnect(context);
+                  ? PatternedButton(
+                      widget: Image.asset(
+                        'lib/assets/images/google.png',
+                        width: 26,
+                        height: 26,
+                      ),
+                      title: 'Google',
+                      textButton: 'Desvincular',
+                      onTap: () async {
+                        final user = FirebaseAuth.instance.currentUser;
+                        if (user != null) {
+                          try {
+                            await areYouSureAboutDisconnect(context);
 
-                                      // Recarrega o usuário
-                                      await FirebaseAuth.instance.currentUser
-                                          ?.reload();
-                                    } on FirebaseAuthException catch (e) {
-                                      log('Erro ao desvincular conta do Google: ${e.message}');
-                                    } catch (e) {
-                                      log('Erro desconhecido ao desvincular conta do Google: $e');
-                                    }
-                                  }
-                                },
-                                child: const Text(
-                                  'Desvincular',
-                                  style: TextStyle(
-                                    color: Color(0XFF4300B1),
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                            // Recarrega o usuário
+                            await FirebaseAuth.instance.currentUser?.reload();
+                          } on FirebaseAuthException catch (e) {
+                            log('Erro ao desvincular conta do Google: ${e.message}');
+                          } catch (e) {
+                            log('Erro desconhecido ao desvincular conta do Google: $e');
+                          }
+                        }
+                      },
                     )
                   : Container(),
               providers.isEmpty ||
@@ -720,7 +687,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                   ? PatternedButton(
                       widget: Image.asset(
                         'lib/assets/images/IconNetwork.png',
-                        width: 26, // Ajuste conforme necessário
+                        width: 26,
                         height: 26,
                       ),
                       title: 'Nenhuma conta vinculada',

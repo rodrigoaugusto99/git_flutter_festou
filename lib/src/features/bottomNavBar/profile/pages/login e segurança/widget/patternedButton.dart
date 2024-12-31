@@ -26,7 +26,7 @@ class PatternedButton extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.white,
               ),
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
               child: Row(
                 children: [
                   if (widget != null)
