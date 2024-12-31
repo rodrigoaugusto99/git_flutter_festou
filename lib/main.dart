@@ -23,12 +23,16 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'src/features/show spaces/all_spaces_test.dart';
 
-Future<void> main() async {
+Future<void> setupMain() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await initializeDateFormatting('pt_BR', null);
+}
+
+Future<void> main() async {
+  await setupMain();
   runApp(const ProviderScope(child: MyApp()));
 }
 
