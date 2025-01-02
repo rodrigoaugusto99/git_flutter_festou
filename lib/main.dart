@@ -85,7 +85,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: isTest ? const BottomNavBarLocadorPage() : const SplashPage(),
+      home: const SplashPage(),
     );
   }
 }

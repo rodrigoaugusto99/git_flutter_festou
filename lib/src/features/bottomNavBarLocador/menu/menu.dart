@@ -5,6 +5,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarLocatar
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/impostos.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/pages/configuracoes.dart';
+import 'package:git_flutter_festou/src/helpers/keys.dart';
 import 'package:svg_flutter/svg.dart';
 
 class Menu extends ConsumerStatefulWidget {
@@ -99,9 +100,14 @@ Widget myText({required String text}) {
   );
 }
 
-Widget myRow(
-    {required String text, required Widget icon1, required Function()? onTap}) {
+Widget myRow({
+  required String text,
+  required Widget icon1,
+  required Function()? onTap,
+  Key? customKey,
+}) {
   return InkWell(
+    key: customKey,
     onTap: onTap,
     child: Container(
       decoration: BoxDecoration(

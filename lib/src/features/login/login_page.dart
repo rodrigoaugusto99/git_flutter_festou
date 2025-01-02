@@ -44,13 +44,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         case LoginState(status: LoginStateStatus.invalidForm):
           Messages.showInfo('Formulário inválido', context);
         case LoginState(status: LoginStateStatus.userLogin):
-          if (isTest) {
-            Navigator.of(context)
-                .pushNamedAndRemoveUntil('/home', (route) => false);
-          } else {
-            Navigator.of(context).pushNamedAndRemoveUntil(
-                '/emailVerification', (route) => false);
-          }
+          // if (isTest) {
+          //   Navigator.of(context)
+          //       .pushNamedAndRemoveUntil('/home', (route) => false);
+          // } else {
+
+          // }
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('/emailVerification', (route) => false);
 
           break;
         //changeProviderDialog(dialogMessage);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:git_flutter_festou/src/helpers/keys.dart';
 
 class CustomTextformfield extends StatefulWidget {
   final bool enable;
@@ -22,9 +23,11 @@ class CustomTextformfield extends StatefulWidget {
   Color? fillColor;
   Widget? prefixIcon;
   bool? withCrazyPadding;
+  Key? customKey;
   CustomTextformfield({
     super.key,
     this.label,
+    this.customKey,
     this.hintText,
     this.prefixIcon,
     this.fillColor,
@@ -58,6 +61,7 @@ class _CustomTextformfieldState extends State<CustomTextformfield> {
     return SizedBox(
       height: widget.height,
       child: TextFormField(
+        key: Keys.kTextFormField,
         minLines: widget.isBig == true ? 5 : 1,
         maxLines: widget.isBig == true ? 10 : 1,
         onEditingComplete: widget.onEditingComplete,

@@ -21,9 +21,9 @@ class AuthPage extends StatelessWidget {
           //se snapshot tem dado, então o usuario está logado.
           if (snapshot.hasData) {
             //return const BottomNavBarPage();
-            if (isTest) {
-              return const BottomNavBarLocatarioPage();
-            }
+            // if (isTest) {
+            //   return const BottomNavBarLocatarioPage();
+            // }
             return const VerifyEmailPage();
 
             //se não, logar ou registrar.

@@ -50,13 +50,14 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
         case UserRegisterStateStatus.initial:
           break;
         case UserRegisterStateStatus.success:
-          if (isTest) {
-            Navigator.of(context)
-                .pushNamedAndRemoveUntil('/home', (route) => false);
-          } else {
-            Navigator.of(context).pushNamedAndRemoveUntil(
-                '/emailVerification', (route) => false);
-          }
+          // if (isTest) {
+          //   Navigator.of(context)
+          //       .pushNamedAndRemoveUntil('/home', (route) => false);
+          // } else {
+
+          // }
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('/emailVerification', (route) => false);
 
         case UserRegisterStateStatus.registrationError:
           Messages.showError('Erro ao registrar usuário', context);

@@ -4,14 +4,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarLocatarioPage.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/profile.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarLocadorPage.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/privacy_policy_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/service_terms_page.dart';
+import 'package:git_flutter_festou/src/helpers/constants.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 
 class VerifyEmailPage extends StatefulWidget {
-  const VerifyEmailPage({Key? key}) : super(key: key);
+  const VerifyEmailPage({super.key});
 
   @override
   State<VerifyEmailPage> createState() => _VerifyEmailPageState();
@@ -26,7 +28,9 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
 
   Future<void> getUserModel() async {
     userModel = await userService.getCurrentUserModel();
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<bool> checkPrivacyPolicyAcceptance() async {
@@ -63,6 +67,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   void initState() {
     super.initState();
     getUserModel();
+    if (isTest) return;
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       isEmailVerified = currentUser.emailVerified;
@@ -124,6 +129,10 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (isTest) {
+      // return const BottomNavBarLocatarioPage();
+      return const Profile();
+    }
     if (isEmailVerified) {
       if (userModel == null) {
         return const Scaffold(
