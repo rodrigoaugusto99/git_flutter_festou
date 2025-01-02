@@ -4,6 +4,7 @@ import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/login/login_state.dart';
 import 'package:git_flutter_festou/src/features/login/login_vm.dart';
+import 'package:git_flutter_festou/src/helpers/constants.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'forgot_password_page.dart';
 
@@ -43,8 +44,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         case LoginState(status: LoginStateStatus.invalidForm):
           Messages.showInfo('Formulário inválido', context);
         case LoginState(status: LoginStateStatus.userLogin):
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil('/emailVerification', (route) => false);
+          if (isTest) {
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil('/home', (route) => false);
+          } else {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                '/emailVerification', (route) => false);
+          }
+
           break;
         //changeProviderDialog(dialogMessage);
       }
@@ -152,6 +159,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                   FocusScope.of(context).unfocus(),
                               decoration: const InputDecoration(
                                 hintText: 'Email',
+                                contentPadding: EdgeInsets.only(top: 12),
                                 hintStyle: TextStyle(fontSize: 14, height: 1.4),
                                 border: InputBorder.none,
                                 enabledBorder: InputBorder.none,
@@ -182,6 +190,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               obscureText: isVisible ? false : true,
                               controller: passwordEC,
                               decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.only(top: 12),
                                 hintText: 'Password',
                                 hintStyle:
                                     const TextStyle(fontSize: 14, height: 1.4),

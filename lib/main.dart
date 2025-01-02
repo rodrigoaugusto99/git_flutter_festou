@@ -19,6 +19,7 @@ import 'package:git_flutter_festou/src/features/register/user/user_register_page
 import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_page.dart';
 import 'package:git_flutter_festou/src/features/splash/splash_page.dart';
+import 'package:git_flutter_festou/src/helpers/constants.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'src/features/show spaces/all_spaces_test.dart';
@@ -84,7 +85,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const SplashPage(),
+      home: isTest ? const BottomNavBarLocadorPage() : const SplashPage(),
     );
   }
 }
