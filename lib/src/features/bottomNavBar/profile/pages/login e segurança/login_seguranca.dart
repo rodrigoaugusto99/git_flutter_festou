@@ -215,15 +215,19 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
               ),
               TextButton(
                 onPressed: () async {
-                  Navigator.of(context).pop(); // Fecha o diálogo de confirmação
+                  //
 
                   await reauthentication(user, '');
 
                   // Abre o pop-up para cadastrar nova senha
                   if (onlyGoogle) {
+                    final BuildContext contextPassword =
+                        Navigator.of(context).context;
+                    Navigator.of(context)
+                        .pop(); // Fecha o diálogo de confirmação
                     await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
+                      context: contextPassword,
+                      builder: (BuildContext contextPassword) {
                         final newPasswordController = TextEditingController();
                         final confirmPasswordController =
                             TextEditingController();
@@ -244,30 +248,21 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                   style: TextStyle(fontSize: 14),
                                 ),
                               ),
-                              TextField(
+                              PasswordField(
                                 controller: newPasswordController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Nova senha',
-                                  labelStyle: TextStyle(fontSize: 14),
-                                  border: OutlineInputBorder(),
-                                ),
-                                obscureText: true,
+                                label: 'Nova senha',
                               ),
                               const SizedBox(height: 16),
-                              TextField(
+                              PasswordField(
                                 controller: confirmPasswordController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Confirmar senha',
-                                  labelStyle: TextStyle(fontSize: 14),
-                                  border: OutlineInputBorder(),
-                                ),
-                                obscureText: true,
+                                label: 'Confirmar senha',
                               ),
                             ],
                           ),
                           actions: [
                             TextButton(
-                              onPressed: () => Navigator.of(context).pop(),
+                              onPressed: () =>
+                                  Navigator.of(contextPassword).pop(),
                               child: const Text('Cancelar'),
                             ),
                             TextButton(
@@ -279,9 +274,11 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
 
                                 if (newPassword.isEmpty ||
                                     confirmPassword.isEmpty) {
+                                  final BuildContext contextEmpty =
+                                      Navigator.of(contextPassword).context;
                                   await showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
+                                      context: contextEmpty,
+                                      builder: (BuildContext contextEmpty) {
                                         return AlertDialog(
                                             title: const Text('Ops...'),
                                             content: const Text(
@@ -289,7 +286,8 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                             actions: [
                                               TextButton(
                                                 onPressed: () =>
-                                                    Navigator.of(context).pop(),
+                                                    Navigator.of(contextEmpty)
+                                                        .pop(),
                                                 child: const Text('Fechar'),
                                               ),
                                             ]);
@@ -298,17 +296,21 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                 }
 
                                 if (newPassword.length < 6) {
+                                  final BuildContext contextLessThanSix =
+                                      Navigator.of(contextPassword).context;
                                   await showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
+                                      context: contextLessThanSix,
+                                      builder:
+                                          (BuildContext contextLessThanSix) {
                                         return AlertDialog(
                                             title: const Text('Ops...'),
                                             content: const Text(
                                                 'A senha deve conter no mínimo 6 caracteres.'),
                                             actions: [
                                               TextButton(
-                                                onPressed: () =>
-                                                    Navigator.of(context).pop(),
+                                                onPressed: () => Navigator.of(
+                                                        contextLessThanSix)
+                                                    .pop(),
                                                 child: const Text('Fechar'),
                                               ),
                                             ]);
@@ -317,17 +319,21 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                 }
 
                                 if (newPassword != confirmPassword) {
+                                  final BuildContext contextWrongPassword =
+                                      Navigator.of(contextPassword).context;
                                   await showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
+                                      context: contextWrongPassword,
+                                      builder:
+                                          (BuildContext contextWrongPassword) {
                                         return AlertDialog(
                                             title: const Text('Ops...'),
                                             content: const Text(
                                                 'As senhas não coincidem.'),
                                             actions: [
                                               TextButton(
-                                                onPressed: () =>
-                                                    Navigator.of(context).pop(),
+                                                onPressed: () => Navigator.of(
+                                                        contextWrongPassword)
+                                                    .pop(),
                                                 child: const Text('Fechar'),
                                               ),
                                             ]);
@@ -344,7 +350,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                     displayAuthProviderList();
                                   });
 
-                                  Navigator.of(context).pop();
+                                  Navigator.of(contextPassword).pop();
 
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -378,6 +384,8 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                       },
                     );
                   } else {
+                    Navigator.of(context)
+                        .pop(); // Fecha o diálogo de confirmação
                     await user.unlink("google.com");
 
                     setState(() {
@@ -702,7 +710,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
               PatternedButton(
                   widget: Image.asset(
                     'lib/assets/images/IconAccountDelete.png',
-                    width: 26, // Ajuste conforme necessário
+                    width: 26,
                     height: 26,
                   ),
                   title: 'Excluir minha conta',
@@ -718,6 +726,8 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                           final BuildContext context2 =
                               Navigator.of(context).context;
                           final BuildContext context3 =
+                              Navigator.of(context).context;
+                          final BuildContext context4 =
                               Navigator.of(context).context;
                           TextEditingController passwordController =
                               TextEditingController();
@@ -913,6 +923,30 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                                       logoutProvider.future);
                                                   log('Conta excluída com sucesso.');
                                                 } on FirebaseAuthException catch (e) {
+                                                  if (e.code ==
+                                                      'invalid-credential') {
+                                                    await showDialog(
+                                                        context: context4,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return AlertDialog(
+                                                            title: const Text(
+                                                                'Ops...'),
+                                                            content: const Text(
+                                                                'Senha atual inválida!'),
+                                                            actions: [
+                                                              TextButton(
+                                                                onPressed: () =>
+                                                                    Navigator.of(
+                                                                            context4)
+                                                                        .pop(),
+                                                                child: const Text(
+                                                                    'Fechar'),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        });
+                                                  }
                                                   log('Erro ao excluir a conta: ${e.code}, ${e.message}');
                                                 } catch (e) {
                                                   log('Erro desconhecido ao excluir a conta: $e');
