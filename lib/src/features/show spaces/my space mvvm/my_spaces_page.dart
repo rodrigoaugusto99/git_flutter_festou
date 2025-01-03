@@ -7,6 +7,7 @@ import 'package:git_flutter_festou/src/features/register/space/space%20temporary
 import 'package:git_flutter_festou/src/features/space%20card/widgets/my_sliver_list_to_card_info.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_vm.dart';
+import 'package:git_flutter_festou/src/helpers/keys.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 
@@ -116,6 +117,7 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 60),
                   child: InkWell(
+                      key: Keys.kLocadorViewRegisterSpace,
                       onTap: () {
                         Navigator.push(
                           context,

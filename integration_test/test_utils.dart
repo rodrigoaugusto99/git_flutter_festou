@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 
 Future<String?> createUserAuth() async {
@@ -18,6 +19,19 @@ Future<String?> createUserAuth() async {
     log('Erro ao registrar usuário teste: $e');
   }
   return null;
+}
+
+Future<List<SpaceModel>> getSpaceOnFirestore(String userId) async {
+  final querySnapshot = await FirebaseFirestore.instance
+      .collection('spaces')
+      .where('user_id', isEqualTo: userId)
+      .get();
+  List<SpaceModel> spaces = [];
+  for (final doc in querySnapshot.docs) {
+    spaces.add(await mapSpaceDocumentToModel(doc, true));
+  }
+
+  return spaces;
 }
 
 Future<void> createUserOnFirestore(String userId) async {

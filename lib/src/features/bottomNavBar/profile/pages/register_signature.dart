@@ -300,6 +300,7 @@ class _RegisterSignatureState extends State<RegisterSignature> {
           mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
+              key: Keys.kLocadorFormEnviarButton,
               onTap: () async {
                 if (!formKey.currentState!.validate()) {
                   return;

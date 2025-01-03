@@ -5,8 +5,10 @@ class Keys {
   static Key kTextFormField = const Key("kTextFormField");
   static Key kButtonWiget = const Key("kTextFormField");
   static Key kChipWidget = const Key("kChipWidget");
+
   static Key kSignaturePaint = const Key("kSignaturePaint");
   static Key kSignaturePaper = const Key("kSignaturePaper");
+  static Key kSignatureConfirmButton = const Key("kSignatureConfirmButton");
   //static Key kChipDayWidget = const Key("kChipDayWidget");
   static Key kSelectDayIndex(int index) {
     return Key("select_day$index");

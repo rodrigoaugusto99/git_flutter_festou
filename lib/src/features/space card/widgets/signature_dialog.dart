@@ -90,6 +90,7 @@ class _SignatureDialogState extends State<SignatureDialog> {
           child: const Text("Cancelar"),
         ),
         TextButton(
+          key: Keys.kSignatureConfirmButton,
           onPressed: () async {
             onSign();
           },

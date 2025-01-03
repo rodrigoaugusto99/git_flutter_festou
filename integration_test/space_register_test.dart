@@ -1,10 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:git_flutter_festou/main.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register.dart';
 import 'package:git_flutter_festou/src/helpers/keys.dart';
 import 'package:patrol_finders/patrol_finders.dart';
-
 import 'test_utils.dart';
 
 void main() {
@@ -13,7 +11,6 @@ void main() {
       config: const PatrolTesterConfig(
           visibleTimeout: Duration(seconds: 30),
           settleTimeout: Duration(seconds: 30)),
-      // timeout: const Timeout(Duration(seconds: 100)),
       'should edit task correctly', ($) async {
     await setupMain();
     final userId = await createUserAuth();
@@ -59,6 +56,56 @@ void main() {
     // await $.tester.dragFrom(middle, end);
     await $.pump();
 
-    await Future.delayed(const Duration(seconds: 2));
+    await $(Keys.kSignatureConfirmButton).tap();
+    await $(Keys.kLocadorFormEnviarButton).tap();
+    await $(Keys.kLocadorViewRegisterSpace).tap();
+    await $(Keys.kFirstScreenButton).tap();
+    await $(Keys.kChipWidget).tap();
+    await $(Keys.kSecondScreenButton).tap();
+
+    await $(Keys.kTextFormField).waitUntilExists();
+    await $(Keys.kTextFormField).at(0).enterText('22221000');
+    await Future.delayed(const Duration(seconds: 1));
+    await $(Keys.kTextFormField).at(2).enterText('123');
+    await $(Keys.k3creenButton).tap();
+    await $(Keys.kChipWidget).tap();
+    await $(Keys.k4ScreenButton).tap();
+    await $(Keys.k5creenButton).tap();
+    await $(Keys.kTextFormField).waitUntilExists();
+    final name = DateTime.now().millisecondsSinceEpoch.toString();
+    final descricao = DateTime.now().millisecondsSinceEpoch.toString();
+
+    await $(Keys.kTextFormField).enterText(name);
+    await $(Keys.k6ScreenButton).tap();
+    await $(Keys.kTextFormField).waitUntilExists();
+    await $(Keys.kTextFormField).enterText(descricao);
+    await $(Keys.k7ScreenButton).tap();
+    await $(Keys.kTextFormField).waitUntilExists();
+    await $(Keys.kTextFormField).enterText('123123');
+    await $(Keys.k8creenButton).tap();
+
+    await $(Keys.kSelectDayIndex(0)).tap();
+    await $(Keys.kSelectDayIndex(1)).tap();
+    await $(Keys.k9ScreenButton).tap();
+    await $(Keys.k10ScreenButton).scrollTo().tap();
+    await Future.delayed(const Duration(seconds: 10));
+
+    //verificando se o espaco foi criado
+    final spaces = await getSpaceOnFirestore(userId);
+    expect(spaces.length, 1);
+    final space = spaces.first;
+    expect(space.titulo, name);
+    expect(space.descricao, descricao);
+    expect(space.selectedServices.length, 1);
+    expect(space.selectedServices.contains('Cozinha'), true);
+    expect(space.selectedTypes.length, 1);
+    expect(space.selectedTypes.contains('Kids'), true);
+    expect(space.days.friday, null);
+    expect(space.days.saturday, null);
+    expect(space.days.sunday, null);
+    expect(space.days.thursday, null);
+    expect(space.days.wednesday, null);
+    expect(space.days.monday, isNotNull);
+    expect(space.days.tuesday, isNotNull);
   });
 }
