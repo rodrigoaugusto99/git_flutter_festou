@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
@@ -9,10 +8,19 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:validatorless/validatorless.dart';
 
 class NewCardView extends StatefulWidget {
-  bool? isNew;
-  NewCardView({
+  final String? name;
+  final String? cardName;
+  final String? number;
+  final String? validateDate;
+  final String? cvv;
+
+  const NewCardView({
     super.key,
-    this.isNew = false,
+    this.name,
+    this.cardName,
+    this.number,
+    this.validateDate,
+    this.cvv,
   });
 
   @override
@@ -21,12 +29,13 @@ class NewCardView extends StatefulWidget {
 
 class _NewCardViewState extends State<NewCardView> {
   // final nameEC = TextEditingController(text: 'Emília Faria M Souza');
-  // final cardNumberEC = TextEditingController(text: '7894 1234 4568 2580');
+  // final numberEC = TextEditingController(text: '7894 1234 4568 2580');
   // final validateDateEC = TextEditingController(text: '01/29');
   // final cvvEC = TextEditingController(text: '100');
   // final flagEC = TextEditingController(text: 'Cartão Master 2');
   TextEditingController nameEC = TextEditingController();
-  TextEditingController cardNumberEC = TextEditingController();
+  TextEditingController cardNameEC = TextEditingController();
+  TextEditingController numberEC = TextEditingController();
   TextEditingController validateDateEC = TextEditingController();
   TextEditingController cvvEC = TextEditingController();
   TextEditingController flagEC = TextEditingController();
@@ -56,45 +65,26 @@ class _NewCardViewState extends State<NewCardView> {
     'Discover'
   ];
 
-  void showPopupMenu({
-    required BuildContext context,
-    required Offset offset,
-  }) async {
-    await showMenu(
-      popUpAnimationStyle: AnimationStyle(
-        curve: Curves.fastOutSlowIn,
-        duration: const Duration(milliseconds: 500),
-      ),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      // shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      context: context,
-      position: RelativeRect.fromLTRB(
-        offset.dx,
-        offset.dy + 10,
-        offset.dx,
-        offset.dy,
-      ),
+  @override
+  void initState() {
+    super.initState();
 
-      items: cardFlags.map((flag) {
-        return PopupMenuItem(
-          child: ListTile(
-            title: Text(flag),
-            onTap: () {
-              Navigator.of(context).pop();
-              onFlagSelected(flag);
-            },
-          ),
-        );
-      }).toList(),
+    // Inicializando os controladores com os valores passados
+    nameEC = TextEditingController(text: widget.name ?? '');
+    cardNameEC = TextEditingController(text: widget.cardName ?? '');
+    numberEC = TextEditingController(
+      text: widget.number != null
+          ? cardNumberFormatter.maskText(widget.number!)
+          : '',
     );
-  }
-
-  void onFlagSelected(String? flag) {
-    if (flag != null) {
-      setState(() {
-        flagEC.text = flag;
-      });
-    }
+    validateDateEC = TextEditingController(
+      text: widget.validateDate != null
+          ? dateMaskFormatter.maskText(widget.validateDate!)
+          : '',
+    );
+    cvvEC = TextEditingController(
+      text: widget.cvv != null ? cvvFormatter.maskText(widget.cvv!) : '',
+    );
   }
 
   final formKey = GlobalKey<FormState>();
@@ -168,24 +158,32 @@ class _NewCardViewState extends State<NewCardView> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Festou',
+                                'Festou!',
                                 style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w700,
+                                  fontFamily: 'Valentine',
+                                  color: Color.fromARGB(255, 154, 110, 255),
+                                  fontSize: 32,
                                 ),
                               ),
                             ],
                           ),
+                          const Text(
+                            'Comemorando a vida',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                            ),
+                          ),
                           const Spacer(),
                           Text(
-                            cardNumberEC.text,
+                            numberEC.text,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 20,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
+                          const SizedBox(height: 4),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -196,7 +194,7 @@ class _NewCardViewState extends State<NewCardView> {
                                     'PORTADOR',
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 14,
+                                      fontSize: 10,
                                       fontWeight: FontWeight.w400,
                                     ),
                                   ),
@@ -217,7 +215,7 @@ class _NewCardViewState extends State<NewCardView> {
                                     'VALIDADE',
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 14,
+                                      fontSize: 10,
                                       fontWeight: FontWeight.w400,
                                     ),
                                   ),
@@ -286,7 +284,7 @@ class _NewCardViewState extends State<NewCardView> {
                       onChanged: (p0) => setState(() {}),
                       ddd: 10,
                       svgPath: 'lib/assets/images/image 6perssoa.png',
-                      hintText: 'Nome',
+                      hintText: 'Nome do portador',
                       controller: nameEC,
                       validator: validate(),
                     ),
@@ -294,9 +292,9 @@ class _NewCardViewState extends State<NewCardView> {
                     CustomTextformfield(
                       onChanged: (p0) => setState(() {}),
                       ddd: 5,
-                      hintText: 'Cartão',
+                      hintText: 'Número do Cartão',
                       keyboardType: TextInputType.number,
-                      controller: cardNumberEC,
+                      controller: numberEC,
                       inputFormatters: [cardNumberFormatter],
                       svgPath: 'lib/assets/images/image 4card.png',
                       validator: validate(),
@@ -332,37 +330,13 @@ class _NewCardViewState extends State<NewCardView> {
                       ],
                     ),
                     const SizedBox(height: 15),
-                    GestureDetector(
-                      // onTap: () {
-                      //   if (selectedFlag != null) {
-                      //     final message = 'Selected Card Flag: $selectedFlag';
-                      //     ScaffoldMessenger.of(context).showSnackBar(
-                      //       SnackBar(content: Text(message)),
-                      //     );
-                      //   } else {
-                      //     ScaffoldMessenger.of(context).showSnackBar(
-                      //       const SnackBar(
-                      //           content: Text('Please select a card flag first')),
-                      //     );
-                      //   }
-                      // },
-                      child: GestureDetector(
-                        onTapDown: (TapDownDetails details) {
-                          showPopupMenu(
-                            context: context,
-                            offset: details.globalPosition,
-                          );
-                        },
-                        child: CustomTextformfield(
-                          validator: validate(),
-                          enable: false,
-                          //  onChanged: (p0) => setState(() {}),
-                          ddd: 10,
-                          svgPath: 'lib/assets/images/image 7passa.png',
-                          controller: flagEC,
-                          hintText: 'Bandeira',
-                        ),
-                      ),
+                    CustomTextformfield(
+                      onChanged: (p0) => setState(() {}),
+                      ddd: 10,
+                      validator: validate(),
+                      svgPath: 'lib/assets/images/image 7passa.png',
+                      controller: cardNameEC,
+                      hintText: 'Dê um nome ao seu cartão',
                     ),
                   ],
                 ),
@@ -410,11 +384,11 @@ class _NewCardViewState extends State<NewCardView> {
                   return;
                 }
                 CardModel card = CardModel(
-                  bandeira: flagEC.text,
                   cvv: cvvEC.text,
+                  cardName: cardNameEC.text,
                   name: nameEC.text,
-                  number: cardNumberEC.text,
-                  validate: validateDateEC.text,
+                  number: numberEC.text,
+                  validateDate: validateDateEC.text,
                 );
                 try {
                   final cardId = await card.saveToFirestore();

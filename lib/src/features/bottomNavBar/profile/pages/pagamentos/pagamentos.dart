@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/patternedButton.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/new_card_view.dart';
@@ -14,21 +15,42 @@ class Pagamentos extends StatefulWidget {
 
 class _PagamentosState extends State<Pagamentos>
     with SingleTickerProviderStateMixin {
+  String userId = FirebaseAuth.instance.currentUser!.uid;
   bool isExpanded = false;
   List<bool> selectedRows = [false, false, false];
   late AnimationController _animationController;
   late Animation<double> _iconRotationAnimation;
   List<CardModel> cards = [];
 
-  static Future<List<CardModel>> fetchFromFirestore() async {
+  Future<List<CardModel>> fetchFromFirestore() async {
     try {
-      final collection = FirebaseFirestore.instance.collection('cards');
-      final querySnapshot = await collection.get();
-      return querySnapshot.docs.map((doc) {
-        return CardModel.fromMap(doc.data(), doc.id);
-      }).toList();
+      // Obter o documento do usuário pelo `userId`
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('uid', isEqualTo: userId)
+          .get();
+
+      // Garantir que os documentos retornados não estejam vazios
+      if (querySnapshot.docs.isNotEmpty) {
+        final userDoc = querySnapshot.docs.first; // Primeiro usuário encontrado
+
+        // Acessar a subcoleção `cards` dentro do usuário
+        final cardsSnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userDoc.id) // ID do usuário
+            .collection('cards') // Subcoleção
+            .get();
+
+        // Mapear os documentos da subcoleção `cards` para `CardModel`
+        return cardsSnapshot.docs.map((cardDoc) {
+          return CardModel.fromMap(cardDoc.data(), cardDoc.id);
+        }).toList();
+      } else {
+        // Caso nenhum usuário seja encontrado, retorne uma lista vazia
+        return [];
+      }
     } catch (e) {
-      throw Exception('Failed to fetch cards from Firestore: $e');
+      throw Exception('Erro ao buscar os dados: $e');
     }
   }
 
@@ -193,15 +215,29 @@ class _PagamentosState extends State<Pagamentos>
                                     horizontal: 16.0),
                                 child: PatternedButton(
                                   textButton: '',
-                                  title:
-                                      'Cartao ${card.number.substring(0, 4)}',
+                                  buttonWithTextLink: false,
+                                  title: card.cardName,
                                   widget: Image.asset(
                                     'lib/assets/images/image 4carotn.png',
                                     width: 26,
                                     height: 26,
                                   ),
-                                  onTap: () {
-                                    Navigator.pop(context, card);
+                                  onTap: () async {
+                                    final response = await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => NewCardView(
+                                          name: card.name,
+                                          cardName: card.cardName,
+                                          number: card.number,
+                                          validateDate: card.validateDate,
+                                          cvv: card.cvv,
+                                        ),
+                                      ),
+                                    );
+                                    if (response == null) return;
+                                    Navigator.pop(context, response);
+                                    //Navigator.pop(context, card);
                                   },
                                 ),
                               );
@@ -211,6 +247,7 @@ class _PagamentosState extends State<Pagamentos>
                                   const EdgeInsets.symmetric(horizontal: 10.0),
                               child: PatternedButton(
                                 textButton: '',
+                                buttonWithTextLink: false,
                                 title: 'Adicionar novo cartão de crédito',
                                 widget: Image.asset(
                                     'lib/assets/images/image 4xxdfad.png'),
@@ -218,9 +255,7 @@ class _PagamentosState extends State<Pagamentos>
                                   final response = await Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => NewCardView(
-                                        isNew: true,
-                                      ),
+                                      builder: (context) => const NewCardView(),
                                     ),
                                   );
                                   if (response == null) return;
