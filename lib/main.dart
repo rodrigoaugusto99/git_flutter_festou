@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,13 +24,15 @@ import 'package:git_flutter_festou/src/features/splash/splash_page.dart';
 import 'package:git_flutter_festou/src/helpers/constants.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-import 'src/features/show spaces/all_spaces_test.dart';
-
 Future<void> setupMain() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  if (isTest) {
+    FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+    await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+  }
   await initializeDateFormatting('pt_BR', null);
 }
 
