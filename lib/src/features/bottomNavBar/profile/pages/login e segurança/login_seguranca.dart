@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/esqueci_senha.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/patternedButton.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/passwordField.dart';
 import 'package:git_flutter_festou/src/services/auth_services.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
@@ -36,7 +37,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
   void dispose() {
     novaSenhaController.dispose();
     confirmarSenhaController.dispose();
-    // Remove o observer ao destruir o widget
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -45,11 +45,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // Este bloco de código será executado depois da construção completa da árvore de widgets.
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Este bloco de código será executado após a construção completa da árvore de widgets.
-
       yourFunctionToBeCalled();
       displayAuthProviderList();
       showUserProvider();
@@ -58,7 +54,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
   }
 
   void yourFunctionToBeCalled() {
-    // Faça algo aqui
     log("\nTela completamente construída!");
   }
 
@@ -73,7 +68,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
       providers = [];
 
       // Obtém a lista de provedores associados ao usuário
-
       for (UserInfo userInfo in user.providerData) {
         providers.add(userInfo.providerId);
       }
@@ -85,8 +79,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
     }
   }
 
-  // Verifica se "google.com" está na lista de provedores
-  // bool isGoogleConnected = providers.contains("google.com");
   Widget buildGoogleWidget() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -95,7 +87,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
           children: [
             Image.asset(
               'lib/assets/images/google.png',
-              width: 24, // Ajuste conforme necessário
+              width: 24,
               height: 24,
             ),
             const SizedBox(
@@ -119,7 +111,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
     );
   }
 
-//providerData para obter os detalhes do usuario autenticado.
   void showUserProvider() {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -205,8 +196,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
       onlyGoogle = true;
     }
 
-    await reauthentication(user, '');
-
     if (providers.contains("google.com")) {
       // Exibe o diálogo de confirmação
       await showDialog(
@@ -226,13 +215,19 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
               ),
               TextButton(
                 onPressed: () async {
-                  Navigator.of(context).pop(); // Fecha o diálogo de confirmação
+                  //
+
+                  await reauthentication(user, '');
 
                   // Abre o pop-up para cadastrar nova senha
                   if (onlyGoogle) {
+                    final BuildContext contextPassword =
+                        Navigator.of(context).context;
+                    Navigator.of(context)
+                        .pop(); // Fecha o diálogo de confirmação
                     await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
+                      context: contextPassword,
+                      builder: (BuildContext contextPassword) {
                         final newPasswordController = TextEditingController();
                         final confirmPasswordController =
                             TextEditingController();
@@ -253,30 +248,21 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                   style: TextStyle(fontSize: 14),
                                 ),
                               ),
-                              TextField(
+                              PasswordField(
                                 controller: newPasswordController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Nova senha',
-                                  labelStyle: TextStyle(fontSize: 14),
-                                  border: OutlineInputBorder(),
-                                ),
-                                obscureText: true,
+                                label: 'Nova senha',
                               ),
                               const SizedBox(height: 16),
-                              TextField(
+                              PasswordField(
                                 controller: confirmPasswordController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Confirmar senha',
-                                  labelStyle: TextStyle(fontSize: 14),
-                                  border: OutlineInputBorder(),
-                                ),
-                                obscureText: true,
+                                label: 'Confirmar senha',
                               ),
                             ],
                           ),
                           actions: [
                             TextButton(
-                              onPressed: () => Navigator.of(context).pop(),
+                              onPressed: () =>
+                                  Navigator.of(contextPassword).pop(),
                               child: const Text('Cancelar'),
                             ),
                             TextButton(
@@ -288,9 +274,11 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
 
                                 if (newPassword.isEmpty ||
                                     confirmPassword.isEmpty) {
+                                  final BuildContext contextEmpty =
+                                      Navigator.of(contextPassword).context;
                                   await showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
+                                      context: contextEmpty,
+                                      builder: (BuildContext contextEmpty) {
                                         return AlertDialog(
                                             title: const Text('Ops...'),
                                             content: const Text(
@@ -298,7 +286,8 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                             actions: [
                                               TextButton(
                                                 onPressed: () =>
-                                                    Navigator.of(context).pop(),
+                                                    Navigator.of(contextEmpty)
+                                                        .pop(),
                                                 child: const Text('Fechar'),
                                               ),
                                             ]);
@@ -307,17 +296,21 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                 }
 
                                 if (newPassword.length < 6) {
+                                  final BuildContext contextLessThanSix =
+                                      Navigator.of(contextPassword).context;
                                   await showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
+                                      context: contextLessThanSix,
+                                      builder:
+                                          (BuildContext contextLessThanSix) {
                                         return AlertDialog(
                                             title: const Text('Ops...'),
                                             content: const Text(
                                                 'A senha deve conter no mínimo 6 caracteres.'),
                                             actions: [
                                               TextButton(
-                                                onPressed: () =>
-                                                    Navigator.of(context).pop(),
+                                                onPressed: () => Navigator.of(
+                                                        contextLessThanSix)
+                                                    .pop(),
                                                 child: const Text('Fechar'),
                                               ),
                                             ]);
@@ -326,17 +319,21 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                 }
 
                                 if (newPassword != confirmPassword) {
+                                  final BuildContext contextWrongPassword =
+                                      Navigator.of(contextPassword).context;
                                   await showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
+                                      context: contextWrongPassword,
+                                      builder:
+                                          (BuildContext contextWrongPassword) {
                                         return AlertDialog(
                                             title: const Text('Ops...'),
                                             content: const Text(
                                                 'As senhas não coincidem.'),
                                             actions: [
                                               TextButton(
-                                                onPressed: () =>
-                                                    Navigator.of(context).pop(),
+                                                onPressed: () => Navigator.of(
+                                                        contextWrongPassword)
+                                                    .pop(),
                                                 child: const Text('Fechar'),
                                               ),
                                             ]);
@@ -353,8 +350,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                     displayAuthProviderList();
                                   });
 
-                                  Navigator.of(context)
-                                      .pop(); // Fecha o pop-up de senha
+                                  Navigator.of(contextPassword).pop();
 
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -388,6 +384,8 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                       },
                     );
                   } else {
+                    Navigator.of(context)
+                        .pop(); // Fecha o diálogo de confirmação
                     await user.unlink("google.com");
 
                     setState(() {
@@ -422,7 +420,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
           padding: const EdgeInsets.only(left: 18.0),
           child: Container(
             decoration: BoxDecoration(
-              //color: Colors.white.withOpacity(0.7),
               color: Colors.white,
               shape: BoxShape.circle,
               boxShadow: [
@@ -430,7 +427,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                   color: Colors.grey.withOpacity(0.5),
                   spreadRadius: 2,
                   blurRadius: 5,
-                  offset: const Offset(0, 2), // changes position of shadow
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
@@ -454,22 +451,21 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(17.0),
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 50),
               const Text(
                 'Login',
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
-              MyRow(
+              PatternedButton(
                 widget: Image.asset(
                   'lib/assets/images/IconPassword.png',
-                  width: 26, // Ajuste conforme necessário
+                  width: 26,
                   height: 26,
                 ),
-                subtitle: 'Senha',
+                title: 'Senha',
                 textButton: !isUpdatingPassword ? 'Atualizar' : 'Cancelar',
                 onTap: () {
                   setState(() {
@@ -669,73 +665,40 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
               ),
               const SizedBox(height: 5),
               providers.contains("google.com")
-                  ? Column(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 14),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Image.asset(
-                                    'lib/assets/images/google.png',
-                                    width: 24, // Ajuste conforme necessário
-                                    height: 24,
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  const Text("Google"),
-                                ],
-                              ),
-                              InkWell(
-                                onTap: () async {
-                                  final user =
-                                      FirebaseAuth.instance.currentUser;
-                                  if (user != null) {
-                                    try {
-                                      await areYouSureAboutDisconnect(context);
+                  ? PatternedButton(
+                      widget: Image.asset(
+                        'lib/assets/images/google.png',
+                        width: 26,
+                        height: 26,
+                      ),
+                      title: 'Google',
+                      textButton: 'Desvincular',
+                      onTap: () async {
+                        final user = FirebaseAuth.instance.currentUser;
+                        if (user != null) {
+                          try {
+                            await areYouSureAboutDisconnect(context);
 
-                                      // Recarrega o usuário
-                                      await FirebaseAuth.instance.currentUser
-                                          ?.reload();
-                                    } on FirebaseAuthException catch (e) {
-                                      log('Erro ao desvincular conta do Google: ${e.message}');
-                                    } catch (e) {
-                                      log('Erro desconhecido ao desvincular conta do Google: $e');
-                                    }
-                                  }
-                                },
-                                child: const Text(
-                                  'Desvincular',
-                                  style: TextStyle(
-                                    color: Color(0XFF4300B1),
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                            // Recarrega o usuário
+                            await FirebaseAuth.instance.currentUser?.reload();
+                          } on FirebaseAuthException catch (e) {
+                            log('Erro ao desvincular conta do Google: ${e.message}');
+                          } catch (e) {
+                            log('Erro desconhecido ao desvincular conta do Google: $e');
+                          }
+                        }
+                      },
                     )
                   : Container(),
               providers.isEmpty ||
                       (providers.length == 1 && providers.contains("password"))
-                  ? MyRow(
+                  ? PatternedButton(
                       widget: Image.asset(
                         'lib/assets/images/IconNetwork.png',
-                        width: 26, // Ajuste conforme necessário
+                        width: 26,
                         height: 26,
                       ),
-                      subtitle: 'Nenhuma conta vinculada',
+                      title: 'Nenhuma conta vinculada',
                       onTap: () => (),
                       textButton: '')
                   : Container(),
@@ -744,13 +707,13 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                 'Conta',
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
-              MyRow(
+              PatternedButton(
                   widget: Image.asset(
                     'lib/assets/images/IconAccountDelete.png',
-                    width: 26, // Ajuste conforme necessário
+                    width: 26,
                     height: 26,
                   ),
-                  subtitle: 'Excluir minha conta',
+                  title: 'Excluir minha conta',
                   textButton: 'Excluir',
                   onTap: () async {
                     final user = FirebaseAuth.instance.currentUser;
@@ -763,6 +726,8 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                           final BuildContext context2 =
                               Navigator.of(context).context;
                           final BuildContext context3 =
+                              Navigator.of(context).context;
+                          final BuildContext context4 =
                               Navigator.of(context).context;
                           TextEditingController passwordController =
                               TextEditingController();
@@ -958,6 +923,30 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                                       logoutProvider.future);
                                                   log('Conta excluída com sucesso.');
                                                 } on FirebaseAuthException catch (e) {
+                                                  if (e.code ==
+                                                      'invalid-credential') {
+                                                    await showDialog(
+                                                        context: context4,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return AlertDialog(
+                                                            title: const Text(
+                                                                'Ops...'),
+                                                            content: const Text(
+                                                                'Senha atual inválida!'),
+                                                            actions: [
+                                                              TextButton(
+                                                                onPressed: () =>
+                                                                    Navigator.of(
+                                                                            context4)
+                                                                        .pop(),
+                                                                child: const Text(
+                                                                    'Fechar'),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        });
+                                                  }
                                                   log('Erro ao excluir a conta: ${e.code}, ${e.message}');
                                                 } catch (e) {
                                                   log('Erro desconhecido ao excluir a conta: $e');
@@ -981,50 +970,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                   }),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget MyRow({
-    required String subtitle,
-    required String textButton,
-    Widget? widget,
-    required final VoidCallback onTap,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.white,
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-        child: Row(
-          children: [
-            if (widget != null)
-              Row(
-                children: [
-                  widget,
-                  const SizedBox(
-                    width: 10,
-                  ),
-                ],
-              ),
-            Text(subtitle),
-            const Spacer(),
-            InkWell(
-              onTap: onTap,
-              child: Text(
-                textButton,
-                style: const TextStyle(
-                  color: Color(0XFF4300B1),
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );
