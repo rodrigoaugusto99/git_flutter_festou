@@ -95,6 +95,7 @@ dependencies:
   animated_text_kit: ^4.2.2
   time_picker_spinner_pop_up: ^2.0.0
   currency_text_input_formatter: ^2.2.6
+  encrypt: ^5.0.3
 
 dev_dependencies:
   flutter_test:

@@ -5,6 +5,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/new_card_view.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/pix_page.dart';
 import 'package:git_flutter_festou/src/models/card_model.dart';
+import 'package:git_flutter_festou/src/services/encryption_service.dart';
 
 class Pagamentos extends StatefulWidget {
   const Pagamentos({super.key});
@@ -15,6 +16,8 @@ class Pagamentos extends StatefulWidget {
 
 class _PagamentosState extends State<Pagamentos>
     with SingleTickerProviderStateMixin {
+  final encryptionService =
+      EncryptionService("criptfestouaplic", "2199478465899478");
   String userId = FirebaseAuth.instance.currentUser!.uid;
   bool isExpanded = false;
   List<bool> selectedRows = [false, false, false];
@@ -43,7 +46,19 @@ class _PagamentosState extends State<Pagamentos>
 
         // Mapear os documentos da subcoleção `cards` para `CardModel`
         return cardsSnapshot.docs.map((cardDoc) {
-          return CardModel.fromMap(cardDoc.data(), cardDoc.id);
+          final data = cardDoc.data();
+
+          // Descriptografar os campos sensíveis
+          return CardModel(
+            id: cardDoc.id,
+            name: data['name'],
+            cardName: data['cardName'],
+            number: encryptionService
+                .decrypt(data['number']), // Descriptografar número
+            validateDate: encryptionService
+                .decrypt(data['validateDate']), // Descriptografar validade
+            cvv: encryptionService.decrypt(data['cvv']), // Descriptografar CVV
+          );
         }).toList();
       } else {
         // Caso nenhum usuário seja encontrado, retorne uma lista vazia
@@ -70,6 +85,12 @@ class _PagamentosState extends State<Pagamentos>
   void dispose() {
     _animationController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    getCards(); // Recarrega os cartões sempre que a tela for exibida
   }
 
   Future<void> getCards() async {
@@ -214,53 +235,50 @@ class _PagamentosState extends State<Pagamentos>
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 16.0),
                                 child: PatternedButton(
-                                  textButton: '',
-                                  buttonWithTextLink: false,
-                                  title: card.cardName,
-                                  widget: Image.asset(
-                                    'lib/assets/images/image 4carotn.png',
-                                    height: 26,
-                                  ),
-                                  onTap: () async {
-                                    // Espera pelo resultado da NewCardView
-                                    final result = await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => NewCardView(
-                                          id: card.id,
-                                          name: card.name,
-                                          cardName: card.cardName,
-                                          number: card.number,
-                                          validateDate: card.validateDate,
-                                          cvv: card.cvv,
+                                    textButton: '',
+                                    buttonWithTextLink: false,
+                                    title: card.cardName,
+                                    widget: Image.asset(
+                                      'lib/assets/images/image 4carotn.png',
+                                      height: 26,
+                                    ),
+                                    onTap: () async {
+                                      final result = await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => NewCardView(
+                                            id: card.id,
+                                            name: card.name,
+                                            cardName: card.cardName,
+                                            number: card.number,
+                                            validateDate: card.validateDate,
+                                            cvv: card.cvv,
+                                          ),
                                         ),
-                                      ),
-                                    );
+                                      );
 
-                                    // Verifica o tipo do retorno
-                                    if (result is String &&
-                                        result == 'deleted') {
-                                      // Remove o cartão da lista local
-                                      setState(() {
-                                        cards.removeWhere(
-                                            (c) => c.id == card.id);
-                                      });
-                                    } else if (result is CardModel) {
-                                      // Caso queira atualizar a lista com um cartão modificado ou adicionado
-                                      setState(() {
-                                        final index = cards.indexWhere(
-                                            (c) => c.id == result.id);
-                                        if (index != -1) {
-                                          cards[index] =
-                                              result; // Atualiza o cartão existente
-                                        } else {
-                                          cards.add(
-                                              result); // Adiciona o novo cartão
-                                        }
-                                      });
-                                    }
-                                  },
-                                ),
+                                      // Verifica o tipo do retorno
+                                      if (result is String &&
+                                          result == 'deleted') {
+                                        setState(() {
+                                          cards.removeWhere(
+                                              (c) => c.id == card.id);
+                                        });
+                                      } else if (result is CardModel) {
+                                        // Atualiza ou adiciona o cartão na lista local
+                                        setState(() {
+                                          final index = cards.indexWhere(
+                                              (c) => c.id == result.id);
+                                          if (index != -1) {
+                                            cards[index] =
+                                                result; // Atualiza o cartão existente
+                                          } else {
+                                            cards.add(
+                                                result); // Adiciona o novo cartão
+                                          }
+                                        });
+                                      }
+                                    }),
                               );
                             }),
                             Padding(

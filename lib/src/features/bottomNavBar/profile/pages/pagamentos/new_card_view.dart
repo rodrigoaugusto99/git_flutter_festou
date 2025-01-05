@@ -7,6 +7,7 @@ import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
 import 'package:git_flutter_festou/src/models/card_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:git_flutter_festou/src/services/encryption_service.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:validatorless/validatorless.dart';
@@ -34,6 +35,8 @@ class NewCardView extends StatefulWidget {
 }
 
 class _NewCardViewState extends State<NewCardView> {
+  final encryptionService =
+      EncryptionService("criptfestouaplic", "2199478465899478");
   UserModel? userModel;
   TextEditingController nameEC = TextEditingController();
   TextEditingController cardNameEC = TextEditingController();
@@ -70,21 +73,39 @@ class _NewCardViewState extends State<NewCardView> {
     super.initState();
     fetchUser();
 
-    // Inicializando os controladores com os valores passados
+    // Função para verificar se o texto está criptografado
+    bool isEncrypted(String? text) {
+      if (text == null || text.isEmpty) return false;
+      return !(text.length == 16 || text.length == 3 || text.length == 4);
+    }
+
+    // Verificar e descriptografar os valores, se necessário
+    final decryptedNumber = widget.number != null && isEncrypted(widget.number)
+        ? encryptionService.decrypt(widget.number!)
+        : widget.number ?? ''; // Já descriptografado ou vazio
+    final decryptedValidateDate =
+        widget.validateDate != null && isEncrypted(widget.validateDate)
+            ? encryptionService.decrypt(widget.validateDate!)
+            : widget.validateDate ?? '';
+    final decryptedCVV = widget.cvv != null && isEncrypted(widget.cvv)
+        ? encryptionService.decrypt(widget.cvv!)
+        : widget.cvv ?? '';
+
+    // Inicializando os controladores com os valores descriptografados ou já prontos
     nameEC = TextEditingController(text: widget.name ?? '');
     cardNameEC = TextEditingController(text: widget.cardName ?? '');
     numberEC = TextEditingController(
-      text: widget.number != null
-          ? cardNumberFormatter.maskText(widget.number!)
+      text: decryptedNumber.isNotEmpty
+          ? cardNumberFormatter.maskText(decryptedNumber)
           : '',
     );
     validateDateEC = TextEditingController(
-      text: widget.validateDate != null
-          ? dateMaskFormatter.maskText(widget.validateDate!)
+      text: decryptedValidateDate.isNotEmpty
+          ? dateMaskFormatter.maskText(decryptedValidateDate)
           : '',
     );
     cvvEC = TextEditingController(
-      text: widget.cvv != null ? cvvFormatter.maskText(widget.cvv!) : '',
+      text: decryptedCVV.isNotEmpty ? cvvFormatter.maskText(decryptedCVV) : '',
     );
 
     if (nameEC.text.isNotEmpty || cardNameEC.text.isNotEmpty) {
@@ -434,14 +455,18 @@ class _NewCardViewState extends State<NewCardView> {
                         return;
                       }
 
-                      // Cria o modelo do cartão com os dados do formulário
+                      // Cria o modelo do cartão com os dados criptografados
                       CardModel card = CardModel(
                         id: widget.id,
                         name: nameEC.text,
-                        number: numberEC.text,
-                        cvv: cvvEC.text,
-                        validateDate: validateDateEC.text,
                         cardName: cardNameEC.text,
+                        number: encryptionService.encrypt(numberEC.text
+                            .replaceAll(' ', '')), // Criptografar o número
+                        validateDate: encryptionService.encrypt(validateDateEC
+                            .text
+                            .replaceAll('/', '')), // Criptografar validade
+                        cvv: encryptionService
+                            .encrypt(cvvEC.text), // Criptografar CVV
                       );
 
                       try {
