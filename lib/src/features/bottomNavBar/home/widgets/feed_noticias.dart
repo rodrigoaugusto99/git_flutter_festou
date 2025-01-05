@@ -103,7 +103,7 @@ class _FeedNoticiasState extends State<FeedNoticias> {
                       ),
                       SizedBox(
                         height: 250,
-                        width: 174,
+                        width: 170,
                         child: GestureDetector(
                           onTap: () {
                             Navigator.push(

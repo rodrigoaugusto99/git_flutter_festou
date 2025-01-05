@@ -81,9 +81,10 @@ class _EachPostState extends State<EachPost> {
             return Container(
               clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
+                //color: Colors.red,
                 borderRadius: BorderRadius.circular(10),
               ),
-              width: 174,
+              width: 170,
               height: 110,
               child: Stack(
                 children: [
@@ -91,7 +92,6 @@ class _EachPostState extends State<EachPost> {
                     //clipBehavior: Clip.none,
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network(
-                      height: 250,
                       widget.post.coverPhoto,
                       fit: BoxFit.cover,
                     ),
@@ -103,7 +103,8 @@ class _EachPostState extends State<EachPost> {
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(24)),
+                            top: Radius.circular(24),
+                            bottom: Radius.circular(24)),
                         color: const Color(0xff4300B1).withOpacity(0.5),
                       ),
                       child: Column(
