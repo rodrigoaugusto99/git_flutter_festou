@@ -11,6 +11,7 @@ import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/login/forgot_email_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/signature_dialog.dart';
 import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
+import 'package:git_flutter_festou/src/helpers/keys.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:validatorless/validatorless.dart';
@@ -212,6 +213,7 @@ class _RegisterSignatureState extends State<RegisterSignature> {
                     ),
                     const SizedBox(height: 20),
                     GestureDetector(
+                      key: Keys.kSignaturePaint,
                       onTap: () async {
                         final response = await Navigator.push(
                           context,
@@ -298,6 +300,7 @@ class _RegisterSignatureState extends State<RegisterSignature> {
           mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
+              key: Keys.kLocadorFormEnviarButton,
               onTap: () async {
                 if (!formKey.currentState!.validate()) {
                   return;

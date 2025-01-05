@@ -5,6 +5,7 @@ import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/descricao.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/textfield.dart';
+import 'package:git_flutter_festou/src/helpers/keys.dart';
 
 class Titulo extends ConsumerStatefulWidget {
   const Titulo({super.key});
@@ -133,6 +134,7 @@ class _TituloState extends ConsumerState<Titulo> {
               height: 9,
             ),
             GestureDetector(
+              key: Keys.k6ScreenButton,
               onTap: () {
                 final result = spaceRegister.validateTitulo(
                   tituloEC.text,

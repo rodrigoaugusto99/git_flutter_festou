@@ -6,6 +6,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/home/home_page.dart
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/space/space_register_state.dart';
 import 'package:git_flutter_festou/src/helpers/helpers.dart';
+import 'package:git_flutter_festou/src/helpers/keys.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class Revisao extends ConsumerStatefulWidget {
@@ -152,9 +153,9 @@ class _RevisaoState extends ConsumerState<Revisao> {
                 'Vídeos:',
                 style: TextStyle(color: Color(0xff4300B1)),
               ),
-              const Padding(
-                padding: EdgeInsets.only(left: 24),
-                child: Text('x vídeos'),
+              Padding(
+                padding: const EdgeInsets.only(left: 24),
+                child: Text('${spaceRegisterState.videoFiles.length} vídeos'),
               ),
               const SizedBox(height: 8),
               const Text(
@@ -255,6 +256,7 @@ class _RevisaoState extends ConsumerState<Revisao> {
                 height: 9,
               ),
               GestureDetector(
+                key: Keys.k10ScreenButton,
                 onTap: () async {
                   try {
                     await newSpaceRegister.register();
