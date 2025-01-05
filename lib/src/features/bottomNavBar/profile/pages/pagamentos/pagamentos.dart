@@ -223,7 +223,7 @@ class _PagamentosState extends State<Pagamentos>
                                   ),
                                   onTap: () async {
                                     // Espera pelo resultado da NewCardView
-                                    final String? result = await Navigator.push(
+                                    final result = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => NewCardView(
@@ -237,11 +237,26 @@ class _PagamentosState extends State<Pagamentos>
                                       ),
                                     );
 
-                                    // Verifica se o cartão foi excluído
-                                    if (result == 'deleted') {
+                                    // Verifica o tipo do retorno
+                                    if (result is String &&
+                                        result == 'deleted') {
+                                      // Remove o cartão da lista local
                                       setState(() {
                                         cards.removeWhere(
                                             (c) => c.id == card.id);
+                                      });
+                                    } else if (result is CardModel) {
+                                      // Caso queira atualizar a lista com um cartão modificado ou adicionado
+                                      setState(() {
+                                        final index = cards.indexWhere(
+                                            (c) => c.id == result.id);
+                                        if (index != -1) {
+                                          cards[index] =
+                                              result; // Atualiza o cartão existente
+                                        } else {
+                                          cards.add(
+                                              result); // Adiciona o novo cartão
+                                        }
                                       });
                                     }
                                   },
