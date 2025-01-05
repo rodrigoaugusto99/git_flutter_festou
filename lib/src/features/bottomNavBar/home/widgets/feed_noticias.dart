@@ -122,9 +122,13 @@ class _FeedNoticiasState extends State<FeedNoticias> {
                                 'Ver todos',
                                 style: TextStyle(fontWeight: FontWeight.w700),
                               ),
-                              Icon(
-                                Icons.arrow_forward_ios_sharp,
-                                color: Color(0xff4300B1),
+                              Padding(
+                                padding: EdgeInsets.only(left: 5, top: 2),
+                                child: Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 15,
+                                  color: Color(0xff4300B1),
+                                ),
                               )
                             ],
                           ),
