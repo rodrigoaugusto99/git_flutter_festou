@@ -9,10 +9,11 @@ class UserModel {
   final String telefone;
   final String bairro;
   final String cidade;
-  final String id;
-  final String avatarUrl;
   final String estado;
+  final String uid;
+  final String avatarUrl;
   final String assinatura;
+  final String docId;
   late final bool locador;
 
   UserModel({
@@ -20,17 +21,18 @@ class UserModel {
     required this.email,
     required this.name,
     required this.cpf,
-    required this.assinatura,
     required this.cnpj,
     required this.cep,
     required this.logradouro,
     required this.telefone,
     required this.bairro,
     required this.cidade,
-    required this.id,
-    required this.avatarUrl,
-    required this.locador,
     required this.estado,
+    required this.uid,
+    required this.avatarUrl,
+    required this.assinatura,
+    required this.docId,
+    required this.locador,
   });
 
   factory UserModel.fromMap(Map<String, dynamic> data) {
@@ -45,10 +47,11 @@ class UserModel {
       telefone: data['telefone'] ?? '',
       bairro: data['bairro'] ?? '',
       cidade: data['cidade'] ?? '',
-      id: data['uid'] ?? '',
-      avatarUrl: data['avatar_url'] ?? '',
       estado: data['estado'] ?? '',
+      uid: data['uid'] ?? '',
+      avatarUrl: data['avatar_url'] ?? '',
       assinatura: data['assinatura'] ?? '',
+      docId: data['id'] ?? '',
       locador: data['locador'] ?? false,
     );
   }
@@ -65,9 +68,10 @@ class UserModel {
       'telefone': telefone,
       'bairro': bairro,
       'cidade': cidade,
-      'assinatura': assinatura,
-      'id': id,
+      'estado': estado,
+      'uid': uid,
       'avatar_url': avatarUrl,
+      'assinatura': assinatura,
       'locador': locador,
     };
   }

@@ -91,7 +91,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       final user = await UserService().getCurrentUserModel();
 
       QuerySnapshot querySnapshot =
-          await usersCollection.where("uid", isEqualTo: user!.id).get();
+          await usersCollection.where("uid", isEqualTo: user!.uid).get();
 
       if (querySnapshot.docs.length == 1) {
         DocumentReference userDocRef = querySnapshot.docs[0].reference;

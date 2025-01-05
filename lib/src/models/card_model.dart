@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CardModel {
+  String? id;
   final Timestamp? createdAt;
   final String cvv;
   final String cardName;
   final String name;
   final String number;
   final String validateDate;
-  String? id;
 
   CardModel({
     this.id,
@@ -22,6 +22,7 @@ class CardModel {
   // Convert the CardModel instance to a map
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'createdAt': FieldValue.serverTimestamp(),
       'cardName': cardName,
       'cvv': cvv,
@@ -44,11 +45,17 @@ class CardModel {
     );
   }
 
-  // Save the CardModel instance to Firestore
-  Future<String> saveToFirestore() async {
+  Future<String> saveToFirestore(String userId) async {
     try {
-      final collection = FirebaseFirestore.instance.collection('cards');
+      // Referência à subcoleção `cards` dentro do documento do usuário
+      final collection = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('cards');
+
+      // Adiciona o cartão e obtém o ID gerado pelo Firestore para retornar
       final res = await collection.add(toMap());
+
       return res.id;
     } catch (e) {
       throw Exception('Failed to save card to Firestore: $e');

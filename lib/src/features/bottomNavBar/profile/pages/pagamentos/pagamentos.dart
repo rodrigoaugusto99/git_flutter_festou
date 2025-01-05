@@ -219,14 +219,15 @@ class _PagamentosState extends State<Pagamentos>
                                   title: card.cardName,
                                   widget: Image.asset(
                                     'lib/assets/images/image 4carotn.png',
-                                    width: 26,
                                     height: 26,
                                   ),
                                   onTap: () async {
-                                    final response = await Navigator.push(
+                                    // Espera pelo resultado da NewCardView
+                                    final String? result = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => NewCardView(
+                                          id: card.id,
                                           name: card.name,
                                           cardName: card.cardName,
                                           number: card.number,
@@ -235,9 +236,14 @@ class _PagamentosState extends State<Pagamentos>
                                         ),
                                       ),
                                     );
-                                    if (response == null) return;
-                                    Navigator.pop(context, response);
-                                    //Navigator.pop(context, card);
+
+                                    // Verifica se o cartão foi excluído
+                                    if (result == 'deleted') {
+                                      setState(() {
+                                        cards.removeWhere(
+                                            (c) => c.id == card.id);
+                                      });
+                                    }
                                   },
                                 ),
                               );
@@ -252,14 +258,20 @@ class _PagamentosState extends State<Pagamentos>
                                 widget: Image.asset(
                                     'lib/assets/images/image 4xxdfad.png'),
                                 onTap: () async {
-                                  final response = await Navigator.push(
+                                  final CardModel? newCard =
+                                      await Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const NewCardView(),
+                                      builder: (context) => NewCardView(),
                                     ),
                                   );
-                                  if (response == null) return;
-                                  Navigator.pop(context, response);
+
+                                  if (newCard != null) {
+                                    setState(() {
+                                      cards.add(
+                                          newCard); // Adiciona o novo cartão à lista local
+                                    });
+                                  }
                                 },
                               ),
                             ),

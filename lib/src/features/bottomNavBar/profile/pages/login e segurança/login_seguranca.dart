@@ -790,7 +790,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                       await FirebaseFirestore.instance
                                           .collection('reservations')
                                           .where('client_id',
-                                              isEqualTo: userModel!.id)
+                                              isEqualTo: userModel!.uid)
                                           .where('selectedFinalDate',
                                               isGreaterThan: DateTime.now())
                                           .limit(1)
@@ -829,7 +829,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                       await FirebaseFirestore.instance
                                           .collection('spaces')
                                           .where('user_id',
-                                              isEqualTo: userModel.id)
+                                              isEqualTo: userModel.uid)
                                           .limit(1)
                                           .get(); // Limita para apenas verificar se existe um espacço cadastrado
 

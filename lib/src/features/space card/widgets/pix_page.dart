@@ -365,8 +365,7 @@ class _PixPageState extends State<PixPage> {
                       const SizedBox(height: 10),
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context)
-                              .pop(); // Voltar para a tela anterior
+                          Navigator.of(context).pop();
                         },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 30),

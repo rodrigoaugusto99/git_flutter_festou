@@ -62,7 +62,7 @@ class _ProfileState extends ConsumerState<Profile> {
     if (userModel == null) return;
 
     if (userModel!.locador) {
-      final hasSpaces = await hasRegisteredSpaces(userModel!.id);
+      final hasSpaces = await hasRegisteredSpaces(userModel!.uid);
 
       if (hasSpaces) {
         showDialog(
@@ -108,7 +108,7 @@ class _ProfileState extends ConsumerState<Profile> {
         );
       }
     } else {
-      final hasContract = await hasActiveContract(userModel!.id);
+      final hasContract = await hasActiveContract(userModel!.uid);
 
       if (hasContract) {
         showDialog(
@@ -210,7 +210,7 @@ class _ProfileState extends ConsumerState<Profile> {
             return StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('users')
-                  .where('uid', isEqualTo: userModel.id)
+                  .where('uid', isEqualTo: userModel.uid)
                   .limit(1)
                   .snapshots(),
               builder: (context, snapshot) {

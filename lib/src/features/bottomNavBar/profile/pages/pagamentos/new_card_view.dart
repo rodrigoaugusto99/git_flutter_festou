@@ -1,21 +1,27 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
 import 'package:git_flutter_festou/src/models/card_model.dart';
+import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:validatorless/validatorless.dart';
 
 class NewCardView extends StatefulWidget {
+  String? id;
   final String? name;
   final String? cardName;
   final String? number;
   final String? validateDate;
   final String? cvv;
 
-  const NewCardView({
+  NewCardView({
     super.key,
+    this.id,
     this.name,
     this.cardName,
     this.number,
@@ -28,11 +34,7 @@ class NewCardView extends StatefulWidget {
 }
 
 class _NewCardViewState extends State<NewCardView> {
-  // final nameEC = TextEditingController(text: 'Emília Faria M Souza');
-  // final numberEC = TextEditingController(text: '7894 1234 4568 2580');
-  // final validateDateEC = TextEditingController(text: '01/29');
-  // final cvvEC = TextEditingController(text: '100');
-  // final flagEC = TextEditingController(text: 'Cartão Master 2');
+  UserModel? userModel;
   TextEditingController nameEC = TextEditingController();
   TextEditingController cardNameEC = TextEditingController();
   TextEditingController numberEC = TextEditingController();
@@ -40,6 +42,12 @@ class _NewCardViewState extends State<NewCardView> {
   TextEditingController cvvEC = TextEditingController();
   TextEditingController flagEC = TextEditingController();
   bool _isChecked = false;
+  bool _isNewCard = true;
+
+  void fetchUser() async {
+    userModel = await UserService().getCurrentUserModel();
+    setState(() {});
+  }
 
   var dateMaskFormatter = MaskTextInputFormatter(
     mask: '##/##',
@@ -57,17 +65,10 @@ class _NewCardViewState extends State<NewCardView> {
     type: MaskAutoCompletionType.lazy,
   );
 
-  // List of card flags
-  final List<String> cardFlags = [
-    'Visa',
-    'MasterCard',
-    'American Express',
-    'Discover'
-  ];
-
   @override
   void initState() {
     super.initState();
+    fetchUser();
 
     // Inicializando os controladores com os valores passados
     nameEC = TextEditingController(text: widget.name ?? '');
@@ -85,6 +86,10 @@ class _NewCardViewState extends State<NewCardView> {
     cvvEC = TextEditingController(
       text: widget.cvv != null ? cvvFormatter.maskText(widget.cvv!) : '',
     );
+
+    if (nameEC.text.isNotEmpty || cardNameEC.text.isNotEmpty) {
+      _isNewCard = false;
+    }
   }
 
   final formKey = GlobalKey<FormState>();
@@ -103,7 +108,6 @@ class _NewCardViewState extends State<NewCardView> {
           padding: const EdgeInsets.only(left: 18.0),
           child: Container(
             decoration: BoxDecoration(
-              //color: Colors.white.withOpacity(0.7),
               color: Colors.white,
               shape: BoxShape.circle,
               boxShadow: [
@@ -111,7 +115,7 @@ class _NewCardViewState extends State<NewCardView> {
                   color: Colors.grey.withOpacity(0.5),
                   spreadRadius: 2,
                   blurRadius: 5,
-                  offset: const Offset(0, 2), // changes position of shadow
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
@@ -162,17 +166,10 @@ class _NewCardViewState extends State<NewCardView> {
                                 style: TextStyle(
                                   fontFamily: 'Valentine',
                                   color: Color.fromARGB(255, 154, 110, 255),
-                                  fontSize: 32,
+                                  fontSize: 44,
                                 ),
                               ),
                             ],
-                          ),
-                          const Text(
-                            'Comemorando a vida',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                            ),
                           ),
                           const Spacer(),
                           Text(
@@ -273,6 +270,14 @@ class _NewCardViewState extends State<NewCardView> {
                 ),
               ],
             ),
+            const SizedBox(height: 10),
+            const Text(
+              'Preencha com os dados exatos do seu cartão.',
+              style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
+            ),
             const SizedBox(height: 45),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 17),
@@ -292,7 +297,7 @@ class _NewCardViewState extends State<NewCardView> {
                     CustomTextformfield(
                       onChanged: (p0) => setState(() {}),
                       ddd: 5,
-                      hintText: 'Número do Cartão',
+                      hintText: 'Número do cartão',
                       keyboardType: TextInputType.number,
                       controller: numberEC,
                       inputFormatters: [cardNumberFormatter],
@@ -377,25 +382,27 @@ class _NewCardViewState extends State<NewCardView> {
                 ],
               ),
             ),
+            SizedBox(height: _isNewCard ? 50 : 30),
             GestureDetector(
               onTap: () async {
                 if (formKey.currentState?.validate() == false) {
-                  //  Messages.showError('Formulár', context);
                   return;
                 }
                 CardModel card = CardModel(
-                  cvv: cvvEC.text,
-                  cardName: cardNameEC.text,
                   name: nameEC.text,
                   number: numberEC.text,
+                  cvv: cvvEC.text,
                   validateDate: validateDateEC.text,
+                  cardName: cardNameEC.text,
                 );
                 try {
-                  final cardId = await card.saveToFirestore();
+                  final cardId =
+                      await card.saveToFirestore(userModel?.docId ?? '');
 
                   card.id = cardId;
 
-                  Navigator.pop(context, card);
+                  Navigator.of(context)
+                      .pop(card); // Retorna o cartão recém-adicionado
                 } on Exception catch (e) {
                   log(e.toString());
                   Messages.showError('Erro ao cadastrar cartão', context);
@@ -413,43 +420,116 @@ class _NewCardViewState extends State<NewCardView> {
                       end: Alignment.bottomCenter,
                     ),
                     borderRadius: BorderRadius.circular(50)),
-                child: const Text(
-                  'Adicionar cartão',
+                child: Text(
+                  _isNewCard ? 'Adicionar cartão' : 'Salvar alterações',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
                       fontSize: 12),
                 ),
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
+            const SizedBox(height: 5),
+            _isNewCard
+                ? const SizedBox.shrink()
+                : GestureDetector(
+                    onTap: () async {
+                      try {
+                        final BuildContext context2 =
+                            Navigator.of(context).context;
+                        await showDialog(
+                          context: context2,
+                          builder: (BuildContext context2) {
+                            return AlertDialog(
+                              title: const Text('Excluir cartão'),
+                              content: const Text(
+                                  'Tem certeza de que deseja excluir o cartão?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context2).pop(),
+                                  child: const Text('Cancelar'),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    Navigator.of(context2)
+                                        .pop(); // Fecha o diálogo
 
-  Widget myRow(
-      {required String text,
-      required Widget icon,
-      required Function()? onTap,
-      Color? color}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 40,
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: color ?? Colors.white,
-        ),
-        child: Row(
-          children: [
-            icon,
-            const SizedBox(
-              width: 10,
-            ),
-            Text(text),
+                                    if (widget.id != null) {
+                                      final cardSnapshot =
+                                          await FirebaseFirestore.instance
+                                              .collection('users')
+                                              .doc(userModel?.docId)
+                                              .collection('cards')
+                                              .doc(widget.id)
+                                              .get();
+
+                                      if (cardSnapshot.exists) {
+                                        await cardSnapshot.reference.delete();
+
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                'Cartão excluído com sucesso!'),
+                                          ),
+                                        );
+
+                                        // Retorna para a tela anterior com uma indicação de exclusão
+                                        Navigator.of(context).pop('deleted');
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content:
+                                                Text('Cartão não encontrado!'),
+                                          ),
+                                        );
+                                      }
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Erro: número do cartão inválido!'),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: const Text('Excluir'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Erro ao excluir cartão: $e')),
+                        );
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color(0xff9747FF),
+                              Color(0xff4300B1),
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ),
+                          borderRadius: BorderRadius.circular(50)),
+                      child: const Text(
+                        'Excluir cartão',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 12),
+                      ),
+                    ),
+                  ),
           ],
         ),
       ),
