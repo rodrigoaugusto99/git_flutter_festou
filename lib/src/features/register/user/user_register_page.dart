@@ -7,6 +7,7 @@ import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/user/user_register_vm.dart';
 import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
+import 'package:git_flutter_festou/src/helpers/constants.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class UserRegisterPage extends ConsumerStatefulWidget {
@@ -49,8 +50,15 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
         case UserRegisterStateStatus.initial:
           break;
         case UserRegisterStateStatus.success:
+          // if (isTest) {
+          //   Navigator.of(context)
+          //       .pushNamedAndRemoveUntil('/home', (route) => false);
+          // } else {
+
+          // }
           Navigator.of(context)
               .pushNamedAndRemoveUntil('/emailVerification', (route) => false);
+
         case UserRegisterStateStatus.registrationError:
           Messages.showError('Erro ao registrar usuário', context);
         case UserRegisterStateStatus.formInvalid:

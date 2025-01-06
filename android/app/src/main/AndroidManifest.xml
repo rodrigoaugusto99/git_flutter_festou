@@ -10,6 +10,8 @@
    
 
    <application
+        android:usesCleartextTraffic="true"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:label="git_flutter_festou"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">

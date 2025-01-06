@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/helpers/keys.dart';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:image_painter/image_painter.dart';
@@ -61,6 +62,7 @@ class _SignatureDialogState extends State<SignatureDialog> {
     return AlertDialog(
       title: const Text("Assinar"),
       content: Stack(
+        key: Keys.kSignaturePaper,
         children: [
           ImagePainter.asset(
             'lib/assets/images/dsszz.png',
@@ -88,6 +90,7 @@ class _SignatureDialogState extends State<SignatureDialog> {
           child: const Text("Cancelar"),
         ),
         TextButton(
+          key: Keys.kSignatureConfirmButton,
           onPressed: () async {
             onSign();
           },

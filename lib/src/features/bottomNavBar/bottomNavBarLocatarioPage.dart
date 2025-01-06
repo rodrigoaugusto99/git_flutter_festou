@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/widgets/notifications_counter.dart';
+import 'package:git_flutter_festou/src/helpers/keys.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 class BottomNavBarLocatarioPage extends StatefulWidget {
@@ -148,8 +149,12 @@ class _BottomNavBarLocatarioPageState extends State<BottomNavBarLocatarioPage> {
                       'Perfil',
                       style: TextStyle(fontSize: 12),
                     ),
-                    badge: Text(
-                        notificationCount > 99 ? '99+' : '$notificationCount'),
+                    badge: GestureDetector(
+                      key: Keys.kHomeViewProfile,
+                      child: Text(notificationCount > 99
+                          ? '99+'
+                          : '$notificationCount'),
+                    ),
                     showBadge: notificationCount > 0,
                     badgeColor: Colors.purple,
                     badgePadding: const EdgeInsets.only(left: 4, right: 4),

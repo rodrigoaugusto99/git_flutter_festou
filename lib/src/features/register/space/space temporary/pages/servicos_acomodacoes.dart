@@ -7,6 +7,7 @@ import 'package:git_flutter_festou/src/features/register/space/space%20temporary
 
 import 'package:git_flutter_festou/src/features/register/space/widgets/services_panel.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/type_panel.dart';
+import 'package:git_flutter_festou/src/helpers/keys.dart';
 
 class ServicosAcomodacoes extends ConsumerStatefulWidget {
   const ServicosAcomodacoes({super.key});
@@ -126,6 +127,7 @@ class _ServicosAcomodacoesState extends ConsumerState<ServicosAcomodacoes> {
               height: 9,
             ),
             GestureDetector(
+              key: Keys.k4ScreenButton,
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(

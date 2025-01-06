@@ -6,6 +6,7 @@ import 'package:git_flutter_festou/src/features/register/space/space%20temporary
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/semana_e_horas.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/textfield.dart';
 import 'package:git_flutter_festou/src/helpers/helpers.dart';
+import 'package:git_flutter_festou/src/helpers/keys.dart';
 
 class Preco extends ConsumerStatefulWidget {
   const Preco({super.key});
@@ -149,6 +150,7 @@ class _PrecoState extends ConsumerState<Preco> {
               height: 9,
             ),
             GestureDetector(
+              key: Keys.k8creenButton,
               onTap: () {
                 final formattedPrice =
                     transformarParaFormatoDecimal2(precoEC.text);

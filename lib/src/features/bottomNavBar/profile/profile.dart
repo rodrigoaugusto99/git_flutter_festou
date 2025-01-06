@@ -10,6 +10,7 @@ import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/privacy_policy_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/service_terms_page.dart';
 import 'package:git_flutter_festou/src/features/widgets/my_rows_config.dart';
+import 'package:git_flutter_festou/src/helpers/keys.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
@@ -138,6 +139,7 @@ class _ProfileState extends ConsumerState<Profile> {
                 child: const Text('Cancelar'),
               ),
               TextButton(
+                key: Keys.kDialogConfirm,
                 onPressed: () async {
                   final response = await Navigator.push(
                     context,
@@ -347,6 +349,7 @@ class _ProfileState extends ConsumerState<Profile> {
                       myText(text: 'Locação'),
                       const SizedBox(height: 15),
                       myRow(
+                        customKey: Keys.kProfileViewLocador,
                         text: userModel.locador
                             ? 'Quero deixar de ser um locador'
                             : 'Quero disponibilizar um espaço',

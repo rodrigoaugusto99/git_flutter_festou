@@ -6,6 +6,7 @@ import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/servicos_acomodacoes.dart';
 import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/textfield.dart';
+import 'package:git_flutter_festou/src/helpers/keys.dart';
 import 'package:search_cep/search_cep.dart';
 
 class Localizacao extends ConsumerStatefulWidget {
@@ -230,6 +231,7 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
               height: 9,
             ),
             GestureDetector(
+              key: Keys.k3creenButton,
               onTap: () async {
                 final stringResponse = await spaceRegister.validateForm(
                   context,
