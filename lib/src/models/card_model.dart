@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class CardModel {
   String? id;
   final Timestamp? createdAt;
+  final Timestamp? updatedAt;
   final String cvv;
   final String cardName;
   final String name;
@@ -12,6 +13,7 @@ class CardModel {
   CardModel({
     this.id,
     this.createdAt,
+    this.updatedAt,
     required this.cardName,
     required this.cvv,
     required this.name,
@@ -19,11 +21,12 @@ class CardModel {
     required this.validateDate,
   });
 
-  // Convert the CardModel instance to a map
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap({bool isUpdate = false}) {
     return {
       'id': id,
-      'createdAt': FieldValue.serverTimestamp(),
+      if (!isUpdate)
+        'createdAt': FieldValue.serverTimestamp(), // Apenas na criação
+      'updatedAt': FieldValue.serverTimestamp(), // Sempre atualizado
       'cardName': cardName,
       'cvv': cvv,
       'name': name,
@@ -37,6 +40,7 @@ class CardModel {
     return CardModel(
       id: id,
       createdAt: map['createdAt'],
+      updatedAt: map['updatedAt'],
       cardName: map['cardName'],
       cvv: map['cvv'],
       name: map['name'],
@@ -45,7 +49,7 @@ class CardModel {
     );
   }
 
-  Future<String> saveToFirestore(String userId) async {
+  Future<void> saveOrUpdateToFirestore(String userId) async {
     try {
       // Referência à subcoleção `cards` dentro do documento do usuário
       final collection = FirebaseFirestore.instance
@@ -53,12 +57,16 @@ class CardModel {
           .doc(userId)
           .collection('cards');
 
-      // Adiciona o cartão e obtém o ID gerado pelo Firestore para retornar
-      final res = await collection.add(toMap());
-
-      return res.id;
+      if (id != null) {
+        // Atualizar o cartão existente
+        await collection.doc(id).update(toMap(isUpdate: true));
+      } else {
+        // Criar novo cartão
+        final res = await collection.add(toMap());
+        id = res.id; // Atualiza o ID no modelo
+      }
     } catch (e) {
-      throw Exception('Failed to save card to Firestore: $e');
+      throw Exception('Failed to save or update card in Firestore: $e');
     }
   }
 }

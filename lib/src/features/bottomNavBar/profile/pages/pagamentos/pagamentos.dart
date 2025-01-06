@@ -295,7 +295,7 @@ class _PagamentosState extends State<Pagamentos>
                               child: PatternedButton(
                                 textButton: '',
                                 buttonWithTextLink: false,
-                                title: 'Adicionar novo cartão de crédito',
+                                title: 'Adicionar cartão de crédito',
                                 widget: Image.asset(
                                     'lib/assets/images/image 4xxdfad.png'),
                                 onTap: () async {
