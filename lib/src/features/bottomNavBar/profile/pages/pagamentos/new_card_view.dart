@@ -294,7 +294,7 @@ class _NewCardViewState extends State<NewCardView> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Festou!',
+                                'Festou',
                                 style: TextStyle(
                                   fontFamily: 'Valentine',
                                   color: Color.fromARGB(255, 154, 110, 255),
