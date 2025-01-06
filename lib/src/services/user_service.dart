@@ -65,7 +65,7 @@ class UserService {
       if (querySnapshot.docs.isNotEmpty) {
         DocumentSnapshot userDoc = querySnapshot.docs.first;
         final data = userDoc.data() as Map<String, dynamic>;
-        return UserModel.fromMap(data);
+        return UserModel.fromMap(data..['id'] = userDoc.id);
       }
     }
     return null;
@@ -128,7 +128,7 @@ class UserService {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('users')
-          .where('uid', isEqualTo: user.id)
+          .where('uid', isEqualTo: user.uid)
           .limit(1)
           .get();
 
@@ -159,7 +159,7 @@ class UserService {
     if (user != null) {
       QuerySnapshot userSnapshot = await FirebaseFirestore.instance
           .collection('users')
-          .where('uid', isEqualTo: user.id)
+          .where('uid', isEqualTo: user.uid)
           .limit(1)
           .get();
 
@@ -170,7 +170,7 @@ class UserService {
       DocumentSnapshot userDoc = userSnapshot.docs.first;
       List<dynamic> lastSeenIds = userDoc.get('last_seen') ?? [];
 
-      final userSpacesFavorite = await getUserFavoriteSpaces(user.id);
+      final userSpacesFavorite = await getUserFavoriteSpaces(user.uid);
 
       List<Future<SpaceModel>> futures = lastSeenIds.map((id) async {
         QuerySnapshot spaceQuerySnapshot = await FirebaseFirestore.instance

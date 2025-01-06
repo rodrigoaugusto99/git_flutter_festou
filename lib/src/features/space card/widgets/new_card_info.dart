@@ -211,7 +211,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
   void init() async {
     final user = await UserService().getCurrentUserModel();
     if (user != null) {
-      if (user.id == widget.space.userId) {
+      if (user.uid == widget.space.userId) {
         setState(() {
           isMySpace = true;
         });

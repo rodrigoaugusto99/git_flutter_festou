@@ -132,7 +132,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
               StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
                       .collection('users')
-                      .where('uid', isEqualTo: widget.userModel.id)
+                      .where('uid', isEqualTo: widget.userModel.uid)
                       .limit(1)
                       .snapshots(),
                   builder: (context, snapshot) {
@@ -389,14 +389,14 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                   if (isImageRemoved) {
                     await informacoesPessoaisVm.deleteImageFirestore(
                       'avatar_url',
-                      widget.userModel.id,
+                      widget.userModel.uid,
                     );
                     isImageRemoved = false;
                   }
 
                   if (_selectedImage != null) {
                     saveImageSuccess = await informacoesPessoaisVm
-                        .uploadAvatar(widget.userModel.id);
+                        .uploadAvatar(widget.userModel.uid);
 
                     if (saveImageSuccess) {
                       Messages.showSuccess('Dados salvos com sucesso', context);

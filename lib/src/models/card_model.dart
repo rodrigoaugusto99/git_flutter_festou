@@ -1,33 +1,37 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CardModel {
-  final String bandeira;
+  String? id;
   final Timestamp? createdAt;
+  final Timestamp? updatedAt;
   final String cvv;
+  final String cardName;
   final String name;
   final String number;
-  final String validate;
-  String? id;
+  final String validateDate;
 
   CardModel({
     this.id,
-    required this.bandeira,
     this.createdAt,
+    this.updatedAt,
+    required this.cardName,
     required this.cvv,
     required this.name,
     required this.number,
-    required this.validate,
+    required this.validateDate,
   });
 
-  // Convert the CardModel instance to a map
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap({bool isUpdate = false}) {
     return {
-      'bandeira': bandeira,
-      'createdAt': FieldValue.serverTimestamp(),
+      'id': id,
+      if (!isUpdate)
+        'createdAt': FieldValue.serverTimestamp(), // Apenas na criação
+      'updatedAt': FieldValue.serverTimestamp(), // Sempre atualizado
+      'cardName': cardName,
       'cvv': cvv,
       'name': name,
       'number': number,
-      'validate': validate,
+      'validateDate': validateDate,
     };
   }
 
@@ -35,23 +39,34 @@ class CardModel {
   factory CardModel.fromMap(Map<String, dynamic> map, String id) {
     return CardModel(
       id: id,
-      bandeira: map['bandeira'],
       createdAt: map['createdAt'],
+      updatedAt: map['updatedAt'],
+      cardName: map['cardName'],
       cvv: map['cvv'],
       name: map['name'],
       number: map['number'],
-      validate: map['validate'],
+      validateDate: map['validateDate'],
     );
   }
 
-  // Save the CardModel instance to Firestore
-  Future<String> saveToFirestore() async {
+  Future<void> saveOrUpdateToFirestore(String userId) async {
     try {
-      final collection = FirebaseFirestore.instance.collection('cards');
-      final res = await collection.add(toMap());
-      return res.id;
+      // Referência à subcoleção `cards` dentro do documento do usuário
+      final collection = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('cards');
+
+      if (id != null) {
+        // Atualizar o cartão existente
+        await collection.doc(id).update(toMap(isUpdate: true));
+      } else {
+        // Criar novo cartão
+        final res = await collection.add(toMap());
+        id = res.id; // Atualiza o ID no modelo
+      }
     } catch (e) {
-      throw Exception('Failed to save card to Firestore: $e');
+      throw Exception('Failed to save or update card in Firestore: $e');
     }
   }
 }
