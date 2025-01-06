@@ -8,7 +8,11 @@ import 'package:git_flutter_festou/src/models/card_model.dart';
 import 'package:git_flutter_festou/src/services/encryption_service.dart';
 
 class Pagamentos extends StatefulWidget {
-  const Pagamentos({super.key});
+  final bool isReservationFlow;
+  const Pagamentos({
+    super.key,
+    this.isReservationFlow = false,
+  });
 
   @override
   State<Pagamentos> createState() => _PagamentosState();
@@ -243,6 +247,10 @@ class _PagamentosState extends State<Pagamentos>
                                       height: 26,
                                     ),
                                     onTap: () async {
+                                      if (widget.isReservationFlow) {
+                                        Navigator.pop(context, card);
+                                        return;
+                                      }
                                       final result = await Navigator.push(
                                         context,
                                         MaterialPageRoute(
