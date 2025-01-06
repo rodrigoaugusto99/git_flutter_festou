@@ -46,8 +46,9 @@ class _NewCardViewState extends State<NewCardView> {
   TextEditingController flagEC = TextEditingController();
   bool _isChecked = false;
   bool _isNewCard = true;
+  bool _wasItThisCard = false;
 
-  void fetchUser() async {
+  Future<void> fetchUser() async {
     userModel = await UserService().getCurrentUserModel();
     setState(() {});
   }
@@ -71,7 +72,7 @@ class _NewCardViewState extends State<NewCardView> {
   @override
   void initState() {
     super.initState();
-    fetchUser();
+    initializeData();
 
     // Função para verificar se o texto está criptografado
     bool isEncrypted(String? text) {
@@ -110,6 +111,87 @@ class _NewCardViewState extends State<NewCardView> {
 
     if (nameEC.text.isNotEmpty || cardNameEC.text.isNotEmpty) {
       _isNewCard = false;
+    }
+  }
+
+  /// Inicializa os dados do usuário e verifica o método principal de pagamento
+  void initializeData() async {
+    await fetchUser(); // Aguarda a conclusão do carregamento do usuário
+    if (userModel != null) {
+      checkIfMainPaymentMethod(); // Só chama a verificação após o usuário estar carregado
+    }
+  }
+
+  void checkIfMainPaymentMethod() async {
+    try {
+      final userId = userModel?.docId ?? '';
+      final userRef =
+          FirebaseFirestore.instance.collection('users').doc(userId);
+
+      final userSnapshot = await userRef.get();
+      if (userSnapshot.exists) {
+        final userData = userSnapshot.data();
+        if (userData != null) {
+          final isPrincipal = userData['principal_method_payment'] == widget.id;
+
+          setState(() {
+            _wasItThisCard = isPrincipal; // Define se era o cartão principal
+            _isChecked = isPrincipal; // Marca a checkbox automaticamente
+          });
+        }
+      }
+    } catch (e) {
+      log('Erro ao verificar o método principal de pagamento: $e');
+    }
+  }
+
+  DocumentReference getUserRef() {
+    final userId = userModel?.docId ?? '';
+    return FirebaseFirestore.instance.collection('users').doc(userId);
+  }
+
+  Future<void> updatePrincipalPaymentMethod(String? cardId) async {
+    final userRef = getUserRef();
+    await userRef.update({'principal_method_payment': cardId ?? ''});
+  }
+
+  Future<void> saveOrUpdateCard(CardModel card) async {
+    final cardRef = getUserRef().collection('cards').doc(widget.id);
+
+    if (widget.id != null) {
+      final snapshot = await cardRef.get();
+
+      if (snapshot.exists) {
+        // Atualiza os dados do cartão existente
+        await cardRef.update(card.toMap(isUpdate: true));
+
+        // Atualiza o método principal de pagamento, se necessário
+        if (_isChecked && !_wasItThisCard) {
+          await updatePrincipalPaymentMethod(widget.id);
+        } else if (!_isChecked && _wasItThisCard) {
+          await updatePrincipalPaymentMethod(null);
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Dados atualizado com sucesso!')),
+        );
+      } else {
+        // Cria um novo cartão caso o ID exista no widget mas o cartão não esteja no Firestore
+        await cardRef.set(card.toMap());
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Cartão criado com sucesso!')),
+        );
+      }
+    } else {
+      // Cria um novo cartão caso o ID não exista
+      final newCardRef = await getUserRef()
+          .collection('cards')
+          .add(card.toMap(isUpdate: false));
+      card.id = newCardRef.id;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Novo cartão adicionado com sucesso!')),
+      );
     }
   }
 
@@ -372,25 +454,20 @@ class _NewCardViewState extends State<NewCardView> {
                         const SizedBox(width: 20),
                         Expanded(
                           child: CustomTextformfield(
-                            onChanged: (value) {
-                              final unmaskedValue =
-                                  dateMaskFormatter.getUnmaskedText();
-                              if (!isValidDate(unmaskedValue)) {
-                                // Mostrar erro ou aplicar lógica adicional
-                                print("Data inválida");
-                              }
-                            },
+                            onChanged: (p0) => setState(() {}),
                             ddd: 2,
                             validator: (value) {
                               final unmaskedValue =
-                                  dateMaskFormatter.getUnmaskedText();
+                                  value != null && value.isNotEmpty
+                                      ? dateMaskFormatter.unmaskText(value)
+                                      : dateMaskFormatter.getUnmaskedText();
+
                               if (!isValidDate(unmaskedValue)) {
                                 return 'Data inválida (MM/AA)';
                               }
                               return null;
                             },
                             svgPath: 'lib/assets/images/image 4calendarrrr.png',
-                            //label: 'aa',
                             keyboardType: TextInputType.number,
                             controller: validateDateEC,
                             inputFormatters: [dateMaskFormatter],
@@ -431,9 +508,8 @@ class _NewCardViewState extends State<NewCardView> {
                       children: [
                         Checkbox(
                           side: const BorderSide(),
-                          activeColor: Colors.transparent,
                           splashRadius: 0,
-                          checkColor: Colors.black,
+                          checkColor: Colors.white,
                           value: _isChecked,
                           onChanged: (bool? value) {
                             setState(() {
@@ -443,7 +519,7 @@ class _NewCardViewState extends State<NewCardView> {
                         ),
                         const Text(
                           'Definir como método de pagamento principal',
-                          style: TextStyle(fontSize: 11),
+                          style: TextStyle(fontSize: 12),
                         ),
                       ],
                     ),
@@ -470,49 +546,7 @@ class _NewCardViewState extends State<NewCardView> {
                       );
 
                       try {
-                        final userId = userModel?.docId ?? '';
-                        final cardRef = FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(userId)
-                            .collection('cards')
-                            .doc(widget
-                                .id); // Referência para o cartão existente
-
-                        if (widget.id != null) {
-                          // Verifica se o documento do cartão existe no Firestore
-                          final snapshot = await cardRef.get();
-                          if (snapshot.exists) {
-                            // Atualiza os dados do cartão existente
-                            await cardRef.update(card.toMap());
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Cartão atualizado com sucesso!'),
-                              ),
-                            );
-                          } else {
-                            // Caso o ID exista no widget mas o cartão não esteja no Firestore, cria um novo
-                            await cardRef.set(card.toMap());
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Cartão criado com sucesso!'),
-                              ),
-                            );
-                          }
-                        } else {
-                          // Caso o ID não exista, cria um novo cartão
-                          final newCardRef = await FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(userId)
-                              .collection('cards')
-                              .add(card.toMap());
-                          card.id = newCardRef.id; // Atualiza o ID do modelo
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content:
-                                  Text('Novo cartão adicionado com sucesso!'),
-                            ),
-                          );
-                        }
+                        saveOrUpdateCard(card);
 
                         Navigator.of(context)
                             .pop(card); // Retorna o cartão atualizado ou novo
