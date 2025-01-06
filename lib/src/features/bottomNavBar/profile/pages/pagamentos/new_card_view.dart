@@ -262,9 +262,9 @@ class _NewCardViewState extends State<NewCardView> {
         ),
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: const Text(
-          'Adicionar novo cartão',
-          style: TextStyle(
+        title: Text(
+          _isNewCard ? 'Adicionar novo cartão' : 'Editar cartão',
+          style: const TextStyle(
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
         elevation: 0,
