@@ -39,7 +39,7 @@ class _CalendarioState extends State<Calendario> {
     }
 
     minhasReservas =
-        await ReservaService().getReservationsByLocadorId(userModel!.id);
+        await ReservaService().getReservationsByLocadorId(userModel!.uid);
     if (minhasReservas == null) {
       log('minhasReservas null');
       return;

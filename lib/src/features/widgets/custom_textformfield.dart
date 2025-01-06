@@ -79,6 +79,7 @@ class _CustomTextformfieldState extends State<CustomTextformfield> {
         keyboardType: widget.keyboardType,
         onTapOutside: (event) => {FocusScope.of(context).unfocus()},
         style: TextStyle(
+            fontSize: 14,
             color: widget.enable ? Colors.black : Colors.grey,
             overflow: TextOverflow.ellipsis),
         decoration: InputDecoration(
@@ -124,7 +125,7 @@ class _CustomTextformfieldState extends State<CustomTextformfield> {
           alignLabelWithHint: widget.isBig ? true : null,
           label: widget.label != null ? Text(widget.label!) : null,
           hintStyle: const TextStyle(
-            fontSize: 16,
+            fontSize: 14,
             color: Color(0xff48464C),
             fontWeight: FontWeight.w400,
           ),

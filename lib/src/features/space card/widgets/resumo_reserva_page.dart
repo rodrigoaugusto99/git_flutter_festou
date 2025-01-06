@@ -1342,7 +1342,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
               final reservationModel = ReservationModel(
                 spaceId: widget.summaryData.spaceModel.spaceId,
                 locadorId: widget.summaryData.spaceModel.userId,
-                clientId: userModel!.id,
+                clientId: userModel!.uid,
                 checkInTime: widget.summaryData.checkInTime,
                 checkOutTime: widget.summaryData.checkOutTime,
                 selectedDate:

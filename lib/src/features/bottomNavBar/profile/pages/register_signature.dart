@@ -50,7 +50,7 @@ class _RegisterSignatureState extends State<RegisterSignature> {
 
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('users')
-          .where("uid", isEqualTo: user!.id)
+          .where("uid", isEqualTo: user!.uid)
           .get();
 
       if (querySnapshot.docs.length == 1) {
