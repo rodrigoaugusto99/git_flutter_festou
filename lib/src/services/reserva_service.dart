@@ -65,7 +65,8 @@ class ReservaService {
   // }
 
   Future<List<ReservationModel>> getReservationsByLocadorId(
-      String userId) async {
+    String userId,
+  ) async {
     try {
       // Referência à coleção 'reservations'
       CollectionReference reservationsCollection =
@@ -93,6 +94,23 @@ class ReservaService {
     try {
       final allReservationsDocuments = await reservationCollection
           .where('space_id', isEqualTo: spaceId)
+          .get();
+
+      List<ReservationModel> reservationModels =
+          allReservationsDocuments.docs.map((reservationModels) {
+        return mapReservationDocumentToModel(reservationModels);
+      }).toList();
+      return reservationModels;
+    } catch (e) {
+      log('Erro ao recuperar as reservas do firestore: $e');
+      throw Exception(e);
+    }
+  }
+
+  Future<List<ReservationModel>> getReservationsByClienId() async {
+    try {
+      final allReservationsDocuments = await reservationCollection
+          .where('client_id', isEqualTo: user.uid)
           .get();
 
       List<ReservationModel> reservationModels =
