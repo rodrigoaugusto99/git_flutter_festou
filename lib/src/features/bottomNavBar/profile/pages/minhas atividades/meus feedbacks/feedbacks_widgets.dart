@@ -25,6 +25,12 @@ class _FeedbacksWidgetState extends State<FeedbacksWidget> {
         borderRadius: BorderRadius.circular(8),
       ),
       child: ExpansionTile(
+        collapsedShape: const RoundedRectangleBorder(
+          side: BorderSide.none,
+        ),
+        shape: const RoundedRectangleBorder(
+          side: BorderSide.none,
+        ),
         leading: Image.asset('lib/assets/images/Icon ratingmyava.png'),
         title: const Text('meus feedbacks'),
         children: [
@@ -51,10 +57,10 @@ class FeedbackItem extends StatefulWidget {
   final FeedbackFirestoreRepositoryImpl feedbackFirestore;
 
   const FeedbackItem({
-    Key? key,
+    super.key,
     required this.feedback,
     required this.feedbackFirestore,
-  }) : super(key: key);
+  });
 
   @override
   _FeedbackItemState createState() => _FeedbackItemState();
