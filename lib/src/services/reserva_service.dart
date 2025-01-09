@@ -37,10 +37,24 @@ class ReservaService {
     }
   }
 
+  Future<void> cancelReservation(String reservationId) async {
+    try {
+      await reservationCollection.doc(reservationId).update({
+        'canceledAt': FieldValue.serverTimestamp(),
+      });
+      log('Reserva cancelada com sucesso.');
+    } catch (e) {
+      log('Erro ao cancelar a reserva: $e');
+      rethrow; // Opcional: reenvia o erro para ser tratado externamente
+    }
+  }
+
   ReservationModel mapReservationDocumentToModel(
       QueryDocumentSnapshot reservationDocument) {
     return ReservationModel(
+      id: reservationDocument.id,
       spaceId: reservationDocument['space_id'] ?? '',
+      canceledAt: reservationDocument['canceledAt'],
       clientId: reservationDocument['client_id'] ?? '',
       locadorId: reservationDocument['locador_id'] ?? '',
       checkInTime: reservationDocument['checkInTime'] ?? '',

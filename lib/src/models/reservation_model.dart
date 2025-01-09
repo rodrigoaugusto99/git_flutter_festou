@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ReservationModel {
+  final String? id;
   final String clientId;
   final String locadorId;
   final String spaceId;
@@ -14,9 +15,11 @@ class ReservationModel {
   final Timestamp selectedFinalDate;
   final String contratoHtml;
   final String? cardId;
+  final Timestamp? canceledAt;
 
   ReservationModel({
     required this.spaceId,
+    this.id,
     required this.clientId,
     required this.locadorId,
     required this.checkInTime,
@@ -26,10 +29,12 @@ class ReservationModel {
     this.createdAt,
     required this.contratoHtml,
     this.cardId,
+    this.canceledAt,
   });
 
-  factory ReservationModel.fromMap(Map<String, dynamic> map) {
+  factory ReservationModel.fromMap(Map<String, dynamic> map, String id) {
     return ReservationModel(
+      id: id,
       clientId: map['client_id'],
       locadorId: map['locador_id'],
       spaceId: map['spaceId'],

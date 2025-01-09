@@ -4,9 +4,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/exceptions/auth_exception.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
+import 'package:git_flutter_festou/src/models/reservation_model.dart';
+import 'package:git_flutter_festou/src/services/reserva_service.dart';
 
 class CancelReservationDialog extends StatefulWidget {
-  const CancelReservationDialog({super.key});
+  final ReservationModel reservation;
+  const CancelReservationDialog({
+    super.key,
+    required this.reservation,
+  });
 
   @override
   State<CancelReservationDialog> createState() =>
@@ -87,6 +93,8 @@ class _CancelReservationDialogState extends State<CancelReservationDialog> {
               try {
                 await validatePassword();
                 Navigator.of(context).pop();
+                await ReservaService()
+                    .cancelReservation(widget.reservation.id!);
                 Messages.showSuccess('Reserva cancelada com sucesso!', context);
               } on AuthError catch (e) {
                 errorText = e.message;

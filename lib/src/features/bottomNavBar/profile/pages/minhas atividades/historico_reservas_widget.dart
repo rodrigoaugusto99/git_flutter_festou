@@ -82,7 +82,9 @@ class _HistoricoReservasWidgetState extends State<HistoricoReservasWidget> {
                     showCancelReservationDialog: () {
                       showDialog(
                         context: context,
-                        builder: (context) => const CancelReservationDialog(),
+                        builder: (context) => CancelReservationDialog(
+                          reservation: spaceWithReservation.reserva,
+                        ),
                       );
                     }),
               );
@@ -242,25 +244,26 @@ class _HistoricoReservasTileState extends State<HistoricoReservasTile> {
               ],
             ),
           ),
-          Positioned(
-            top: 11,
-            left: 9,
-            child: decContainer(
-              onTap: widget.showCancelReservationDialog,
-              radius: 50,
-              height: 36,
-              width: 36,
-              align: Alignment.center,
-              color: Colors.red,
-              child: const Text(
-                'X',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+          if (widget.reservationModel.canceledAt == null)
+            Positioned(
+              top: 11,
+              left: 9,
+              child: decContainer(
+                onTap: widget.showCancelReservationDialog,
+                radius: 50,
+                height: 36,
+                width: 36,
+                align: Alignment.center,
+                color: Colors.red,
+                child: const Text(
+                  'X',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ),
-          )
+            )
         ],
       ),
     );
