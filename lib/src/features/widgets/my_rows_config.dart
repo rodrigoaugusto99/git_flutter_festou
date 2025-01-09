@@ -6,9 +6,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minha
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_locador_page.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_locatario_page.dart';
-import 'package:git_flutter_festou/src/features/widgets/notifications_counter.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_page.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 
 class MyRowsConfig extends StatefulWidget {
@@ -94,9 +92,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => widget.userModel.locador
-                  ? const NotificacoesLocadorPage()
-                  : const NotificacoesLocatarioPage(),
+              builder: (context) => const NotificacoesLocatarioPage(),
             ),
           ),
           icon1: const Icon(Icons.notifications_outlined),
