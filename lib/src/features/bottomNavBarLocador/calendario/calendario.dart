@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_locatario_page.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_assinado_page.dart';
 import 'package:git_flutter_festou/src/helpers/helpers.dart';
