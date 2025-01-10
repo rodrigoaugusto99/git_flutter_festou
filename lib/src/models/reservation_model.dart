@@ -15,6 +15,7 @@ class ReservationModel {
   final Timestamp selectedFinalDate;
   final String contratoHtml;
   final String? cardId;
+  final String? reason;
   final Timestamp? canceledAt;
 
   ReservationModel({
@@ -26,6 +27,7 @@ class ReservationModel {
     required this.checkOutTime,
     required this.selectedDate,
     required this.selectedFinalDate,
+    this.reason,
     this.createdAt,
     required this.contratoHtml,
     this.cardId,
@@ -45,6 +47,7 @@ class ReservationModel {
       selectedFinalDate: map['selectedFinalDate'],
       contratoHtml: map['contratoHtml'],
       cardId: map['cardId'],
+      reason: map['reason'],
     );
   }
 }

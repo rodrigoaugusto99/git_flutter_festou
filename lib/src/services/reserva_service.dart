@@ -27,6 +27,7 @@ class ReservaService {
         'selectedFinalDate': reservationModel.selectedFinalDate,
         'contratoHtml': reservationModel.contratoHtml,
         'cardId': reservationModel.cardId,
+        'reason': reservationModel.reason,
         'createdAt': Timestamp.now(),
       };
 
@@ -37,10 +38,11 @@ class ReservaService {
     }
   }
 
-  Future<void> cancelReservation(String reservationId) async {
+  Future<void> cancelReservation(String reservationId, String reason) async {
     try {
       await reservationCollection.doc(reservationId).update({
         'canceledAt': FieldValue.serverTimestamp(),
+        'reason': reason,
       });
       log('Reserva cancelada com sucesso.');
     } catch (e) {
@@ -63,6 +65,7 @@ class ReservaService {
       selectedDate: reservationDocument['selectedDate'] ?? '',
       createdAt: reservationDocument['createdAt'] ?? '',
       contratoHtml: reservationDocument['contratoHtml'] ?? '',
+      reason: reservationDocument['reason'] ?? '',
     );
   }
 

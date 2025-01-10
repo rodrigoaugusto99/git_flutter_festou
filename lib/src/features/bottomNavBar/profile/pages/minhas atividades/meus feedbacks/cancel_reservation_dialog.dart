@@ -21,14 +21,19 @@ class CancelReservationDialog extends StatefulWidget {
 
 class _CancelReservationDialogState extends State<CancelReservationDialog> {
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController reasonController = TextEditingController();
+  String? passwordErrorText;
+  String? reasonErrorText;
+
   Future<void> validatePassword() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
 
       if (user == null || user.email == null) {
-        errorText = 'Erro ao cancelar reserva';
+        passwordErrorText = 'Erro ao cancelar reserva';
         throw AuthError(message: 'Erro ao cancelar reserva');
       }
+
       // Reautentica o usuário antes de excluir a conta
       AuthCredential credential = EmailAuthProvider.credential(
         email: user.email!,
@@ -48,33 +53,46 @@ class _CancelReservationDialogState extends State<CancelReservationDialog> {
     }
   }
 
-  String? errorText;
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text("Cancelar Reserva"),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text(
-            "Tem certeza que deseja cancelar a reserva? Por favor, insira sua senha para confirmar.",
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            height: 90,
-            child: TextFormField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: "Senha",
-                border: const OutlineInputBorder(),
-                errorText: errorText,
-                errorMaxLines: 2,
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              "Tem certeza que deseja cancelar a reserva? Por favor, insira sua senha e o motivo do cancelamento para confirmar.",
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 90,
+              child: TextFormField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: "Senha",
+                  border: const OutlineInputBorder(),
+                  errorText: passwordErrorText,
+                  errorMaxLines: 2,
+                ),
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 90,
+              child: TextFormField(
+                controller: reasonController,
+                decoration: InputDecoration(
+                  labelText: "Motivo do Cancelamento",
+                  border: const OutlineInputBorder(),
+                  errorText: reasonErrorText,
+                ),
+                maxLength: 200, // Limite de caracteres para o motivo
+              ),
+            ),
+          ],
+        ),
       ),
       actions: [
         TextButton(
@@ -86,21 +104,38 @@ class _CancelReservationDialogState extends State<CancelReservationDialog> {
         ElevatedButton(
           onPressed: () async {
             final password = passwordController.text;
+            final reason = reasonController.text;
+
+            // Validações
+            bool hasError = false;
             if (password.isEmpty) {
-              errorText = 'Por favor, insira sua senha.';
-              setState(() {});
+              passwordErrorText = 'Por favor, insira sua senha.';
+              hasError = true;
             } else {
-              try {
-                await validatePassword();
-                Navigator.of(context).pop();
-                await ReservaService()
-                    .cancelReservation(widget.reservation.id!);
-                Messages.showSuccess('Reserva cancelada com sucesso!', context);
-              } on AuthError catch (e) {
-                errorText = e.message;
-                setState(() {});
-              }
-              // Adicione aqui a lógica para verificar a senha e cancelar a reserva
+              passwordErrorText = null;
+            }
+
+            if (reason.isEmpty) {
+              reasonErrorText = 'Por favor, insira o motivo do cancelamento.';
+              hasError = true;
+            } else {
+              reasonErrorText = null;
+            }
+
+            if (hasError) {
+              setState(() {});
+              return;
+            }
+
+            try {
+              await validatePassword();
+              Navigator.of(context).pop();
+              await ReservaService()
+                  .cancelReservation(widget.reservation.id!, reason);
+              Messages.showSuccess('Reserva cancelada com sucesso!', context);
+            } on AuthError catch (e) {
+              passwordErrorText = e.message;
+              setState(() {});
             }
           },
           child: const Text("Confirmar"),
