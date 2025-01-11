@@ -20,31 +20,53 @@ class CancelReservationDialog extends StatefulWidget {
 }
 
 class _CancelReservationDialogState extends State<CancelReservationDialog> {
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController inputController = TextEditingController();
   final TextEditingController reasonController = TextEditingController();
-  String? passwordErrorText;
+  String? inputErrorText;
   String? reasonErrorText;
+  bool isGoogleProvider = false;
 
-  Future<void> validatePassword() async {
+  @override
+  void initState() {
+    super.initState();
+    checkAuthProvider();
+  }
+
+  Future<void> checkAuthProvider() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final providerData = user.providerData;
+      setState(() {
+        isGoogleProvider =
+            providerData.any((provider) => provider.providerId == 'google.com');
+      });
+    }
+  }
+
+  Future<void> validateInput() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
 
       if (user == null || user.email == null) {
-        passwordErrorText = 'Erro ao cancelar reserva';
+        inputErrorText = 'Erro ao cancelar reserva';
         throw AuthError(message: 'Erro ao cancelar reserva');
       }
 
-      // Reautentica o usuário antes de excluir a conta
-      AuthCredential credential = EmailAuthProvider.credential(
-        email: user.email!,
-        password: passwordController.text,
-      );
-      await user.reauthenticateWithCredential(credential);
+      if (isGoogleProvider) {
+        if (inputController.text != user.email) {
+          throw AuthError(message: 'E-mail inválido!');
+        }
+      } else {
+        AuthCredential credential = EmailAuthProvider.credential(
+          email: user.email!,
+          password: inputController.text,
+        );
+        await user.reauthenticateWithCredential(credential);
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'invalid-credential') {
         throw AuthError(message: 'Senha inválida!');
       }
-
       log('Erro ao cancelar reserva: ${e.code}, ${e.message}');
       throw AuthError(message: 'Erro ao cancelar reserva');
     } catch (e) {
@@ -61,19 +83,21 @@ class _CancelReservationDialogState extends State<CancelReservationDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              "Tem certeza que deseja cancelar a reserva? Por favor, insira sua senha e o motivo do cancelamento para confirmar.",
+            Text(
+              isGoogleProvider
+                  ? "Confirme seu e-mail para cancelar a reserva."
+                  : "Tem certeza que deseja cancelar a reserva? Por favor, insira sua senha e o motivo do cancelamento para confirmar.",
             ),
             const SizedBox(height: 16),
             SizedBox(
               height: 90,
               child: TextFormField(
-                controller: passwordController,
-                obscureText: true,
+                controller: inputController,
+                obscureText: !isGoogleProvider,
                 decoration: InputDecoration(
-                  labelText: "Senha",
+                  labelText: isGoogleProvider ? "E-mail" : "Senha",
                   border: const OutlineInputBorder(),
-                  errorText: passwordErrorText,
+                  errorText: inputErrorText,
                   errorMaxLines: 2,
                 ),
               ),
@@ -88,7 +112,7 @@ class _CancelReservationDialogState extends State<CancelReservationDialog> {
                   border: const OutlineInputBorder(),
                   errorText: reasonErrorText,
                 ),
-                maxLength: 200, // Limite de caracteres para o motivo
+                maxLength: 200,
               ),
             ),
           ],
@@ -97,22 +121,23 @@ class _CancelReservationDialogState extends State<CancelReservationDialog> {
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop(); // Fecha o diálogo sem cancelar
+            Navigator.of(context).pop();
           },
           child: const Text("Voltar"),
         ),
         ElevatedButton(
           onPressed: () async {
-            final password = passwordController.text;
+            final input = inputController.text;
             final reason = reasonController.text;
 
-            // Validações
             bool hasError = false;
-            if (password.isEmpty) {
-              passwordErrorText = 'Por favor, insira sua senha.';
+            if (input.isEmpty) {
+              inputErrorText = isGoogleProvider
+                  ? 'Por favor, insira seu e-mail.'
+                  : 'Por favor, insira sua senha.';
               hasError = true;
             } else {
-              passwordErrorText = null;
+              inputErrorText = null;
             }
 
             if (reason.isEmpty) {
@@ -128,13 +153,13 @@ class _CancelReservationDialogState extends State<CancelReservationDialog> {
             }
 
             try {
-              await validatePassword();
+              await validateInput();
               Navigator.of(context).pop();
               await ReservaService()
                   .cancelReservation(widget.reservation.id!, reason);
               Messages.showSuccess('Reserva cancelada com sucesso!', context);
             } on AuthError catch (e) {
-              passwordErrorText = e.message;
+              inputErrorText = e.message;
               setState(() {});
             }
           },
