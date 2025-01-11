@@ -51,6 +51,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
 // Crie um novo usuario com os dados fornecidos
       Map<String, dynamic> newUser = {
         'uid': userData.id,
+        'createdAt': FieldValue.serverTimestamp(),
         'email': userData.email,
         'fantasy_name': '',
         'locador': false,

@@ -1189,7 +1189,9 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return const Pagamentos();
+                              return const Pagamentos(
+                                isReservationFlow: true,
+                              );
                             },
                           ),
                         );
