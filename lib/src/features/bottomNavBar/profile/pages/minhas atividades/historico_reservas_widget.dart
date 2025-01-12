@@ -57,42 +57,46 @@ class _HistoricoReservasWidgetState extends State<HistoricoReservasWidget> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(8),
       ),
-      child: ExpansionTile(
-        collapsedShape: const RoundedRectangleBorder(
-          side: BorderSide.none,
-        ),
-        shape: const RoundedRectangleBorder(
-          side: BorderSide.none,
-        ),
-        leading: Image.asset('lib/assets/images/Icon ratingmyava.png'),
-        title: const Text('Minhas reservas'),
-        children: [
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: reservationSpaces.length,
-            itemBuilder: (BuildContext context, int index) {
-              final spaceWithReservation = reservationSpaces[index];
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 50, top: 10),
-                child: HistoricoReservasTile(
-                    spaceShowing: spaceWithReservation.space,
-                    reservationModel: spaceWithReservation.reserva,
-                    showCancelReservationDialog: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => CancelReservationDialog(
-                          reservation: spaceWithReservation.reserva,
-                        ),
-                      );
-                    }),
-              );
-            },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: ExpansionTile(
+          collapsedBackgroundColor: Colors.white,
+          collapsedShape: const RoundedRectangleBorder(
+            side: BorderSide.none,
           ),
-        ],
+          shape: const RoundedRectangleBorder(
+            side: BorderSide.none,
+          ),
+          leading: Image.asset('lib/assets/images/Icon ratingmyava.png'),
+          title: const Text('Minhas reservas'),
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: reservationSpaces.length,
+              itemBuilder: (BuildContext context, int index) {
+                final spaceWithReservation = reservationSpaces[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 50, top: 10),
+                  child: HistoricoReservasTile(
+                      spaceShowing: spaceWithReservation.space,
+                      reservationModel: spaceWithReservation.reserva,
+                      showCancelReservationDialog: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => CancelReservationDialog(
+                            reservation: spaceWithReservation.reserva,
+                          ),
+                        );
+                      }),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

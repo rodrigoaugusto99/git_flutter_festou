@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/meus%20feedbacks/edit_dialog.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/meus%20feedbacks/meus_feedbacks_state.dart';
 import 'package:git_flutter_festou/src/models/feedback_model.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/repositories/feedback/feedback_firestore_repository_impl.dart';
+import 'package:git_flutter_festou/src/services/feedback_service.dart';
 import 'package:git_flutter_festou/src/services/space_service.dart';
 
 class FeedbacksWidget extends StatefulWidget {
@@ -23,33 +26,37 @@ class _FeedbacksWidgetState extends State<FeedbacksWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
+      decoration: const BoxDecoration(
+        color: Colors.transparent,
+        //borderRadius: BorderRadius.circular(18),
       ),
-      child: ExpansionTile(
-        collapsedShape: const RoundedRectangleBorder(
-          side: BorderSide.none,
-        ),
-        shape: const RoundedRectangleBorder(
-          side: BorderSide.none,
-        ),
-        leading: Image.asset('lib/assets/images/Icon ratingmyava.png'),
-        title: const Text('meus feedbacks'),
-        children: [
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: widget.data.feedbacks.length,
-            itemBuilder: (BuildContext context, int index) {
-              final feedback = widget.data.feedbacks[index];
-              return FeedbackItem(
-                feedback: feedback,
-                feedbackFirestore: feedbackFirestore,
-              );
-            },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: ExpansionTile(
+          collapsedBackgroundColor: Colors.white,
+          collapsedShape: const RoundedRectangleBorder(
+            side: BorderSide.none,
           ),
-        ],
+          shape: const RoundedRectangleBorder(
+            side: BorderSide.none,
+          ),
+          leading: Image.asset('lib/assets/images/Icon ratingmyava.png'),
+          title: const Text('Minhas avaliações'),
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: widget.data.feedbacks.length,
+              itemBuilder: (BuildContext context, int index) {
+                final feedback = widget.data.feedbacks[index];
+                return FeedbackItem(
+                  feedback: feedback,
+                  feedbackFirestore: feedbackFirestore,
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -76,11 +83,13 @@ class _FeedbackItemState extends State<FeedbackItem> {
   @override
   void initState() {
     super.initState();
+    myFeedback = widget.feedback;
     _checkUserReaction();
     getSpace();
   }
 
   SpaceModel? space;
+  FeedbackModel? myFeedback;
 
   Future<void> getSpace() async {
     space = await SpaceService().getSpaceById(widget.feedback.spaceId);
@@ -96,6 +105,11 @@ class _FeedbackItemState extends State<FeedbackItem> {
     });
   }
 
+  updateFeedback() async {
+    myFeedback = await FeedbackService().getFeedbackById(widget.feedback.id);
+    _checkUserReaction();
+  }
+
   @override
   Widget build(BuildContext context) {
     return space == null
@@ -103,19 +117,19 @@ class _FeedbackItemState extends State<FeedbackItem> {
         : Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(10.0),
                 child: Container(
                   padding: const EdgeInsets.only(
-                      left: 27, top: 19, bottom: 7, right: 25),
+                      left: 27, top: 19, bottom: 15, right: 25),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 3,
-                        blurRadius: 6,
-                        offset: const Offset(0, 7),
+                        color: Colors.black.withOpacity(0.2),
+                        offset: const Offset(0, 4),
+                        spreadRadius: 0,
+                        blurRadius: 4,
                       ),
                     ],
                   ),
@@ -125,15 +139,15 @@ class _FeedbackItemState extends State<FeedbackItem> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (widget.feedback.avatar == '')
+                          if (myFeedback!.avatar == '')
                             const CircleAvatar(
                               radius: 23,
                               child: Icon(Icons.person),
                             ),
-                          if (widget.feedback.avatar != '')
+                          if (myFeedback!.avatar != '')
                             CircleAvatar(
                               backgroundImage: Image.network(
-                                widget.feedback.avatar,
+                                myFeedback!.avatar,
                                 fit: BoxFit.cover,
                               ).image,
                               radius: 23,
@@ -144,7 +158,7 @@ class _FeedbackItemState extends State<FeedbackItem> {
                             // mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(
-                                widget.feedback.userName,
+                                myFeedback!.userName,
                                 style: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
@@ -152,7 +166,7 @@ class _FeedbackItemState extends State<FeedbackItem> {
                                 ),
                               ),
                               Text(
-                                widget.feedback.date,
+                                myFeedback!.date,
                                 style: const TextStyle(
                                   fontSize: 10,
                                   color: Color(0xff5E5E5E),
@@ -167,16 +181,15 @@ class _FeedbackItemState extends State<FeedbackItem> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
                                 color: _getColor(
-                                  double.parse(widget.feedback.rating
-                                      .toStringAsFixed(1)),
+                                  double.parse(
+                                      myFeedback!.rating.toStringAsFixed(1)),
                                 ),
                               ),
                               child: Center(
                                 child: Padding(
                                   padding: const EdgeInsets.all(7.0),
                                   child: Text(
-                                    double.parse(
-                                            widget.feedback.rating.toString())
+                                    double.parse(myFeedback!.rating.toString())
                                         .toStringAsFixed(1),
                                     style: const TextStyle(
                                       color: Colors.white,
@@ -217,15 +230,15 @@ class _FeedbackItemState extends State<FeedbackItem> {
                         ),
                       ),
                       const SizedBox(height: 17),
-                      Text(widget.feedback.content.toString()),
+                      Text(myFeedback!.content.toString()),
                       const SizedBox(height: 17),
                       Row(
                         children: [
                           GestureDetector(
                             onTap: () async {
                               await widget.feedbackFirestore
-                                  .toggleLikeFeedback(widget.feedback.id);
-                              _checkUserReaction(); // Atualize o estado após a ação
+                                  .toggleLikeFeedback(myFeedback!.id);
+                              updateFeedback();
                             },
                             child: Image.asset(
                               'lib/assets/images/Facebook Likelike3x.png',
@@ -234,13 +247,13 @@ class _FeedbackItemState extends State<FeedbackItem> {
                             ),
                           ),
                           const SizedBox(width: 3),
-                          Text('(${widget.feedback.likes.length})'),
+                          Text('(${myFeedback!.likes.length})'),
                           const SizedBox(width: 20),
                           GestureDetector(
                             onTap: () async {
                               await widget.feedbackFirestore
-                                  .toggleDislikeFeedback(widget.feedback.id);
-                              _checkUserReaction(); // Atualize o estado após a ação
+                                  .toggleDislikeFeedback(myFeedback!.id);
+                              updateFeedback();
                             },
                             child: Image.asset(
                               'lib/assets/images/Thumbs Downdeslike3x.png',
@@ -249,14 +262,31 @@ class _FeedbackItemState extends State<FeedbackItem> {
                             ),
                           ),
                           const SizedBox(width: 3),
-                          Text('(${widget.feedback.dislikes.length})'),
+                          Text('(${myFeedback!.dislikes.length})'),
                           const Spacer(),
-                          const Text(
-                            'Editar',
-                            style: TextStyle(
-                              color: Color(0xff9747FF),
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
+                          GestureDetector(
+                            onTap: () async {
+                              final result = await showDialog<String>(
+                                context: context,
+                                builder: (context) => EditTextDialog(
+                                  initialText: myFeedback!.content,
+                                ),
+                              );
+                              if (result == null) return;
+
+                              await FeedbackService().updateFeedbackContent(
+                                widget.feedback.id,
+                                result,
+                              );
+                              updateFeedback();
+                            },
+                            child: const Text(
+                              'Editar',
+                              style: TextStyle(
+                                color: Color(0xff9747FF),
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 16),
