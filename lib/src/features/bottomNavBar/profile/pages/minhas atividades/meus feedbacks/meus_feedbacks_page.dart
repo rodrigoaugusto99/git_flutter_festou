@@ -25,14 +25,10 @@ class _MeusFeedbacksPageState extends ConsumerState<MeusFeedbacksPage> {
         );
       },
       error: (Object error, StackTrace stackTrace) {
-        return const Stack(children: [
-          Center(child: Icon(Icons.error)),
-        ]);
+        return const SizedBox();
       },
       loading: () {
-        return const Stack(children: [
-          Center(child: CustomLoadingIndicator()),
-        ]);
+        return const SizedBox();
       },
     );
   }

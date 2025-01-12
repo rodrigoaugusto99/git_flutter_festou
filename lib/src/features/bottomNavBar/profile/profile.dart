@@ -45,7 +45,8 @@ class _ProfileState extends ConsumerState<Profile> {
 
     for (var doc in querySnapshot.docs) {
       final data = doc.data();
-      final selectedFinalDate = DateTime.parse(data['selectedFinalDate']);
+      final selectedFinalDate = data['selectedFinalDate'].toDate();
+      // final selectedFinalDate = data['selectedFinalDate'];
       final checkOutTime = data['checkOutTime'];
 
       if (selectedFinalDate.isAfter(now) ||
