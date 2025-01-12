@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class FeedbackModel {
@@ -12,6 +13,7 @@ class FeedbackModel {
   final List<String> likes;
   final List<String> dislikes;
   final SpaceModel? space;
+  final Timestamp? deleteAt;
 
   FeedbackModel({
     required this.id,
@@ -24,6 +26,7 @@ class FeedbackModel {
     required this.avatar,
     required this.likes,
     required this.dislikes,
+    required this.deleteAt,
     this.space,
   });
 }

@@ -9,11 +9,11 @@ import 'package:git_flutter_festou/src/services/feedback_service.dart';
 import 'package:git_flutter_festou/src/services/space_service.dart';
 
 class FeedbacksWidget extends StatefulWidget {
-  final MeusFeedbacksState data;
+  final List<FeedbackModel> feedbacks;
 
   const FeedbacksWidget({
     super.key,
-    required this.data,
+    required this.feedbacks,
   });
 
   @override
@@ -21,8 +21,6 @@ class FeedbacksWidget extends StatefulWidget {
 }
 
 class _FeedbacksWidgetState extends State<FeedbacksWidget> {
-  final feedbackFirestore = FeedbackFirestoreRepositoryImpl();
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -46,12 +44,17 @@ class _FeedbacksWidgetState extends State<FeedbacksWidget> {
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: widget.data.feedbacks.length,
+              itemCount: widget.feedbacks.length,
               itemBuilder: (BuildContext context, int index) {
-                final feedback = widget.data.feedbacks[index];
+                final feedback = widget.feedbacks[index];
+                if (feedback.content == '' || feedback.deleteAt != null) {
+                  return const SizedBox.shrink();
+                }
                 return FeedbackItem(
                   feedback: feedback,
-                  feedbackFirestore: feedbackFirestore,
+                  onDelete: () {
+                    widget.feedbacks.removeAt(index);
+                  },
                 );
               },
             ),
@@ -64,12 +67,12 @@ class _FeedbacksWidgetState extends State<FeedbacksWidget> {
 
 class FeedbackItem extends StatefulWidget {
   final FeedbackModel feedback;
-  final FeedbackFirestoreRepositoryImpl feedbackFirestore;
+  final VoidCallback onDelete;
 
   const FeedbackItem({
     super.key,
     required this.feedback,
-    required this.feedbackFirestore,
+    required this.onDelete,
   });
 
   @override
@@ -79,10 +82,12 @@ class FeedbackItem extends StatefulWidget {
 class _FeedbackItemState extends State<FeedbackItem> {
   bool isLiked = false;
   bool isDisliked = false;
+  late FeedbackService feedbackService;
 
   @override
   void initState() {
     super.initState();
+    feedbackService = FeedbackService();
     myFeedback = widget.feedback;
     _checkUserReaction();
     getSpace();
@@ -98,7 +103,7 @@ class _FeedbackItemState extends State<FeedbackItem> {
 
   Future<void> _checkUserReaction() async {
     String reaction =
-        await widget.feedbackFirestore.checkUserReaction(widget.feedback.id);
+        await feedbackService.checkUserReaction(widget.feedback.id);
     setState(() {
       isLiked = reaction == "isLiked";
       isDisliked = reaction == "isDisliked";
@@ -112,7 +117,7 @@ class _FeedbackItemState extends State<FeedbackItem> {
 
   @override
   Widget build(BuildContext context) {
-    return space == null
+    return space == null || myFeedback == null
         ? const SizedBox()
         : Column(
             children: [
@@ -236,7 +241,7 @@ class _FeedbackItemState extends State<FeedbackItem> {
                         children: [
                           GestureDetector(
                             onTap: () async {
-                              await widget.feedbackFirestore
+                              await feedbackService
                                   .toggleLikeFeedback(myFeedback!.id);
                               updateFeedback();
                             },
@@ -251,7 +256,7 @@ class _FeedbackItemState extends State<FeedbackItem> {
                           const SizedBox(width: 20),
                           GestureDetector(
                             onTap: () async {
-                              await widget.feedbackFirestore
+                              await feedbackService
                                   .toggleDislikeFeedback(myFeedback!.id);
                               updateFeedback();
                             },
@@ -290,12 +295,21 @@ class _FeedbackItemState extends State<FeedbackItem> {
                             ),
                           ),
                           const SizedBox(width: 16),
-                          const Text(
-                            'Excluir',
-                            style: TextStyle(
-                              color: Color(0xffFF0000),
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
+                          GestureDetector(
+                            onTap: () async {
+                              await FeedbackService().deleteFeedbackByCondition(
+                                widget.feedback.id,
+                              );
+                              updateFeedback();
+                              widget.onDelete();
+                            },
+                            child: const Text(
+                              'Excluir',
+                              style: TextStyle(
+                                color: Color(0xffFF0000),
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ],
