@@ -60,7 +60,8 @@ class _EachLastSeenState extends State<EachLastSeen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => NewCardInfo(space: widget.space),
+                  builder: (context) =>
+                      NewCardInfo(spaceId: widget.space.spaceId),
                 ),
               );
             },

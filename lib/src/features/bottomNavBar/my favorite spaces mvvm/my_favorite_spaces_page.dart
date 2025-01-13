@@ -103,7 +103,8 @@ class _MyFavoriteSpacePageState extends State<MyFavoriteSpacePage> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => NewCardInfo(
-                                    space: viewModel.allSpaces![index]),
+                                    spaceId:
+                                        viewModel.allSpaces![index].spaceId),
                               ),
                             ),
                             child: Padding(

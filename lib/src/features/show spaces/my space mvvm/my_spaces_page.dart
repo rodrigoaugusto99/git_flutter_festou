@@ -155,8 +155,7 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
                 ),
                 MySliverListToCardInfo(
                   isLocadorFlow: true,
-                  data: data,
-                  spaces: mySpaces,
+                  spaces: data.spaces,
                   x: false,
                 ),
               ],

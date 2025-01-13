@@ -220,7 +220,8 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
           context,
           MaterialPageRoute(
             builder: (context) => NewCardInfo(
-                space: widget.space, isLocadorFlow: widget.isLocadorFlow),
+                spaceId: widget.space.spaceId,
+                isLocadorFlow: widget.isLocadorFlow),
           ),
         );
       },
