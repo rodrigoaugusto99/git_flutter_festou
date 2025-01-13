@@ -171,8 +171,8 @@ class _SpacesWithSugestionPageState
                           onTap: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      NewCardInfo(space: widget.space),
+                                  builder: (context) => NewCardInfo(
+                                      spaceId: widget.space.spaceId),
                                 ),
                               ),
                           child: NewSpaceCard(
@@ -196,8 +196,7 @@ class _SpacesWithSugestionPageState
                   ),
 
                   MySliverListToCardInfo(
-                    data: data,
-                    spaces: sugestions,
+                    spaces: data.spaces,
                     x: true,
                   ),
                 ],

@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_card_info.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class MySliverListToCardInfo extends StatelessWidget {
-  final data;
-  final AsyncValue spaces;
+  final List<SpaceModel> spaces;
   final bool x;
   bool isLocadorFlow;
 
   MySliverListToCardInfo({
-    Key? key,
-    required this.data,
+    super.key,
     required this.spaces,
     required this.x,
     this.isLocadorFlow = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +22,14 @@ class MySliverListToCardInfo extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
-        if (index >= 0 && index < data.spaces.length) {
+        if (index >= 0 && index < spaces.length) {
           // Verifique se o índice é válido antes de acessar a lista
           return InkWell(
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => NewCardInfo(space: data.spaces[index]),
+                builder: (context) =>
+                    NewCardInfo(spaceId: spaces[index].spaceId),
               ),
             ),
             child: Padding(
@@ -38,7 +37,7 @@ class MySliverListToCardInfo extends StatelessWidget {
               child: NewSpaceCard(
                 isLocadorFlow: isLocadorFlow,
                 hasHeart: x,
-                space: data.spaces[index],
+                space: spaces[index],
                 isReview: false,
               ),
             ),
@@ -48,7 +47,7 @@ class MySliverListToCardInfo extends StatelessWidget {
           return Container();
         }
       },
-      itemCount: data.spaces.length,
+      itemCount: spaces.length,
     );
   }
 }

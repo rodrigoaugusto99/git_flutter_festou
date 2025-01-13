@@ -208,7 +208,7 @@ p decidir o isFavorited*/
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => NewCardInfo(space: spaceShowing!),
+        builder: (context) => NewCardInfo(spaceId: spaceShowing!.spaceId),
       ),
     );
   }

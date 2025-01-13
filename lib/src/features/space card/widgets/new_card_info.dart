@@ -1,10 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
@@ -13,16 +10,19 @@ import 'package:git_flutter_festou/src/features/register/posts/register_post_pag
 import 'package:git_flutter_festou/src/features/space%20card/widgets/calendar_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_card_info_edit_vm.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/new_feedback_widget_limited.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_new_map.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_map.dart';
 import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_limited.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_all.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/single_video_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/utils.dart';
 import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
 import 'package:git_flutter_festou/src/helpers/helpers.dart';
+import 'package:git_flutter_festou/src/models/feedback_model.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:git_flutter_festou/src/services/feedback_service.dart';
+import 'package:git_flutter_festou/src/services/space_service.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -31,24 +31,24 @@ import 'package:svg_flutter/svg.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-class NewCardInfo extends ConsumerStatefulWidget {
-  final SpaceModel space;
+class NewCardInfo extends StatefulWidget {
+  final String spaceId;
   bool isLocadorFlow;
   NewCardInfo({
     super.key,
-    required this.space,
+    required this.spaceId,
     this.isLocadorFlow = false,
   });
 
   @override
-  ConsumerState<NewCardInfo> createState() => _NewCardInfoState();
+  State<NewCardInfo> createState() => _NewCardInfoState();
 }
 
 int _currentSlide = 0;
 
 bool scrollingUp = false;
 
-class _NewCardInfoState extends ConsumerState<NewCardInfo>
+class _NewCardInfoState extends State<NewCardInfo>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
   final List<VideoPlayerController> controllers = [];
@@ -58,20 +58,14 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
   @override
   void initState() {
     super.initState();
-    tabController = TabController(length: 3, vsync: this);
-    for (var video in widget.space.videosUrl) {
-      VideoPlayerController controller = VideoPlayerController.network(video)
-        ..initialize().then((_) {
-          setState(() {});
-        });
-      controllers.add(controller);
-    }
+
     init();
   }
 
   @override
   void dispose() {
     tabController.dispose();
+    spaceService.cancelSpaceSubscription();
     super.dispose();
   }
 
@@ -98,7 +92,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
   }
 
   share() {
-    String spaceLink = generateSpaceLink(widget.space);
+    String spaceLink = generateSpaceLink(space!);
     SocialShare.shareOptions('Confira este espaço: $spaceLink');
   }
 
@@ -116,7 +110,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
   }
 
   Widget boolComments(String text) {
-    if (widget.space.numComments == '0') {
+    if (space!.numComments == '0') {
       return const Row(
         children: [
           Icon(
@@ -135,21 +129,21 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
           ),
         ],
       );
-    } else if (widget.space.numComments == '1') {
+    } else if (space!.numComments == '1') {
       return Row(
         children: [
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
               color: _getColor(
-                double.parse(widget.space.averageRating),
+                double.parse(space!.averageRating),
               ),
             ),
             height: 35, // Ajuste conforme necessário
             width: 25, // Ajuste conforme necessário
             child: Center(
               child: Text(
-                double.parse(widget.space.averageRating).toStringAsFixed(1),
+                double.parse(space!.averageRating).toStringAsFixed(1),
                 style: const TextStyle(
                   color: Colors.white, // Cor do texto
                   fontWeight: FontWeight.bold,
@@ -161,7 +155,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
             width: 10,
           ),
           Text(
-            '${widget.space.numComments} avaliação',
+            '${space!.numComments} avaliação',
             style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w400,
@@ -176,14 +170,14 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
               color: _getColor(
-                double.parse(widget.space.averageRating),
+                double.parse(space!.averageRating),
               ),
             ),
             height: 35, // Ajuste conforme necessário
             width: 25, // Ajuste conforme necessário
             child: Center(
               child: Text(
-                double.parse(widget.space.averageRating).toStringAsFixed(1),
+                double.parse(space!.averageRating).toStringAsFixed(1),
                 style: const TextStyle(
                   color: Colors.white, // Cor do texto
                   fontWeight: FontWeight.bold,
@@ -195,7 +189,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
             width: 10,
           ),
           Text(
-            '${widget.space.numComments} avaliações',
+            '${space!.numComments} avaliações',
             style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w400,
@@ -206,28 +200,61 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
     }
   }
 
-  NewCardInfoEditVm? newCardInfoEditVm;
+  //NewCardInfoEditVm? newCardInfoEditVm;
   List<String> selectedServices = [];
-  void init() async {
+
+  SpaceModel? space;
+  List<FeedbackModel>? feedbacks;
+  late SpaceService spaceService;
+  late FeedbackService feedbackService;
+  Future<void> init() async {
+    spaceService = SpaceService();
+    feedbackService = FeedbackService();
+    space = await spaceService.getSpaceById(widget.spaceId);
+    feedbacks = await feedbackService.getFeedbacksOrdered(widget.spaceId);
+    feedbacks!.removeWhere((f) => f.deleteAt != null);
     final user = await UserService().getCurrentUserModel();
     if (user != null) {
-      if (user.uid == widget.space.userId) {
+      if (user.uid == space!.userId) {
         setState(() {
           isMySpace = true;
         });
       }
     }
-    newCardInfoEditVm = NewCardInfoEditVm(spaceId: widget.space.spaceId);
+    // setState(() {});
+    // newCardInfoEditVm = NewCardInfoEditVm(spaceId: space!.spaceId);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        precoEC.text = widget.space.preco;
-        visaoGeralEC.text = widget.space.descricao;
-        cepEC.text = widget.space.cep;
-        ruaEC.text = widget.space.logradouro;
-        numeroEC.text = widget.space.numero;
-        bairroEC.text = widget.space.bairro;
-        cidadeEC.text = widget.space.cidade;
-        selectedServices = widget.space.selectedServices as List<String>;
+        precoEC.text = space!.preco;
+        visaoGeralEC.text = space!.descricao;
+        cepEC.text = space!.cep;
+        ruaEC.text = space!.logradouro;
+        numeroEC.text = space!.numero;
+        bairroEC.text = space!.bairro;
+        cidadeEC.text = space!.cidade;
+        selectedServices = space!.selectedServices as List<String>;
+      });
+    });
+    tabController = TabController(length: 3, vsync: this);
+    for (var video in space!.videosUrl) {
+      VideoPlayerController controller = VideoPlayerController.network(video)
+        ..initialize().then((_) {
+          setState(() {});
+        });
+      controllers.add(controller);
+    }
+    await spaceService.setSpaceListener(widget.spaceId, (newSpace) {
+      if (!mounted) return;
+      setState(() {
+        space = newSpace;
+      });
+    });
+    await feedbackService.setSpaceFeedbacksListener(widget.spaceId,
+        (newFeedbacks) {
+      if (!mounted) return;
+      setState(() {
+        feedbacks = newFeedbacks;
+        feedbacks!.removeWhere((f) => f.deleteAt != null);
       });
     });
   }
@@ -328,21 +355,20 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
       'descricao': visaoGeralEC.text,
     };
 
-    if (newCardInfoEditVm != null) {
-      Messages.showSuccess('Espaço atualizado com sucesso!', context);
+    Messages.showSuccess('Espaço atualizado com sucesso!', context);
 
-      log(networkImagesToDelete.toString(), name: 'networkImagesToDelete');
-      log(networkVideosToDelete.toString(), name: 'networkVideosToDelete');
-      log(imageFilesToDownload.length.toString(), name: 'imageFilesToDownload');
-      log(videosToDownload.length.toString(), name: 'videosToDownload');
-      // newCardInfoEditVm!.updateSpace(
-      //   newSpaceInfos: newSpaceInfos,
-      //   networkImagesToDelete: networkImagesToDelete,
-      //   networkVideosToDelete: networkVideosToDelete,
-      //   imageFilesToDownload: imageFilesToDownload,
-      //   videosToDownload: videosToDownload,
-      // );
-    }
+    log(networkImagesToDelete.toString(), name: 'networkImagesToDelete');
+    log(networkVideosToDelete.toString(), name: 'networkVideosToDelete');
+    log(imageFilesToDownload.length.toString(), name: 'imageFilesToDownload');
+    log(videosToDownload.length.toString(), name: 'videosToDownload');
+    spaceService.updateSpace(
+      spaceId: widget.spaceId,
+      newSpaceInfos: newSpaceInfos,
+      networkImagesToDelete: networkImagesToDelete,
+      networkVideosToDelete: networkVideosToDelete,
+      imageFilesToDownload: imageFilesToDownload,
+      videosToDownload: videosToDownload,
+    );
   }
 
   void pickImage() async {
@@ -350,7 +376,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
     final List<XFile> images = await imagePicker.pickMultiImage();
 
     int currentTotalImages =
-        widget.space.imagesUrl.length + imageFilesToDownload.length;
+        space!.imagesUrl.length + imageFilesToDownload.length;
     int remainingSlots = 6 - currentTotalImages;
 
     if (remainingSlots > 0) {
@@ -372,7 +398,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
 
     if (video != null) {
       int currentTotalVideos =
-          widget.space.videosUrl.length + videosToDownload.length;
+          space!.videosUrl.length + videosToDownload.length;
       int remainingSlots = 3 - currentTotalVideos;
 
       if (remainingSlots > 0) {
@@ -428,7 +454,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                widget.space.descricao,
+                space!.descricao,
                 style: const TextStyle(fontSize: 16.0),
               ),
               const SizedBox(height: 16.0),
@@ -572,14 +598,14 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
 
   @override
   Widget build(BuildContext context) {
-    final spaceRepository = ref.watch(spaceFirestoreRepositoryProvider);
-
     void toggle() {
       setState(() {
-        widget.space.isFavorited = !widget.space.isFavorited;
+        space!.isFavorited = !space!.isFavorited;
       });
-      spaceRepository.toggleFavoriteSpace(
-          widget.space.spaceId, widget.space.isFavorited);
+      spaceService.toggleFavoriteSpace(
+        space!.spaceId,
+        space!.isFavorited,
+      );
     }
 
 //todo:
@@ -593,7 +619,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
           if (!isEditing)
             GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onTap: () => showRatingDialog(widget.space),
+              onTap: () => showRatingDialog(space!),
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
@@ -625,7 +651,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
               ),
             ),
           const SizedBox(height: 17),
-          if (widget.space.numComments != '0')
+          if (space!.numComments != '0')
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -637,7 +663,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                   ),
                 ),
                 Text(
-                  '(${widget.space.numComments} avaliações)',
+                  '(${feedbacks!.length} avaliações)',
                   style: const TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 12,
@@ -646,12 +672,29 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                 ),
               ],
             ),
-          if (widget.space.numComments != '0')
-            SpaceFeedbacksPageLimited(
-              x: 2,
-              space: widget.space,
-            ),
-          if (widget.space.numComments != '0')
+          // if (space!.numComments != '0')
+          //   SpaceFeedbacksPageLimited(
+          //     x: 2,
+          //     space: space!,
+          //   ),
+          if (space!.numComments != '0' && feedbacks != null) ...[
+            if (feedbacks!.isEmpty)
+              const Center(
+                child: Text(
+                  'Sem avaliações(ainda)',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            if (feedbacks!.isNotEmpty)
+              NewFeedbackWidgetLimited(
+                x: 2,
+                feedbacks: feedbacks!,
+              ),
+          ],
+          if (space!.numComments != '0')
             InkWell(
               child: Align(
                 alignment: Alignment.centerRight,
@@ -672,8 +715,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        SpaceFeedbacksPageAll(space: widget.space),
+                    builder: (context) => SpaceFeedbacksPageAll(space: space!),
                   ),
                 );
               },
@@ -698,7 +740,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                 ),
               ),
               Text(
-                '(${widget.space.imagesUrl.length} ${widget.space.imagesUrl.length == 1 ? 'foto)' : 'fotos)'}',
+                '(${space!.imagesUrl.length} ${space!.imagesUrl.length == 1 ? 'foto)' : 'fotos)'}',
                 style: const TextStyle(
                   fontWeight: FontWeight.w400,
                   fontSize: 12,
@@ -719,7 +761,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
             ),
             itemCount: 6, // Sempre terá 6 itens no grid
             itemBuilder: (BuildContext context, int index) {
-              int networkImagesCount = widget.space.imagesUrl.length;
+              int networkImagesCount = space!.imagesUrl.length;
               int localImagesCount = imageFilesToDownload.length;
               int totalImagesCount = networkImagesCount + localImagesCount;
               int maxImages = 6;
@@ -735,7 +777,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                         borderRadius: BorderRadius.circular(10),
                         child: Image.network(
                           height: 90,
-                          widget.space.imagesUrl[index].toString(),
+                          space!.imagesUrl[index].toString(),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -747,9 +789,9 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              networkImagesToDelete.add(
-                                  widget.space.imagesUrl[index].toString());
-                              widget.space.imagesUrl.removeAt(index);
+                              networkImagesToDelete
+                                  .add(space!.imagesUrl[index].toString());
+                              space!.imagesUrl.removeAt(index);
                             });
                           },
                           child: Image.asset(
@@ -822,7 +864,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                 ),
               ),
               Text(
-                '(${widget.space.videosUrl.length} ${widget.space.videosUrl.length == 1 ? 'vídeo' : 'vídeos)'}',
+                '(${space!.videosUrl.length} ${space!.videosUrl.length == 1 ? 'vídeo' : 'vídeos)'}',
                 style: const TextStyle(
                   fontWeight: FontWeight.w400,
                   fontSize: 12,
@@ -843,7 +885,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
             ),
             itemCount: 3, // Sempre terá 3 itens no grid
             itemBuilder: (BuildContext context, int index) {
-              int networkVideosCount = widget.space.videosUrl.length;
+              int networkVideosCount = space!.videosUrl.length;
               int localVideosCount =
                   videosToDownload.length > 3 ? 3 : videosToDownload.length;
               int totalVideosCount = networkVideosCount + localVideosCount;
@@ -866,8 +908,8 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                           onTap: () {
                             setState(() {
                               networkVideosToDelete
-                                  .add(widget.space.videosUrl[index]);
-                              widget.space.videosUrl.removeAt(index);
+                                  .add(space!.videosUrl[index]);
+                              space!.videosUrl.removeAt(index);
                               controllers[index].dispose();
                               controllers.removeAt(index);
                             });
@@ -946,7 +988,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                   Expanded(
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: widget.space.selectedServices.length,
+                      itemCount: space!.selectedServices.length,
                       itemBuilder: (context, index) {
                         return Container(
                           constraints: BoxConstraints(minWidth: x / 3.5),
@@ -956,8 +998,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                                 clipBehavior: Clip.none,
                                 children: [
                                   Image.asset(
-                                    getIconPath(
-                                        widget.space.selectedServices[index]),
+                                    getIconPath(space!.selectedServices[index]),
                                     width: 40,
                                   ),
                                   if (isEditing)
@@ -965,8 +1006,8 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                                       top: -3,
                                       right: -3,
                                       child: GestureDetector(
-                                        onTap: () => addOrRemoveService(widget
-                                            .space.selectedServices[index]),
+                                        onTap: () => addOrRemoveService(
+                                            space!.selectedServices[index]),
                                         child: Image.asset(
                                           'lib/assets/images/Deletardelete_service.png',
                                           width: 20,
@@ -980,7 +1021,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                                 width: 8,
                               ),
                               // const Icon(Icons.align_vertical_top_sharp),
-                              Text(widget.space.selectedServices[index]),
+                              Text(space!.selectedServices[index]),
                             ],
                           ),
                         );
@@ -1016,7 +1057,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                 child: Padding(
                   padding: const EdgeInsets.only(left: 8),
                   child: Text(
-                    widget.space.descricao,
+                    space!.descricao,
                     maxLines: 3,
                     style: const TextStyle(
                       fontSize: 12,
@@ -1049,7 +1090,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                       context,
                       MaterialPageRoute(
                         builder: (context) => ShowNewMap(
-                          space: widget.space,
+                          space: space!,
                         ),
                       ),
                     );
@@ -1057,7 +1098,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                   child: AbsorbPointer(
                     absorbing: true,
                     child: ShowMap(
-                      space: widget.space,
+                      space: space!,
                       scrollGesturesEnabled: false,
                       zoomControlsEnabled: false,
                       zoomGesturesEnabled: false,
@@ -1120,19 +1161,19 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
               children: [
                 CircleAvatar(
                   radius: 20,
-                  child: widget.space.locadorAvatarUrl != ''
+                  child: space!.locadorAvatarUrl != ''
                       ? CircleAvatar(
                           backgroundImage: Image.network(
-                            widget.space.locadorAvatarUrl,
+                            space!.locadorAvatarUrl,
                             fit: BoxFit.cover,
                           ).image,
                           radius: 100,
                         )
-                      : Text(widget.space.locadorName[0].toUpperCase()),
+                      : Text(space!.locadorName[0].toUpperCase()),
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  widget.space.locadorName,
+                  space!.locadorName,
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
@@ -1158,7 +1199,7 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
                       context,
                       MaterialPageRoute(
                         builder: (context) => ChatPage(
-                          receiverID: widget.space.userId,
+                          receiverID: space!.userId,
                         ),
                       ),
                     );
@@ -1171,472 +1212,481 @@ class _NewCardInfoState extends ConsumerState<NewCardInfo>
       );
     }
 
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        foregroundColor: Colors.black,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 18.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.7),
-              shape: BoxShape.circle,
+    return space == null
+        ? const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
             ),
-            child: InkWell(
-              onTap: () => Navigator.of(context).pop(),
-              child: const Icon(Icons.arrow_back),
-            ),
-          ),
-        ),
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 18.0),
-            child: Container(
-              padding: const EdgeInsets.all(5),
-              width: 40,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.7),
-                shape: BoxShape.circle,
+          )
+        : Scaffold(
+            extendBodyBehindAppBar: true,
+            appBar: AppBar(
+              foregroundColor: Colors.black,
+              leading: Padding(
+                padding: const EdgeInsets.only(left: 18.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.7),
+                    shape: BoxShape.circle,
+                  ),
+                  child: InkWell(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: const Icon(Icons.arrow_back),
+                  ),
+                ),
               ),
-              child: InkWell(
-                onTap: () => share(),
-                child: const Icon(Icons.share),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 18.0),
-            child: Container(
-              padding: const EdgeInsets.all(5),
-              width: 40,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.7),
-                shape: BoxShape.circle,
-              ),
-              child: InkWell(
-                onTap: toggle,
-                child: widget.space.isFavorited
-                    ? const Icon(
-                        Icons.favorite,
-                        color: Colors.red,
-                      )
-                    : const Icon(
-                        Icons.favorite_outline,
-                      ),
-              ),
-            ),
-          ),
-        ],
-        flexibleSpace: AnimatedContainer(
-          duration: const Duration(milliseconds: 400),
-          color: isCarouselVisible ? Colors.transparent : Colors.white,
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Stack(
-              children: [
-                VisibilityDetector(
-                  key: const Key('my-widget-key'),
-                  onVisibilityChanged: (VisibilityInfo info) {
-                    setState(() {
-                      isCarouselVisible = info.visibleFraction > 0.0;
-                    });
-                  },
-                  child: Stack(
-                    children: [
-                      CarouselSlider(
-                        items: widget.space.imagesUrl
-                            .map((imageUrl) => Image.network(
-                                  imageUrl.toString(),
-                                  fit: BoxFit.cover,
-                                ))
-                            .toList(),
-                        options: CarouselOptions(
-                          aspectRatio: 16 / 12,
-                          viewportFraction: 1.0,
-                          enableInfiniteScroll: false,
-                          onPageChanged: (index, reason) {
-                            setState(() {
-                              _currentSlide = index;
-                            });
-                          },
-                        ),
-                      ),
-                      if (isMySpace)
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return RegisterPostPage(
-                                      spaceModel: widget.space,
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                            child: const Text('Fazer post'),
-                          ),
-                        ),
-                    ],
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 18.0),
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.7),
+                      shape: BoxShape.circle,
+                    ),
+                    child: InkWell(
+                      onTap: () => share(),
+                      child: const Icon(Icons.share),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 18.0),
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.7),
+                      shape: BoxShape.circle,
+                    ),
+                    child: InkWell(
+                      onTap: toggle,
+                      child: space!.isFavorited
+                          ? const Icon(
+                              Icons.favorite,
+                              color: Colors.red,
+                            )
+                          : const Icon(
+                              Icons.favorite_outline,
+                            ),
+                    ),
                   ),
                 ),
               ],
+              flexibleSpace: AnimatedContainer(
+                duration: const Duration(milliseconds: 400),
+                color: isCarouselVisible ? Colors.transparent : Colors.white,
+              ),
             ),
-
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: widget.space.imagesUrl.map((url) {
-                int index = widget.space.imagesUrl.indexOf(url);
-                return Container(
-                  width: 8.0,
-                  height: 8.0,
-                  margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _currentSlide == index
-                        ? const Color(0xff9747FF)
-                        : Colors.grey.shade300,
-                  ),
-                );
-              }).toList(),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 18),
+            body: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.space.titulo,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 7,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: _getColor(
-                              double.parse(widget.space.averageRating),
-                            ),
-                          ),
-                          height: 20,
-                          width: 20,
-                          child: Center(
-                            child: Text(
-                              double.parse(widget.space.averageRating)
-                                  .toStringAsFixed(1),
-                              style: const TextStyle(
-                                fontSize: 8,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
+                  Stack(
+                    children: [
+                      VisibilityDetector(
+                        key: const Key('my-widget-key'),
+                        onVisibilityChanged: (VisibilityInfo info) {
+                          setState(() {
+                            isCarouselVisible = info.visibleFraction > 0.0;
+                          });
+                        },
+                        child: Stack(
+                          children: [
+                            CarouselSlider(
+                              items: space!.imagesUrl
+                                  .map((imageUrl) => Image.network(
+                                        imageUrl.toString(),
+                                        fit: BoxFit.cover,
+                                      ))
+                                  .toList(),
+                              options: CarouselOptions(
+                                aspectRatio: 16 / 12,
+                                viewportFraction: 1.0,
+                                enableInfiniteScroll: false,
+                                onPageChanged: (index, reason) {
+                                  setState(() {
+                                    _currentSlide = index;
+                                  });
+                                },
                               ),
                             ),
-                          ),
-                        ),
-                        const Spacer(),
-                        if (!isEditing)
-                          Column(
-                            children: [
-                              Text(
-                                style: const TextStyle(
-                                    color: Color(0xff9747FF),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700),
-                                "R\$ ${trocarPontoPorVirgula(widget.space.preco)}",
-                              ),
-                              const Text('Por hora'),
-                            ],
-                          ),
-                        if (isEditing)
-                          SizedBox(
-                            width: 110,
-                            child: CustomTextformfield(
-                              hintText: 'Preço',
-                              withCrazyPadding: true,
-                              keyboardType: TextInputType.number,
-                              prefixIcon: const Text(
-                                'R\$',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Color(0xff9747FF),
+                            if (isMySpace)
+                              Positioned(
+                                bottom: 0,
+                                left: 0,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return RegisterPostPage(
+                                            spaceModel: space!,
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
+                                  child: const Text('Fazer post'),
                                 ),
                               ),
-                              controller: precoEC,
-                              fillColor: const Color(0xffF0F0F0),
-                            ),
-                          )
-                      ],
-                    ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  //boolComments('Ainda não tem avaliações.'),
+
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: space!.imagesUrl.map((url) {
+                      int index = space!.imagesUrl.indexOf(url);
+                      return Container(
+                        width: 8.0,
+                        height: 8.0,
+                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _currentSlide == index
+                              ? const Color(0xff9747FF)
+                              : Colors.grey.shade300,
+                        ),
+                      );
+                    }).toList(),
+                  ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(width: 10),
-                        SvgPicture.asset('lib/assets/images/Vectorcheck.svg'),
-                        const SizedBox(width: 7),
-                        Text(
-                          '${widget.space.cidade}, Brasil',
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w400,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                space!.titulo,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 7,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: _getColor(
+                                    double.parse(space!.averageRating),
+                                  ),
+                                ),
+                                height: 20,
+                                width: 20,
+                                child: Center(
+                                  child: Text(
+                                    double.parse(space!.averageRating)
+                                        .toStringAsFixed(1),
+                                    style: const TextStyle(
+                                      fontSize: 8,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const Spacer(),
+                              if (!isEditing)
+                                Column(
+                                  children: [
+                                    Text(
+                                      style: const TextStyle(
+                                          color: Color(0xff9747FF),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w700),
+                                      "R\$ ${trocarPontoPorVirgula(space!.preco)}",
+                                    ),
+                                    const Text('Por hora'),
+                                  ],
+                                ),
+                              if (isEditing)
+                                SizedBox(
+                                  width: 110,
+                                  child: CustomTextformfield(
+                                    hintText: 'Preço',
+                                    withCrazyPadding: true,
+                                    keyboardType: TextInputType.number,
+                                    prefixIcon: const Text(
+                                      'R\$',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Color(0xff9747FF),
+                                      ),
+                                    ),
+                                    controller: precoEC,
+                                    fillColor: const Color(0xffF0F0F0),
+                                  ),
+                                )
+                            ],
                           ),
                         ),
+                        //boolComments('Ainda não tem avaliações.'),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
+                            children: [
+                              const SizedBox(width: 10),
+                              SvgPicture.asset(
+                                  'lib/assets/images/Vectorcheck.svg'),
+                              const SizedBox(width: 7),
+                              Text(
+                                '${space!.cidade}, Brasil',
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Container(
+                          decoration: const BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                color: Color(0xffE4E4E4),
+                                width: 1.2,
+                              ),
+                            ),
+                          ),
+                          child: TabBar(
+                            controller: tabController,
+                            indicatorColor: const Color(0xff9747FF),
+                            labelPadding: const EdgeInsets.only(bottom: 15),
+                            tabs: const [
+                              Text(
+                                'Sobre',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              Text(
+                                'Galeria',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              Text(
+                                'Avaliação',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: SizedBox(
+                            height: 500,
+                            child: TabBarView(
+                              controller: tabController,
+                              //physics: const NeverScrollableScrollPhysics(),
+                              children: [
+                                myFirstWidget(),
+                                mySecondWidget(),
+                                myThirdWidget(),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        // const SizedBox(height: 10),
+                        // const Divider(thickness: 0.4, color: Colors.purple),
+                        // const SizedBox(height: 10),
+
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //   children: [
+                        //     ElevatedButton(
+                        //       onPressed: () {
+                        //         _showBottomSheet(context);
+                        //       },
+                        //       child: const Text('Ver descrição'),
+                        //     ),
+                        //     const SizedBox(
+                        //       width: 10,
+                        //     ),
+                        //     ElevatedButton(
+                        //       onPressed: () {
+                        //         _showBottomSheet2(context);
+                        //       },
+                        //       child: const Text('Comodidades'),
+                        //     ),
+                        //   ],
+                        // ),
+
+                        // myFirstWidget(),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  Container(
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Color(0xffE4E4E4),
-                          width: 1.2,
-                        ),
-                      ),
-                    ),
-                    child: TabBar(
-                      controller: tabController,
-                      indicatorColor: const Color(0xff9747FF),
-                      labelPadding: const EdgeInsets.only(bottom: 15),
-                      tabs: const [
-                        Text(
-                          'Sobre',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 12,
-                          ),
-                        ),
-                        Text(
-                          'Galeria',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 12,
-                          ),
-                        ),
-                        Text(
-                          'Avaliação',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: SizedBox(
-                      height: 500,
-                      child: TabBarView(
-                        controller: tabController,
-                        //physics: const NeverScrollableScrollPhysics(),
-                        children: [
-                          myFirstWidget(),
-                          mySecondWidget(),
-                          myThirdWidget(),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // const SizedBox(height: 10),
-                  // const Divider(thickness: 0.4, color: Colors.purple),
-                  // const SizedBox(height: 10),
-
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //   children: [
-                  //     ElevatedButton(
-                  //       onPressed: () {
-                  //         _showBottomSheet(context);
-                  //       },
-                  //       child: const Text('Ver descrição'),
-                  //     ),
-                  //     const SizedBox(
-                  //       width: 10,
-                  //     ),
-                  //     ElevatedButton(
-                  //       onPressed: () {
-                  //         _showBottomSheet2(context);
-                  //       },
-                  //       child: const Text('Comodidades'),
-                  //     ),
-                  //   ],
+                  // const Align(
+                  //   alignment: Alignment.center,
+                  //   child: Text(
+                  //     'Avaliações dos hóspedes',
+                  //     style: TextStyle(fontSize: 23),
+                  //   ),
                   // ),
-
-                  // myFirstWidget(),
+                  // const SizedBox(height: 10),
+                  // SpaceFeedbacksPageLimited(
+                  //   x: 3,
+                  //   space: space!,
+                  // ),
+                  // InkWell(
+                  //   child: Align(
+                  //     alignment: Alignment.centerRight,
+                  //     child: Container(
+                  //       margin:
+                  //           const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  //       child: const Text(
+                  //         'Ver tudo',
+                  //         style: TextStyle(
+                  //           decoration: TextDecoration.underline,
+                  //           fontWeight: FontWeight.bold,
+                  //           fontSize: 18,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //         builder: (context) =>
+                  //             SpaceFeedbacksPageAll(space: space!),
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
                 ],
               ),
             ),
-            // const Align(
-            //   alignment: Alignment.center,
-            //   child: Text(
-            //     'Avaliações dos hóspedes',
-            //     style: TextStyle(fontSize: 23),
-            //   ),
-            // ),
-            // const SizedBox(height: 10),
-            // SpaceFeedbacksPageLimited(
-            //   x: 3,
-            //   space: widget.space,
-            // ),
-            // InkWell(
-            //   child: Align(
-            //     alignment: Alignment.centerRight,
-            //     child: Container(
-            //       margin:
-            //           const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-            //       child: const Text(
-            //         'Ver tudo',
-            //         style: TextStyle(
-            //           decoration: TextDecoration.underline,
-            //           fontWeight: FontWeight.bold,
-            //           fontSize: 18,
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            //   onTap: () {
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(
-            //         builder: (context) =>
-            //             SpaceFeedbacksPageAll(space: widget.space),
-            //       ),
-            //     );
-            //   },
-            // ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-        child: widget.isLocadorFlow
-            ? Row(
-                children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        style: const TextStyle(
-                            color: Color(0xff9747FF),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700),
-                        "R\$${widget.space.preco}",
+            bottomNavigationBar: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+              child: widget.isLocadorFlow
+                  ? Row(
+                      children: [
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              style: const TextStyle(
+                                  color: Color(0xff9747FF),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700),
+                              "R\$${space!.preco}",
+                            ),
+                            const Text('Por hora'),
+                          ],
+                        ),
+                        const Spacer(),
+                        if (!isEditing)
+                          GestureDetector(
+                            //todo:  excluir
+                            onTap: () {},
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 30, vertical: 8),
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xff9747FF),
+                                    Color(0xff4300B1),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ),
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                              child: const Text(
+                                'Excluir',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        GestureDetector(
+                          //todo:
+                          onTap: toggleEditing,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 30, vertical: 8),
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color(0xff9747FF),
+                                  Color(0xff4300B1),
+                                ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                              ),
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            child: Text(
+                              isEditing ? 'Salvar' : 'Editar',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CalendarPage(
+                            space: space!,
+                          ),
+                        ),
                       ),
-                      const Text('Por hora'),
-                    ],
-                  ),
-                  const Spacer(),
-                  if (!isEditing)
-                    GestureDetector(
-                      //todo:  excluir
-                      onTap: () {},
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 30, vertical: 8),
+                            horizontal: 20, vertical: 8),
                         decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [
-                              Color(0xff9747FF),
-                              Color(0xff4300B1),
-                            ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                          borderRadius: BorderRadius.circular(24),
-                        ),
+                            color: const Color(0xff9747FF),
+                            borderRadius: BorderRadius.circular(50)),
                         child: const Text(
-                          'Excluir',
+                          'Alugar',
                           style: TextStyle(
                               color: Colors.white, fontWeight: FontWeight.w700),
                           textAlign: TextAlign.center,
                         ),
                       ),
                     ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  GestureDetector(
-                    //todo:
-                    onTap: toggleEditing,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30, vertical: 8),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color(0xff9747FF),
-                            Color(0xff4300B1),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      child: Text(
-                        isEditing ? 'Salvar' : 'Editar',
-                        style: const TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.w700),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            : GestureDetector(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CalendarPage(
-                      space: widget.space,
-                    ),
-                  ),
-                ),
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  decoration: BoxDecoration(
-                      color: const Color(0xff9747FF),
-                      borderRadius: BorderRadius.circular(50)),
-                  child: const Text(
-                    'Alugar',
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w700),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-      ),
-    );
+            ),
+          );
   }
 }
 

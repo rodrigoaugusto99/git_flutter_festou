@@ -18,7 +18,9 @@ class MySliverListFiltered extends StatelessWidget {
               onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => NewCardInfo(space: spaces[index]),
+                      builder: (context) => NewCardInfo(
+                        spaceId: spaces[index].spaceId,
+                      ),
                     ),
                   ),
               child: NewSpaceCard(
