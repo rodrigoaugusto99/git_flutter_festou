@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
+import 'package:git_flutter_festou/src/models/feedback_model.dart';
 
 class NewFeedbackWidgetLimited extends StatefulWidget {
-  final SpaceFeedbacksState data;
-  final AsyncValue spaces;
+  final List<FeedbackModel> feedbacks;
   final int? x;
 
   const NewFeedbackWidgetLimited({
     super.key,
-    required this.data,
-    required this.spaces,
+    required this.feedbacks,
     this.x,
   });
 
@@ -49,23 +48,22 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
                   children: [
                     CircleAvatar(
                       radius: 20,
-                      child: widget.data.feedbacks[0].avatar != ''
+                      child: widget.feedbacks[0].avatar != ''
                           ? CircleAvatar(
                               backgroundImage: Image.network(
-                                widget.data.feedbacks[0].avatar,
+                                widget.feedbacks[0].avatar,
                                 fit: BoxFit.cover,
                               ).image,
                               radius: 20,
                             )
-                          : Text(widget.data.feedbacks[0].userName[0]
-                              .toUpperCase()),
+                          : Text(widget.feedbacks[0].userName[0].toUpperCase()),
                     ),
                     const SizedBox(width: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.data.feedbacks[0].userName,
+                          widget.feedbacks[0].userName,
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
@@ -73,7 +71,7 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
                           ),
                         ),
                         Text(
-                          widget.data.feedbacks[0].date,
+                          widget.feedbacks[0].date,
                           style: const TextStyle(
                             fontSize: 12,
                             color: Color(0xff5E5E5E),
@@ -84,7 +82,7 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
                     const Spacer(),
                     Row(
                       children: [
-                        ...buildStarIcons(widget.data.feedbacks[0].rating),
+                        ...buildStarIcons(widget.feedbacks[0].rating),
                       ],
                     ),
                   ],
@@ -93,7 +91,7 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
                 Padding(
                   padding: const EdgeInsets.only(left: 5.0),
                   child: Text(
-                    widget.data.feedbacks[0].content.toString(),
+                    widget.feedbacks[0].content.toString(),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -145,10 +143,10 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
                     children: [
                       CircleAvatar(
                         radius: 20,
-                        child: widget.data.feedbacks[1].avatar != ''
+                        child: widget.feedbacks[1].avatar != ''
                             ? CircleAvatar(
                                 backgroundImage: Image.network(
-                                  widget.data.feedbacks[1].avatar,
+                                  widget.feedbacks[1].avatar,
                                   fit: BoxFit.cover,
                                 ).image,
                                 radius: 100,
@@ -163,7 +161,7 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.data.feedbacks[1].userName,
+                            widget.feedbacks[1].userName,
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
@@ -171,7 +169,7 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
                             ),
                           ),
                           Text(
-                            widget.data.feedbacks[1].date,
+                            widget.feedbacks[1].date,
                             style: const TextStyle(
                               fontSize: 12,
                               color: Color(0xff5E5E5E),
@@ -182,14 +180,14 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
                       const Spacer(),
                       Row(
                         children: [
-                          ...buildStarIcons(widget.data.feedbacks[1].rating),
+                          ...buildStarIcons(widget.feedbacks[1].rating),
                         ],
                       ),
                     ],
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    widget.data.feedbacks[1].content.toString(),
+                    widget.feedbacks[1].content.toString(),
                   ),
                   const SizedBox(height: 10),
                   // const Row(

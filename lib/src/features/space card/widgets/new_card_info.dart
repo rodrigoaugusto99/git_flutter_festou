@@ -10,6 +10,7 @@ import 'package:git_flutter_festou/src/features/register/posts/register_post_pag
 import 'package:git_flutter_festou/src/features/space%20card/widgets/calendar_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_card_info_edit_vm.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/new_feedback_widget_limited.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_new_map.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_map.dart';
 import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
@@ -18,7 +19,9 @@ import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%
 import 'package:git_flutter_festou/src/features/space%20card/widgets/utils.dart';
 import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
 import 'package:git_flutter_festou/src/helpers/helpers.dart';
+import 'package:git_flutter_festou/src/models/feedback_model.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:git_flutter_festou/src/services/feedback_service.dart';
 import 'package:git_flutter_festou/src/services/space_service.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -201,9 +204,15 @@ class _NewCardInfoState extends State<NewCardInfo>
   List<String> selectedServices = [];
 
   SpaceModel? space;
+  List<FeedbackModel>? feedbacks;
+  late SpaceService spaceService;
+  late FeedbackService feedbackService;
   Future<void> init() async {
     spaceService = SpaceService();
+    feedbackService = FeedbackService();
     space = await spaceService.getSpaceById(widget.spaceId);
+    feedbacks = await feedbackService.getFeedbacksOrdered(widget.spaceId);
+    feedbacks!.removeWhere((f) => f.deleteAt != null);
     final user = await UserService().getCurrentUserModel();
     if (user != null) {
       if (user.uid == space!.userId) {
@@ -238,6 +247,14 @@ class _NewCardInfoState extends State<NewCardInfo>
       if (!mounted) return;
       setState(() {
         space = newSpace;
+      });
+    });
+    await feedbackService.setSpaceFeedbacksListener(widget.spaceId,
+        (newFeedbacks) {
+      if (!mounted) return;
+      setState(() {
+        feedbacks = newFeedbacks;
+        feedbacks!.removeWhere((f) => f.deleteAt != null);
       });
     });
   }
@@ -579,8 +596,6 @@ class _NewCardInfoState extends State<NewCardInfo>
 
   bool isCarouselVisible = true;
 
-  late SpaceService spaceService;
-
   @override
   Widget build(BuildContext context) {
     void toggle() {
@@ -648,7 +663,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                   ),
                 ),
                 Text(
-                  '(${space!.numComments} avaliações)',
+                  '(${feedbacks!.length} avaliações)',
                   style: const TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 12,
@@ -657,11 +672,28 @@ class _NewCardInfoState extends State<NewCardInfo>
                 ),
               ],
             ),
-          if (space!.numComments != '0')
-            SpaceFeedbacksPageLimited(
-              x: 2,
-              space: space!,
-            ),
+          // if (space!.numComments != '0')
+          //   SpaceFeedbacksPageLimited(
+          //     x: 2,
+          //     space: space!,
+          //   ),
+          if (space!.numComments != '0' && feedbacks != null) ...[
+            if (feedbacks!.isEmpty)
+              const Center(
+                child: Text(
+                  'Sem avaliações(ainda)',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            if (feedbacks!.isNotEmpty)
+              NewFeedbackWidgetLimited(
+                x: 2,
+                feedbacks: feedbacks!,
+              ),
+          ],
           if (space!.numComments != '0')
             InkWell(
               child: Align(

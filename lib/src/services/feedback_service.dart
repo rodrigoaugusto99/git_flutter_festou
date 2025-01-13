@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -240,5 +241,52 @@ class FeedbackService {
       log('Erro ao recuperar os meus feeedbacks do firestore: $e');
       throw RepositoryException(message: 'Erro ao carregar os meus feedbacks');
     }
+  }
+
+  Future<List<FeedbackModel>> getFeedbacksOrdered(String spaceId) async {
+    try {
+      QuerySnapshot allFeedbacksDocuments = await FirebaseFirestore.instance
+          .collection('feedbacks')
+          .where('space_id', isEqualTo: spaceId)
+          .orderBy('date', descending: true)
+          .get();
+
+      List<FeedbackModel> feedbackModels =
+          allFeedbacksDocuments.docs.map((feedbackDocument) {
+        return mapFeedbackDocumentToModel(feedbackDocument);
+      }).toList();
+      return feedbackModels;
+    } catch (e) {
+      log('Erro ao recuperar os feeedbacks do firestore: $e');
+      throw RepositoryException(message: 'Erro ao carregar os feedbacks');
+    }
+  }
+
+  void cancelSpaceSubscription() {
+    spaceFeedbacksSubscription?.cancel();
+  }
+
+  StreamSubscription? spaceFeedbacksSubscription;
+
+  Future<void> setSpaceFeedbacksListener(
+    String spaceId,
+    void Function(List<FeedbackModel> feedbacks) onNewSnapshot,
+  ) async {
+    final query = FirebaseFirestore.instance
+        .collection('feedbacks')
+        .where('space_id', isEqualTo: spaceId)
+        .orderBy('date', descending: true);
+
+    spaceFeedbacksSubscription =
+        query.snapshots().skip(1).listen((snapshot) async {
+      if (snapshot.docs.isEmpty) return;
+
+      List<FeedbackModel> feedbackModels =
+          snapshot.docs.map((feedbackDocument) {
+        return mapFeedbackDocumentToModel(feedbackDocument);
+      }).toList();
+
+      onNewSnapshot(feedbackModels);
+    });
   }
 }

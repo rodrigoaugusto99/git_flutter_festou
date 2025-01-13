@@ -43,8 +43,7 @@ class _SpaceFeedbacksPageLimitedState
 
         return NewFeedbackWidgetLimited(
           x: widget.x,
-          data: data,
-          spaces: spaceFeedbacks,
+          feedbacks: data.feedbacks,
         );
       },
       error: (Object error, StackTrace stackTrace) {
