@@ -16,7 +16,7 @@ class AuthService {
   });
   /*como já veifiquei se o email ja esta cadastrado, entao nao preciso mais passar por essa verificacao, posso chamar o sveUser direto. */
   Future<Either<RepositoryException, Nil>> saveUserWithGoogle(User user) async {
-// Verificar se o usuário possui um documento no Firestore
+    // Verificar se o usuário possui um documento no Firestore
     try {
       final userDocument =
           await usersCollection.where('uid', isEqualTo: user.uid).get();
@@ -45,7 +45,7 @@ class AuthService {
         String? nome,
       }) userData) async {
     try {
-// Crie um novo usuario com os dados fornecidos
+      // Crie um novo usuario com os dados fornecidos
       Map<String, dynamic> newUser = {
         'uid': userData.id,
         'email': userData.email,

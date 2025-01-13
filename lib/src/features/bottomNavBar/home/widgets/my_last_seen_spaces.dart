@@ -28,8 +28,6 @@ class _MyLastSeenSpacesState extends State<MyLastSeenSpaces> {
 
   @override
   Widget build(BuildContext context) {
-    final x = MediaQuery.of(context).size.width;
-    final y = MediaQuery.of(context).size.height;
     return FutureBuilder<List<SpaceModel>?>(
       future: userService.getLastSeenSpaces(),
       builder: (context, snapshot) {

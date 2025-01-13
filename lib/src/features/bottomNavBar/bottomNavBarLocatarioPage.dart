@@ -7,7 +7,6 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/search/search_page.
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
-import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/widgets/notifications_counter.dart';
 import 'package:git_flutter_festou/src/helpers/keys.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
@@ -25,7 +24,6 @@ class _BottomNavBarLocatarioPageState extends State<BottomNavBarLocatarioPage> {
   late PageController _pageController;
   int _currentIndex = 0;
   bool _isLocador = false;
-  bool _isLoading = true;
 
   @override
   void initState() {
@@ -53,7 +51,6 @@ class _BottomNavBarLocatarioPageState extends State<BottomNavBarLocatarioPage> {
       DocumentSnapshot userDoc = querySnapshot.docs.first;
       setState(() {
         _isLocador = userDoc['locador'];
-        _isLoading = false;
       });
 
       if (_isLocador) {
@@ -64,9 +61,7 @@ class _BottomNavBarLocatarioPageState extends State<BottomNavBarLocatarioPage> {
         });
       }
     } else {
-      setState(() {
-        _isLoading = false;
-      });
+      setState(() {});
     }
   }
 
@@ -78,10 +73,6 @@ class _BottomNavBarLocatarioPageState extends State<BottomNavBarLocatarioPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Center(child: CustomLoadingIndicator());
-    }
-
     return Stack(
       children: [
         Scaffold(

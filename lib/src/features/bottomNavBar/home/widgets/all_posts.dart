@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/models/post_model.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 
 class AllPosts extends StatefulWidget {
   const AllPosts({super.key});
@@ -240,42 +242,40 @@ class _AllPostsState extends State<AllPosts> {
         elevation: 0,
         backgroundColor: Colors.white,
       ),
-      body: loadingPosts
-          ? const Center(child: CircularProgressIndicator())
-          : GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-              ),
-              itemCount: hasMorePosts ? posts.length + 1 : posts.length,
-              itemBuilder: (context, index) {
-                if (index == posts.length) {
-                  return hasMorePosts
-                      ? ElevatedButton(
-                          onPressed: _getMorePosts,
-                          child: loadingMorePosts
-                              ? const CircularProgressIndicator()
-                              : const Text('Load More'),
-                        )
-                      : const SizedBox.shrink();
-                }
+      body: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+        ),
+        itemCount: hasMorePosts ? posts.length + 1 : posts.length,
+        itemBuilder: (context, index) {
+          if (index == posts.length) {
+            return hasMorePosts
+                ? ElevatedButton(
+                    onPressed: _getMorePosts,
+                    child: loadingMorePosts
+                        ? const CustomLoadingIndicator()
+                        : const Text('Load More'),
+                  )
+                : const SizedBox.shrink();
+          }
 
-                Map<String, dynamic> post =
-                    posts[index].data() as Map<String, dynamic>;
+          Map<String, dynamic> post =
+              posts[index].data() as Map<String, dynamic>;
 
-                final postModel = PostModel(
-                  title: post['titulo'],
-                  description: post['descricao'],
-                  imagens: List<String>.from(post['imagens'] ?? []),
-                  coverPhoto: post['coverPhoto'],
-                );
+          final postModel = PostModel(
+            title: post['titulo'],
+            description: post['descricao'],
+            imagens: List<String>.from(post['imagens'] ?? []),
+            coverPhoto: post['coverPhoto'],
+          );
 
-                return AllPostsWidget(
-                  postModel: postModel,
-                );
-              },
-            ),
+          return AllPostsWidget(
+            postModel: postModel,
+          );
+        },
+      ),
     );
   }
 }

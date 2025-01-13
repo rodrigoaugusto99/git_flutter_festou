@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarLocatarioPage.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/profile.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarLocadorPage.dart';
+import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/privacy_policy_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/service_terms_page.dart';
 import 'package:git_flutter_festou/src/helpers/constants.dart';
@@ -134,51 +135,37 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
       return const Profile();
     }
     if (isEmailVerified) {
-      if (userModel == null) {
-        return const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
-        );
-      } else {
-        return FutureBuilder<bool>(
+      return FutureBuilder<bool>(
           future: checkPrivacyPolicyAcceptance(),
           builder: (context, privacySnapshot) {
-            if (privacySnapshot.connectionState == ConnectionState.waiting) {
-              return const Scaffold(
-                body: Center(child: CircularProgressIndicator()),
-              );
-            } else {
-              return FutureBuilder<bool>(
-                future: checkServiceTermsAcceptance(),
-                builder: (context, termsSnapshot) {
-                  if (termsSnapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return const Scaffold(
-                      body: Center(child: CircularProgressIndicator()),
-                    );
+            return FutureBuilder<bool>(
+              future: checkServiceTermsAcceptance(),
+              builder: (context, termsSnapshot) {
+                if (termsSnapshot.connectionState == ConnectionState.waiting) {
+                  return const Scaffold(
+                    body: Center(child: CustomLoadingIndicator()),
+                  );
+                } else {
+                  if (privacySnapshot.data == true &&
+                      termsSnapshot.data == true) {
+                    return userModel!.locador
+                        ? const BottomNavBarLocadorPage()
+                        : const BottomNavBarLocatarioPage();
+                  } else if (privacySnapshot.data == false) {
+                    return const PrivacyPolicyPage(duringLogin: true);
+                  } else if (termsSnapshot.data == false) {
+                    return const ServiceTermsPage(duringLogin: true);
                   } else {
-                    if (privacySnapshot.data == true &&
-                        termsSnapshot.data == true) {
-                      return userModel!.locador
-                          ? const BottomNavBarLocadorPage()
-                          : const BottomNavBarLocatarioPage();
-                    } else if (privacySnapshot.data == false) {
-                      return const PrivacyPolicyPage(duringLogin: true);
-                    } else if (termsSnapshot.data == false) {
-                      return const ServiceTermsPage(duringLogin: true);
-                    } else {
-                      return const Scaffold(
-                        body: Center(
-                          child: Text('Erro desconhecido. Tente novamente.'),
-                        ),
-                      );
-                    }
+                    return const Scaffold(
+                      body: Center(
+                        child: Text('Erro desconhecido. Tente novamente.'),
+                      ),
+                    );
                   }
-                },
-              );
-            }
-          },
-        );
-      }
+                }
+              },
+            );
+          });
     } else {
       return Scaffold(
         appBar: AppBar(
