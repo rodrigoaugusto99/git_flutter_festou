@@ -199,7 +199,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 children: [
                   userModel != null
                       ? userService.getAvatar(userModel!)
-                      : const CircularProgressIndicator(),
+                      : const CustomLoadingIndicator(),
                   RichText(
                     text: TextSpan(
                       children: [

@@ -390,9 +390,7 @@ class _MensagensState extends State<Mensagens> {
             body: StreamBuilder<QuerySnapshot>(
               stream: chatsStream,
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CustomLoadingIndicator();
-                } else if (snapshot.hasError) {
+                if (snapshot.hasError) {
                   return const Text('Erro ao carregar os dados');
                 } else {
                   final filteredDocs = snapshot.data!.docs.where((doc) {
@@ -494,7 +492,7 @@ class _MensagensState extends State<Mensagens> {
                           'Erro ao carregar a mensagem: ${combinedSnapshot.error}');
                       return const Text('Erro ao carregar a mensagem');
                     } else if (!combinedSnapshot.hasData) {
-                      return const Center(child: CircularProgressIndicator());
+                      return const Center(child: CustomLoadingIndicator());
                     } else {
                       final messages = combinedSnapshot.data!['messages']
                           as List<QueryDocumentSnapshot<Map<String, dynamic>>>;

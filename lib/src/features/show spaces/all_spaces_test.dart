@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 
 class AllPosts extends StatefulWidget {
   const AllPosts({super.key});
@@ -72,48 +73,45 @@ class _AllPostsState extends State<AllPosts> {
       appBar: AppBar(
         title: const Text('Spaces'),
       ),
-      body: _loadingSpaces
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: _spaces.length + 1,
-              itemBuilder: (context, index) {
-                if (index == _spaces.length) {
-                  return _hasMoreSpaces
-                      ? ElevatedButton(
-                          onPressed: _getMoreSpaces,
-                          child: _loadingMoreSpaces
-                              ? const CircularProgressIndicator()
-                              : const Text('Carregar mais'),
-                        )
-                      : const SizedBox.shrink();
-                }
+      body: ListView.builder(
+        itemCount: _spaces.length + 1,
+        itemBuilder: (context, index) {
+          if (index == _spaces.length) {
+            return _hasMoreSpaces
+                ? ElevatedButton(
+                    onPressed: _getMoreSpaces,
+                    child: _loadingMoreSpaces
+                        ? const CustomLoadingIndicator()
+                        : const Text('Carregar mais'),
+                  )
+                : const SizedBox.shrink();
+          }
 
-                Map<String, dynamic> space =
-                    _spaces[index].data() as Map<String, dynamic>;
+          Map<String, dynamic> space =
+              _spaces[index].data() as Map<String, dynamic>;
 
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        space['titulo'],
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(width: 5),
-                      Text(
-                          style: const TextStyle(
-                            color: Color(0xff5E5E5E),
-                          ),
-                          '(${space['num_comments']})'),
-                    ],
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Text(
+                  space['titulo'],
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
                   ),
-                );
-              },
+                ),
+                const SizedBox(width: 5),
+                Text(
+                    style: const TextStyle(
+                      color: Color(0xff5E5E5E),
+                    ),
+                    '(${space['num_comments']})'),
+              ],
             ),
+          );
+        },
+      ),
     );
   }
 }
-
