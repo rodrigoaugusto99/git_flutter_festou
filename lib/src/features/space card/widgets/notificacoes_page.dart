@@ -79,9 +79,7 @@ class _NotificacoesLocatarioPageState extends State<NotificacoesLocatarioPage> {
       body: FutureBuilder<UserModel?>(
         future: UserService().getCurrentUserModel(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CustomLoadingIndicator());
-          } else if (snapshot.hasError) {
+          if (snapshot.hasError) {
             return const Center(child: Text('Error loading user'));
           } else if (!snapshot.hasData || snapshot.data == null) {
             return const Center(child: Text('User not found'));
@@ -100,25 +98,6 @@ class _NotificacoesLocatarioPageState extends State<NotificacoesLocatarioPage> {
                     setState(() {
                       notificacoes.removeAt(index);
                     });
-
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-
-                    // Mostrar SnackBar com botão de desfazer
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Notificação apagada!'),
-                        action: SnackBarAction(
-                          label: 'Desfazer',
-                          onPressed: () {
-                            // Restaurar a notificação removida
-                            setState(() {
-                              notificacoes.insert(index, removedNotification);
-                            });
-                          },
-                        ),
-                        duration: const Duration(seconds: 3),
-                      ),
-                    );
                   },
                   background: Container(
                     alignment: Alignment.centerLeft,
