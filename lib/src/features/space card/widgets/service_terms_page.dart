@@ -230,7 +230,7 @@ class _ServiceTermsPageState extends ConsumerState<ServiceTermsPage> {
                         });
                       },
                     ),
-                    const Text("Li e aceito os termos de uso"),
+                    const Text("Li e aceito os termos de serviço"),
                   ],
                 ),
               ],
