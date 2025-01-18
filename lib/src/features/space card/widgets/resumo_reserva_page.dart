@@ -188,6 +188,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
   }
 
   CardModel? card;
+  bool isPix = false;
   void getUser() async {
     UserService userService = UserService();
     userModel = await userService.getCurrentUserModel();
@@ -1171,17 +1172,29 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Image.asset('lib/assets/images/image 4cartao_reserva.png'),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      card != null
-                          ? "Cartão ${card!.number.substring(0, 4)}"
-                          : 'Nenhum',
-                      style: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.bold),
-                    ),
+                    if (card != null) ...[
+                      Image.asset(
+                          'lib/assets/images/image 4cartao_reserva.png'),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        "Cartão ${card!.number.substring(0, 4)}",
+                        style: const TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
+                    ] else if (card == null && isPix) ...[
+                      Image.asset(
+                          'lib/assets/images/image 4cartao_reserva.png'),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      const Text(
+                        "Pix",
+                        style: TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
+                    ],
                     const Spacer(),
                     GestureDetector(
                       onTap: () async {
