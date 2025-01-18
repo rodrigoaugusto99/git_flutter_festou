@@ -1287,7 +1287,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                     const Spacer(),
                     GestureDetector(
                       onTap: () async {
-                        CardModel? response = await Navigator.push(
+                        dynamic response = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) {
@@ -1298,7 +1298,13 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                           ),
                         );
                         if (response == null) return;
-                        card = response;
+                        if (response is CardModel) {
+                          card = response;
+                        } else if (response is bool) {
+                          isPix = true;
+                          card = null;
+                        }
+
                         setState(() {});
                       },
                       child: const Text(

@@ -162,6 +162,10 @@ class _PagamentosState extends State<Pagamentos>
                 textButton: '',
                 buttonWithTextLink: false,
                 onTap: () {
+                  if (widget.isReservationFlow) {
+                    Navigator.pop(context, true);
+                    return;
+                  }
                   Navigator.push(
                     context,
                     MaterialPageRoute(
