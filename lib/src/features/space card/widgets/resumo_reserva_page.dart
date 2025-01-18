@@ -504,14 +504,13 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     double feeAmount = totalPrice * feePercentage;
 
     // Calculate final price after adding fee and subtracting cupom
-    int? finalPrice;
+    double? finalPrice;
     if (cupomModel != null) {
       setState(() {
-        finalPrice =
-            (totalPrice + feeAmount).round() - cupomModel!.valorDesconto;
+        finalPrice = (totalPrice + feeAmount) - cupomModel!.valorDesconto;
       });
     } else {
-      finalPrice = (totalPrice + feeAmount).round();
+      finalPrice = (totalPrice + feeAmount);
     }
 
     // Format total price, fee amount, and final price as currency
