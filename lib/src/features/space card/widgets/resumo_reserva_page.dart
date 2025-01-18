@@ -18,6 +18,7 @@ import 'package:git_flutter_festou/src/models/card_model.dart';
 import 'package:git_flutter_festou/src/models/cupom_model.dart';
 import 'package:git_flutter_festou/src/models/reservation_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:git_flutter_festou/src/services/encryption_service.dart';
 import 'package:git_flutter_festou/src/services/reserva_service.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:intl/intl.dart';
@@ -181,15 +182,104 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
   }
 
   UserModel? userModel;
+  String? principalPaymentMethod;
   @override
   void initState() {
-    getUser();
+    init();
     super.initState();
+  }
+
+  Future<void> getPrincipalPaymentMethod() async {
+    try {
+      final userId = userModel?.docId ?? '';
+      final userRef =
+          FirebaseFirestore.instance.collection('users').doc(userId);
+
+      final userSnapshot = await userRef.get();
+      if (userSnapshot.exists) {
+        final userData = userSnapshot.data();
+        if (userData != null && userData['principal_method_payment'] != null) {
+          principalPaymentMethod = userData['principal_method_payment'];
+          setState(() {});
+        }
+      }
+    } catch (e) {
+      dev.log('Erro ao verificar o método principal de pagamento: $e');
+    }
+  }
+
+  void setPrincipalPaymentMethod() {
+    if (principalPaymentMethod == null && principalPaymentMethod == '') return;
+    if (principalPaymentMethod == 'pix') {
+      isPix = true;
+      return;
+    }
+    for (final card in cards) {
+      if (card.id == principalPaymentMethod) {
+        this.card = card;
+      }
+    }
+    setState(() {});
+  }
+
+  Future<void> init() async {
+    await getUser();
+    cards = await fetchCardsFromFirestore();
+    await getPrincipalPaymentMethod();
+    setPrincipalPaymentMethod();
+  }
+
+  List<CardModel> cards = [];
+
+  Future<List<CardModel>> fetchCardsFromFirestore() async {
+    final encryptionService =
+        EncryptionService("criptfestouaplic", "2199478465899478");
+    try {
+      // Obter o documento do usuário pelo `userId`
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('uid', isEqualTo: userModel!.uid)
+          .get();
+
+      // Garantir que os documentos retornados não estejam vazios
+      if (querySnapshot.docs.isNotEmpty) {
+        final userDoc = querySnapshot.docs.first; // Primeiro usuário encontrado
+
+        // Acessar a subcoleção `cards` dentro do usuário
+        final cardsSnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userDoc.id) // ID do usuário
+            .collection('cards') // Subcoleção
+            .get();
+
+        // Mapear os documentos da subcoleção `cards` para `CardModel`
+        return cardsSnapshot.docs.map((cardDoc) {
+          final data = cardDoc.data();
+
+          // Descriptografar os campos sensíveis
+          return CardModel(
+            id: cardDoc.id,
+            name: data['name'],
+            cardName: data['cardName'],
+            number: encryptionService
+                .decrypt(data['number']), // Descriptografar número
+            validateDate: encryptionService
+                .decrypt(data['validateDate']), // Descriptografar validade
+            cvv: encryptionService.decrypt(data['cvv']), // Descriptografar CVV
+          );
+        }).toList();
+      } else {
+        // Caso nenhum usuário seja encontrado, retorne uma lista vazia
+        return [];
+      }
+    } catch (e) {
+      throw Exception('Erro ao buscar os dados: $e');
+    }
   }
 
   CardModel? card;
   bool isPix = false;
-  void getUser() async {
+  Future<void> getUser() async {
     UserService userService = UserService();
     userModel = await userService.getCurrentUserModel();
   }
