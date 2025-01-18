@@ -6,8 +6,10 @@ import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_page.d
 import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_assinado_page.dart';
 import 'package:git_flutter_festou/src/helpers/helpers.dart';
 import 'package:git_flutter_festou/src/models/reservation_model.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:git_flutter_festou/src/services/reserva_service.dart';
+import 'package:git_flutter_festou/src/services/space_service.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:intl/intl.dart';
 
@@ -20,18 +22,59 @@ class Calendario extends StatefulWidget {
 
 class _CalendarioState extends State<Calendario> {
   List<ReservationModel>? minhasReservas;
+  List<SpaceModel>? mySpaces;
   List<ReservationModel>? minhasReservasProximas;
   UserService userService = UserService();
+  SpaceService spaceService = SpaceService();
   UserModel? userModel;
+
+  List<ReservationModel>? selectedSpaceReservations;
+
+  String? selectedSpaceId;
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    //pegando reservas dos meus espacos
-    fetchReservas();
+    init();
   }
 
-  void fetchReservas() async {
+  Future<void> init() async {
+    isLoading = true;
+    await fetchReservas();
+    await fetchSpaces();
+    mountedSetState();
+    isLoading = false;
+  }
+
+  void fetchReservasDoEspaco(String spaceId) async {
+    isLoading = true;
+    selectedSpaceReservations =
+        await ReservaService().getReservationsBySpaceId(spaceId);
+    if (selectedSpaceReservations == null) {
+      log('selectedSpaceReservations null');
+      return;
+    }
+    isLoading = false;
+    mountedSetState();
+  }
+
+  void selectSpace(String spaceId) {
+    selectedSpaceId = spaceId;
+    fetchReservasDoEspaco(spaceId);
+  }
+
+  Future<void> fetchSpaces() async {
+    mySpaces = await spaceService.getMySpaces();
+  }
+
+  void mountedSetState() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> fetchReservas() async {
     userModel = await userService.getCurrentUserModel();
     if (userModel == null) {
       log('user null');
@@ -45,7 +88,6 @@ class _CalendarioState extends State<Calendario> {
       return;
     }
     minhasReservasProximas = getNearbyReservations(minhasReservas!);
-    setState(() {});
   }
 
   List<ReservationModel> getNearbyReservations(
@@ -117,7 +159,7 @@ class _CalendarioState extends State<Calendario> {
         elevation: 0,
         backgroundColor: const Color(0xfff8f8f8),
       ),
-      body: minhasReservas == null
+      body: isLoading
           ? const CircularProgressIndicator()
           : Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -125,6 +167,20 @@ class _CalendarioState extends State<Calendario> {
                 clipBehavior: Clip.none,
                 // padding: const EdgeInsets.all(20),
                 children: [
+                  const Text('Escolha o espaço'),
+                  ...mySpaces!.map((space) {
+                    return GestureDetector(
+                        onTap: () => selectSpace(space.spaceId),
+                        child: Text(space.spaceId));
+                  }),
+                  if (selectedSpaceReservations != null) ...[
+                    const SizedBox(height: 20),
+                    CalendarioExpansioWidget(
+                      minhasReservas: selectedSpaceReservations!,
+                      title: 'Todas as reservas desse espaço',
+                    ),
+                    const SizedBox(height: 20),
+                  ],
                   const Text('Calendário de reservas'),
                   const SizedBox(height: 20),
                   CalendarioExpansioWidget(
@@ -168,8 +224,9 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
 
   Future<void> getUserById(String id) async {
     user = await UserService().getCurrentUserModelById(id: id);
-
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   String formatTime(int hour) {
@@ -293,17 +350,28 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
                           children: [
                             Row(
                               children: [
-                                CircleAvatar(
-                                  backgroundImage: user != null
-                                      ? Image.network(
-                                          user!.avatarUrl,
-                                          fit: BoxFit.cover,
-                                        ).image
-                                      : const AssetImage(
-                                              'lib/assets/images/avatar.png')
-                                          as ImageProvider,
-                                  radius: 20,
-                                ),
+                                if (user != null && user!.avatarUrl != '')
+                                  CircleAvatar(
+                                    backgroundImage: Image.network(
+                                      user!.avatarUrl,
+                                      fit: BoxFit.cover,
+                                    ).image,
+                                    radius: 20,
+                                  ),
+                                if (user != null && user!.avatarUrl.isEmpty)
+                                  CircleAvatar(
+                                    radius: 20,
+                                    child: user!.name.isNotEmpty
+                                        ? Text(
+                                            user!.name[0].toUpperCase(),
+                                            style:
+                                                const TextStyle(fontSize: 25),
+                                          )
+                                        : const Icon(
+                                            Icons.person,
+                                            size: 40,
+                                          ),
+                                  ),
                                 const SizedBox(
                                   width: 5,
                                 ),
