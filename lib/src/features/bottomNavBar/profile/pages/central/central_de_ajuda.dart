@@ -336,34 +336,38 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                                 children: [
                                   const Padding(
                                     padding:
-                                        EdgeInsets.symmetric(horizontal: 12.0),
+                                        EdgeInsets.symmetric(horizontal: 16.0),
                                     child: Text(
                                       'Upload de imagens (máximo 3):',
-                                      style: TextStyle(fontSize: 12),
+                                      style: TextStyle(fontSize: 14),
                                     ),
                                   ),
-                                  GestureDetector(
-                                    onTap: () {},
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 3),
-                                      alignment: Alignment.center,
-                                      height: 35,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(50),
-                                        gradient: const LinearGradient(
-                                          colors: [
-                                            Color(0xff9747FF),
-                                            Color(0xff44300b1),
-                                          ],
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 30.0),
+                                    child: GestureDetector(
+                                      onTap: () {},
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 15, vertical: 5),
+                                        alignment: Alignment.center,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                          gradient: const LinearGradient(
+                                            colors: [
+                                              Color(0xff9747FF),
+                                              Color(0xff44300b1),
+                                            ],
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                          ),
                                         ),
-                                      ),
-                                      child: const Icon(
-                                        Icons.search,
-                                        size: 18,
-                                        color: Colors.white,
+                                        child: const Icon(
+                                          Icons.search,
+                                          size: 18,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -372,16 +376,20 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                               const SizedBox(
                                 height: 10,
                               ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: screenshots.map((x) {
-                                  return Text(
-                                    x,
-                                    style: const TextStyle(
-                                        fontSize: 10, color: Colors.red),
-                                  );
-                                }).toList(),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 8.0, bottom: 8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: screenshots.map((x) {
+                                    return Text(
+                                      x,
+                                      style: const TextStyle(
+                                          fontSize: 12, color: Colors.red),
+                                    );
+                                  }).toList(),
+                                ),
                               ),
                               const SizedBox(
                                 height: 10,
@@ -389,11 +397,12 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                               GestureDetector(
                                 onTap: () {},
                                 child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 15, vertical: 15),
+                                    padding: const EdgeInsets.only(
+                                        right: 15.0,
+                                        left: 15.0,
+                                        bottom: 15.0,
+                                        top: 10.0),
                                     child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 3),
                                       alignment: Alignment.center,
                                       height: 35,
                                       decoration: BoxDecoration(
@@ -416,7 +425,6 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                                       ),
                                     )),
                               ),
-                              const SizedBox(height: 40),
                             ],
                           ),
                       ],
@@ -424,6 +432,7 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                   ),
                 ),
               ),
+              const SizedBox(height: 40),
             ],
           ),
         ),
