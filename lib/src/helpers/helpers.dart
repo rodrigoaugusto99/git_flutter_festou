@@ -14,6 +14,17 @@ Color getColor(double averageRating) {
 double screenWidth(BuildContext context) => MediaQuery.of(context).size.width;
 double screenHeight(BuildContext context) => MediaQuery.of(context).size.height;
 
+const double figmaHeight = 956;
+const double figmaWidth = 412;
+
+double getResponsiveWidth(BuildContext context, double width) {
+  return (width / figmaWidth) * screenWidth(context);
+}
+
+double getResponsiveHeight(BuildContext context, double height) {
+  return (height / figmaHeight) * screenHeight(context);
+}
+
 // "R\$ 2.229,00"; =222900
 int extrairNumerosComoInteiro(String texto) {
   // Remove todos os caracteres não numéricos da string

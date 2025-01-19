@@ -1274,7 +1274,9 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                       ),
                     ] else if (card == null && isPix) ...[
                       Image.asset(
-                          'lib/assets/images/image 4cartao_reserva.png'),
+                        'lib/assets/images/logo_pix.png',
+                        height: 15,
+                      ),
                       const SizedBox(
                         width: 5,
                       ),
@@ -1282,6 +1284,13 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                         "Pix",
                         style: TextStyle(
                             fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
+                    ] else if (card == null && !isPix) ...[
+                      const Text(
+                        "Nenhum método selecionado",
+                        style: TextStyle(
+                          fontSize: 12,
+                        ),
                       ),
                     ],
                     const Spacer(),
@@ -1307,9 +1316,9 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
 
                         setState(() {});
                       },
-                      child: const Text(
-                        'Trocar',
-                        style: TextStyle(
+                      child: Text(
+                        card == null && !isPix ? 'Escolher' : 'Trocar',
+                        style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                           decoration: TextDecoration.underline,
@@ -1446,23 +1455,26 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: GestureDetector(
           onTap: () async {
+            //dev.log(widget.html.toString());
             dev.log(widget.summaryData.selectedFinalDate.toString());
+
             if (widget.assinado && widget.html != null && userModel != null) {
               //todo: pode reservar
-              final reservationModel = ReservationModel(
-                spaceId: widget.summaryData.spaceModel.spaceId,
-                locadorId: widget.summaryData.spaceModel.userId,
-                clientId: userModel!.uid,
-                checkInTime: widget.summaryData.checkInTime,
-                checkOutTime: widget.summaryData.checkOutTime,
-                selectedDate:
-                    Timestamp.fromDate(widget.summaryData.selectedDate),
-                selectedFinalDate:
-                    Timestamp.fromDate(widget.summaryData.selectedFinalDate!),
-                contratoHtml: widget.html!,
-                cardId: card!.id,
-              );
               try {
+                final reservationModel = ReservationModel(
+                  spaceId: widget.summaryData.spaceModel.spaceId,
+                  locadorId: widget.summaryData.spaceModel.userId,
+                  clientId: userModel!.uid,
+                  checkInTime: widget.summaryData.checkInTime,
+                  checkOutTime: widget.summaryData.checkOutTime,
+                  selectedDate:
+                      Timestamp.fromDate(widget.summaryData.selectedDate),
+                  selectedFinalDate:
+                      Timestamp.fromDate(widget.summaryData.selectedFinalDate!),
+                  contratoHtml: widget.html!,
+                  cardId: card?.id,
+                );
+
                 dev.log('Pode reservar.');
                 await ReservaService()
                     .saveReservation(reservationModel: reservationModel);
@@ -1471,6 +1483,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                 Navigator.pop(context);
                 Messages.showSuccess('Reserva concluída com sucesso', context);
               } on Exception catch (e) {
+                dev.log(e.toString());
                 Messages.showError(
                     'Não foi possível concluir a reserva', context);
               }
