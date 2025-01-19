@@ -11,24 +11,20 @@ const List<Color> _kDefaultRainbowColors = [
   Colors.purple,
 ];
 
-void main() => runApp(const CustomLoadingIndicator());
-
 class CustomLoadingIndicator extends StatelessWidget {
   const CustomLoadingIndicator({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Center(
-        child: SizedBox(
-          height: 40,
-          child: LoadingIndicator(
-            indicatorType: Indicator.lineSpinFadeLoader,
-            colors: _kDefaultRainbowColors,
-            strokeWidth: 4.0,
-            pathBackgroundColor: Colors.black45,
-          ),
+    return const Center(
+      child: SizedBox(
+        height: 40,
+        width: 40, // Define largura para evitar problemas de layout
+        child: LoadingIndicator(
+          indicatorType: Indicator.lineSpinFadeLoader,
+          colors: _kDefaultRainbowColors,
+          strokeWidth: 4.0,
+          pathBackgroundColor: Colors.black45,
         ),
       ),
     );
