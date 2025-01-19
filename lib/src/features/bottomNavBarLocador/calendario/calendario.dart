@@ -30,7 +30,7 @@ class _CalendarioState extends State<Calendario> {
 
   List<ReservationModel>? selectedSpaceReservations;
 
-  String? selectedSpaceId;
+  SpaceModel? selectedSpace;
   bool isLoading = false;
 
   @override
@@ -43,6 +43,9 @@ class _CalendarioState extends State<Calendario> {
     isLoading = true;
     await fetchReservas();
     await fetchSpaces();
+    if (mySpaces != null) {}
+    selectSpace(mySpaces!.first);
+
     mountedSetState();
     isLoading = false;
   }
@@ -59,9 +62,9 @@ class _CalendarioState extends State<Calendario> {
     mountedSetState();
   }
 
-  void selectSpace(String spaceId) {
-    selectedSpaceId = spaceId;
-    fetchReservasDoEspaco(spaceId);
+  void selectSpace(SpaceModel space) {
+    selectedSpace = space;
+    fetchReservasDoEspaco(space.spaceId);
   }
 
   Future<void> fetchSpaces() async {
@@ -160,41 +163,168 @@ class _CalendarioState extends State<Calendario> {
         backgroundColor: const Color(0xfff8f8f8),
       ),
       body: isLoading
-          ? const CircularProgressIndicator()
+          ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: ListView(
-                clipBehavior: Clip.none,
-                // padding: const EdgeInsets.all(20),
-                children: [
-                  const Text('Escolha o espaço'),
-                  ...mySpaces!.map((space) {
-                    return GestureDetector(
-                        onTap: () => selectSpace(space.spaceId),
-                        child: Text(space.spaceId));
-                  }),
-                  if (selectedSpaceReservations != null) ...[
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  //clipBehavior: Clip.none,
+                  // padding: const EdgeInsets.all(20),
+                  children: [
+                    const Text('Escolha o espaço'),
                     const SizedBox(height: 20),
+                    ...mySpaces!.map((space) {
+                      return Column(
+                        children: [
+                          SpaceWidget(
+                            isSelected: selectedSpace!.spaceId == space.spaceId,
+                            space: space,
+                            onTap: () => selectSpace(space),
+                          ),
+                          const SizedBox(height: 17),
+                        ],
+                      );
+                    }),
+                    const SizedBox(height: 30),
+                    const Text('Calendário de reservas'),
+                    if (selectedSpaceReservations != null) ...[
+                      const SizedBox(height: 20),
+                      CalendarioExpansioWidget(
+                        minhasReservas: selectedSpaceReservations!,
+                        title: 'Todas as reservas desse espaço',
+                      ),
+                    ],
+                    const SizedBox(height: 14),
                     CalendarioExpansioWidget(
-                      minhasReservas: selectedSpaceReservations!,
-                      title: 'Todas as reservas desse espaço',
+                      minhasReservas: minhasReservas!,
+                      title: 'Todas as reservas',
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 14),
+                    CalendarioExpansioWidget(
+                      minhasReservas: minhasReservasProximas!,
+                      title: 'Próximas reservas',
+                      isNear: true,
+                    ),
                   ],
-                  const Text('Calendário de reservas'),
-                  const SizedBox(height: 20),
-                  CalendarioExpansioWidget(
-                    minhasReservas: minhasReservas!,
-                    title: 'Todas as reservas',
+                ),
+              ),
+            ),
+    );
+  }
+}
+
+class SpaceWidget extends StatelessWidget {
+  final SpaceModel space;
+  final Function()? onTap;
+  final bool isSelected;
+  const SpaceWidget({
+    super.key,
+    required this.space,
+    required this.onTap,
+    required this.isSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 21),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            decContainer(
+              radius: 8,
+              color: Colors.blue,
+              width: screenWidth(context) / 2,
+              height: 61,
+              child: Stack(
+                children: [
+                  Image.network(
+                    space.imagesUrl.isNotEmpty
+                        ? space.imagesUrl[0]
+                        : 'URL de uma imagem padrão ou vazia',
+                    width: screenWidth(context) / 2,
+                    height: 61,
+                    // color: Colors.green,
+
+                    fit: BoxFit.cover,
                   ),
-                  const SizedBox(height: 14),
-                  CalendarioExpansioWidget(
-                    minhasReservas: minhasReservasProximas!,
-                    title: 'Próximas reservas',
-                  ),
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: decContainer(
+                      color: Colors.white.withOpacity(0.8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                space.titulo,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                '${space.bairro}, ${space.cidade}',
+                                style: const TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xff5E5E5E)),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 15),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: getColor(
+                                  double.parse(space.averageRating),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  double.parse(space.averageRating)
+                                      .toStringAsFixed(1),
+                                  style: const TextStyle(
+                                    color: Colors.white, // Cor do texto
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
+            decContainer(
+              allPadding: 3,
+              child: isSelected
+                  ? decContainer(
+                      radius: 20,
+                      color: Colors.black,
+                    )
+                  : null,
+              radius: 40,
+              height: 12,
+              width: 12,
+              color: Colors.white,
+              borderColor: const Color(0xffC6C6C6),
+              borderWidth: 0.8,
+            ),
+            const SizedBox()
+          ],
+        ),
+      ),
     );
   }
 }
@@ -202,10 +332,12 @@ class _CalendarioState extends State<Calendario> {
 class CalendarioExpansioWidget extends StatefulWidget {
   final List<ReservationModel> minhasReservas;
   final String title;
+  final bool isNear;
 
   const CalendarioExpansioWidget({
     required this.minhasReservas,
     required this.title,
+    this.isNear = false,
     super.key,
   });
 
@@ -286,11 +418,20 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
-              Positioned(
-                left: 5,
-                child:
-                    Image.asset('lib/assets/images/IconSearchcalendarbaby.png'),
-              ),
+              if (widget.isNear)
+                Positioned(
+                  left: 5,
+                  child: Image.asset(
+                    'lib/assets/images/Icon SegurançacalendarNow (1).png',
+                    height: 25,
+                  ),
+                ),
+              if (!widget.isNear)
+                Positioned(
+                  left: 5,
+                  child: Image.asset(
+                      'lib/assets/images/IconSearchcalendarbaby.png'),
+                ),
               const SizedBox(width: 10),
               Positioned(
                 left: 40,
