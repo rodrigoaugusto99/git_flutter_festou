@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
 import 'package:image_picker/image_picker.dart';
@@ -65,6 +66,9 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
         return;
       }
 
+      // Obtém o próximo ID do ticket
+      String ticketId = await _generateTicketId();
+
       List<String> imageUrls = [];
 
       for (var image in _images) {
@@ -76,7 +80,7 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
       }
 
       await FirebaseFirestore.instance.collection('tickets').add({
-        'id': FirebaseFirestore.instance.collection('tickets').doc().id,
+        'id': ticketId,
         'title': duvidaEC.text,
         'message': mensagemEC.text,
         'userId': user.uid,
@@ -85,9 +89,11 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text(
-                'Seu ticket foi aberto! Aguarde a resposta em até 3 dias úteis via e-mail. Ticket ID #000001')),
+        SnackBar(
+          content: Text(
+            'Seu ticket foi aberto! Aguarde a resposta em até 3 dias úteis via e-mail. Ticket ID $ticketId',
+          ),
+        ),
       );
 
       duvidaEC.clear();
@@ -100,6 +106,28 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
         SnackBar(content: Text('Erro ao enviar chamado: $e')),
       );
     }
+  }
+
+  Future<String> _generateTicketId() async {
+    final firestore = FirebaseFirestore.instance;
+    final counterRef = firestore.collection('ticket_counters').doc('counter');
+
+    return await firestore.runTransaction((transaction) async {
+      final counterSnapshot = await transaction.get(counterRef);
+
+      int lastId;
+      if (counterSnapshot.exists) {
+        lastId = counterSnapshot['lastId'] as int;
+      } else {
+        lastId = 100100; // Valor inicial
+      }
+
+      int newId = lastId + 1;
+
+      transaction.set(counterRef, {'lastId': newId});
+
+      return '#$newId';
+    });
   }
 
   Future<List<Map<String, dynamic>>> fetchQuestions() async {
@@ -301,10 +329,12 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                           itemCount: questions.length,
                           itemBuilder: (context, index) {
                             final question = questions[index]['question']!;
+                            final response = questions[index]['response']!;
                             return Padding(
                               padding: const EdgeInsets.only(right: 20),
                               child: DuvidaWidget(
                                 text: question,
+                                response: response,
                               ),
                             );
                           },
@@ -425,17 +455,17 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     const Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 8.0),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 18.0),
                                       child: Text(
-                                        'Upload de imagens (máximo 3):',
+                                        'Upload de imagens (máx. 3):',
                                         style: TextStyle(fontSize: 14),
                                       ),
                                     ),
                                     const SizedBox(height: 20),
                                     Padding(
                                       padding:
-                                          const EdgeInsets.only(right: 30.0),
+                                          const EdgeInsets.only(right: 35.0),
                                       child: GestureDetector(
                                         onTap: () {
                                           _pickImages();
@@ -470,61 +500,73 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                                 const SizedBox(
                                   height: 20,
                                 ),
-                                Wrap(
-                                  spacing: 8,
-                                  children:
-                                      List.generate(_images.length, (index) {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          _selectedImageIndex = index;
-                                        });
-                                      },
-                                      child: Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          ColorFiltered(
-                                            colorFilter:
-                                                _selectedImageIndex == index
-                                                    ? ColorFilter.mode(
-                                                        Colors.black
-                                                            .withOpacity(0.5),
-                                                        BlendMode.srcATop)
-                                                    : const ColorFilter.mode(
-                                                        Colors.transparent,
-                                                        BlendMode.dst),
-                                            child: Image.file(
-                                              _images[index],
-                                              width: 80,
-                                              height: 80,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                          if (_selectedImageIndex == index)
-                                            Positioned(
-                                              child: GestureDetector(
-                                                onTap: () =>
-                                                    _removeImage(index),
-                                                child: Container(
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    color: Colors.red,
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  padding:
-                                                      const EdgeInsets.all(4),
-                                                  child: Image.asset(
-                                                    'lib/assets/images/Ellipse 37lixeira-foto.png',
-                                                    width: 30,
+                                _images.isNotEmpty
+                                    ? Wrap(
+                                        spacing: 8,
+                                        children: List.generate(_images.length,
+                                            (index) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                _selectedImageIndex = index;
+                                              });
+                                            },
+                                            child: Stack(
+                                              alignment: Alignment.center,
+                                              children: [
+                                                ColorFiltered(
+                                                  colorFilter:
+                                                      _selectedImageIndex ==
+                                                              index
+                                                          ? ColorFilter.mode(
+                                                              Colors.black
+                                                                  .withOpacity(
+                                                                      0.5),
+                                                              BlendMode.srcATop)
+                                                          : const ColorFilter
+                                                              .mode(
+                                                              Colors
+                                                                  .transparent,
+                                                              BlendMode.dst),
+                                                  child: Image.file(
+                                                    _images[index],
+                                                    width: 80,
+                                                    height: 80,
+                                                    fit: BoxFit.cover,
                                                   ),
                                                 ),
-                                              ),
+                                                if (_selectedImageIndex ==
+                                                    index)
+                                                  Positioned(
+                                                    child: GestureDetector(
+                                                      onTap: () =>
+                                                          _removeImage(index),
+                                                      child: Container(
+                                                        decoration:
+                                                            const BoxDecoration(
+                                                          color: Colors.red,
+                                                          shape:
+                                                              BoxShape.circle,
+                                                        ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(4),
+                                                        child: Image.asset(
+                                                          'lib/assets/images/Ellipse 37lixeira-foto.png',
+                                                          width: 30,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                              ],
                                             ),
-                                        ],
+                                          );
+                                        }),
+                                      )
+                                    : const Text(
+                                        "Se necessário, selecione até 3 imagens",
+                                        style: TextStyle(fontSize: 12),
                                       ),
-                                    );
-                                  }),
-                                ),
                                 const SizedBox(
                                   height: 20,
                                 ),
@@ -581,33 +623,58 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
 
 class DuvidaWidget extends StatelessWidget {
   final String text;
+  final String response;
+
   const DuvidaWidget({
     super.key,
     required this.text,
+    required this.response,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      height: 107,
-      width: 143,
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            spreadRadius: 1,
-            blurRadius: 3,
-            offset: const Offset(0, 3),
+    return GestureDetector(
+      onTap: () {
+        _showQuestionDialog(context, text, response);
+      },
+      child: Container(
+        alignment: Alignment.center,
+        height: 107,
+        width: 143,
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              spreadRadius: 1,
+              blurRadius: 3,
+              offset: const Offset(0, 3),
+            ),
+          ],
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          color: const Color(0xffF0F0F0),
+        ),
+        child: Text(
+          text,
+          style: const TextStyle(fontSize: 12),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+
+  void _showQuestionDialog(
+      BuildContext context, String question, String answer) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(question),
+        content: Text(answer),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Ok'),
           ),
         ],
-        borderRadius: const BorderRadius.all(Radius.circular(10)),
-        color: const Color(0xffF0F0F0),
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(fontSize: 12),
-        textAlign: TextAlign.center,
       ),
     );
   }
