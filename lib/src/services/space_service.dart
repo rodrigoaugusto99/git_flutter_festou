@@ -117,6 +117,24 @@ class SpaceService {
     }
   }
 
+  Future<List<SpaceModel>?> getMySpaces() async {
+    try {
+      //espaços a serem buildado
+      final mySpaceDocuments =
+          await spacesCollection.where('user_id', isEqualTo: user.uid).get();
+
+      List<SpaceModel> spaceModels =
+          await Future.wait(mySpaceDocuments.docs.map((spaceDocument) {
+        return mapSpaceDocumentToModel(spaceDocument, false);
+      }).toList());
+
+      return spaceModels;
+    } catch (e) {
+      log('Erro ao recuperar meus espaços: $e');
+      throw RepositoryException(message: 'Erro ao carregar meus espaços');
+    }
+  }
+
   Future<void> toggleFavoriteSpace(String spaceId, bool isFavorited) async {
     try {
       // Busca o documento do usuário

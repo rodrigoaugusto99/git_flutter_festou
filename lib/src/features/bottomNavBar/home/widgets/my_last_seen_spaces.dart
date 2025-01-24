@@ -32,6 +32,7 @@ class _MyLastSeenSpacesState extends State<MyLastSeenSpaces> {
       future: userService.getLastSeenSpaces(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
+          //return const SizedBox();
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -88,6 +89,10 @@ class _MyLastSeenSpacesState extends State<MyLastSeenSpaces> {
               padding: EdgeInsets.only(left: 16, bottom: 16, top: 30),
               child: Text('Últimos vistos'),
             ),
+            // ...spaces.asMap().entries.map((entry) {
+            //   final space = entry.value;
+            //   return EachLastSeen(space: space);
+            // }),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               height: 150,

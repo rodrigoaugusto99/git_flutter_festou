@@ -156,6 +156,7 @@ class _NewCardViewState extends State<NewCardView> {
   }
 
   Future<void> saveOrUpdateCard(CardModel card) async {
+    // return;
     final cardRef = getUserRef().collection('cards').doc(widget.id);
 
     if (widget.id != null) {
@@ -188,6 +189,10 @@ class _NewCardViewState extends State<NewCardView> {
           .collection('cards')
           .add(card.toMap(isUpdate: false));
       card.id = newCardRef.id;
+
+      if (_isChecked) {
+        await updatePrincipalPaymentMethod(card.id);
+      }
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Novo cartão adicionado com sucesso!')),
