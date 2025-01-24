@@ -99,6 +99,7 @@ dependencies:
   patrol_finders: ^2.1.2
   integration_test:
     sdk: flutter
+  flutter_native_splash: ^2.4.1
 
 dev_dependencies:
   flutter_test:
