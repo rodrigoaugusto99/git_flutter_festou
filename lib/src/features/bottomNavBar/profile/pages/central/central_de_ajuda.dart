@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/central/perguntas_frequentes.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/central/widget/question.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
@@ -811,7 +812,7 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                     ),
                     const SizedBox(height: 20),
                     FutureBuilder<List<Map<String, dynamic>>>(
-                      future: _questionsFuture, // Usa o Future armazenado
+                      future: _questionsFuture,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -824,8 +825,9 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                           return const Center(
                               child: Text('Nenhuma pergunta encontrada.'));
                         }
-
-                        final questions = snapshot.data!;
+                        final limitedQuestions = snapshot.data!.length > 3
+                            ? snapshot.data!.sublist(0, 3)
+                            : snapshot.data!;
 
                         return Padding(
                           padding: const EdgeInsets.only(left: 30, right: 10),
@@ -835,17 +837,64 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                               shrinkWrap: true,
                               clipBehavior: Clip.none,
                               scrollDirection: Axis.horizontal,
-                              itemCount: questions.length,
+                              itemCount: limitedQuestions.length + 1,
                               itemBuilder: (context, index) {
-                                final question = questions[index]['question']!;
-                                final response = questions[index]['response']!;
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 20),
-                                  child: QuestionWidget(
-                                    text: question,
-                                    response: response,
-                                  ),
-                                );
+                                if (index < limitedQuestions.length) {
+                                  final question =
+                                      limitedQuestions[index]['question'];
+                                  final response =
+                                      limitedQuestions[index]['response'];
+
+                                  return Padding(
+                                    padding: const EdgeInsets.only(right: 20),
+                                    child: QuestionWidget(
+                                      text: question,
+                                      response: response,
+                                    ),
+                                  );
+                                } else {
+                                  // Botão "Ver mais"
+                                  return SizedBox(
+                                    height: 250,
+                                    width: 170,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) {
+                                              return PerguntasFrequentes(
+                                                  perguntas: snapshot.data!);
+                                            },
+                                          ),
+                                        );
+                                      },
+                                      child: const Padding(
+                                        padding: EdgeInsets.only(left: 15.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Ver todos',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w700),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 5, top: 2),
+                                              child: Icon(
+                                                Icons.arrow_forward_ios,
+                                                size: 15,
+                                                color: Color(0xff4300B1),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }
                               },
                             ),
                           ),
@@ -1324,9 +1373,28 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                                           3; // Carrega mais 3 tickets
                                     });
                                   },
-                                  child: const Text(
-                                    'Ver mais',
-                                    style: TextStyle(color: Colors.purple),
+                                  child: const Padding(
+                                    padding: EdgeInsets.only(left: 15.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Ver mais',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              EdgeInsets.only(left: 5, top: 2),
+                                          child: Icon(
+                                            Icons.keyboard_arrow_down,
+                                            size: 25,
+                                            color: Color(0xff4300B1),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
                             ],
