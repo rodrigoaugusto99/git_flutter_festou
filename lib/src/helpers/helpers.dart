@@ -1,6 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+Color getColor(double averageRating) {
+  if (averageRating >= 4) {
+    return Colors.green; // Ícone verde para rating maior ou igual a 4
+  } else if (averageRating >= 2 && averageRating < 4) {
+    return Colors.orange; // Ícone laranja para rating entre 2 e 4 (exclusive)
+  } else {
+    return Colors.red; // Ícone vermelho para rating abaixo de 2
+  }
+}
+
+double screenWidth(BuildContext context) => MediaQuery.of(context).size.width;
+double screenHeight(BuildContext context) => MediaQuery.of(context).size.height;
+
+const double figmaHeight = 956;
+const double figmaWidth = 412;
+
+double getResponsiveWidth(BuildContext context, double width) {
+  return (width / figmaWidth) * screenWidth(context);
+}
+
+double getResponsiveHeight(BuildContext context, double height) {
+  return (height / figmaHeight) * screenHeight(context);
+}
+
 // "R\$ 2.229,00"; =222900
 int extrairNumerosComoInteiro(String texto) {
   // Remove todos os caracteres não numéricos da string

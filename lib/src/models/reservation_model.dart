@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:git_flutter_festou/src/models/user_model.dart';
 
 class ReservationModel {
   final String? id;
@@ -17,6 +18,7 @@ class ReservationModel {
   final String? cardId;
   final String? reason;
   final Timestamp? canceledAt;
+  UserModel? user;
 
   ReservationModel({
     required this.spaceId,
@@ -32,6 +34,7 @@ class ReservationModel {
     required this.contratoHtml,
     this.cardId,
     this.canceledAt,
+    this.user,
   });
 
   factory ReservationModel.fromMap(Map<String, dynamic> map, String id) {

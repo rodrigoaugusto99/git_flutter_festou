@@ -6,8 +6,10 @@ import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_page.d
 import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_assinado_page.dart';
 import 'package:git_flutter_festou/src/helpers/helpers.dart';
 import 'package:git_flutter_festou/src/models/reservation_model.dart';
+import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:git_flutter_festou/src/services/reserva_service.dart';
+import 'package:git_flutter_festou/src/services/space_service.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:intl/intl.dart';
 
@@ -20,18 +22,67 @@ class Calendario extends StatefulWidget {
 
 class _CalendarioState extends State<Calendario> {
   List<ReservationModel>? minhasReservas;
+  List<SpaceModel>? mySpaces;
   List<ReservationModel>? minhasReservasProximas;
   UserService userService = UserService();
+  SpaceService spaceService = SpaceService();
   UserModel? userModel;
+
+  List<ReservationModel>? selectedSpaceReservations;
+
+  SpaceModel? selectedSpace;
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    //pegando reservas dos meus espacos
-    fetchReservas();
+    init();
   }
 
-  void fetchReservas() async {
+  Future<void> init() async {
+    isLoading = true;
+    await fetchReservas();
+    await fetchSpaces();
+    if (mySpaces != null) {}
+    selectSpace(mySpaces!.first);
+
+    mountedSetState();
+    isLoading = false;
+  }
+
+  void fetchReservasDoEspaco(String spaceId) async {
+    if (minhasReservas == null) {
+      return;
+    }
+    isLoading = true;
+    // selectedSpaceReservations =
+    //     await ReservaService().getReservationsBySpaceId(spaceId);
+    selectedSpaceReservations =
+        minhasReservas!.where((r) => r.spaceId == spaceId).toList();
+    if (selectedSpaceReservations == null) {
+      log('selectedSpaceReservations null');
+      return;
+    }
+    isLoading = false;
+    mountedSetState();
+  }
+
+  void selectSpace(SpaceModel space) {
+    selectedSpace = space;
+    fetchReservasDoEspaco(space.spaceId);
+  }
+
+  Future<void> fetchSpaces() async {
+    mySpaces = await spaceService.getMySpaces();
+  }
+
+  void mountedSetState() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> fetchReservas() async {
     userModel = await userService.getCurrentUserModel();
     if (userModel == null) {
       log('user null');
@@ -40,12 +91,16 @@ class _CalendarioState extends State<Calendario> {
 
     minhasReservas =
         await ReservaService().getReservationsByLocadorId(userModel!.uid);
+
     if (minhasReservas == null) {
       log('minhasReservas null');
       return;
     }
+    for (final reserva in minhasReservas!) {
+      final user = await getUserById(reserva.clientId);
+      reserva.user = user;
+    }
     minhasReservasProximas = getNearbyReservations(minhasReservas!);
-    setState(() {});
   }
 
   List<ReservationModel> getNearbyReservations(
@@ -68,6 +123,11 @@ class _CalendarioState extends State<Calendario> {
           selectedDateOnly.isAtSameMomentAs(tomorrow) ||
           selectedDateOnly.isAtSameMomentAs(dayAfterTomorrow);
     }).toList();
+  }
+
+  Future<UserModel?> getUserById(String id) async {
+    final user = await UserService().getCurrentUserModelById(id: id);
+    return user;
   }
 
   @override
@@ -117,28 +177,169 @@ class _CalendarioState extends State<Calendario> {
         elevation: 0,
         backgroundColor: const Color(0xfff8f8f8),
       ),
-      body: minhasReservas == null
-          ? const CircularProgressIndicator()
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: ListView(
-                clipBehavior: Clip.none,
-                // padding: const EdgeInsets.all(20),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  //clipBehavior: Clip.none,
+                  // padding: const EdgeInsets.all(20),
+                  children: [
+                    const Text('Escolha o espaço'),
+                    const SizedBox(height: 20),
+                    ...mySpaces!.map((space) {
+                      return Column(
+                        children: [
+                          SpaceWidget(
+                            isSelected: selectedSpace!.spaceId == space.spaceId,
+                            space: space,
+                            onTap: () => selectSpace(space),
+                          ),
+                          const SizedBox(height: 17),
+                        ],
+                      );
+                    }),
+                    const SizedBox(height: 30),
+                    const Text('Calendário de reservas'),
+                    if (selectedSpaceReservations != null) ...[
+                      const SizedBox(height: 20),
+                      CalendarioExpansioWidget(
+                        minhasReservas: selectedSpaceReservations!,
+                        title: 'Todas as reservas desse espaço',
+                      ),
+                    ],
+                    const SizedBox(height: 14),
+                    CalendarioExpansioWidget(
+                      minhasReservas: minhasReservas!,
+                      title: 'Todas as reservas',
+                    ),
+                    const SizedBox(height: 14),
+                    CalendarioExpansioWidget(
+                      minhasReservas: minhasReservasProximas!,
+                      title: 'Próximas reservas',
+                      isNear: true,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+    );
+  }
+}
+
+class SpaceWidget extends StatelessWidget {
+  final SpaceModel space;
+  final Function()? onTap;
+  final bool isSelected;
+  const SpaceWidget({
+    super.key,
+    required this.space,
+    required this.onTap,
+    required this.isSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 21),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            decContainer(
+              radius: 8,
+              color: Colors.blue,
+              width: screenWidth(context) / 2,
+              height: 61,
+              child: Stack(
                 children: [
-                  const Text('Calendário de reservas'),
-                  const SizedBox(height: 20),
-                  CalendarioExpansioWidget(
-                    minhasReservas: minhasReservas!,
-                    title: 'Todas as reservas',
+                  Image.network(
+                    space.imagesUrl.isNotEmpty
+                        ? space.imagesUrl[0]
+                        : 'URL de uma imagem padrão ou vazia',
+                    width: screenWidth(context) / 2,
+                    height: 61,
+                    // color: Colors.green,
+
+                    fit: BoxFit.cover,
                   ),
-                  const SizedBox(height: 14),
-                  CalendarioExpansioWidget(
-                    minhasReservas: minhasReservasProximas!,
-                    title: 'Próximas reservas',
-                  ),
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: decContainer(
+                      color: Colors.white.withOpacity(0.8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                space.titulo,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                '${space.bairro}, ${space.cidade}',
+                                style: const TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xff5E5E5E)),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 15),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: getColor(
+                                  double.parse(space.averageRating),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  double.parse(space.averageRating)
+                                      .toStringAsFixed(1),
+                                  style: const TextStyle(
+                                    color: Colors.white, // Cor do texto
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
+            decContainer(
+              allPadding: 3,
+              child: isSelected
+                  ? decContainer(
+                      radius: 20,
+                      color: Colors.black,
+                    )
+                  : null,
+              radius: 40,
+              height: 12,
+              width: 12,
+              color: Colors.white,
+              borderColor: const Color(0xffC6C6C6),
+              borderWidth: 0.8,
+            ),
+            const SizedBox()
+          ],
+        ),
+      ),
     );
   }
 }
@@ -146,10 +347,12 @@ class _CalendarioState extends State<Calendario> {
 class CalendarioExpansioWidget extends StatefulWidget {
   final List<ReservationModel> minhasReservas;
   final String title;
+  final bool isNear;
 
   const CalendarioExpansioWidget({
     required this.minhasReservas,
     required this.title,
+    this.isNear = false,
     super.key,
   });
 
@@ -159,18 +362,12 @@ class CalendarioExpansioWidget extends StatefulWidget {
 }
 
 class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
-  UserModel? user;
+  //UserModel? user;
   // @override
   // void initState() {
   //   super.initState();
   //   getUserById();
   // }
-
-  Future<void> getUserById(String id) async {
-    user = await UserService().getCurrentUserModelById(id: id);
-
-    setState(() {});
-  }
 
   String formatTime(int hour) {
     String hourStr = hour.toString().padLeft(2, '0');
@@ -194,6 +391,31 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
     DateTime date = timestamp.toDate();
     DateFormat formatter = DateFormat('d \'de\' MMMM \'de\' yyyy', 'pt_BR');
     return formatter.format(date);
+  }
+
+  void showCancellationReasonDialog(BuildContext context, String reason) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Motivo do Cancelamento'),
+          content: Text(
+            reason.isNotEmpty
+                ? reason
+                : 'Nenhum motivo foi fornecido para este cancelamento.',
+            style: const TextStyle(fontSize: 16),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Fecha o diálogo
+              },
+              child: const Text('Fechar'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   // bool isDateInFuture(String dateStr) {
@@ -229,11 +451,20 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
-              Positioned(
-                left: 5,
-                child:
-                    Image.asset('lib/assets/images/IconSearchcalendarbaby.png'),
-              ),
+              if (widget.isNear)
+                Positioned(
+                  left: 5,
+                  child: Image.asset(
+                    'lib/assets/images/Icon SegurançacalendarNow (1).png',
+                    height: 25,
+                  ),
+                ),
+              if (!widget.isNear)
+                Positioned(
+                  left: 5,
+                  child: Image.asset(
+                      'lib/assets/images/IconSearchcalendarbaby.png'),
+                ),
               const SizedBox(width: 10),
               Positioned(
                 left: 40,
@@ -248,7 +479,8 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
           //todo: botao cancelar; check/close icon
           children: widget.minhasReservas.map((reserva) {
             bool eventInFuture = isDateInFuture(reserva.selectedFinalDate);
-            getUserById(reserva.clientId);
+            //getUserById(reserva.clientId);
+            final user = reserva.user;
 
             return Container(
               decoration: BoxDecoration(
@@ -259,20 +491,20 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
                 children: [
                   Container(
                     color: Colors.white,
-                    child: const Padding(
-                      padding: EdgeInsets.only(left: 23, top: 11),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 23, top: 11),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '20 de Mai / 2024',
-                            style: TextStyle(
+                            formatTimestamp(reserva.createdAt)!,
+                            style: const TextStyle(
                               color: Color(0xff4300B1),
                               fontWeight: FontWeight.bold,
                               fontSize: 12,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 11,
                           ),
                         ],
@@ -280,9 +512,20 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
                     ),
                   ),
                   Stack(
+                    alignment: Alignment.center,
                     children: [
                       Image.asset(
                           'lib/assets/images/Rectangle 108imageBehind.png'),
+                      if (reserva.canceledAt != null)
+                        Image.asset(
+                          'lib/assets/images/reserva-cancelada.png',
+                          height: getResponsiveWidth(context, 108),
+                        ),
+                      if (reserva.canceledAt == null)
+                        Image.asset(
+                          'lib/assets/images/reserva-confirmada.png',
+                          height: getResponsiveWidth(context, 90),
+                        ),
                       decContainer(
                         topPadding: 5,
                         bottomPadding: 9,
@@ -293,27 +536,51 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
                           children: [
                             Row(
                               children: [
-                                CircleAvatar(
-                                  backgroundImage: user != null
-                                      ? Image.network(
-                                          user!.avatarUrl,
-                                          fit: BoxFit.cover,
-                                        ).image
-                                      : const AssetImage(
-                                              'lib/assets/images/avatar.png')
-                                          as ImageProvider,
-                                  radius: 20,
-                                ),
+                                if (user != null && user.avatarUrl != '')
+                                  CircleAvatar(
+                                    backgroundImage: Image.network(
+                                      user.avatarUrl,
+                                      fit: BoxFit.cover,
+                                    ).image,
+                                    radius: 20,
+                                  ),
+                                if (user != null && user.avatarUrl.isEmpty)
+                                  CircleAvatar(
+                                    radius: 20,
+                                    child: user.name.isNotEmpty
+                                        ? Text(
+                                            user.name[0].toUpperCase(),
+                                            style:
+                                                const TextStyle(fontSize: 25),
+                                          )
+                                        : const Icon(
+                                            Icons.person,
+                                            size: 40,
+                                          ),
+                                  ),
                                 const SizedBox(
                                   width: 5,
                                 ),
                                 Text(
-                                  user != null ? user!.name : '',
+                                  user != null ? user.name : '',
                                   style: const TextStyle(
                                     fontSize: 11,
                                   ),
                                 ),
                                 const Spacer(),
+                                if (reserva.canceledAt != null) ...[
+                                  GestureDetector(
+                                    onTap: () => showCancellationReasonDialog(
+                                        context, reserva.reason!),
+                                    child: Icon(
+                                      Icons.info,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 7,
+                                  ),
+                                ],
                                 decContainer(
                                   onTap: eventInFuture
                                       ? () {
@@ -327,13 +594,14 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
                                           );
                                         }
                                       : null,
-                                  allPadding: 5,
+                                  allPadding: 4,
                                   radius: 100,
                                   color: eventInFuture
                                       ? const Color(0xffF3F3F3)
                                       : const Color(0xff979797),
                                   child: Icon(
                                     Icons.chat_bubble,
+                                    size: 12,
                                     color: eventInFuture
                                         ? const Color(0xff4300B1)
                                         : const Color(0xffD4D4D4),
