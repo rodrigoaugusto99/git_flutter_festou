@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/avaliacoes_meus_espacos_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/login_seguranca.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/widgets/my_row.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/minhas_atividades_page.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_page.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 
@@ -29,7 +29,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        myRow(
+        MyRow(
           text: 'Informações pessoais',
           onTap: () => Navigator.push(
             context,
@@ -39,12 +39,12 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
             ),
           ),
           icon1: Image.asset(
-            'lib/assets/images/Icon Personinformacoespessoais.png',
+            'lib/assets/images/icon_pessoa.png',
             width: 20,
           ),
         ),
         const SizedBox(height: 16),
-        myRow(
+        MyRow(
           text: 'Login e Segurança',
           onTap: () => Navigator.push(
             context,
@@ -52,12 +52,11 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
               builder: (context) => const LoginSeguranca(),
             ),
           ),
-          icon1: Image.asset(
-              'lib/assets/images/Icon Segurançalogineseguranca.png'),
+          icon1: Image.asset('lib/assets/images/icon_privacidade.png'),
         ),
         if (!widget.userModel.locador) ...[
           const SizedBox(height: 16),
-          myRow(
+          MyRow(
             text: 'Métodos de pagamento',
             onTap: () => Navigator.push(
               context,
@@ -71,7 +70,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
           ),
         ],
         const SizedBox(height: 16),
-        myRow(
+        MyRow(
           text: widget.userModel.locador
               ? 'Avaliações dos meus espaços'
               : 'Minhas reservas e avaliações',
@@ -83,11 +82,11 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
                     : MinhasAtividadesPage(userId: widget.userModel.uid)),
           ),
           icon1: Image.asset(
-            'lib/assets/images/Icon Históricominhnasatividades.png',
+            'lib/assets/images/icon_disponibilizar.png',
           ),
         ),
         const SizedBox(height: 16),
-        myRow(
+        MyRow(
           text: 'Minhas notificações',
           onTap: () => Navigator.push(
             context,
@@ -106,7 +105,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
               return Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  myRow(
+                  MyRow(
                     text: 'Mensagens',
                     onTap: () => Navigator.push(
                       context,
@@ -114,7 +113,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
                         builder: (context) => const Mensagens(),
                       ),
                     ),
-                    icon1: Image.asset('lib/assets/images/icon_messages.png'),
+                    icon1: Image.asset('lib/assets/images/icon_mensagens.png'),
                   ),
                   if (unreadCount > 0)
                     Positioned(

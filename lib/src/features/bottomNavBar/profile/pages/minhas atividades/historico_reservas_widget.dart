@@ -70,7 +70,7 @@ class _HistoricoReservasWidgetState extends State<HistoricoReservasWidget> {
           shape: const RoundedRectangleBorder(
             side: BorderSide.none,
           ),
-          leading: Image.asset('lib/assets/images/Icon ratingmyava.png'),
+          leading: Image.asset('lib/assets/images/icon_avaliacao.png'),
           title: const Text('Minhas reservas'),
           children: [
             ListView.builder(
@@ -223,8 +223,8 @@ class _HistoricoReservasTileState extends State<HistoricoReservasTile> {
                     top: 10,
                     bottom: 50,
                     child: decContainer(
-                      child: Image.asset(
-                          'lib/assets/images/reserva-cancelada.png'),
+                      child:
+                          Image.asset('lib/assets/images/imagem_cancelado.png'),
                     ),
                   ),
                 if (widget.reservationModel.canceledAt != null)
@@ -235,7 +235,7 @@ class _HistoricoReservasTileState extends State<HistoricoReservasTile> {
                       onTap: () => showCancellationReasonDialog(
                           context, widget.reservationModel.reason!),
                       child: Image.asset(
-                        'lib/assets/images/info.png',
+                        'lib/assets/images/imagem_info.png',
                         scale: 2.5,
                       ),
                     ),

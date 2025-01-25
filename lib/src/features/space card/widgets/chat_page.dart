@@ -543,8 +543,8 @@ class _ChatPageState extends State<ChatPage> {
                       IconButton(
                         icon: Image.asset(
                           isEmojiVisible
-                              ? 'lib/assets/images/keyboard.png'
-                              : 'lib/assets/images/emoji.png',
+                              ? 'lib/assets/images/icon_teclado.png'
+                              : 'lib/assets/images/icon_emoji.png',
                           width: 25,
                         ),
                         onPressed: () {
@@ -589,7 +589,8 @@ class _ChatPageState extends State<ChatPage> {
               ),
               IconButton(
                 onPressed: sendMessage,
-                icon: Image.asset('lib/assets/images/send.png', width: 45),
+                icon: Image.asset('lib/assets/images/imagem_enviar.png',
+                    width: 45),
               ),
             ],
           ),

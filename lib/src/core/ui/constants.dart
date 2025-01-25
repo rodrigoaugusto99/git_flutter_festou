@@ -14,16 +14,14 @@ sealed class ColorsConstants {
 const String apiKey = "AIzaSyBQadIJFUXrUjxIdXp9ecq10UCesRrMDd8";
 
 sealed class ImageConstants {
-  static const loginBackground = 'lib/assets/images/background_login.png';
-  static const gliterBlackground = 'lib/assets/images/gliter.jpeg';
-  static const ballsBackground = 'lib/assets/images/balls.jpeg';
   static const avatar = 'lib/assets/images/avatar.png';
-  static const serpentinad = 'lib/assets/images/serpentina-direita.png';
-  static const serpentinae = 'lib/assets/images/serpentina-esquerda.png';
+  static const loginBackground = 'lib/assets/images/background_festou.png';
+  static const serpentinad =
+      'lib/assets/images/background_serpentina_direita.png';
+  static const serpentinae =
+      'lib/assets/images/background_serpentina_esquerda.png';
   static const festouLogo = 'lib/assets/images/logo_festou.png';
-  static const festouLogo2 = 'lib/assets/images/festou-logo.png';
-  static const googleLogo = 'lib/assets/images/google.png';
-  static const dialog = 'lib/assets/images/dialog.png';
+  static const googleLogo = 'lib/assets/images/logo_google.png';
 }
 
 sealed class TextConstants {
@@ -39,7 +37,8 @@ sealed class ListConstants {
     'Cozinha',
     'Garçons',
     'Decoração',
-    'Som e Iluminação',
+    'Iluminação',
+    'Som',
     'Estacionamento',
     'Banheiros',
     'Segurança',

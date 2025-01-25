@@ -455,15 +455,14 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
                 Positioned(
                   left: 5,
                   child: Image.asset(
-                    'lib/assets/images/Icon SegurançacalendarNow (1).png',
+                    'lib/assets/images/icon_calendario_hora.png',
                     height: 25,
                   ),
                 ),
               if (!widget.isNear)
                 Positioned(
                   left: 5,
-                  child: Image.asset(
-                      'lib/assets/images/IconSearchcalendarbaby.png'),
+                  child: Image.asset('lib/assets/images/icon_calendar.png'),
                 ),
               const SizedBox(width: 10),
               Positioned(
@@ -514,16 +513,15 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
                   Stack(
                     alignment: Alignment.center,
                     children: [
-                      Image.asset(
-                          'lib/assets/images/Rectangle 108imageBehind.png'),
+                      Image.asset('lib/assets/images/background_confete.png'),
                       if (reserva.canceledAt != null)
                         Image.asset(
-                          'lib/assets/images/reserva-cancelada.png',
+                          'lib/assets/images/imagem_cancelado.png',
                           height: getResponsiveWidth(context, 108),
                         ),
                       if (reserva.canceledAt == null)
                         Image.asset(
-                          'lib/assets/images/reserva-confirmada.png',
+                          'lib/assets/images/imagem_confirmado.png',
                           height: getResponsiveWidth(context, 90),
                         ),
                       decContainer(

@@ -50,8 +50,8 @@ class ChatBubble extends StatelessWidget {
                     const SizedBox(width: 5),
                     Image.asset(
                       isSeen
-                          ? 'lib/assets/images/double-check-chat.png'
-                          : 'lib/assets/images/check-chat.png',
+                          ? 'lib/assets/images/icon_double_check.png'
+                          : 'lib/assets/images/icon_check.png',
                       width: 16,
                       height: 16,
                     ),

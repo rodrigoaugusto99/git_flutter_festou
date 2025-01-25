@@ -913,7 +913,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                 prefixIcon: Padding(
                                   padding: const EdgeInsets.all(10.0),
                                   child: Image.asset(
-                                    'lib/assets/images/image 18cupm_prefix.png',
+                                    'lib/assets/images/imagem_cupom.png',
                                     height: 20,
                                     width: 20,
                                   ),
@@ -1262,8 +1262,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     if (card != null) ...[
-                      Image.asset(
-                          'lib/assets/images/image 4cartao_reserva.png'),
+                      Image.asset('lib/assets/images/icon_card_color.png'),
                       const SizedBox(
                         width: 5,
                       ),

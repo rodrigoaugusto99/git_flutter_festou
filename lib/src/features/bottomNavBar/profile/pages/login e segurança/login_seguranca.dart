@@ -86,7 +86,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
         Row(
           children: [
             Image.asset(
-              'lib/assets/images/google.png',
+              'lib/assets/images/logo_google.png',
               width: 24,
               height: 24,
             ),
@@ -461,7 +461,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
               ),
               PatternedButton(
                 widget: Image.asset(
-                  'lib/assets/images/IconPassword.png',
+                  'lib/assets/images/icon_password.png',
                   width: 26,
                   height: 26,
                 ),
@@ -667,7 +667,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
               providers.contains("google.com")
                   ? PatternedButton(
                       widget: Image.asset(
-                        'lib/assets/images/google.png',
+                        'lib/assets/images/logo_google.png',
                         width: 26,
                         height: 26,
                       ),
@@ -694,7 +694,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                       (providers.length == 1 && providers.contains("password"))
                   ? PatternedButton(
                       widget: Image.asset(
-                        'lib/assets/images/IconNetwork.png',
+                        'lib/assets/images/icon_network.png',
                         width: 26,
                         height: 26,
                       ),
@@ -709,7 +709,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
               ),
               PatternedButton(
                   widget: Image.asset(
-                    'lib/assets/images/IconAccountDelete.png',
+                    'lib/assets/images/icon_delete_account.png',
                     width: 26,
                     height: 26,
                   ),

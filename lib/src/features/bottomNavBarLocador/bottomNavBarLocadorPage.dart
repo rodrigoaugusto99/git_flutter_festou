@@ -210,7 +210,7 @@ class _BottomNavBarLocadorPageState extends State<BottomNavBarLocadorPage> {
           child: Container(
             margin: const EdgeInsets.only(bottom: 20),
             child: Image.asset(
-              'lib/assets/images/festou-logo.png',
+              'lib/assets/images/logo_festou.png',
               scale: 5,
               fit: BoxFit.cover,
             ),

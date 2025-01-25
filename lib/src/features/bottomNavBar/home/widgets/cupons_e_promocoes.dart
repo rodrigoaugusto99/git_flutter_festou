@@ -13,9 +13,9 @@ class _CuponsEPromocoesState extends State<CuponsEPromocoes> {
   @override
   Widget build(BuildContext context) {
     List<String> images = [
-      'lib/assets/images/Cupom de 50dddd.png',
-      'lib/assets/images/Banner cashbackasasasa.png',
-      'lib/assets/images/Cupom 30%qrfxx (1).png'
+      'lib/assets/images/cupom_50_dinheiro.png',
+      'lib/assets/images/cupom_10OFF.png',
+      'lib/assets/images/cupom_30OFF.png'
     ];
     return Column(
       children: [

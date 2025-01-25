@@ -472,16 +472,17 @@ class _NewCardInfoState extends State<NewCardInfo>
   }
 
   Map<String, String> serviceIconPaths = {
-    'Cozinha': 'lib/assets/images/image 3cozinha.png',
-    'Estacionamento': 'lib/assets/images/image 3estacionamento.png',
-    'Segurança': 'lib/assets/images/image 3seguranca.png',
-    'Limpeza': 'lib/assets/images/image 3limpeza.png',
-    'Decoração': 'lib/assets/images/image 3decoracao.png',
-    'Bar': 'lib/assets/images/image 3bar.png',
-    'Garçons': 'lib/assets/images/image 3garcom.png',
-    'Ar-condicionado': 'lib/assets/images/image 3arcondicionado.png',
-    'Banheiros': 'lib/assets/images/image 3banheiro.png',
-    'Som e iluminação': 'lib/assets/images/image 3somiluminacao.png',
+    'Cozinha': 'lib/assets/images/icon_cozinha.png',
+    'Estacionamento': 'lib/assets/images/icon_estacionamento.png',
+    'Segurança': 'lib/assets/images/icon_seguranca.png',
+    'Limpeza': 'lib/assets/images/icon_limpeza.png',
+    'Decoração': 'lib/assets/images/icon_decoracao.png',
+    'Bar': 'lib/assets/images/icon_bar.png',
+    'Garçons': 'lib/assets/images/icon_garcom.png',
+    'Ar-condicionado': 'lib/assets/images/icon_ar_condicionado.png',
+    'Banheiros': 'lib/assets/images/icon_banheiro.png',
+    'Iluminação': 'lib/assets/images/icon_iluminacao.png',
+    'Som': 'lib/assets/images/icon_som.png',
   };
   void addOrRemoveService(String service) {
     log(service);
@@ -566,32 +567,32 @@ class _NewCardInfoState extends State<NewCardInfo>
   }
 
   String getIconPath(String service) {
-    if (service == 'Cozinha') {
-      return 'lib/assets/images/image 3cozinha.png';
+    switch (service) {
+      case 'Cozinha':
+        return 'lib/assets/images/icon_cozinha.png';
+      case 'Estacionamento':
+        return 'lib/assets/images/icon_estacionamento.png';
+      case 'Segurança':
+        return 'lib/assets/images/icon_seguranca.png';
+      case 'Limpeza ':
+        return 'lib/assets/images/icon_limpeza.png';
+      case 'Decoração':
+        return 'lib/assets/images/icon_decoracao.png';
+      case 'Bar':
+        return 'lib/assets/images/icon_bar.png';
+      case 'Garçons':
+        return 'lib/assets/images/icon_garcom.png';
+      case 'Ar-condicionado':
+        return 'lib/assets/images/icon_ar_condicionado.png';
+      case 'Banheiros':
+        return 'lib/assets/images/icon_banheiro.png';
+      case 'Iluminação':
+        return 'lib/assets/images/icon_iluminacao.png';
+      case 'Som':
+        return 'lib/assets/images/icon_som.png';
+      default:
+        return 'lib/assets/images/icon_mais.png';
     }
-    if (service == 'Estacionamento') {
-      return 'lib/assets/images/image 3estacionamento.png';
-    }
-    if (service == 'Segurança') {
-      return 'lib/assets/images/image 3seguranca.png';
-    }
-    if (service == 'Limpeza ') return 'lib/assets/images/image 3limpeza.png';
-    if (service == 'Decoração') {
-      return 'lib/assets/images/image 3decoracao.png';
-    }
-    if (service == 'Bar') return 'lib/assets/images/image 3bar.png';
-    if (service == 'Garçons') return 'lib/assets/images/image 3garcom.png';
-    if (service == 'Ar-condicionado') {
-      return 'lib/assets/images/image 3arcondicionado.png';
-    }
-    if (service == 'Banheiros') {
-      return 'lib/assets/images/image 3banheiro.png';
-    }
-    if (service == 'Som e iluminação') {
-      return 'lib/assets/images/image 3somiluminacao.png';
-    }
-
-    return 'lib/assets/images/image 3outros.png';
   }
 
   bool isCarouselVisible = true;
@@ -629,7 +630,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 child: Row(
                   children: [
-                    Image.asset('lib/assets/images/Pencilpencil.png'),
+                    Image.asset('lib/assets/images/icon_lapis.png'),
                     const SizedBox(width: 17),
                     const Text(
                       'Deixe sua avaliação!',
@@ -795,7 +796,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                             });
                           },
                           child: Image.asset(
-                            'lib/assets/images/Ellipse 37lixeira-foto.png',
+                            'lib/assets/images/icon_lixeira.png',
                             width: 40,
                           ),
                         ),
@@ -826,7 +827,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                             });
                           },
                           child: Image.asset(
-                            'lib/assets/images/Ellipse 37lixeira-foto.png',
+                            'lib/assets/images/icon_lixeira.png',
                             width: 40,
                           ),
                         ),
@@ -840,7 +841,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                   return GestureDetector(
                     onTap: pickImage,
                     child: Image.asset(
-                      'lib/assets/images/Botao +botao_de_mais.png',
+                      'lib/assets/images/imagem_mais.png',
                       width: 25,
                     ),
                   );
@@ -915,7 +916,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                             });
                           },
                           child: Image.asset(
-                            'lib/assets/images/Ellipse 37lixeira-foto.png',
+                            'lib/assets/images/icon_lixeira.png',
                             width: 40,
                           ),
                         ),
@@ -946,7 +947,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                             });
                           },
                           child: Image.asset(
-                            'lib/assets/images/Ellipse 37lixeira-foto.png',
+                            'lib/assets/images/icon_lixeira.png',
                             width: 40,
                           ),
                         ),
@@ -960,7 +961,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                   return GestureDetector(
                     onTap: pickVideo,
                     child: Image.asset(
-                      'lib/assets/images/Botao +botao_de_mais.png',
+                      'lib/assets/images/imagem_mais.png',
                       width: 25,
                     ),
                   );
@@ -1009,7 +1010,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                                         onTap: () => addOrRemoveService(
                                             space!.selectedServices[index]),
                                         child: Image.asset(
-                                          'lib/assets/images/Deletardelete_service.png',
+                                          'lib/assets/images/icon_delete.png',
                                           width: 20,
                                         ),
                                       ),
@@ -1036,7 +1037,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                     GestureDetector(
                       onTap: () => showBottomSheet2(context, selectedServices),
                       child: Image.asset(
-                        'lib/assets/images/Botao +botao_de_mais.png',
+                        'lib/assets/images/imagem_mais.png',
                         width: 30,
                       ),
                     ),
@@ -1442,10 +1443,9 @@ class _NewCardInfoState extends State<NewCardInfo>
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Row(
                             children: [
-                              const SizedBox(width: 10),
-                              SvgPicture.asset(
-                                  'lib/assets/images/Vectorcheck.svg'),
-                              const SizedBox(width: 7),
+                              Image.asset('lib/assets/images/icon_gps.png',
+                                  height: 28),
+                              const SizedBox(width: 4),
                               Text(
                                 '${space!.cidade}, Brasil',
                                 style: const TextStyle(

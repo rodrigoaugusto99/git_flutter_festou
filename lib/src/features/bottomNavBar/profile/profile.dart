@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarLocatarioPage.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/central/central_de_ajuda.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/widgets/my_row.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/register_signature.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarLocadorPage.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBarLocador/menu/menu.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/privacy_policy_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/service_terms_page.dart';
@@ -349,23 +349,23 @@ class _ProfileState extends ConsumerState<Profile> {
                       const SizedBox(height: 25),
                       myText(text: 'Locação'),
                       const SizedBox(height: 15),
-                      myRow(
+                      MyRow(
                         customKey: Keys.kProfileViewLocador,
                         text: userModel.locador
                             ? 'Quero deixar de ser um locador'
                             : 'Quero disponibilizar um espaço',
                         icon1: Image.asset(
-                          'lib/assets/images/Icon Disponibilizarcasinha.png',
+                          'lib/assets/images/icon_disponibilizar.png',
                         ),
                         onTap: () => navigateBasedOnContract(context),
                       ),
                       const SizedBox(height: 25),
                       myText(text: 'Atendimento'),
                       const SizedBox(height: 15),
-                      myRow(
+                      MyRow(
                         text: 'Central de Ajuda',
                         icon1: Image.asset(
-                          'lib/assets/images/Icon Atendimentocentral.png',
+                          'lib/assets/images/icon_atendimento.png',
                         ),
                         onTap: () => Navigator.push(
                           context,
@@ -377,10 +377,10 @@ class _ProfileState extends ConsumerState<Profile> {
                       const SizedBox(height: 25),
                       myText(text: 'Jurídico'),
                       const SizedBox(height: 15),
-                      myRow(
+                      MyRow(
                         text: 'Termos de Serviço',
                         icon1: Image.asset(
-                          'lib/assets/images/Icon Termosjuridic.png',
+                          'lib/assets/images/icon_termos.png',
                         ),
                         onTap: () {
                           Navigator.push(
@@ -391,10 +391,10 @@ class _ProfileState extends ConsumerState<Profile> {
                         },
                       ),
                       const SizedBox(height: 15),
-                      myRow(
+                      MyRow(
                         text: 'Política de privacidade',
                         icon1: Image.asset(
-                          'lib/assets/images/icon_politica.png',
+                          'lib/assets/images/icon_privacidade.png',
                         ),
                         onTap: () {
                           Navigator.push(
@@ -408,10 +408,10 @@ class _ProfileState extends ConsumerState<Profile> {
                       const SizedBox(height: 25),
                       myText(text: 'Outros'),
                       const SizedBox(height: 15),
-                      myRow(
+                      MyRow(
                         text: 'Sair do Festou',
                         icon1: Image.asset(
-                          'lib/assets/images/Icon Sairsairdofestoyu.png',
+                          'lib/assets/images/icon_sair.png',
                         ),
                         onTap: () {
                           ref.invalidate(userFirestoreRepositoryProvider);

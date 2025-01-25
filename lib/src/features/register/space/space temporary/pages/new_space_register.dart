@@ -176,7 +176,7 @@ class NewWidget extends StatelessWidget {
         children: [
           Stack(
             children: [
-              Image.asset('lib/assets/images/Rectangle 108imageBehind.png'),
+              Image.asset('lib/assets/images/background_confete.png'),
               decContainer(
                 //topPadding: 5,
                 bottomPadding: 5,

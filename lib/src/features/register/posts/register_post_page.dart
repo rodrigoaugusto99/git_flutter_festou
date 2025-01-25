@@ -1,10 +1,5 @@
 import 'dart:developer';
-import 'dart:io';
-
-import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:git_flutter_festou/src/features/register/posts/register_post_vm.dart';
 import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
 import 'package:git_flutter_festou/src/helpers/helpers.dart';
@@ -142,7 +137,7 @@ class _RegisterPostPageState extends State<RegisterPostPage> {
                               color: Colors.white,
                               allPadding: 10,
                               child: SvgPicture.asset(
-                                'lib/assets/images/Groupcamerah.svg',
+                                'lib/assets/images/icon_camera.svg',
                                 color: const Color(0xff4300B1),
                               ),
                             ),
@@ -165,7 +160,7 @@ class _RegisterPostPageState extends State<RegisterPostPage> {
                               color: Colors.white.withOpacity(0.6),
                               allPadding: 10,
                               child: SvgPicture.asset(
-                                'lib/assets/images/Groupcamerah.svg',
+                                'lib/assets/images/icon_camera.svg',
                                 color: const Color(0xff4300B1),
                               ),
                             ),

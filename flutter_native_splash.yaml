@@ -1,7 +1,7 @@
 flutter_native_splash:
-  background_image: "lib/assets/images/background_login.png"
+  background_image: "lib/assets/images/background_festou.png"
   android: true
   ios: true
 
   android_12:
-    background_image: "lib/assets/images/background_login.png"
+    background_image: "lib/assets/images/background_festou.png"

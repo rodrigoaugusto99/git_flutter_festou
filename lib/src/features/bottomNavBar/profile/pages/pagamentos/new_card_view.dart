@@ -401,7 +401,7 @@ class _NewCardViewState extends State<NewCardView> {
                     height: screenWidth / 3,
                     width: screenWidth / 3,
                     child: Image.asset(
-                      'lib/assets/images/festou-logo.png',
+                      'lib/assets/images/logo_festou.png',
                     ),
                   ),
                 ),
@@ -425,7 +425,7 @@ class _NewCardViewState extends State<NewCardView> {
                     CustomTextformfield(
                       onChanged: (p0) => setState(() {}),
                       ddd: 10,
-                      svgPath: 'lib/assets/images/image 6perssoa.png',
+                      svgPath: 'lib/assets/images/icon_pessoa.png',
                       hintText: 'Nome do portador',
                       controller: nameEC,
                       validator: validate(),
@@ -438,7 +438,7 @@ class _NewCardViewState extends State<NewCardView> {
                       keyboardType: TextInputType.number,
                       controller: numberEC,
                       inputFormatters: [cardNumberFormatter],
-                      svgPath: 'lib/assets/images/image 4card.png',
+                      svgPath: 'lib/assets/images/icon_card.png',
                       validator: validate(),
                     ),
                     const SizedBox(height: 15),
@@ -448,7 +448,7 @@ class _NewCardViewState extends State<NewCardView> {
                           child: CustomTextformfield(
                             onChanged: (p0) => setState(() {}),
                             ddd: 10,
-                            svgPath: 'lib/assets/images/image 5cardcvv.png',
+                            svgPath: 'lib/assets/images/icon_card_cvv.png',
                             controller: cvvEC,
                             inputFormatters: [cvvFormatter],
                             validator: validate(),
@@ -472,7 +472,7 @@ class _NewCardViewState extends State<NewCardView> {
                               }
                               return null;
                             },
-                            svgPath: 'lib/assets/images/image 4calendarrrr.png',
+                            svgPath: 'lib/assets/images/icon_calendar.png',
                             keyboardType: TextInputType.number,
                             controller: validateDateEC,
                             inputFormatters: [dateMaskFormatter],
@@ -486,7 +486,7 @@ class _NewCardViewState extends State<NewCardView> {
                       onChanged: (p0) => setState(() {}),
                       ddd: 10,
                       validator: validate(),
-                      svgPath: 'lib/assets/images/image 7passa.png',
+                      svgPath: 'lib/assets/images/icon_card_check.png',
                       controller: cardNameEC,
                       hintText: 'Dê um nome ao seu cartão',
                     ),

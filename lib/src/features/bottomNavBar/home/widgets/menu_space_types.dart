@@ -47,7 +47,7 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'lib/assets/images/iconKids.png',
+                    'lib/assets/images/imagem_kids.png',
                     width: x * 0.12,
                   ),
                   SizedBox(width: x * 0.02),
@@ -82,7 +82,7 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'lib/assets/images/iconBuque.png',
+                    'lib/assets/images/imagem_buque.png',
                     width: x * 0.12,
                   ),
                   SizedBox(width: x * 0.02),
@@ -117,7 +117,7 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'lib/assets/images/iconQuinze.png',
+                    'lib/assets/images/imagem_debutante.png',
                     width: x * 0.12,
                   ),
                   SizedBox(width: x * 0.02),
@@ -152,7 +152,7 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'lib/assets/images/iconReligioso.png',
+                    'lib/assets/images/imagem_religioso.png',
                     width: x * 0.12,
                   ),
                   SizedBox(width: x * 0.02),
@@ -187,7 +187,7 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'lib/assets/images/iconCha.png',
+                    'lib/assets/images/imagem_cha.png',
                     width: x * 0.12,
                   ),
                   SizedBox(width: x * 0.02),
@@ -222,7 +222,7 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'lib/assets/images/iconReuniao.png',
+                    'lib/assets/images/imagem_reuniao.png',
                     width: x * 0.12,
                   ),
                   SizedBox(width: x * 0.02),
@@ -257,7 +257,7 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'lib/assets/images/iconOutros.png',
+                    'lib/assets/images/imagem_outros.png',
                     width: x * 0.12,
                   ),
                   SizedBox(width: x * 0.02),

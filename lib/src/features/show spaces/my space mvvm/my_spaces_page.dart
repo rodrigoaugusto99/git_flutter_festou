@@ -47,8 +47,8 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
     });
 
     List<String> images = [
-      'lib/assets/images/card-locador2dicas_d.png',
-      'lib/assets/images/Card-locador1frente.png',
+      'lib/assets/images/banner_dica.png',
+      'lib/assets/images/banner_destaque.png',
     ];
 
     return Scaffold(
@@ -126,8 +126,8 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
                           ),
                         );
                       },
-                      child: Image.asset(
-                          'lib/assets/images/Banner Cadastrelucrar.png')),
+                      child:
+                          Image.asset('lib/assets/images/banner_cadastre.png')),
                 ),
                 const SizedBox(
                   height: 50,

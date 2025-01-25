@@ -65,7 +65,7 @@ class _SignatureDialogState extends State<SignatureDialog> {
         key: Keys.kSignaturePaper,
         children: [
           ImagePainter.asset(
-            'lib/assets/images/dsszz.png',
+            'lib/assets/images/background_assinatura.png',
             key: imageKey,
             controller: imagePainterController!,
             selectedColor: Colors.black,

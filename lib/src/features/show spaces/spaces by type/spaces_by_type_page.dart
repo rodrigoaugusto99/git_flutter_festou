@@ -136,13 +136,13 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
     }
 
     Map<String, String> cds = {
-      "Debutante": "lib/assets/images/BackgroundDebutantedebutttt.png",
-      "Kids": "lib/assets/images/BackgroundKidsImage1kids.png",
-      "Casamento": "lib/assets/images/BackgroundMarriagecasamient.png",
-      "Reuniao": "lib/assets/images/BackgroundMeetingreunionaby.png",
-      "Outros": "lib/assets/images/BackgroundOthersotroz.png",
-      "Religioso": "lib/assets/images/BackgroundReligiousalaaaaa.png",
-      "Cha": "lib/assets/images/BackgroundTeaafffcghaaa.png",
+      "Debutante": "lib/assets/images/background_debutante.png",
+      "Kids": "lib/assets/images/background_kids.png",
+      "Casamento": "lib/assets/images/background_casamento.png",
+      "Reuniao": "lib/assets/images/background_reuniao.png",
+      "Outros": "lib/assets/images/background_outros.png",
+      "Religioso": "lib/assets/images/background_religioso.png",
+      "Cha": "lib/assets/images/background_cha.png",
     };
 
     return SafeArea(
@@ -248,7 +248,7 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Image.asset(
-                                    'lib/assets/images/Sliderfitl.png'),
+                                    'lib/assets/images/icon_filtro.png'),
                               ),
                             ),
                           ),

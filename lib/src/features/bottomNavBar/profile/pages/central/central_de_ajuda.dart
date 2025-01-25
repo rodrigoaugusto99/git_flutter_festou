@@ -956,7 +956,7 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                                             height: 20,
                                             width: 20,
                                             child: Image.asset(
-                                              'lib/assets/images/Icon Calendar1ads.png',
+                                              'lib/assets/images/imagem_chamado.png',
                                               width: 20,
                                             ),
                                           ),
@@ -1115,7 +1115,7 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                                                                 const EdgeInsets
                                                                     .all(4),
                                                             child: Image.asset(
-                                                              'lib/assets/images/Ellipse 37lixeira-foto.png',
+                                                              'lib/assets/images/icon_lixeira.png',
                                                               width: 30,
                                                             ),
                                                           ),
@@ -1241,7 +1241,7 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                                                 child: Align(
                                                   alignment: Alignment.center,
                                                   child: Image.asset(
-                                                    'lib/assets/images/festou-logo.png',
+                                                    'lib/assets/images/logo_festou.png',
                                                     width:
                                                         100, // Ajuste o tamanho conforme necessário
                                                     fit: BoxFit.contain,

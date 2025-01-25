@@ -67,7 +67,7 @@ class _SplashPageState extends State<SplashPage> {
               duration: const Duration(seconds: 3),
               curve: Curves.linearToEaseOut,
               child: Image.asset(
-                'lib/assets/images/festou-logo.png',
+                'lib/assets/images/logo_festou.png',
                 fit: BoxFit.contain,
               ),
             ),

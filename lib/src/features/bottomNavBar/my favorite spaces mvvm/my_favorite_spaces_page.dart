@@ -40,7 +40,7 @@ class _MyFavoriteSpacePageState extends State<MyFavoriteSpacePage> {
       children: [
         Positioned.fill(
           child: Image.asset(
-            'lib/assets/images/BackgroundFavfundofav.png',
+            'lib/assets/images/background_favoritos.png',
             fit: BoxFit.cover,
           ),
         ),

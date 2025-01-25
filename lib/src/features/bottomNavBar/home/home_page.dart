@@ -107,7 +107,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         Container(
                           margin: const EdgeInsets.only(top: 10),
                           child: Image.asset(
-                            'lib/assets/images/Globofffg.png',
+                            'lib/assets/images/imagem_terra.png',
                             width: 200,
                             height: 200,
                           ),

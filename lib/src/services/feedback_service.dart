@@ -158,7 +158,6 @@ class FeedbackService {
           userDocument.reference.update({
             'likes': FieldValue.arrayRemove([currUser!.uid]),
           });
-          log('Like removido ao dar dislike');
         }
 
         if (currentDislikes.contains(currUser!.uid)) {
@@ -166,13 +165,11 @@ class FeedbackService {
           userDocument.reference.update({
             'dislikes': FieldValue.arrayRemove([currUser!.uid]),
           });
-          log('Dislike removido com sucesso');
         } else {
           // Se o user.uid não está presente, adicioná-lo ao array
           userDocument.reference.update({
             'dislikes': FieldValue.arrayUnion([currUser!.uid]),
           });
-          log('Dislike adicionado com sucesso');
         }
       } else {
         log('Nenhum documento desse feedback foi encontrado, ou mais de 1 foram encontrados.');
@@ -201,7 +198,6 @@ class FeedbackService {
           userDocument.reference.update({
             'dislikes': FieldValue.arrayRemove([currUser!.uid]),
           });
-          log('Dislike removido ao dar like');
         }
 
         if (currentLikes.contains(currUser!.uid)) {
@@ -209,13 +205,11 @@ class FeedbackService {
           userDocument.reference.update({
             'likes': FieldValue.arrayRemove([currUser!.uid]),
           });
-          log('Like removido com sucesso');
         } else {
           // Se o user.uid não está presente, adicioná-lo ao array
           userDocument.reference.update({
             'likes': FieldValue.arrayUnion([currUser!.uid]),
           });
-          log('Like adicionado com sucesso');
         }
       } else {
         log('Nenhum documento desse feedback foi encontrado, ou mais de 1 foram encontrados.');

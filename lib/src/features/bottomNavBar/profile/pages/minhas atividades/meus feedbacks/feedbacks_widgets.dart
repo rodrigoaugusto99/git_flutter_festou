@@ -38,7 +38,7 @@ class _FeedbacksWidgetState extends State<FeedbacksWidget> {
           shape: const RoundedRectangleBorder(
             side: BorderSide.none,
           ),
-          leading: Image.asset('lib/assets/images/Icon ratingmyava.png'),
+          leading: Image.asset('lib/assets/images/icon_avaliacao.png'),
           title: const Text('Minhas avaliações'),
           children: [
             ListView.builder(
@@ -246,7 +246,7 @@ class _FeedbackItemState extends State<FeedbackItem> {
                               updateFeedback();
                             },
                             child: Image.asset(
-                              'lib/assets/images/Facebook Likelike3x.png',
+                              'lib/assets/images/icon_like.png',
                               width: 20,
                               color: isLiked ? Colors.blue : null,
                             ),
@@ -261,7 +261,7 @@ class _FeedbackItemState extends State<FeedbackItem> {
                               updateFeedback();
                             },
                             child: Image.asset(
-                              'lib/assets/images/Thumbs Downdeslike3x.png',
+                              'lib/assets/images/icon_dislike.png',
                               width: 20,
                               color: isDisliked ? Colors.red : null,
                             ),

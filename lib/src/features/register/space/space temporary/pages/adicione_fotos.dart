@@ -105,7 +105,7 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
                             });
                           },
                           child: Image.asset(
-                            'lib/assets/images/Ellipse 37lixeira-foto.png',
+                            'lib/assets/images/icon_lixeira.png',
                             width: 40,
                           ),
                         ),
@@ -119,7 +119,7 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
             return GestureDetector(
               onTap: onAddPressed,
               child: Image.asset(
-                'lib/assets/images/Botao +botao_de_mais.png',
+                'lib/assets/images/imagem_mais.png',
                 scale: 1.5,
               ),
             );
@@ -188,7 +188,7 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
                             });
                           },
                           child: Image.asset(
-                            'lib/assets/images/Ellipse 37lixeira-foto.png',
+                            'lib/assets/images/icon_lixeira.png',
                             width: 40,
                           ),
                         ),
@@ -202,7 +202,7 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
             return GestureDetector(
               onTap: onAddPressed,
               child: Image.asset(
-                'lib/assets/images/Botao +botao_de_mais.png',
+                'lib/assets/images/imagem_mais.png',
                 scale: 1.5,
               ),
             );

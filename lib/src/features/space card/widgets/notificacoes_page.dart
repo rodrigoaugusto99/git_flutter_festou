@@ -14,21 +14,21 @@ class NotificacoesLocatarioPage extends StatefulWidget {
 class _NotificacoesLocatarioPageState extends State<NotificacoesLocatarioPage> {
   List<Map<String, String>> notificacoes = [
     {
-      "path": 'lib/assets/images/image 14not1.png',
+      "path": 'lib/assets/images/image_reserva.png',
       "text1": 'Sua reserva está confirmada!',
       "text2":
           'Espaço Feliz LTDA confirmou sua reserva para o dia 10/01/2025 às 17:00h.',
       "time": '1d',
     },
     {
-      "path": 'lib/assets/images/image 15not2.png',
+      "path": 'lib/assets/images/image_chat.png',
       "text1": 'Espaço Feliz LTDA enviou uma mensagem!',
       "text2":
           'Olá, João, compartilhar esse momento especial com você e seus...',
       "time": '1d',
     },
     {
-      "path": 'lib/assets/images/image 16nor3.png',
+      "path": 'lib/assets/images/image_estrela.png',
       "text1": 'Avalie sua experiência!',
       "text2":
           'Conte-nos como foi sua experiência com Rio Top Eventos e envie sua avaliação.',

@@ -154,7 +154,7 @@ class _PagamentosState extends State<Pagamentos>
               ),
               PatternedButton(
                 widget: Image.asset(
-                  'lib/assets/images/icon_pix.png',
+                  'lib/assets/images/logo_pix.png',
                   width: 26,
                   height: 26,
                 ),
@@ -207,7 +207,7 @@ class _PagamentosState extends State<Pagamentos>
                           child: Row(
                             children: [
                               Image.asset(
-                                'lib/assets/images/image 4carotn.png',
+                                'lib/assets/images/icon_card_color.png',
                                 height: 26,
                               ),
                               const SizedBox(width: 10),
@@ -247,7 +247,7 @@ class _PagamentosState extends State<Pagamentos>
                                     buttonWithTextLink: false,
                                     title: card.cardName,
                                     widget: Image.asset(
-                                      'lib/assets/images/image 4carotn.png',
+                                      'lib/assets/images/icon_card_color.png',
                                       height: 26,
                                     ),
                                     onTap: () async {
@@ -301,7 +301,7 @@ class _PagamentosState extends State<Pagamentos>
                                 buttonWithTextLink: false,
                                 title: 'Adicionar cartão de crédito',
                                 widget: Image.asset(
-                                    'lib/assets/images/image 4xxdfad.png'),
+                                    'lib/assets/images/icon_add_card.png'),
                                 onTap: () async {
                                   final CardModel? newCard =
                                       await Navigator.push(
