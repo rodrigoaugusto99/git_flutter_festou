@@ -88,10 +88,10 @@ class _SpacesWithSugestionPageState
                     const EdgeInsets.only(right: 20.0, top: 5.0, bottom: 5.0),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.pushReplacement(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const NotificacoesLocatarioPage(),
+                        builder: (context) => const NotificacoesPage(),
                       ),
                     );
                   },

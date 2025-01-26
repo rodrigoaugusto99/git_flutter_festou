@@ -91,7 +91,8 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const NotificacoesLocatarioPage(),
+              builder: (context) =>
+                  NotificacoesPage(locador: widget.userModel.locador),
             ),
           ),
           icon1: const Icon(Icons.notifications_outlined),

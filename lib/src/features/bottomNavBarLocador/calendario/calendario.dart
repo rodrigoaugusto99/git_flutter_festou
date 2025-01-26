@@ -157,7 +157,9 @@ class _CalendarioState extends State<Calendario> {
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const NotificacoesLocatarioPage(),
+                    builder: (context) => const NotificacoesPage(
+                      locador: true,
+                    ),
                   ),
                 ),
                 child: const Icon(

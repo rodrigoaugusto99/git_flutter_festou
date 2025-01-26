@@ -7,6 +7,7 @@ import 'package:git_flutter_festou/src/features/register/space/space%20temporary
 import 'package:git_flutter_festou/src/features/space%20card/widgets/my_sliver_list_to_card_info.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_vm.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_page.dart';
 import 'package:git_flutter_festou/src/helpers/keys.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
@@ -252,7 +253,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ],
                 ),
                 child: InkWell(
-                  onTap: () => Navigator.of(context).pop(),
+                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const NotificacoesPage(
+                      locador: true,
+                    ),
+                  )),
                   child: const Icon(
                     Icons.notifications_outlined,
                     color: Colors.black,
