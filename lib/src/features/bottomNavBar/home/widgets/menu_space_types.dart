@@ -186,9 +186,12 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'lib/assets/images/imagem_cha.png',
-                    width: x * 0.12,
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12.0),
+                    child: Image.asset(
+                      'lib/assets/images/imagem_cha.png',
+                      width: x * 0.12,
+                    ),
                   ),
                   SizedBox(width: x * 0.02),
                   const Text(
