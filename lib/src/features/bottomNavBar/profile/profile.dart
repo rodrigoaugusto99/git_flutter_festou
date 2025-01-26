@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarLocatarioPage.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/central/central_de_ajuda.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/widgets/logout_dialog.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/widgets/my_row.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/register_signature.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBarLocador/bottomNavBarLocadorPage.dart';
@@ -414,9 +415,7 @@ class _ProfileState extends ConsumerState<Profile> {
                           'lib/assets/images/icon_sair.png',
                         ),
                         onTap: () {
-                          ref.invalidate(userFirestoreRepositoryProvider);
-                          ref.invalidate(userAuthRepositoryProvider);
-                          ref.read(logoutProvider.future);
+                          LogoutDialog.showExitConfirmationDialog(context, ref);
                         },
                       ),
                       const SizedBox(height: 40),

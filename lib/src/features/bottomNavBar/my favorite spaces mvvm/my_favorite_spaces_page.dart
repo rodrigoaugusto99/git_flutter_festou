@@ -7,6 +7,7 @@ import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_card_info.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
+import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_page.dart';
 
 class MyFavoriteSpacePage extends StatefulWidget {
   const MyFavoriteSpacePage({super.key});
@@ -67,7 +68,9 @@ class _MyFavoriteSpacePageState extends State<MyFavoriteSpacePage> {
                     ],
                   ),
                   child: InkWell(
-                    onTap: () => Navigator.of(context).pop(),
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const NotificacoesPage(),
+                    )),
                     child: const Icon(
                       Icons.notifications_outlined,
                       color: Colors.black,

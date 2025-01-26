@@ -10,6 +10,7 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/passwordField.dart';
 import 'package:git_flutter_festou/src/services/auth_services.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
+import 'package:lottie/lottie.dart';
 
 class LoginSeguranca extends ConsumerStatefulWidget {
   const LoginSeguranca({super.key});
@@ -48,7 +49,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       yourFunctionToBeCalled();
       displayAuthProviderList();
-      showUserProvider();
       setState(() {});
     });
   }
@@ -98,34 +98,27 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
         ),
         InkWell(
           onTap: () {},
-          child: const Text(
-            'Desvincular',
-            style: TextStyle(
-              color: Color(0XFF4300B1),
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-            ),
+          child: Column(
+            children: [
+              Lottie.asset(
+                'lib/assets/animations/warning_exit.json',
+                width: 100,
+                height: 100,
+                repeat: true,
+              ),
+              const Text(
+                'Desvincular',
+                style: TextStyle(
+                  color: Color(0XFF4300B1),
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
         ),
       ],
     );
-  }
-
-  void showUserProvider() {
-    final user = FirebaseAuth.instance.currentUser;
-
-    if (user != null) {
-      for (var profile in user.providerData) {
-        log('\n---------DADOS DO USUARIO NO AUTH---------');
-        log("Provider ID: ${profile.providerId}");
-        log("uid: ${profile.uid}");
-        log("Display Name: ${profile.displayName}");
-        log("Email: ${profile.email}");
-        log("Photo URL ID: ${profile.photoURL}");
-      }
-    } else {
-      log("Usuário não autenticado");
-    }
   }
 
   Future<bool> reauthentication(User user, String senhaAtual) async {
@@ -148,8 +141,37 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: const Text('Ops...'),
-                content: const Text('Senha atual inválida!'),
+                contentPadding: const EdgeInsets.all(16.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.0),
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Lottie.asset(
+                          'lib/assets/animations/info.json',
+                          width: 100,
+                          height: 100,
+                          repeat: false,
+                        ),
+                        const Text(
+                          'Ops...',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text('Senha atual inválida!'),
+                    )
+                  ],
+                ),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
@@ -164,9 +186,38 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: const Text('Ops...'),
-                content: const Text(
-                    'Não foi possível reautenticar. Refaça o login.'),
+                contentPadding: const EdgeInsets.all(16.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.0),
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Lottie.asset(
+                          'lib/assets/animations/info.json',
+                          width: 100,
+                          height: 100,
+                          repeat: false,
+                        ),
+                        const Text(
+                          'Ops...',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                          'Não foi possível reautenticar. Refaça o login!'),
+                    )
+                  ],
+                ),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
@@ -280,9 +331,42 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                       context: contextEmpty,
                                       builder: (BuildContext contextEmpty) {
                                         return AlertDialog(
-                                            title: const Text('Ops...'),
-                                            content: const Text(
-                                                'Os campos não podem estar vazios.'),
+                                            contentPadding:
+                                                const EdgeInsets.all(16.0),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16.0),
+                                            ),
+                                            content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Lottie.asset(
+                                                      'lib/assets/animations/info.json',
+                                                      width: 100,
+                                                      height: 100,
+                                                      repeat: false,
+                                                    ),
+                                                    const Text(
+                                                      'Ops...',
+                                                      style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 8),
+                                                const Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 16.0),
+                                                  child: Text(
+                                                      'Os campos não podem estar vazios!'),
+                                                )
+                                              ],
+                                            ),
                                             actions: [
                                               TextButton(
                                                 onPressed: () =>
@@ -303,9 +387,42 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                       builder:
                                           (BuildContext contextLessThanSix) {
                                         return AlertDialog(
-                                            title: const Text('Ops...'),
-                                            content: const Text(
-                                                'A senha deve conter no mínimo 6 caracteres.'),
+                                            contentPadding:
+                                                const EdgeInsets.all(16.0),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16.0),
+                                            ),
+                                            content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Lottie.asset(
+                                                      'lib/assets/animations/info.json',
+                                                      width: 100,
+                                                      height: 100,
+                                                      repeat: false,
+                                                    ),
+                                                    const Text(
+                                                      'Ops...',
+                                                      style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 8),
+                                                const Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 16.0),
+                                                  child: Text(
+                                                      'A senha deve conter no mínimo 6 caracteres!'),
+                                                )
+                                              ],
+                                            ),
                                             actions: [
                                               TextButton(
                                                 onPressed: () => Navigator.of(
@@ -326,9 +443,42 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                       builder:
                                           (BuildContext contextWrongPassword) {
                                         return AlertDialog(
-                                            title: const Text('Ops...'),
-                                            content: const Text(
-                                                'As senhas não coincidem.'),
+                                            contentPadding:
+                                                const EdgeInsets.all(16.0),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16.0),
+                                            ),
+                                            content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Lottie.asset(
+                                                      'lib/assets/animations/info.json',
+                                                      width: 100,
+                                                      height: 100,
+                                                      repeat: false,
+                                                    ),
+                                                    const Text(
+                                                      'Ops...',
+                                                      style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 8),
+                                                const Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 16.0),
+                                                  child: Text(
+                                                      'As senhas não coincidem!'),
+                                                )
+                                              ],
+                                            ),
                                             actions: [
                                               TextButton(
                                                 onPressed: () => Navigator.of(
@@ -534,9 +684,41 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: const Text('Ops...'),
-                                      content: const Text(
-                                          'As senhas não podem estar vazias.'),
+                                      contentPadding:
+                                          const EdgeInsets.all(16.0),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(16.0),
+                                      ),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Lottie.asset(
+                                                'lib/assets/animations/info.json',
+                                                width: 100,
+                                                height: 100,
+                                                repeat: false,
+                                              ),
+                                              const Text(
+                                                'Ops...',
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 8),
+                                          const Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 16.0),
+                                            child: Text(
+                                                'As senhas não podem estar vazias!'),
+                                          )
+                                        ],
+                                      ),
                                       actions: [
                                         TextButton(
                                           onPressed: () =>
@@ -555,9 +737,41 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: const Text('Ops...'),
-                                      content: const Text(
-                                          'As senhas não coincidem.'),
+                                      contentPadding:
+                                          const EdgeInsets.all(16.0),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(16.0),
+                                      ),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Lottie.asset(
+                                                'lib/assets/animations/info.json',
+                                                width: 100,
+                                                height: 100,
+                                                repeat: false,
+                                              ),
+                                              const Text(
+                                                'Ops...',
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 8),
+                                          const Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 16.0),
+                                            child: Text(
+                                                'As senhas não coincidem!'),
+                                          )
+                                        ],
+                                      ),
                                       actions: [
                                         TextButton(
                                           onPressed: () =>
@@ -608,9 +822,41 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: const Text('Ops...'),
-                                      content: const Text(
-                                          'É necessário informar a senha atual.'),
+                                      contentPadding:
+                                          const EdgeInsets.all(16.0),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(16.0),
+                                      ),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Lottie.asset(
+                                                'lib/assets/animations/info.json',
+                                                width: 100,
+                                                height: 100,
+                                                repeat: false,
+                                              ),
+                                              const Text(
+                                                'Ops...',
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 8),
+                                          const Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 16.0),
+                                            child: Text(
+                                                'É necessário informar a senha atual!'),
+                                          )
+                                        ],
+                                      ),
                                       actions: [
                                         TextButton(
                                           onPressed: () =>
@@ -629,9 +875,41 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: const Text('Ops...'),
-                                      content: const Text(
-                                          'A senha fornecida é muito fraca.'),
+                                      contentPadding:
+                                          const EdgeInsets.all(16.0),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(16.0),
+                                      ),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Lottie.asset(
+                                                'lib/assets/animations/info.json',
+                                                width: 100,
+                                                height: 100,
+                                                repeat: false,
+                                              ),
+                                              const Text(
+                                                'Ops...',
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 8),
+                                          const Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 16.0),
+                                            child: Text(
+                                                'A senha fornecida é muito fraca!'),
+                                          )
+                                        ],
+                                      ),
                                       actions: [
                                         TextButton(
                                           onPressed: () =>
@@ -733,13 +1011,34 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                               TextEditingController();
 
                           return AlertDialog(
-                            title: const Text('Exclusão de Conta'),
-                            content: const Column(
+                            //title: const Text('Exclusão de Conta'),
+                            content: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text(
-                                    'Sua conta será excluída e todos os seus dados serão perdidos, sem possibilidade de recuperação. Deseja continuar?'),
+                                Center(
+                                  child: Lottie.asset(
+                                    'lib/assets/animations/warning_exit.json',
+                                    width: 100,
+                                    height: 100,
+                                    repeat: true,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                const Center(
+                                  child: Text(
+                                    'Exclusão de Conta',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                const Text(
+                                  'Sua conta será excluída e todos os seus dados serão perdidos, '
+                                  'sem possibilidade de recuperação. Deseja continuar?',
+                                ),
                               ],
                             ),
                             actions: <Widget>[
@@ -758,14 +1057,40 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
-                                          title: const Text('Ops...'),
-                                          content: const Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                          contentPadding:
+                                              const EdgeInsets.all(16.0),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16.0),
+                                          ),
+                                          content: Column(
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Text(
-                                                  'É necessário possuir uma senha cadastrada para prosseguir com exclusão de conta.'),
+                                              Row(
+                                                children: [
+                                                  Lottie.asset(
+                                                    'lib/assets/animations/info.json',
+                                                    width: 100,
+                                                    height: 100,
+                                                    repeat: false,
+                                                  ),
+                                                  const Text(
+                                                    'Ops...',
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 8),
+                                              const Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 16.0),
+                                                child: Text(
+                                                    'É necessário possuir uma senha cadastrada para prosseguir com exclusão de conta!'),
+                                              )
                                             ],
                                           ),
                                           actions: <Widget>[
@@ -801,7 +1126,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                       context: context2,
                                       builder: (BuildContext context2) {
                                         return AlertDialog(
-                                          title: const Text('Ops...'),
                                           content: const Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -838,14 +1162,40 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                       context: context2,
                                       builder: (BuildContext context2) {
                                         return AlertDialog(
-                                          title: const Text('Ops...'),
-                                          content: const Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                          contentPadding:
+                                              const EdgeInsets.all(16.0),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16.0),
+                                          ),
+                                          content: Column(
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Text(
-                                                  'O usuário possui espaço cadastrado.'),
+                                              Row(
+                                                children: [
+                                                  Lottie.asset(
+                                                    'lib/assets/animations/info.json',
+                                                    width: 100,
+                                                    height: 100,
+                                                    repeat: false,
+                                                  ),
+                                                  const Text(
+                                                    'Ops...',
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 8),
+                                              const Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 16.0),
+                                                child: Text(
+                                                    'O usuário possui espaço cadastrado!'),
+                                              )
                                             ],
                                           ),
                                           actions: <Widget>[
@@ -930,10 +1280,57 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                                         builder: (BuildContext
                                                             context) {
                                                           return AlertDialog(
-                                                            title: const Text(
-                                                                'Ops...'),
-                                                            content: const Text(
-                                                                'Senha atual inválida!'),
+                                                            contentPadding:
+                                                                const EdgeInsets
+                                                                    .all(16.0),
+                                                            shape:
+                                                                RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          16.0),
+                                                            ),
+                                                            content: Column(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    Lottie
+                                                                        .asset(
+                                                                      'lib/assets/animations/info.json',
+                                                                      width:
+                                                                          100,
+                                                                      height:
+                                                                          100,
+                                                                      repeat:
+                                                                          false,
+                                                                    ),
+                                                                    const Text(
+                                                                      'Ops...',
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            20,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                const SizedBox(
+                                                                    height: 8),
+                                                                const Padding(
+                                                                  padding: EdgeInsets
+                                                                      .symmetric(
+                                                                          horizontal:
+                                                                              16.0),
+                                                                  child: Text(
+                                                                      'Senha atual inválida!'),
+                                                                )
+                                                              ],
+                                                            ),
                                                             actions: [
                                                               TextButton(
                                                                 onPressed: () =>
