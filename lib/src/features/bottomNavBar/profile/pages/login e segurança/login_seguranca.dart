@@ -98,23 +98,13 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
         ),
         InkWell(
           onTap: () {},
-          child: Column(
-            children: [
-              Lottie.asset(
-                'lib/assets/animations/warning_exit.json',
-                width: 100,
-                height: 100,
-                repeat: true,
-              ),
-              const Text(
-                'Desvincular',
-                style: TextStyle(
-                  color: Color(0XFF4300B1),
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+          child: const Text(
+            'Desvincular',
+            style: TextStyle(
+              color: Color(0XFF4300B1),
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ],
@@ -253,12 +243,36 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Confirmação de Desvinculação'),
-            content: onlyGoogle
-                ? const Text(
-                    'O Google é seu único provedor. Se você desvincular, precisará configurar uma senha para continuar acessando sua conta.')
-                : const Text(
-                    'Tem certeza de que deseja desvincular o Google? O login só poderá ser realizado via e-mail e senha.'),
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Center(
+                  child: Lottie.asset(
+                    'lib/assets/animations/warning_exit.json',
+                    width: 100,
+                    height: 100,
+                    repeat: true,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Center(
+                  child: Text(
+                    'Desvinculação',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                onlyGoogle
+                    ? const Text(
+                        'O Google é seu único provedor. Se você desvincular, precisará configurar uma senha para continuar acessando sua conta.')
+                    : const Text(
+                        'Tem certeza de que deseja desvincular o Google? O login só poderá ser realizado via e-mail e senha.'),
+              ],
+            ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
@@ -1011,7 +1025,6 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                               TextEditingController();
 
                           return AlertDialog(
-                            //title: const Text('Exclusão de Conta'),
                             content: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
