@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/widgets/logout_dialog.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 import '../../../../core/providers/application_providers.dart';
@@ -83,9 +84,7 @@ class _AppBarMenuSpaceTypesState extends ConsumerState<AppBarHome> {
                   IconButton(
                     icon: const Icon(Icons.logout),
                     onPressed: () {
-                      ref.invalidate(userFirestoreRepositoryProvider);
-                      ref.invalidate(userAuthRepositoryProvider);
-                      ref.read(logoutProvider.future);
+                      LogoutDialog.showExitConfirmationDialog(context, ref);
                     },
                   ),
                 ],
