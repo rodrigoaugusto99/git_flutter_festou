@@ -3,38 +3,73 @@ import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 
-class NotificacoesLocatarioPage extends StatefulWidget {
-  const NotificacoesLocatarioPage({super.key});
+class NotificacoesPage extends StatefulWidget {
+  final bool locador;
+  const NotificacoesPage({super.key, this.locador = false});
 
   @override
-  _NotificacoesLocatarioPageState createState() =>
-      _NotificacoesLocatarioPageState();
+  _NotificacoesPageState createState() => _NotificacoesPageState();
 }
 
-class _NotificacoesLocatarioPageState extends State<NotificacoesLocatarioPage> {
-  List<Map<String, String>> notificacoes = [
-    {
-      "path": 'lib/assets/images/image_reserva.png',
-      "text1": 'Sua reserva está confirmada!',
-      "text2":
-          'Espaço Feliz LTDA confirmou sua reserva para o dia 10/01/2025 às 17:00h.',
-      "time": '1d',
-    },
-    {
-      "path": 'lib/assets/images/image_chat.png',
-      "text1": 'Espaço Feliz LTDA enviou uma mensagem!',
-      "text2":
-          'Olá, João, compartilhar esse momento especial com você e seus...',
-      "time": '1d',
-    },
-    {
-      "path": 'lib/assets/images/image_estrela.png',
-      "text1": 'Avalie sua experiência!',
-      "text2":
-          'Conte-nos como foi sua experiência com Rio Top Eventos e envie sua avaliação.',
-      "time": '3m',
-    },
-  ];
+class _NotificacoesPageState extends State<NotificacoesPage> {
+  late List<Map<String, String>> notificacoes;
+
+  @override
+  void initState() {
+    super.initState();
+    notificacoes =
+        widget.locador ? _notificacoesLocador() : _notificacoesPadrao();
+  }
+
+  List<Map<String, String>> _notificacoesPadrao() {
+    return [
+      {
+        "path": 'lib/assets/images/image_reserva.png',
+        "text1": 'Sua reserva está confirmada!',
+        "text2":
+            'Espaço Feliz LTDA confirmou sua reserva para o dia 10/01/2025 às 17:00h.',
+        "time": '1d',
+      },
+      {
+        "path": 'lib/assets/images/image_chat.png',
+        "text1": 'Espaço Feliz LTDA enviou uma mensagem!',
+        "text2":
+            'Olá, João, compartilhar esse momento especial com você e seus...',
+        "time": '1d',
+      },
+      {
+        "path": 'lib/assets/images/image_estrela.png',
+        "text1": 'Avalie sua experiência!',
+        "text2":
+            'Conte-nos como foi sua experiência com Rio Top Eventos e envie sua avaliação.',
+        "time": '3m',
+      },
+    ];
+  }
+
+  List<Map<String, String>> _notificacoesLocador() {
+    return [
+      {
+        "path": 'lib/assets/images/image_reserva.png',
+        "text1": 'Nova reserva recebida!',
+        "text2":
+            'Você recebeu uma nova reserva para o dia 10/01/2025 às 17:00h.',
+        "time": '1d',
+      },
+      {
+        "path": 'lib/assets/images/image_chat.png',
+        "text1": 'Nova mensagem do cliente!',
+        "text2": 'João enviou uma mensagem sobre a reserva do seu espaço.',
+        "time": '1d',
+      },
+      {
+        "path": 'lib/assets/images/image_estrela.png',
+        "text1": 'Recebemos uma nova avaliação!',
+        "text2": 'O cliente João avaliou o seu espaço, confira agora.',
+        "time": '3m',
+      },
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
