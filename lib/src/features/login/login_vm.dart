@@ -21,20 +21,20 @@ class LoginVM extends _$LoginVM {
   //   return Validatorless.multiple([]);
   // }
 
-  // String validateAll(code, email, password) {
-  //   String errorMessage;
+  String validateAll(code, email, password) {
+    String errorMessage;
 
-  //   if (email.isEmpty || email == '' || code == 'invalid-email') {
-  //     errorMessage = 'E-mail inválido!';
-  //   } else if (password.isEmpty || password == '') {
-  //     errorMessage = 'Senha não informada!';
-  //   } else if (code == 'INVALID_LOGIN_CREDENTIALS') {
-  //     errorMessage = 'E-mail ou senha inválidos.';
-  //   } else {
-  //     errorMessage = 'Erro ao realizar login';
-  //   }
-  //   return errorMessage;
-  // }
+    if (email.isEmpty || email == '' || code == 'invalid-email') {
+      errorMessage = 'E-mail inválido!';
+    } else if (password.isEmpty || password == '') {
+      errorMessage = 'Senha não informada!';
+    } else if (code == 'INVALID_LOGIN_CREDENTIALS') {
+      errorMessage = 'E-mail ou senha inválidos.';
+    } else {
+      errorMessage = 'Erro ao realizar login';
+    }
+    return errorMessage;
+  }
 
   void validateForm(BuildContext context, formKey, emailEC, passwordEC) {
     if (formKey.currentState?.validate() == true) {
