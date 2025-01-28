@@ -168,19 +168,6 @@ class FilterAndOrderVm extends _$FilterAndOrderVm {
 
     log("xx");
 
-    // Step 4: Filter by selectedNotes
-    if (selectedNotes.isNotEmpty) {
-      // Convert selectedNotes to double and find the minimum value
-      double minSelectedNote = selectedNotes
-          .map((note) => double.parse(note.replaceAll('+', '')))
-          .reduce((a, b) => a < b ? a : b);
-
-      finalFiltered = finalFiltered.where((doc) {
-        double averageRating = double.parse(doc['average_rating']);
-        return averageRating >= minSelectedNote;
-      }).toList();
-    }
-
     final userSpacesFavorite = await getUserFavoriteSpaces();
 
     // Map the finalFiltered documents to SpaceModel objects
@@ -190,6 +177,25 @@ class FilterAndOrderVm extends _$FilterAndOrderVm {
           userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
       return mapSpaceDocumentToModel2(spaceDocument, isFavorited);
     }).toList());
+
+    // Step 4: Filter by selectedNotes
+    if (selectedNotes.isNotEmpty) {
+      if (selectedNotes.contains("1")) {
+        selectedNotes.add('0');
+      }
+      // Convert selectedNotes to double and find the minimum value
+      double minSelectedNote = selectedNotes
+          .map((note) => double.parse(note.replaceAll('+', '')))
+          .reduce((a, b) => a < b ? a : b);
+      log(minSelectedNote.toString());
+      spaceModels = spaceModels.where((space) {
+        double averageRating = double.parse(space.averageRating);
+        //double averageRating2 = double.parse(doc['average_rating']);
+        log('averageRating.toString()');
+        log(averageRating.toString());
+        return averageRating >= minSelectedNote;
+      }).toList();
+    }
     state = state.copyWith(
       status: FilterAndOrderStateStatus.success,
       filteredSpaces: spaceModels,

@@ -299,17 +299,22 @@ Future<SpaceModel> mapSpaceDocumentToModel(
 
 Future<String> getAverageRating(String spaceId) async {
   final spaceDocument = await FirebaseFirestore.instance
-      .collection('spaces')
+      .collection('feedbacks')
       .where('space_id', isEqualTo: spaceId)
       .get();
 
-  if (spaceDocument.docs.isNotEmpty) {
-    String averageRatingValue = spaceDocument.docs.first['average_rating'];
-    return averageRatingValue;
+  if (spaceDocument.docs.isEmpty) {
+    //String averageRatingValue = spaceDocument.docs.first['average_rating'];
+    return '0';
   }
 
-  // Trate o caso em que nenhum espaço foi encontrado.
-  throw Exception("Espaço não encontrado");
+  int allRating = 0;
+  for (final doc in spaceDocument.docs) {
+    allRating = allRating + doc['rating'] as int;
+  }
+
+  double averageRating = allRating / spaceDocument.docs.length;
+  return averageRating.toString();
 }
 
 Future<String> getNumComments(String spaceId) async {
