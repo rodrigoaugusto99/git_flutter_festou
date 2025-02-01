@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/constants.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/services_panel.dart';
+import 'package:git_flutter_festou/src/features/register/space/widgets/type_panel.dart';
 import 'package:git_flutter_festou/src/features/register/space/widgets/weekdays_panel.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/filter/filter_and_order_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/filter/filter_and_order_vm.dart';
@@ -52,7 +53,7 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
         case FilterAndOrderState(status: FilterAndOrderStateStatus.success):
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => const NewPageFiltered()));
-          Messages.showSuccess('Filtrado com sucesso!', context);
+        //Messages.showSuccess('Filtrado com sucesso!', context);
         case FilterAndOrderState(status: FilterAndOrderStateStatus.error):
           Messages.showError('Erro ao filtrar espaços', context);
       }
@@ -95,14 +96,14 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                     },
                     selectedServices: selectedServices,
                   ),
-                  // TypePanel(
-                  //   text: 'TIPO de espaço',
-                  //   onTypePressed: (value) {
-                  //     //log('onTypePressed: $value');
-                  //     filterAnOrderVm.addOrRemoveType(value);
-                  //   },
-                  //   selectedTypes: selectedTypes,
-                  // ),
+                  TypePanel(
+                    text: 'TIPO de espaço',
+                    onTypePressed: (value) {
+                      //log('onTypePressed: $value');
+                      filterAnOrderVm.addOrRemoveType(value);
+                    },
+                    selectedTypes: selectedTypes,
+                  ),
                   WeekDaysPanel(
                     text: 'dias disponiveis',
                     onDayPressed: (value) {

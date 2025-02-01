@@ -65,7 +65,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
       await feedbacksCollection.add(newFeedback);
       log('Avaliação adicionado com sucesso!');
       // Após adicionar o feedback, atualize a média no espaço correspondente
-      await updateAverageRating(feedbackData.spaceId);
+      // await updateAverageRating(feedbackData.spaceId);
       await updateNumComments(feedbackData.spaceId);
       return Success(nil);
     } catch (e) {
@@ -104,7 +104,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
       await hostFeedbacksCollection.add(newFeedback);
       log('Avaliação de host adicionado com sucesso!');
       // Após adicionar o feedback, atualize a média no espaço correspondente
-      await updateHostAverageRating(feedbackData.hostId);
+      //await updateHostAverageRating(feedbackData.hostId);
       await updateHostNumComments(feedbackData.hostId);
       return Success(nil);
     } catch (e) {
@@ -141,7 +141,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
       await guestFeedbacksCollection.add(newFeedback);
       log('Avaliação de guest adicionado com sucesso!');
       // Após adicionar o feedback, atualize a média no espaço correspondente
-      await updateGuestAverageRating(feedbackData.guestId);
+      //await updateGuestAverageRating(feedbackData.guestId);
       await updateGuestNumComments(feedbackData.guestId);
       return Success(nil);
     } catch (e) {
@@ -253,145 +253,145 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
   }
 
   // Função para calcular a média dos ratings e atualizar o campo average_rating no Firestore
-  Future<void> updateAverageRating(String spaceId) async {
-    try {
-      final allFeedbacksDocuments =
-          await feedbacksCollection.where('space_id', isEqualTo: spaceId).get();
+  // Future<void> updateAverageRating(String spaceId) async {
+  //   try {
+  //     final allFeedbacksDocuments =
+  //         await feedbacksCollection.where('space_id', isEqualTo: spaceId).get();
 
-      // Verifica se há documentos reais na coleção
-      if (allFeedbacksDocuments.size == 0) {
-        // Não há feedbacks para o espaço fornecido
-        log('Nenhum doc encontrado p o espaço com spaceId: $spaceId');
-        return;
-      }
-      log('allFeedbacksDocuments: $allFeedbacksDocuments');
-      log('spaceId: $spaceId');
+  //     // Verifica se há documentos reais na coleção
+  //     if (allFeedbacksDocuments.size == 0) {
+  //       // Não há feedbacks para o espaço fornecido
+  //       log('Nenhum doc encontrado p o espaço com spaceId: $spaceId');
+  //       return;
+  //     }
+  //     log('allFeedbacksDocuments: $allFeedbacksDocuments');
+  //     log('spaceId: $spaceId');
 
-      int totalRating = 0;
-      int totalDocuments = allFeedbacksDocuments.docs.length;
+  //     int totalRating = 0;
+  //     int totalDocuments = allFeedbacksDocuments.docs.length;
 
-      for (QueryDocumentSnapshot document in allFeedbacksDocuments.docs) {
-        // Obtém o valor de 'rating' do documento
-        int rating = document['rating'];
+  //     for (QueryDocumentSnapshot document in allFeedbacksDocuments.docs) {
+  //       // Obtém o valor de 'rating' do documento
+  //       int rating = document['rating'];
 
-        // Soma os ratings
-        totalRating += rating;
-      }
+  //       // Soma os ratings
+  //       totalRating += rating;
+  //     }
 
-      // Calcula a média dos ratings
-      double averageRating = totalRating / totalDocuments;
+  //     // Calcula a média dos ratings
+  //     double averageRating = totalRating / totalDocuments;
 
-      // Atualiza o campo average_rating no documento do espaço com base no campo space_id
-      await spacesCollection
-          .where('space_id', isEqualTo: spaceId)
-          .get()
-          .then((querySnapshot) {
-        if (querySnapshot.docs.isNotEmpty) {
-          querySnapshot.docs.first.reference
-              .update({'average_rating': averageRating.toString()});
-          log('Average rating atualizado com sucesso!');
-        } else {
-          log('Nenhum documento encontrado para o espaço com space_id: $spaceId');
-        }
-      });
-    } catch (e) {
-      log('Erro ao atualizar average rating: $e');
-    }
-  }
+  //     // Atualiza o campo average_rating no documento do espaço com base no campo space_id
+  //     await spacesCollection
+  //         .where('space_id', isEqualTo: spaceId)
+  //         .get()
+  //         .then((querySnapshot) {
+  //       if (querySnapshot.docs.isNotEmpty) {
+  //         querySnapshot.docs.first.reference
+  //             .update({'average_rating': averageRating.toString()});
+  //         log('Average rating atualizado com sucesso!');
+  //       } else {
+  //         log('Nenhum documento encontrado para o espaço com space_id: $spaceId');
+  //       }
+  //     });
+  //   } catch (e) {
+  //     log('Erro ao atualizar average rating: $e');
+  //   }
+  // }
 
-  Future<void> updateHostAverageRating(String hostId) async {
-    try {
-      final allFeedbacksDocuments = await hostFeedbacksCollection
-          .where('host_id', isEqualTo: hostId)
-          .get();
+  // Future<void> updateHostAverageRating(String hostId) async {
+  //   try {
+  //     final allFeedbacksDocuments = await hostFeedbacksCollection
+  //         .where('host_id', isEqualTo: hostId)
+  //         .get();
 
-      // Verifica se há documentos reais na coleção
-      if (allFeedbacksDocuments.size == 0) {
-        // Não há feedbacks para o espaço fornecido
-        log('Nenhum doc encontrado p o host com hostId: $hostId');
-        return;
-      }
-      log('allFeedbacksDocuments: $allFeedbacksDocuments');
-      log('HostId: $hostId');
+  //     // Verifica se há documentos reais na coleção
+  //     if (allFeedbacksDocuments.size == 0) {
+  //       // Não há feedbacks para o espaço fornecido
+  //       log('Nenhum doc encontrado p o host com hostId: $hostId');
+  //       return;
+  //     }
+  //     log('allFeedbacksDocuments: $allFeedbacksDocuments');
+  //     log('HostId: $hostId');
 
-      int totalRating = 0;
-      int totalDocuments = allFeedbacksDocuments.docs.length;
+  //     int totalRating = 0;
+  //     int totalDocuments = allFeedbacksDocuments.docs.length;
 
-      for (QueryDocumentSnapshot document in allFeedbacksDocuments.docs) {
-        // Obtém o valor de 'rating' do documento
-        int rating = document['rating'];
+  //     for (QueryDocumentSnapshot document in allFeedbacksDocuments.docs) {
+  //       // Obtém o valor de 'rating' do documento
+  //       int rating = document['rating'];
 
-        // Soma os ratings
-        totalRating += rating;
-      }
+  //       // Soma os ratings
+  //       totalRating += rating;
+  //     }
 
-      // Calcula a média dos ratings
-      double averageRating = totalRating / totalDocuments;
+  //     // Calcula a média dos ratings
+  //     double averageRating = totalRating / totalDocuments;
 
-      // Atualiza o campo average_rating no documento do espaço com base no campo space_id
-      await usersCollection
-          .where('uid', isEqualTo: hostId)
-          .get()
-          .then((querySnapshot) {
-        if (querySnapshot.docs.isNotEmpty) {
-          querySnapshot.docs.first.reference
-              .update({'average_rating': averageRating.toString()});
-          log('Average rating atualizado com sucesso!');
-        } else {
-          log('Nenhum documento encontrado para o host com host_id: $hostId');
-        }
-      });
-    } catch (e) {
-      log('Erro ao atualizar average rating: $e');
-    }
-  }
+  //     // Atualiza o campo average_rating no documento do espaço com base no campo space_id
+  //     await usersCollection
+  //         .where('uid', isEqualTo: hostId)
+  //         .get()
+  //         .then((querySnapshot) {
+  //       if (querySnapshot.docs.isNotEmpty) {
+  //         querySnapshot.docs.first.reference
+  //             .update({'average_rating': averageRating.toString()});
+  //         log('Average rating atualizado com sucesso!');
+  //       } else {
+  //         log('Nenhum documento encontrado para o host com host_id: $hostId');
+  //       }
+  //     });
+  //   } catch (e) {
+  //     log('Erro ao atualizar average rating: $e');
+  //   }
+  // }
 
-  Future<void> updateGuestAverageRating(String guestId) async {
-    try {
-      final allFeedbacksDocuments = await guestFeedbacksCollection
-          .where('guest_id', isEqualTo: guestId)
-          .get();
+  // Future<void> updateGuestAverageRating(String guestId) async {
+  //   try {
+  //     final allFeedbacksDocuments = await guestFeedbacksCollection
+  //         .where('guest_id', isEqualTo: guestId)
+  //         .get();
 
-      // Verifica se há documentos reais na coleção
-      if (allFeedbacksDocuments.size == 0) {
-        // Não há feedbacks para o espaço fornecido
-        log('Nenhum doc encontrado p o host com guestId: $guestId');
-        return;
-      }
-      log('allFeedbacksDocuments: $allFeedbacksDocuments');
-      log('HostId: $guestId');
+  //     // Verifica se há documentos reais na coleção
+  //     if (allFeedbacksDocuments.size == 0) {
+  //       // Não há feedbacks para o espaço fornecido
+  //       log('Nenhum doc encontrado p o host com guestId: $guestId');
+  //       return;
+  //     }
+  //     log('allFeedbacksDocuments: $allFeedbacksDocuments');
+  //     log('HostId: $guestId');
 
-      int totalRating = 0;
-      int totalDocuments = allFeedbacksDocuments.docs.length;
+  //     int totalRating = 0;
+  //     int totalDocuments = allFeedbacksDocuments.docs.length;
 
-      for (QueryDocumentSnapshot document in allFeedbacksDocuments.docs) {
-        // Obtém o valor de 'rating' do documento
-        int rating = document['rating'];
+  //     for (QueryDocumentSnapshot document in allFeedbacksDocuments.docs) {
+  //       // Obtém o valor de 'rating' do documento
+  //       int rating = document['rating'];
 
-        // Soma os ratings
-        totalRating += rating;
-      }
+  //       // Soma os ratings
+  //       totalRating += rating;
+  //     }
 
-      // Calcula a média dos ratings
-      double averageRating = totalRating / totalDocuments;
+  //     // Calcula a média dos ratings
+  //     double averageRating = totalRating / totalDocuments;
 
-      // Atualiza o campo average_rating no documento do espaço com base no campo space_id
-      await usersCollection
-          .where('uid', isEqualTo: guestId)
-          .get()
-          .then((querySnapshot) {
-        if (querySnapshot.docs.isNotEmpty) {
-          querySnapshot.docs.first.reference
-              .update({'average_rating': averageRating.toString()});
-          log('Average rating atualizado com sucesso!');
-        } else {
-          log('Nenhum documento encontrado para o guest com guest_id: $guestId');
-        }
-      });
-    } catch (e) {
-      log('Erro ao atualizar average rating: $e');
-    }
-  }
+  //     // Atualiza o campo average_rating no documento do espaço com base no campo space_id
+  //     await usersCollection
+  //         .where('uid', isEqualTo: guestId)
+  //         .get()
+  //         .then((querySnapshot) {
+  //       if (querySnapshot.docs.isNotEmpty) {
+  //         querySnapshot.docs.first.reference
+  //             .update({'average_rating': averageRating.toString()});
+  //         log('Average rating atualizado com sucesso!');
+  //       } else {
+  //         log('Nenhum documento encontrado para o guest com guest_id: $guestId');
+  //       }
+  //     });
+  //   } catch (e) {
+  //     log('Erro ao atualizar average rating: $e');
+  //   }
+  // }
 
   @override
   Future<Either<RepositoryException, List<FeedbackModel>>> getFeedbacks(
