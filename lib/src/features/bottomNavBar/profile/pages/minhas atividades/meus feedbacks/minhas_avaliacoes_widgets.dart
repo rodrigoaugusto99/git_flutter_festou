@@ -1,11 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/meus%20feedbacks/edit_dialog.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/meus%20feedbacks/meus_feedbacks_state.dart';
 import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
 import 'package:git_flutter_festou/src/models/feedback_model.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
-import 'package:git_flutter_festou/src/repositories/feedback/feedback_firestore_repository_impl.dart';
 import 'package:git_flutter_festou/src/services/feedback_service.dart';
 import 'package:git_flutter_festou/src/services/space_service.dart';
 
@@ -32,7 +28,6 @@ class _MinhasAvaliacoesWidgetState extends State<MinhasAvaliacoesWidget> {
     return Container(
       decoration: const BoxDecoration(
         color: Colors.transparent,
-        //borderRadius: BorderRadius.circular(18),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
@@ -190,7 +185,6 @@ class _FeedbackItemState extends State<FeedbackItem> {
                           const SizedBox(width: 10),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            // mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(
                                 myFeedback!.userName,
@@ -236,11 +230,6 @@ class _FeedbackItemState extends State<FeedbackItem> {
                               ),
                             ),
                           ),
-                          // Row(
-                          //   children: [
-                          //     ...buildStarIcons(widget.feedback.rating),
-                          //   ],
-                          // ),
                         ],
                       ),
                       Align(
@@ -301,14 +290,24 @@ class _FeedbackItemState extends State<FeedbackItem> {
                           const Spacer(),
                           GestureDetector(
                             onTap: () async {
-                              final result = await showDialog(
+                              final updatedFeedback =
+                                  await showDialog<FeedbackModel>(
                                 context: context,
                                 builder: (context) {
                                   return Dialog(
-                                    child: FeedbackPage(space: space!),
+                                    child: FeedbackPage(
+                                      space: space!,
+                                      feedback:
+                                          myFeedback, // Passando a avaliação existente
+                                    ),
                                   );
                                 },
                               );
+                              if (updatedFeedback != null) {
+                                setState(() {
+                                  myFeedback = updatedFeedback;
+                                });
+                              }
                             },
                             child: const Text(
                               'Editar',
@@ -351,9 +350,9 @@ class _FeedbackItemState extends State<FeedbackItem> {
     if (averageRating >= 4) {
       return const Color(0xff00A355);
     } else if (averageRating >= 2 && averageRating < 4) {
-      return Colors.orange; // Ícone laranja para rating entre 2 e 4 (exclusive)
+      return Colors.orange;
     } else {
-      return Colors.red; // Ícone vermelho para rating abaixo de 2
+      return Colors.red;
     }
   }
 
@@ -368,7 +367,7 @@ class _FeedbackItemState extends State<FeedbackItem> {
                 : rating == 3
                     ? Colors.orange
                     : Colors.green
-            : Colors.grey[300], // Cinza claro para estrelas não atingidas
+            : Colors.grey[300],
         size: 14.0,
       ),
     );

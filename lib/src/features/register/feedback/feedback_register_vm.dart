@@ -17,9 +17,11 @@ class FeedbackRegisterVm extends _$FeedbackRegisterVm {
   String errorMessage = '';
 
   final user = FirebaseAuth.instance.currentUser!;
+
   @override
   FeedbackRegisterStateStatus build() => FeedbackRegisterStateStatus.initial;
 
+  /// **Registra um novo feedback**
   Future<void> register({
     required String spaceId,
     required int rating,
@@ -47,7 +49,40 @@ class FeedbackRegisterVm extends _$FeedbackRegisterVm {
           state = FeedbackRegisterStateStatus.error;
       }
     } on Exception {
-      errorMessage = 'Erro desconhecido'; // Atualize a mensagem de erro
+      errorMessage = 'Erro desconhecido';
+      state = FeedbackRegisterStateStatus.error;
+    }
+  }
+
+  /// **Atualiza um feedback existente**
+  Future<void> updateFeedback({
+    required String feedbackId,
+    required String spaceId,
+    required int rating,
+    required String content,
+  }) async {
+    final feedbackFirestoreRepository =
+        ref.watch(feedbackFirestoreRepositoryProvider);
+
+    final userId = user.uid;
+
+    try {
+      final updateResult = await feedbackFirestoreRepository.updateFeedback(
+        feedbackId: feedbackId,
+        userId: userId,
+        spaceId: spaceId,
+        rating: rating,
+        content: content,
+      );
+      switch (updateResult) {
+        case Success():
+          state = FeedbackRegisterStateStatus.success;
+        case Failure(exception: RepositoryException(:final message)):
+          errorMessage = message;
+          state = FeedbackRegisterStateStatus.error;
+      }
+    } on Exception {
+      errorMessage = 'Erro desconhecido';
       state = FeedbackRegisterStateStatus.error;
     }
   }

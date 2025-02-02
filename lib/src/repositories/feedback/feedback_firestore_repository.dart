@@ -12,6 +12,7 @@ abstract interface class FeedbackFirestoreRepository {
       String content,
     }) feedbackData,
   );
+
   Future<Either<RepositoryException, Nil>> saveHostFeedback(
     ({
       String hostId,
@@ -29,6 +30,15 @@ abstract interface class FeedbackFirestoreRepository {
       String content,
     }) feedbackData,
   );
+
+  Future<Either<RepositoryException, Nil>> updateFeedback({
+    required String feedbackId,
+    required String spaceId,
+    required String userId,
+    required int rating,
+    required String content,
+  });
+
   Future<Either<RepositoryException, List<FeedbackModel>>> getFeedbacks(
       String spaceId);
 

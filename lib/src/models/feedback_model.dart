@@ -29,4 +29,32 @@ class FeedbackModel {
     required this.deletedAt,
     this.space,
   });
+
+  FeedbackModel copyWith({
+    String? id,
+    String? spaceId,
+    String? userId,
+    int? rating,
+    String? content,
+    String? userName,
+    String? date,
+    String? avatar,
+    List<String>? likes,
+    List<String>? dislikes,
+    Timestamp? deletedAt,
+  }) {
+    return FeedbackModel(
+      id: id ?? this.id,
+      spaceId: spaceId ?? this.spaceId,
+      userId: userId ?? this.userId,
+      rating: rating ?? this.rating,
+      content: content ?? this.content,
+      userName: userName ?? this.userName,
+      date: date ?? this.date,
+      avatar: avatar ?? this.avatar,
+      likes: likes ?? this.likes,
+      dislikes: dislikes ?? this.dislikes,
+      deletedAt: deletedAt ?? this.deletedAt,
+    );
+  }
 }

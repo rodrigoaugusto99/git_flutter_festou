@@ -252,6 +252,49 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
     }
   }
 
+  @override
+  Future<Either<RepositoryException, Nil>> updateFeedback({
+    required String feedbackId,
+    required String spaceId,
+    required String userId,
+    required int rating,
+    required String content,
+  }) async {
+    try {
+      // Verifica se o feedback existe antes de tentar atualizar
+      final feedbackQuery = await feedbacksCollection
+          .where('id', isEqualTo: feedbackId) // Use feedbackId diretamente
+          .limit(1)
+          .get();
+
+      if (feedbackQuery.docs.isEmpty) {
+        return Failure(
+            RepositoryException(message: 'Feedback não encontrado.'));
+      }
+
+      // Obtém a referência do documento
+      final feedbackDocRef = feedbackQuery.docs.first.reference;
+
+      // Atualiza os dados do feedback
+      await feedbackDocRef.update({
+        'rating': rating,
+        'content': content,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+
+      log('Feedback atualizado com sucesso!');
+
+      // Atualiza a contagem de comentários, se necessário
+      await updateNumComments(spaceId);
+
+      return Success(Nil());
+    } catch (e) {
+      log('Erro ao atualizar o feedback: $e');
+      return Failure(
+          RepositoryException(message: 'Erro ao atualizar feedback.'));
+    }
+  }
+
   // Função para calcular a média dos ratings e atualizar o campo average_rating no Firestore
   // Future<void> updateAverageRating(String spaceId) async {
   //   try {
