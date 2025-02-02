@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
-import 'package:git_flutter_festou/src/models/feedback_model.dart';
+import 'package:git_flutter_festou/src/features/register/avaliacoes/avaliacoes_register_page.dart';
+import 'package:git_flutter_festou/src/models/avaliacoes_model.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
-import 'package:git_flutter_festou/src/services/feedback_service.dart';
+import 'package:git_flutter_festou/src/services/avaliacoes_service.dart';
 import 'package:git_flutter_festou/src/services/space_service.dart';
 
 class MinhasAvaliacoesWidget extends StatefulWidget {
-  final List<FeedbackModel> feedbacks;
+  final List<AvaliacoesModel> feedbacks;
 
   const MinhasAvaliacoesWidget({
     super.key,
@@ -20,7 +20,7 @@ class MinhasAvaliacoesWidget extends StatefulWidget {
 class _MinhasAvaliacoesWidgetState extends State<MinhasAvaliacoesWidget> {
   @override
   Widget build(BuildContext context) {
-    List<FeedbackModel> validFeedbacks = widget.feedbacks
+    List<AvaliacoesModel> validFeedbacks = widget.feedbacks
         .where(
             (feedback) => feedback.content != '' && feedback.deletedAt == null)
         .toList();
@@ -73,7 +73,7 @@ class _MinhasAvaliacoesWidgetState extends State<MinhasAvaliacoesWidget> {
                     itemCount: validFeedbacks.length,
                     itemBuilder: (BuildContext context, int index) {
                       final feedback = validFeedbacks[index];
-                      return FeedbackItem(
+                      return AvaliacoesItem(
                         feedback: feedback,
                         onDelete: () {
                           setState(() {
@@ -90,36 +90,36 @@ class _MinhasAvaliacoesWidgetState extends State<MinhasAvaliacoesWidget> {
   }
 }
 
-class FeedbackItem extends StatefulWidget {
-  final FeedbackModel feedback;
+class AvaliacoesItem extends StatefulWidget {
+  final AvaliacoesModel feedback;
   final VoidCallback onDelete;
 
-  const FeedbackItem({
+  const AvaliacoesItem({
     super.key,
     required this.feedback,
     required this.onDelete,
   });
 
   @override
-  _FeedbackItemState createState() => _FeedbackItemState();
+  _AvaliacoesItemState createState() => _AvaliacoesItemState();
 }
 
-class _FeedbackItemState extends State<FeedbackItem> {
+class _AvaliacoesItemState extends State<AvaliacoesItem> {
   bool isLiked = false;
   bool isDisliked = false;
-  late FeedbackService feedbackService;
+  late AvaliacoesService feedbackService;
 
   @override
   void initState() {
     super.initState();
-    feedbackService = FeedbackService();
+    feedbackService = AvaliacoesService();
     myFeedback = widget.feedback;
     _checkUserReaction();
     getSpace();
   }
 
   SpaceModel? space;
-  FeedbackModel? myFeedback;
+  AvaliacoesModel? myFeedback;
 
   Future<void> getSpace() async {
     space = await SpaceService().getSpaceById(widget.feedback.spaceId);
@@ -136,7 +136,7 @@ class _FeedbackItemState extends State<FeedbackItem> {
   }
 
   updateFeedback() async {
-    myFeedback = await FeedbackService().getFeedbackById(widget.feedback.id);
+    myFeedback = await AvaliacoesService().getFeedbackById(widget.feedback.id);
     _checkUserReaction();
   }
 
@@ -291,11 +291,11 @@ class _FeedbackItemState extends State<FeedbackItem> {
                           GestureDetector(
                             onTap: () async {
                               final updatedFeedback =
-                                  await showDialog<FeedbackModel>(
+                                  await showDialog<AvaliacoesModel>(
                                 context: context,
                                 builder: (context) {
                                   return Dialog(
-                                    child: FeedbackPage(
+                                    child: AvaliacoesPage(
                                       space: space!,
                                       feedback:
                                           myFeedback, // Passando a avaliação existente
@@ -321,7 +321,8 @@ class _FeedbackItemState extends State<FeedbackItem> {
                           const SizedBox(width: 16),
                           GestureDetector(
                             onTap: () async {
-                              await FeedbackService().deleteFeedbackByCondition(
+                              await AvaliacoesService()
+                                  .deleteFeedbackByCondition(
                                 widget.feedback.id,
                               );
                               updateFeedback();

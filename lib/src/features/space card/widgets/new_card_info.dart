@@ -13,15 +13,15 @@ import 'package:git_flutter_festou/src/features/space%20card/widgets/new_card_in
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_feedback_widget_limited.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_new_map.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/show_map.dart';
-import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
+import 'package:git_flutter_festou/src/features/register/avaliacoes/avaliacoes_register_page.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_limited.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_all.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/utils.dart';
 import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
 import 'package:git_flutter_festou/src/helpers/helpers.dart';
-import 'package:git_flutter_festou/src/models/feedback_model.dart';
+import 'package:git_flutter_festou/src/models/avaliacoes_model.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
-import 'package:git_flutter_festou/src/services/feedback_service.dart';
+import 'package:git_flutter_festou/src/services/avaliacoes_service.dart';
 import 'package:git_flutter_festou/src/services/space_service.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -74,7 +74,7 @@ class _NewCardInfoState extends State<NewCardInfo>
       context: context,
       builder: (context) {
         return Dialog(
-          child: FeedbackPage(space: space),
+          child: AvaliacoesPage(space: space),
         );
       },
     );
@@ -204,12 +204,12 @@ class _NewCardInfoState extends State<NewCardInfo>
   List<String> selectedServices = [];
 
   SpaceModel? space;
-  List<FeedbackModel>? feedbacks;
+  List<AvaliacoesModel>? feedbacks;
   late SpaceService spaceService;
-  late FeedbackService feedbackService;
+  late AvaliacoesService feedbackService;
   Future<void> init() async {
     spaceService = SpaceService();
-    feedbackService = FeedbackService();
+    feedbackService = AvaliacoesService();
     space = await spaceService.getSpaceById(widget.spaceId);
     feedbacks = await feedbackService.getFeedbacksOrdered(widget.spaceId);
     feedbacks!.removeWhere((f) => f.deletedAt != null);

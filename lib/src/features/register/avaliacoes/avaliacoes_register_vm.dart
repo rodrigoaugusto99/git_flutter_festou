@@ -4,7 +4,7 @@ import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'feedback_register_vm.g.dart';
+part 'avaliacoes_register_vm.g.dart';
 
 enum FeedbackRegisterStateStatus {
   initial,
@@ -13,7 +13,7 @@ enum FeedbackRegisterStateStatus {
 }
 
 @riverpod
-class FeedbackRegisterVm extends _$FeedbackRegisterVm {
+class AvaliacoesRegisterVm extends _$FeedbackRegisterVm {
   String errorMessage = '';
 
   final user = FirebaseAuth.instance.currentUser!;

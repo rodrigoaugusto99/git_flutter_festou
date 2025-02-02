@@ -2,20 +2,20 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_vm.dart';
-import 'package:git_flutter_festou/src/models/feedback_model.dart';
+import 'package:git_flutter_festou/src/features/register/avaliacoes/avaliacoes_register_vm.dart';
+import 'package:git_flutter_festou/src/models/avaliacoes_model.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 
-class FeedbackPage extends ConsumerStatefulWidget {
+class AvaliacoesPage extends ConsumerStatefulWidget {
   final SpaceModel space;
-  final FeedbackModel? feedback;
-  const FeedbackPage({super.key, required this.space, this.feedback});
+  final AvaliacoesModel? feedback;
+  const AvaliacoesPage({super.key, required this.space, this.feedback});
 
   @override
-  ConsumerState<FeedbackPage> createState() => _RatingViewState();
+  ConsumerState<AvaliacoesPage> createState() => _RatingViewState();
 }
 
-class _RatingViewState extends ConsumerState<FeedbackPage> {
+class _RatingViewState extends ConsumerState<AvaliacoesPage> {
   final _ratingPageController = PageController();
   var _starPosition = 180.0;
   var starRatingIndex = 0;
@@ -96,7 +96,7 @@ class _RatingViewState extends ConsumerState<FeedbackPage> {
               child: MaterialButton(
                 onPressed: _canConfirm
                     ? () async {
-                        FeedbackModel updatedFeedback;
+                        AvaliacoesModel updatedFeedback;
 
                         if (widget.feedback == null) {
                           // Criando novo feedback
@@ -106,7 +106,7 @@ class _RatingViewState extends ConsumerState<FeedbackPage> {
                             content: contentController.text,
                           );
 
-                          updatedFeedback = FeedbackModel(
+                          updatedFeedback = AvaliacoesModel(
                             id: '', // O ID será gerado pelo Firestore
                             spaceId: widget.space.spaceId,
                             userId:

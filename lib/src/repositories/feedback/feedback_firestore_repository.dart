@@ -1,7 +1,7 @@
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
-import 'package:git_flutter_festou/src/models/feedback_model.dart';
+import 'package:git_flutter_festou/src/models/avaliacoes_model.dart';
 
 abstract interface class FeedbackFirestoreRepository {
   Future<Either<RepositoryException, Nil>> saveFeedback(
@@ -39,12 +39,12 @@ abstract interface class FeedbackFirestoreRepository {
     required String content,
   });
 
-  Future<Either<RepositoryException, List<FeedbackModel>>> getFeedbacks(
+  Future<Either<RepositoryException, List<AvaliacoesModel>>> getFeedbacks(
       String spaceId);
 
-  Future<Either<RepositoryException, List<FeedbackModel>>> getMyFeedbacks(
+  Future<Either<RepositoryException, List<AvaliacoesModel>>> getMyFeedbacks(
       String userId);
 
-  Future<Either<RepositoryException, List<FeedbackModel>>> getFeedbacksOrdered(
-      String spaceId, String orderBy);
+  Future<Either<RepositoryException, List<AvaliacoesModel>>>
+      getFeedbacksOrdered(String spaceId, String orderBy);
 }

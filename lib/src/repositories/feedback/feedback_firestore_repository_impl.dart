@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/core/fp/either.dart';
 import 'package:git_flutter_festou/src/core/fp/nil.dart';
-import 'package:git_flutter_festou/src/models/feedback_model.dart';
+import 'package:git_flutter_festou/src/models/avaliacoes_model.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import './feedback_firestore_repository.dart';
@@ -437,13 +437,13 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
   // }
 
   @override
-  Future<Either<RepositoryException, List<FeedbackModel>>> getFeedbacks(
+  Future<Either<RepositoryException, List<AvaliacoesModel>>> getFeedbacks(
       String spaceId) async {
     try {
       final allFeedbacksDocuments =
           await feedbacksCollection.where('space_id', isEqualTo: spaceId).get();
 
-      List<FeedbackModel> feedbackModels =
+      List<AvaliacoesModel> feedbackModels =
           allFeedbacksDocuments.docs.map((feedbackDocument) {
         return mapFeedbackDocumentToModel(feedbackDocument);
       }).toList();
@@ -456,15 +456,15 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
   }
 
   @override
-  Future<Either<RepositoryException, List<FeedbackModel>>> getFeedbacksOrdered(
-      String spaceId, String orderBy) async {
+  Future<Either<RepositoryException, List<AvaliacoesModel>>>
+      getFeedbacksOrdered(String spaceId, String orderBy) async {
     try {
       QuerySnapshot allFeedbacksDocuments = await feedbacksCollection
           .where('space_id', isEqualTo: spaceId)
           .orderBy(orderBy, descending: true)
           .get();
 
-      List<FeedbackModel> feedbackModels =
+      List<AvaliacoesModel> feedbackModels =
           allFeedbacksDocuments.docs.map((feedbackDocument) {
         return mapFeedbackDocumentToModel(feedbackDocument);
       }).toList();
@@ -476,12 +476,12 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
     }
   }
 
-  FeedbackModel mapFeedbackDocumentToModel(
+  AvaliacoesModel mapFeedbackDocumentToModel(
       QueryDocumentSnapshot feedbackDocument) {
     List<String> likes = List<String>.from(feedbackDocument['likes'] ?? []);
     List<String> dislikes =
         List<String>.from(feedbackDocument['dislikes'] ?? []);
-    return FeedbackModel(
+    return AvaliacoesModel(
       spaceId: feedbackDocument['space_id'] ?? '',
       deletedAt: feedbackDocument['deletedAt'],
       userId: feedbackDocument['user_id'] ?? '',
@@ -533,13 +533,13 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
   }
 
   @override
-  Future<Either<RepositoryException, List<FeedbackModel>>> getMyFeedbacks(
+  Future<Either<RepositoryException, List<AvaliacoesModel>>> getMyFeedbacks(
       String userId) async {
     try {
       final allFeedbacksDocuments =
           await feedbacksCollection.where('user_id', isEqualTo: userId).get();
 
-      List<FeedbackModel> feedbackModels =
+      List<AvaliacoesModel> feedbackModels =
           allFeedbacksDocuments.docs.map((feedbackDocument) {
         return mapFeedbackDocumentToModel(feedbackDocument);
       }).toList();

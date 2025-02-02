@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 
-class FeedbackModel {
+class AvaliacoesModel {
   final String id;
   final int rating;
   final String content;
@@ -15,7 +15,7 @@ class FeedbackModel {
   final SpaceModel? space;
   final Timestamp? deletedAt;
 
-  FeedbackModel({
+  AvaliacoesModel({
     required this.id,
     required this.rating,
     required this.content,
@@ -30,7 +30,7 @@ class FeedbackModel {
     this.space,
   });
 
-  FeedbackModel copyWith({
+  AvaliacoesModel copyWith({
     String? id,
     String? spaceId,
     String? userId,
@@ -43,7 +43,7 @@ class FeedbackModel {
     List<String>? dislikes,
     Timestamp? deletedAt,
   }) {
-    return FeedbackModel(
+    return AvaliacoesModel(
       id: id ?? this.id,
       spaceId: spaceId ?? this.spaceId,
       userId: userId ?? this.userId,

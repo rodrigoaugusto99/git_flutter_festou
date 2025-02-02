@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/meus%20feedbacks/minhas_avaliacoes_widgets.dart';
-import 'package:git_flutter_festou/src/models/feedback_model.dart';
-import 'package:git_flutter_festou/src/services/feedback_service.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/meus%20feedbacks/minhas_avaliacoes_widgets.dart';
+import 'package:git_flutter_festou/src/models/avaliacoes_model.dart';
+import 'package:git_flutter_festou/src/services/avaliacoes_service.dart';
 
 class MinhasAvaliacoesPage extends StatefulWidget {
   final String userId;
@@ -13,7 +13,7 @@ class MinhasAvaliacoesPage extends StatefulWidget {
 }
 
 class _MinhasAvaliacoesPageState extends State<MinhasAvaliacoesPage> {
-  List<FeedbackModel>? feedbacks;
+  List<AvaliacoesModel>? feedbacks;
   User? currUser = FirebaseAuth.instance.currentUser;
 
   @override
@@ -23,7 +23,7 @@ class _MinhasAvaliacoesPageState extends State<MinhasAvaliacoesPage> {
   }
 
   getFeedbacks() async {
-    feedbacks = await FeedbackService().getMyFeedbacks(currUser!.uid);
+    feedbacks = await AvaliacoesService().getMyFeedbacks(currUser!.uid);
     setState(() {});
   }
 
