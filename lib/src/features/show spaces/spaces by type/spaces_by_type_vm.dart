@@ -10,8 +10,8 @@ class SpacesByTypeVm extends ChangeNotifier {
 
   List<SpaceModel>? _filteredList;
   List<SpaceModel>? _allSpacesByType;
-  List<SpaceModel>? getFiltered() => _filteredList;
-  List<SpaceModel>? getSpaces() => _allSpacesByType;
+  List<SpaceModel>? get getFiltered => _filteredList;
+  List<SpaceModel>? get getSpaces => _allSpacesByType;
   bool showSpacesByType = true;
   bool showFiltered = true;
   final controller = TextEditingController();

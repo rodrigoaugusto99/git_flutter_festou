@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class FeedbacksPanel extends StatefulWidget {
   final ValueChanged<String> onNotePressed;
   final String text;
+  final List<String> selectedNotes;
 
   const FeedbacksPanel({
     super.key,
     required this.onNotePressed,
     required this.text,
+    required this.selectedNotes,
   });
 
   @override
@@ -15,7 +17,17 @@ class FeedbacksPanel extends StatefulWidget {
 }
 
 class _FeedbacksPanelState extends State<FeedbacksPanel> {
-  String selectedNote = '0+';
+  late String selectedNote;
+
+  @override
+  void initState() {
+    super.initState();
+    // Define o maior valor da lista selecionada como o estado inicial
+    selectedNote = widget.selectedNotes.isNotEmpty
+        ? '${widget.selectedNotes.map((e) => double.parse(e.replaceAll('+', ''))).reduce((a, b) => a < b ? a : b)}+'
+        : '0+';
+  }
+  //String selectedNote = '0+';
 
   void updateSelectedNote(String note) {
     setState(() {

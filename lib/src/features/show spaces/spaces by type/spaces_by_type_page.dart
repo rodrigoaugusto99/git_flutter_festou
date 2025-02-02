@@ -66,6 +66,7 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
           ref.read(filterAndOrderVmProvider).selectedServices;
       final selectedTypes = ref.read(filterAndOrderVmProvider).selectedTypes;
       final availableDays = ref.read(filterAndOrderVmProvider).availableDays;
+      final selectedNotes = ref.read(filterAndOrderVmProvider).selectedNotes;
       showModalBottomSheet<void>(
         isScrollControlled: true,
         context: context,
@@ -113,6 +114,7 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                     availableDays: availableDays,
                   ),
                   FeedbacksPanel(
+                    selectedNotes: selectedNotes,
                     text: 'MÉDIA de avaliações',
                     onNotePressed: (String value) {
                       log('onNotePressed: $value');
@@ -152,9 +154,11 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
           animation: spaceByTypeViewModel,
           builder: (context, child) {
             return Scaffold(
+              //backgroundColor: Colors.white,
               extendBodyBehindAppBar: true,
               appBar: AppBar(
-                backgroundColor: Colors.transparent,
+                //backgroundColor: Colors.transparent,
+                backgroundColor: Colors.white,
                 actions: [
                   Padding(
                     padding: const EdgeInsets.only(right: 18.0),
@@ -220,75 +224,75 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                 ),
                 elevation: 0,
               ),
-              body: DecoratedBox(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(cds[widget.type[0]]!),
-                      fit: BoxFit.cover),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 100,
-                      ),
-                      Row(
-                        children: [
-                          _buildSearchBox(x, y),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 15),
-                            child: GestureDetector(
-                              onTap: () => showFilterModal(context),
-                              child: Container(
-                                width: 35,
-                                height: 35,
-                                decoration: BoxDecoration(
-                                  //color: Colors.white.withOpacity(0.7),
-                                  color: const Color(0xff9747FF),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Image.asset(
-                                    'lib/assets/images/icon_filtro.png'),
+              body: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 100,
+                    ),
+                    Row(
+                      children: [
+                        _buildSearchBox(x, y),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 15),
+                          child: GestureDetector(
+                            onTap: () => showFilterModal(context),
+                            child: Container(
+                              width: 35,
+                              height: 35,
+                              decoration: BoxDecoration(
+                                //color: Colors.white.withOpacity(0.7),
+                                color: const Color(0xff9747FF),
+                                borderRadius: BorderRadius.circular(10),
                               ),
+                              child: Image.asset(
+                                  'lib/assets/images/icon_filtro.png'),
                             ),
                           ),
-                        ],
+                        ),
+                      ],
+                    ),
+                    if ((spaceByTypeViewModel.getSpaces != null &&
+                        spaceByTypeViewModel.showSpacesByType &&
+                        spaceByTypeViewModel.getSpaces!.isEmpty))
+                      const Text('Não foram encontrado espaços'),
+                    if ((spaceByTypeViewModel.getFiltered != null &&
+                        spaceByTypeViewModel.showFiltered &&
+                        spaceByTypeViewModel.getFiltered!.isEmpty))
+                      const Text('Não foram encontrado espaços'),
+                    if (spaceByTypeViewModel.getSpaces != null &&
+                        spaceByTypeViewModel.showSpacesByType) ...[
+                      Expanded(
+                        child: ListView.builder(
+                          padding: const EdgeInsets.all(10),
+                          itemCount: spaceByTypeViewModel.getSpaces!.length,
+                          itemBuilder: (context, index) {
+                            return NewSpaceCard(
+                              hasHeart: true,
+                              space: spaceByTypeViewModel.getSpaces![index],
+                              isReview: false,
+                            );
+                          },
+                        ),
                       ),
-                      if (spaceByTypeViewModel.getSpaces() != null &&
-                          spaceByTypeViewModel.showSpacesByType)
-                        Expanded(
-                          child: ListView.builder(
-                            padding: const EdgeInsets.all(10),
-                            itemCount: spaceByTypeViewModel.getSpaces()!.length,
-                            itemBuilder: (context, index) {
-                              return NewSpaceCard(
-                                hasHeart: true,
-                                space: spaceByTypeViewModel.getSpaces()![index],
-                                isReview: false,
-                              );
-                            },
-                          ),
-                        ),
-                      if (spaceByTypeViewModel.getFiltered() != null &&
-                          spaceByTypeViewModel.showFiltered)
-                        Expanded(
-                          child: ListView.builder(
-                            padding: const EdgeInsets.all(10),
-                            itemCount:
-                                spaceByTypeViewModel.getFiltered()!.length,
-                            itemBuilder: (context, index) {
-                              return NewSpaceCard(
-                                hasHeart: true,
-                                space:
-                                    spaceByTypeViewModel.getFiltered()![index],
-                                isReview: false,
-                              );
-                            },
-                          ),
-                        ),
                     ],
-                  ),
+                    if (spaceByTypeViewModel.getFiltered != null &&
+                        spaceByTypeViewModel.showFiltered)
+                      Expanded(
+                        child: ListView.builder(
+                          padding: const EdgeInsets.all(10),
+                          itemCount: spaceByTypeViewModel.getFiltered!.length,
+                          itemBuilder: (context, index) {
+                            return NewSpaceCard(
+                              hasHeart: true,
+                              space: spaceByTypeViewModel.getFiltered![index],
+                              isReview: false,
+                            );
+                          },
+                        ),
+                      ),
+                  ],
                 ),
               ),
             );
