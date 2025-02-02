@@ -43,12 +43,18 @@ class _FeedbacksPanelState extends State<FeedbacksPanel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          const SizedBox(
+            height: 16,
+          ),
           Text(
             widget.text,
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
+          ),
+          const SizedBox(
+            height: 16,
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,

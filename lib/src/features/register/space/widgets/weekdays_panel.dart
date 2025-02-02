@@ -23,9 +23,15 @@ class WeekDaysPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          const SizedBox(
+            height: 16,
+          ),
           Text(
             text,
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          ),
+          const SizedBox(
+            height: 16,
           ),
           //rolagem caso dispositivo pequeno
           SingleChildScrollView(
