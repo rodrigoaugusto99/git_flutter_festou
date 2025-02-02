@@ -19,17 +19,16 @@ class SpaceWithReservation {
   final ReservationModel reserva;
 }
 
-class HistoricoReservasWidget extends StatefulWidget {
-  const HistoricoReservasWidget({
+class MinhasReservasWidget extends StatefulWidget {
+  const MinhasReservasWidget({
     super.key,
   });
 
   @override
-  State<HistoricoReservasWidget> createState() =>
-      _HistoricoReservasWidgetState();
+  State<MinhasReservasWidget> createState() => _MinhasReservasWidgetState();
 }
 
-class _HistoricoReservasWidgetState extends State<HistoricoReservasWidget> {
+class _MinhasReservasWidgetState extends State<MinhasReservasWidget> {
   @override
   void initState() {
     super.initState();
@@ -70,43 +69,72 @@ class _HistoricoReservasWidgetState extends State<HistoricoReservasWidget> {
           shape: const RoundedRectangleBorder(
             side: BorderSide.none,
           ),
-          leading: Image.asset('lib/assets/images/icon_avaliacao.png'),
-          title: const Text('Minhas reservas'),
-          children: [
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: reservationSpaces.length,
-              itemBuilder: (BuildContext context, int index) {
-                final spaceWithReservation = reservationSpaces[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 50, top: 10),
-                  child: HistoricoReservasTile(
-                      spaceShowing: spaceWithReservation.space,
-                      reservationModel: spaceWithReservation.reserva,
-                      showCancelReservationDialog: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => CancelReservationDialog(
-                            reservation: spaceWithReservation.reserva,
-                          ),
-                        );
-                      }),
-                );
-              },
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 4.0),
+            child: Image.asset(
+              'lib/assets/images/icon_calendario_check.png',
+              width: 25,
+              height: 25,
             ),
-          ],
+          ),
+          title: const Text(
+            'Minhas reservas',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.black,
+            ),
+          ),
+          children: reservationSpaces.isEmpty
+              ? [
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text(
+                          'Nenhuma reserva encontrada.',
+                          style: TextStyle(fontSize: 14, color: Colors.black54),
+                        ),
+                      ),
+                    ],
+                  ),
+                ]
+              : [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: reservationSpaces.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final spaceWithReservation = reservationSpaces[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 70, top: 10),
+                        child: MinhasReservasTile(
+                          spaceShowing: spaceWithReservation.space,
+                          reservationModel: spaceWithReservation.reserva,
+                          showCancelReservationDialog: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => CancelReservationDialog(
+                                reservation: spaceWithReservation.reserva,
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ],
         ),
       ),
     );
   }
 }
 
-class HistoricoReservasTile extends StatefulWidget {
+class MinhasReservasTile extends StatefulWidget {
   final SpaceModel spaceShowing;
   final ReservationModel reservationModel;
   final Function()? showCancelReservationDialog;
-  const HistoricoReservasTile({
+  const MinhasReservasTile({
     super.key,
     required this.spaceShowing,
     required this.reservationModel,
@@ -114,7 +142,7 @@ class HistoricoReservasTile extends StatefulWidget {
   });
 
   @override
-  State<HistoricoReservasTile> createState() => _HistoricoReservasTileState();
+  State<MinhasReservasTile> createState() => _MinhasReservasTileState();
 }
 
 String formatDateTime(DateTime date, int startHour, int endHour) {
@@ -164,7 +192,7 @@ void showCancellationReasonDialog(BuildContext context, String reason) {
   );
 }
 
-class _HistoricoReservasTileState extends State<HistoricoReservasTile> {
+class _MinhasReservasTileState extends State<MinhasReservasTile> {
   int currentIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -193,7 +221,9 @@ class _HistoricoReservasTileState extends State<HistoricoReservasTile> {
                               ),
                               child: Image.network(
                                 imageUrl,
-                                fit: BoxFit.cover,
+                                fit: BoxFit.fill,
+                                width: double.infinity,
+                                height: double.infinity,
                               ),
                             ),
                           )
@@ -202,13 +232,14 @@ class _HistoricoReservasTileState extends State<HistoricoReservasTile> {
                           .map(
                             (imageUrl) => Image.network(
                               imageUrl,
-                              fit: BoxFit.cover,
+                              fit: BoxFit.fill,
+                              width: double.infinity,
+                              height: double.infinity,
                             ),
                           )
                           .toList(),
                   options: CarouselOptions(
                     autoPlay: true,
-                    aspectRatio: 305 / 179,
                     viewportFraction: 1.0,
                     enableInfiniteScroll: true,
                     onPageChanged: (index, reason) {

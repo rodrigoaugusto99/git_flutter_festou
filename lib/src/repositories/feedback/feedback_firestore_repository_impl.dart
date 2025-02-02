@@ -59,7 +59,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
         'avatar': userAvatar,
         'likes': [],
         'dislikes': [],
-        'deleteAt': null,
+        'deletedAt': null,
       };
       log('ntrou');
       await feedbacksCollection.add(newFeedback);
@@ -440,7 +440,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
         List<String>.from(feedbackDocument['dislikes'] ?? []);
     return FeedbackModel(
       spaceId: feedbackDocument['space_id'] ?? '',
-      deleteAt: feedbackDocument['deleteAt'],
+      deletedAt: feedbackDocument['deletedAt'],
       userId: feedbackDocument['user_id'] ?? '',
       rating: feedbackDocument['rating'] ?? 0,
       content: feedbackDocument['content'] ?? '',

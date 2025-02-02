@@ -13,7 +13,7 @@ class FeedbackModel {
   final List<String> likes;
   final List<String> dislikes;
   final SpaceModel? space;
-  final Timestamp? deleteAt;
+  final Timestamp? deletedAt;
 
   FeedbackModel({
     required this.id,
@@ -26,7 +26,7 @@ class FeedbackModel {
     required this.avatar,
     required this.likes,
     required this.dislikes,
-    required this.deleteAt,
+    required this.deletedAt,
     this.space,
   });
 }

@@ -212,7 +212,7 @@ class _NewCardInfoState extends State<NewCardInfo>
     feedbackService = FeedbackService();
     space = await spaceService.getSpaceById(widget.spaceId);
     feedbacks = await feedbackService.getFeedbacksOrdered(widget.spaceId);
-    feedbacks!.removeWhere((f) => f.deleteAt != null);
+    feedbacks!.removeWhere((f) => f.deletedAt != null);
     final user = await UserService().getCurrentUserModel();
     if (user != null) {
       if (user.uid == space!.userId) {
@@ -254,7 +254,7 @@ class _NewCardInfoState extends State<NewCardInfo>
       if (!mounted) return;
       setState(() {
         feedbacks = newFeedbacks;
-        feedbacks!.removeWhere((f) => f.deleteAt != null);
+        feedbacks!.removeWhere((f) => f.deletedAt != null);
       });
     });
   }

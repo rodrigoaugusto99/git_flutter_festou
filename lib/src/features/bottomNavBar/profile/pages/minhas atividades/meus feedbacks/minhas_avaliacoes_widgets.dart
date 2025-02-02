@@ -2,27 +2,33 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/meus%20feedbacks/edit_dialog.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/meus%20feedbacks/meus_feedbacks_state.dart';
+import 'package:git_flutter_festou/src/features/register/feedback/feedback_register_page.dart';
 import 'package:git_flutter_festou/src/models/feedback_model.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/repositories/feedback/feedback_firestore_repository_impl.dart';
 import 'package:git_flutter_festou/src/services/feedback_service.dart';
 import 'package:git_flutter_festou/src/services/space_service.dart';
 
-class FeedbacksWidget extends StatefulWidget {
+class MinhasAvaliacoesWidget extends StatefulWidget {
   final List<FeedbackModel> feedbacks;
 
-  const FeedbacksWidget({
+  const MinhasAvaliacoesWidget({
     super.key,
     required this.feedbacks,
   });
 
   @override
-  State<FeedbacksWidget> createState() => _FeedbacksWidgetState();
+  State<MinhasAvaliacoesWidget> createState() => _MinhasAvaliacoesWidgetState();
 }
 
-class _FeedbacksWidgetState extends State<FeedbacksWidget> {
+class _MinhasAvaliacoesWidgetState extends State<MinhasAvaliacoesWidget> {
   @override
   Widget build(BuildContext context) {
+    List<FeedbackModel> validFeedbacks = widget.feedbacks
+        .where(
+            (feedback) => feedback.content != '' && feedback.deletedAt == null)
+        .toList();
+
     return Container(
       decoration: const BoxDecoration(
         color: Colors.transparent,
@@ -38,27 +44,51 @@ class _FeedbacksWidgetState extends State<FeedbacksWidget> {
           shape: const RoundedRectangleBorder(
             side: BorderSide.none,
           ),
-          leading: Image.asset('lib/assets/images/icon_avaliacao.png'),
-          title: const Text('Minhas avaliações'),
-          children: [
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: widget.feedbacks.length,
-              itemBuilder: (BuildContext context, int index) {
-                final feedback = widget.feedbacks[index];
-                if (feedback.content == '' || feedback.deleteAt != null) {
-                  return const SizedBox.shrink();
-                }
-                return FeedbackItem(
-                  feedback: feedback,
-                  onDelete: () {
-                    widget.feedbacks.removeAt(index);
-                  },
-                );
-              },
+          leading: Image.asset(
+            'lib/assets/images/icon_avaliacao.png',
+            width: 30,
+            height: 30,
+          ),
+          title: const Text(
+            'Minhas avaliações',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.black,
             ),
-          ],
+          ),
+          children: validFeedbacks.isEmpty
+              ? [
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text(
+                          'Nenhuma avaliação encontrada.',
+                          style: TextStyle(fontSize: 14, color: Colors.black54),
+                        ),
+                      ),
+                    ],
+                  ),
+                ]
+              : [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: validFeedbacks.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final feedback = validFeedbacks[index];
+                      return FeedbackItem(
+                        feedback: feedback,
+                        onDelete: () {
+                          setState(() {
+                            widget.feedbacks.removeAt(index);
+                          });
+                        },
+                      );
+                    },
+                  ),
+                ],
         ),
       ),
     );
@@ -271,19 +301,14 @@ class _FeedbackItemState extends State<FeedbackItem> {
                           const Spacer(),
                           GestureDetector(
                             onTap: () async {
-                              final result = await showDialog<String>(
+                              final result = await showDialog(
                                 context: context,
-                                builder: (context) => EditTextDialog(
-                                  initialText: myFeedback!.content,
-                                ),
+                                builder: (context) {
+                                  return Dialog(
+                                    child: FeedbackPage(space: space!),
+                                  );
+                                },
                               );
-                              if (result == null) return;
-
-                              await FeedbackService().updateFeedbackContent(
-                                widget.feedback.id,
-                                result,
-                              );
-                              updateFeedback();
                             },
                             child: const Text(
                               'Editar',

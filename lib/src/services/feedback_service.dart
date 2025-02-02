@@ -75,7 +75,7 @@ class FeedbackService {
         await FirebaseFirestore.instance
             .collection('feedbacks')
             .doc(snapshot.docs.first.id)
-            .update({'deleteAt': FieldValue.serverTimestamp()});
+            .update({'deletedAt': FieldValue.serverTimestamp()});
 
         log('Feedback com ID $feedbackId foi excluído com sucesso.');
       } else {
@@ -95,7 +95,7 @@ class FeedbackService {
     return FeedbackModel(
       spaceId: feedbackDocument['space_id'] ?? '',
       userId: feedbackDocument['user_id'] ?? '',
-      deleteAt: feedbackDocument['deleteAt'],
+      deletedAt: feedbackDocument['deletedAt'],
       rating: feedbackDocument['rating'] ?? 0,
       content: feedbackDocument['content'] ?? '',
       userName: feedbackDocument['user_name'] ?? '',
