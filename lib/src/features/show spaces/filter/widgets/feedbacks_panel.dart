@@ -17,22 +17,12 @@ class FeedbacksPanel extends StatefulWidget {
 }
 
 class _FeedbacksPanelState extends State<FeedbacksPanel> {
-  late String selectedNote;
-
-  @override
-  void initState() {
-    super.initState();
-    // Define o maior valor da lista selecionada como o estado inicial
-    selectedNote = widget.selectedNotes.isNotEmpty
-        ? '${widget.selectedNotes.map((e) => double.parse(e.replaceAll('+', ''))).reduce((a, b) => a < b ? a : b)}+'
-        : '0+';
-  }
-  //String selectedNote = '0+';
+  String selectedNote = '0+';
 
   void updateSelectedNote(String note) {
     setState(() {
       selectedNote = note;
-      widget.onNotePressed(note);
+      widget.onNotePressed(selectedNote);
     });
   }
 
@@ -45,6 +35,9 @@ class _FeedbacksPanelState extends State<FeedbacksPanel> {
 
   @override
   Widget build(BuildContext context) {
+    selectedNote = widget.selectedNotes.isNotEmpty
+        ? '${widget.selectedNotes.map((e) => double.parse(e.replaceAll('+', ''))).reduce((a, b) => a < b ? a : b)}+'
+        : '0+';
     return SizedBox(
       width: double.infinity,
       child: Column(

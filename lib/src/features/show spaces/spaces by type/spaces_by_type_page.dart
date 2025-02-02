@@ -62,78 +62,82 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
     final y = MediaQuery.of(context).size.height;
 
     void showFilterModal(BuildContext context) {
-      final selectedServices =
-          ref.read(filterAndOrderVmProvider).selectedServices;
-      final selectedTypes = ref.read(filterAndOrderVmProvider).selectedTypes;
-      final availableDays = ref.read(filterAndOrderVmProvider).availableDays;
-      final selectedNotes = ref.read(filterAndOrderVmProvider).selectedNotes;
       showModalBottomSheet<void>(
         isScrollControlled: true,
         context: context,
         builder: (BuildContext context) {
-          return Container(
-            height: y * 0.8,
-            padding: const EdgeInsets.all(16),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ElevatedButton(
-                    onPressed: () => setState(() {
-                      filterAnOrderVm.redefinir();
-                    }),
-                    child: const Text('Redefinir'),
-                  ),
-                  const Text(
-                    'Filtrar',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 16),
-                  ServicesPanel(
-                    text: 'SERVIÇOS do espaço',
-                    onServicePressed: (value) {
-                      //log('onServicePressed: $value');
-                      filterAnOrderVm.addOrRemoveService(value);
-                    },
-                    selectedServices: selectedServices,
-                  ),
-                  TypePanel(
-                    text: 'TIPO de espaço',
-                    onTypePressed: (value) {
-                      //log('onTypePressed: $value');
-                      filterAnOrderVm.addOrRemoveType(value);
-                    },
-                    selectedTypes: selectedTypes,
-                  ),
-                  WeekDaysPanel(
-                    text: 'dias disponiveis',
-                    onDayPressed: (value) {
-                      //log('onTypePressed: $value');
-                      filterAnOrderVm.addOrRemoveAvailableDay(value);
-                    },
-                    availableDays: availableDays,
-                  ),
-                  FeedbacksPanel(
-                    selectedNotes: selectedNotes,
-                    text: 'MÉDIA de avaliações',
-                    onNotePressed: (String value) {
-                      log('onNotePressed: $value');
-                      filterAnOrderVm.addOrRemoveNote(value);
-                    },
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: InkWell(
-                      onTap: () async {
-                        await filterAnOrderVm.filter();
+          return StatefulBuilder(builder: (context, setModalState) {
+            return Container(
+              height: y * 0.8,
+              padding: const EdgeInsets.all(16),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        filterAnOrderVm.redefinir();
+                        setModalState(() {}); // Atualiza o modal
                       },
-                      child: const Text('Aplicar filtros'),
+                      child: const Text('Redefinir'),
                     ),
-                  ),
-                ],
+                    const Text(
+                      'Filtrar',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 16),
+                    ServicesPanel(
+                      text: 'SERVIÇOS do espaço',
+                      onServicePressed: (value) {
+                        //log('onServicePressed: $value');
+                        filterAnOrderVm.addOrRemoveService(value);
+                      },
+                      selectedServices:
+                          ref.read(filterAndOrderVmProvider).selectedServices,
+                    ),
+                    TypePanel(
+                      text: 'TIPO de espaço',
+                      onTypePressed: (value) {
+                        //log('onTypePressed: $value');
+                        filterAnOrderVm.addOrRemoveType(value);
+                      },
+                      selectedTypes:
+                          ref.read(filterAndOrderVmProvider).selectedTypes,
+                    ),
+                    WeekDaysPanel(
+                      text: 'dias disponiveis',
+                      onDayPressed: (value) {
+                        //log('onTypePressed: $value');
+                        filterAnOrderVm.addOrRemoveAvailableDay(value);
+                      },
+                      availableDays:
+                          ref.read(filterAndOrderVmProvider).availableDays,
+                    ),
+                    FeedbacksPanel(
+                      selectedNotes:
+                          ref.read(filterAndOrderVmProvider).selectedNotes,
+                      text: 'MÉDIA de avaliações',
+                      onNotePressed: (String value) {
+                        log('onNotePressed: $value');
+                        filterAnOrderVm.addOrRemoveNote(value);
+                        setModalState(() {});
+                      },
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: InkWell(
+                        onTap: () async {
+                          await filterAnOrderVm.filter();
+                        },
+                        child: const Text('Aplicar filtros'),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
+            );
+          });
         },
       );
     }
