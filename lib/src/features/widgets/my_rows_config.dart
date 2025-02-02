@@ -45,7 +45,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
         ),
         const SizedBox(height: 16),
         MyRow(
-          text: 'Login e Segurança',
+          text: 'Login e segurança',
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(

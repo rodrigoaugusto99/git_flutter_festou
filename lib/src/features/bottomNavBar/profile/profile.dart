@@ -363,7 +363,7 @@ class _ProfileState extends ConsumerState<Profile> {
                       myText(text: 'Atendimento'),
                       const SizedBox(height: 15),
                       MyRow(
-                        text: 'Central de Ajuda',
+                        text: 'Central de ajuda',
                         icon1: Image.asset(
                           'lib/assets/images/icon_atendimento.png',
                         ),
@@ -378,7 +378,7 @@ class _ProfileState extends ConsumerState<Profile> {
                       myText(text: 'Jurídico'),
                       const SizedBox(height: 15),
                       MyRow(
-                        text: 'Termos de Serviço',
+                        text: 'Termos de serviço',
                         icon1: Image.asset(
                           'lib/assets/images/icon_termos.png',
                         ),
