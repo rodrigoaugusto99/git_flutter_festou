@@ -62,6 +62,12 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
     final y = MediaQuery.of(context).size.height;
 
     void showFilterModal(BuildContext context) {
+      if (!ref
+          .read(filterAndOrderVmProvider)
+          .selectedTypes
+          .contains(widget.type[0])) {
+        filterAnOrderVm.addOrRemoveType(widget.type[0]);
+      }
       showModalBottomSheet<void>(
         isScrollControlled: true,
         context: context,
@@ -231,6 +237,8 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
               body: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: Column(
+                  //mainAxisAlignment: MainAxisAlignment.end,
+                  // crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     const SizedBox(
                       height: 100,
@@ -245,6 +253,7 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                             child: Container(
                               width: 35,
                               height: 35,
+                              padding: const EdgeInsets.all(6),
                               decoration: BoxDecoration(
                                 //color: Colors.white.withOpacity(0.7),
                                 color: const Color(0xff9747FF),
@@ -264,7 +273,11 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                     if ((spaceByTypeViewModel.getFiltered != null &&
                         spaceByTypeViewModel.showFiltered &&
                         spaceByTypeViewModel.getFiltered!.isEmpty))
-                      const Text('Não foram encontrado espaços'),
+                      const Expanded(
+                        child: Align(
+                            alignment: Alignment.center,
+                            child: Text('Não foram encontrado espaços')),
+                      ),
                     if (spaceByTypeViewModel.getSpaces != null &&
                         spaceByTypeViewModel.showSpacesByType) ...[
                       Expanded(
