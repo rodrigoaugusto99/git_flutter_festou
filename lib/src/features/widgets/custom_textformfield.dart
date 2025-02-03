@@ -17,9 +17,11 @@ class CustomTextformfield extends StatefulWidget {
   bool hasEye;
   bool isBig;
   double? ddd;
+  double? scale;
   double? height;
   double? verticalPadding;
   double? horizontalPadding;
+  double? svgWidth;
   Color? fillColor;
   Widget? prefixIcon;
   bool? withCrazyPadding;
@@ -36,7 +38,9 @@ class CustomTextformfield extends StatefulWidget {
     this.horizontalPadding,
     this.inputFormatters,
     this.ddd,
+    this.scale,
     this.svgPath,
+    this.svgWidth,
     this.hasEye = false,
     required this.controller,
     this.validator,
@@ -86,10 +90,16 @@ class _CustomTextformfieldState extends State<CustomTextformfield> {
           hintText: widget.hintText,
           prefixIcon: widget.svgPath != null
               ? Padding(
-                  padding: EdgeInsets.only(left: widget.ddd!),
-                  child: Image.asset(
-                    widget.svgPath!,
-                    color: Colors.black,
+                  padding: EdgeInsets.only(left: widget.ddd!, right: 5),
+                  child: Container(
+                    alignment: Alignment.centerRight,
+                    width: widget.svgWidth ?? 0,
+                    // color: Colors.red,
+                    child: Image.asset(
+                      scale: widget.scale ?? 2,
+                      widget.svgPath!,
+                      color: Colors.black,
+                    ),
                   ),
                 )
               : widget.withCrazyPadding == true
