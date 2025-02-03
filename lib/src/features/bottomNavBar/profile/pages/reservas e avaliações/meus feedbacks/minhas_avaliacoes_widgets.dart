@@ -24,8 +24,7 @@ class _MinhasAvaliacoesWidgetState extends State<MinhasAvaliacoesWidget> {
   @override
   void initState() {
     super.initState();
-    feedbacks = List.from(
-        widget.initialFeedbacks); // Criamos uma cópia da lista inicial
+    feedbacks = List.from(widget.initialFeedbacks);
   }
 
   Future<void> refreshFeedbacks() async {
@@ -33,8 +32,7 @@ class _MinhasAvaliacoesWidgetState extends State<MinhasAvaliacoesWidget> {
         .getMyFeedbacks(FirebaseAuth.instance.currentUser!.uid);
 
     setState(() {
-      feedbacks =
-          updatedFeedbacks; // Atualiza a lista com os dados do Firestore
+      feedbacks = updatedFeedbacks;
     });
   }
 
@@ -71,7 +69,7 @@ class _MinhasAvaliacoesWidgetState extends State<MinhasAvaliacoesWidget> {
               color: Colors.black,
             ),
           ),
-          children: validFeedbacks.isEmpty
+          children: feedbacks.isEmpty
               ? [
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -96,7 +94,7 @@ class _MinhasAvaliacoesWidgetState extends State<MinhasAvaliacoesWidget> {
                       return AvaliacoesItem(
                         feedback: feedback,
                         onDelete: () async {
-                          await refreshFeedbacks(); // Atualiza toda a lista após a exclusão
+                          await refreshFeedbacks();
                         },
                       );
                     },
