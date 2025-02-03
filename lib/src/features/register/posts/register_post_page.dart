@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/register/posts/register_post_vm.dart';
 import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
@@ -246,13 +247,18 @@ class _RegisterPostPageState extends State<RegisterPostPage> {
                         const SizedBox(height: 20),
                         GestureDetector(
                           onTap: () async {
-                            _showLoadingDialog(context);
+                            try {
+                              _showLoadingDialog(context);
 
-                            await vm.register();
-                            //await Future.delayed(const Duration(seconds: 3));
-                            if (context.mounted) {
-                              Navigator.of(context)
-                                  .pop(); // Fecha o Dialog após o await
+                              await vm.register();
+                              //await Future.delayed(const Duration(seconds: 3));
+                              if (context.mounted) {
+                                Navigator.of(context).pop();
+                              }
+                              Messages.showSuccess(
+                                  'Post feito com sucesso', context);
+                            } on Exception catch (e) {
+                              log(e.toString());
                             }
                           },
                           child: Container(

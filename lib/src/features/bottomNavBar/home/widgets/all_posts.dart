@@ -243,40 +243,43 @@ class _AllPostsState extends State<AllPosts> {
         elevation: 0,
         backgroundColor: Colors.white,
       ),
-      body: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 8,
-        ),
-        itemCount: hasMorePosts ? posts.length + 1 : posts.length,
-        itemBuilder: (context, index) {
-          if (index == posts.length) {
-            return hasMorePosts
-                ? ElevatedButton(
-                    onPressed: _getMorePosts,
-                    child: loadingMorePosts
-                        ? const CustomLoadingIndicator()
-                        : const Text('Load More'),
-                  )
-                : const SizedBox.shrink();
-          }
+      body: loadingPosts
+          ? const CustomLoadingIndicator()
+          : GridView.builder(
+              padding: const EdgeInsets.all(10),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+              ),
+              itemCount: hasMorePosts ? posts.length + 1 : posts.length,
+              itemBuilder: (context, index) {
+                if (index == posts.length) {
+                  return hasMorePosts && !loadingPosts
+                      ? ElevatedButton(
+                          onPressed: _getMorePosts,
+                          child: loadingMorePosts
+                              ? const CustomLoadingIndicator()
+                              : const Text('Load More'),
+                        )
+                      : const SizedBox.shrink();
+                }
 
-          Map<String, dynamic> post =
-              posts[index].data() as Map<String, dynamic>;
+                Map<String, dynamic> post =
+                    posts[index].data() as Map<String, dynamic>;
 
-          final postModel = PostModel(
-            title: post['titulo'],
-            description: post['descricao'],
-            imagens: List<String>.from(post['imagens'] ?? []),
-            coverPhoto: post['coverPhoto'],
-          );
+                final postModel = PostModel(
+                  title: post['titulo'],
+                  description: post['descricao'],
+                  imagens: List<String>.from(post['imagens'] ?? []),
+                  coverPhoto: post['coverPhoto'],
+                );
 
-          return AllPostsWidget(
-            postModel: postModel,
-          );
-        },
-      ),
+                return AllPostsWidget(
+                  postModel: postModel,
+                );
+              },
+            ),
     );
   }
 }
