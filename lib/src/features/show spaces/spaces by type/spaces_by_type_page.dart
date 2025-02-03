@@ -167,8 +167,8 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
               //backgroundColor: Colors.white,
               extendBodyBehindAppBar: true,
               appBar: AppBar(
-                //backgroundColor: Colors.transparent,
-                backgroundColor: Colors.white,
+                backgroundColor: Colors.transparent,
+                // backgroundColor: Colors.white,
                 actions: [
                   Padding(
                     padding: const EdgeInsets.only(right: 18.0),
@@ -234,14 +234,18 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                 ),
                 elevation: 0,
               ),
-              body: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
+              body: DecoratedBox(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage(cds[widget.type[0]]!),
+                      fit: BoxFit.cover),
+                ),
                 child: Column(
                   //mainAxisAlignment: MainAxisAlignment.end,
                   // crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     const SizedBox(
-                      height: 100,
+                      height: 120,
                     ),
                     Row(
                       children: [

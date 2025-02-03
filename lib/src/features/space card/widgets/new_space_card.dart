@@ -276,13 +276,6 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                               padding: const EdgeInsets.only(left: 25),
                               child: Text(
                                 style: TextStyle(color: Colors.blueGrey[500]),
-                                " ${widget.space.selectedServices}",
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 25),
-                              child: Text(
-                                style: TextStyle(color: Colors.blueGrey[500]),
                                 capitalizeTitle(
                                     "${widget.space.bairro}, ${widget.space.cidade}"),
                               ),

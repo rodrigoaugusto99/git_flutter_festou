@@ -7,7 +7,7 @@ import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dar
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class ForgotEmailPage extends StatefulWidget {
-  const ForgotEmailPage({Key? key}) : super(key: key);
+  const ForgotEmailPage({super.key});
 
   @override
   State<ForgotEmailPage> createState() => _ForgotEmailPageState();
@@ -168,21 +168,23 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
                     Align(
                       alignment: Alignment.center,
                       child: InkWell(
-                        onTap: cpfEC.text.length < 14
-                            ? () => Messages.showError('CPF inválido', context)
-                            : () async {
-                                checkIfCpfExists().then((value) {
-                                  if (value == 1) {
-                                    Messages.showError(
-                                        'Não existe e-mail cadastrado com esse CPF',
-                                        context);
-                                  }
-                                  if (value == 2) {
-                                    Messages.showError(
-                                        'Erro ao buscar CPF', context);
-                                  }
-                                });
-                              },
+                        onTap: () {
+                          if (cpfEC.text.length < 14) {
+                            log(cpfEC.text);
+                            Messages.showError('CPF inválido', context);
+                            return;
+                          }
+                          checkIfCpfExists().then((value) {
+                            if (value == 1) {
+                              Messages.showError(
+                                  'Não existe e-mail cadastrado com esse CPF',
+                                  context);
+                            }
+                            if (value == 2) {
+                              Messages.showError('Erro ao buscar CPF', context);
+                            }
+                          });
+                        },
                         child: Container(
                           alignment: Alignment.center,
                           width: buttonWidth,
@@ -245,7 +247,7 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(right: 75, left: 75, bottom: 90),
         child: InkWell(
-          onTap: () => Navigator.of(context).pushNamed('/forgot_password'),
+          onTap: () => Navigator.of(context).pop(),
           child: Container(
             alignment: Alignment.center,
             width: buttonWidth,

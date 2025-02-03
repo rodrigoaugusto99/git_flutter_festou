@@ -5,6 +5,8 @@ class MyRow extends StatefulWidget {
   final Widget icon1;
   final Function()? onTap;
   final Key? customKey;
+  final double? height;
+  final double? width;
 
   const MyRow({
     super.key,
@@ -12,6 +14,8 @@ class MyRow extends StatefulWidget {
     required this.icon1,
     this.onTap,
     this.customKey,
+    this.height,
+    this.width,
   });
 
   @override
@@ -35,10 +39,10 @@ class _MyRowState extends State<MyRow> {
           children: [
             Row(
               children: [
-                Container(
-                  height: 20,
-                  width: 20,
-                  color: Colors.white,
+                SizedBox(
+                  height: widget.height ?? 20,
+                  width: widget.width ?? 20,
+                  // color: Colors.blue,
                   child: widget.icon1,
                 ),
                 const SizedBox(width: 10),
