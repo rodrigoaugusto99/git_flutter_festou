@@ -1139,13 +1139,29 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                       context: context2,
                                       builder: (BuildContext context2) {
                                         return AlertDialog(
-                                          content: const Column(
+                                          content: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Text(
-                                                  'O usuário possui reservas não consumadas.'),
+                                              Row(children: [
+                                                Lottie.asset(
+                                                  'lib/assets/animations/info.json',
+                                                  width: 100,
+                                                  height: 100,
+                                                  repeat: true,
+                                                ),
+                                                const SizedBox(height: 16),
+                                                const Text(
+                                                  'Não permitido!',
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ]),
+                                              const Text(
+                                                  'O usuário possui reservas em aberto.'),
                                             ],
                                           ),
                                           actions: <Widget>[

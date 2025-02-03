@@ -4,8 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/exceptions/auth_exception.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/passwordField.dart';
+import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
 import 'package:git_flutter_festou/src/models/reservation_model.dart';
 import 'package:git_flutter_festou/src/services/reserva_service.dart';
+import 'package:lottie/lottie.dart';
 
 class CancelReservationDialog extends StatefulWidget {
   final ReservationModel reservation;
@@ -65,67 +68,106 @@ class _CancelReservationDialogState extends State<CancelReservationDialog> {
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'invalid-credential') {
+        log('Erro ao cancelar reserva: ${e.code}, ${e.message}');
         throw AuthError(message: 'Senha inválida!');
       }
       log('Erro ao cancelar reserva: ${e.code}, ${e.message}');
       throw AuthError(message: 'Erro ao cancelar reserva');
+    } on AuthError catch (e) {
+      throw AuthError(message: e.message);
     } catch (e) {
       log('Erro desconhecido ao cancelar reserva: $e');
-      throw AuthError(message: 'Erro ao cancelar reserva');
+      throw AuthError(message: e.toString());
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text("Cancelar Reserva"),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            Row(
+              children: [
+                Lottie.asset(
+                  'lib/assets/animations/warning_exit.json',
+                  width: 80,
+                  height: 80,
+                  repeat: true,
+                ),
+                const SizedBox(width: 8),
+                const Text(
+                  'Cancelar reserva',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
             Text(
               isGoogleProvider
                   ? "Confirme seu e-mail para cancelar a reserva."
-                  : "Tem certeza que deseja cancelar a reserva? Por favor, insira sua senha e o motivo do cancelamento para confirmar.",
+                  : "Tem certeza que deseja cancelar a reserva? Insira sua senha e o motivo do cancelamento para confirmar.",
             ),
             const SizedBox(height: 16),
             SizedBox(
-              height: 90,
-              child: TextFormField(
-                controller: inputController,
-                obscureText: !isGoogleProvider,
-                decoration: InputDecoration(
-                  labelText: isGoogleProvider ? "E-mail" : "Senha",
-                  border: const OutlineInputBorder(),
-                  errorText: inputErrorText,
-                  errorMaxLines: 2,
-                ),
-              ),
+              //height: 90,
+              child: isGoogleProvider
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: TextFormField(
+                        controller: inputController,
+                        decoration: InputDecoration(
+                          labelText: "E-mail",
+                          labelStyle: const TextStyle(
+                            color: Color(0XFF4300B1),
+                            fontSize: 13,
+                          ),
+                          border: const OutlineInputBorder(),
+                          errorText: inputErrorText,
+                        ),
+                      ),
+                    )
+                  : PasswordField(
+                      controller: inputController,
+                      label: 'Senha',
+                      errorText: inputErrorText,
+                    ),
             ),
             const SizedBox(height: 16),
             SizedBox(
-              height: 90,
-              child: TextFormField(
-                controller: reasonController,
-                decoration: InputDecoration(
-                  labelText: "Motivo do Cancelamento",
-                  border: const OutlineInputBorder(),
-                  errorText: reasonErrorText,
+              //height: 90,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: TextFormField(
+                  controller: reasonController,
+                  decoration: InputDecoration(
+                    labelText: "Motivo do Cancelamento",
+                    labelStyle: const TextStyle(
+                      color: Color(0XFF4300B1),
+                      fontSize: 13,
+                    ),
+                    border: const OutlineInputBorder(),
+                    errorText: reasonErrorText,
+                  ),
+                  maxLength: 200,
                 ),
-                maxLength: 200,
               ),
             ),
           ],
         ),
       ),
-      actions: [
+      actions: <Widget>[
         TextButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: const Text("Voltar"),
+          child: const Text('Cancelar'),
         ),
-        ElevatedButton(
+        TextButton(
           onPressed: () async {
             final input = inputController.text;
             final reason = reasonController.text;

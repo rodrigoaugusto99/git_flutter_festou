@@ -8,7 +8,6 @@ import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/services/reserva_service.dart';
 import 'package:git_flutter_festou/src/services/space_service.dart';
 import 'package:intl/intl.dart';
-import 'package:svg_flutter/svg.dart';
 
 class SpaceWithReservation {
   SpaceWithReservation({
@@ -107,7 +106,8 @@ class _MinhasReservasWidgetState extends State<MinhasReservasWidget> {
                     itemBuilder: (BuildContext context, int index) {
                       final spaceWithReservation = reservationSpaces[index];
                       return Padding(
-                        padding: const EdgeInsets.only(bottom: 70, top: 10),
+                        padding: const EdgeInsets.only(
+                            bottom: 70, top: 10, right: 20, left: 20),
                         child: MinhasReservasTile(
                           spaceShowing: spaceWithReservation.space,
                           reservationModel: spaceWithReservation.reserva,
@@ -340,7 +340,7 @@ class _MinhasReservasTileState extends State<MinhasReservasTile> {
                                 widget.reservationModel.checkOutTime,
                               ),
                               style: const TextStyle(
-                                fontSize: 9,
+                                fontSize: 11,
                                 color: Color(0xff5E5E5E),
                               ),
                             ),

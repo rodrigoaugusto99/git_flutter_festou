@@ -2,9 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
 import 'package:git_flutter_festou/src/models/reservation_model.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class ReservaService {
   final CollectionReference reservationCollection =
@@ -71,18 +69,6 @@ class ReservaService {
       reason: reservationDocument['reason'] ?? '',
     );
   }
-
-  // Future<DocumentSnapshot> getUserDocumentById(String userId) async {
-  //   final userDocument =
-  //       await usersCollection.where('uid', isEqualTo: userId).get();
-
-  //   if (userDocument.docs.isNotEmpty) {
-  //     return userDocument.docs[0]; // Retorna o primeiro documento encontrado.
-  //   }
-
-  //   // Trate o caso em que nenhum usuário foi encontrado.
-  //   throw Exception("Usuário não encontrado");
-  // }
 
   Future<List<ReservationModel>> getReservationsByLocadorId(
     String userId,
