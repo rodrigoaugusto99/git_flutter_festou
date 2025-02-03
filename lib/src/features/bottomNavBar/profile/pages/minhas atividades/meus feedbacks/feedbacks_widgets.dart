@@ -66,12 +66,14 @@ class _FeedbacksWidgetState extends State<FeedbacksWidget> {
 }
 
 class FeedbackItem extends StatefulWidget {
+  final bool hideThings;
   final FeedbackModel feedback;
   final VoidCallback onDelete;
 
   const FeedbackItem({
     super.key,
     required this.feedback,
+    this.hideThings = false,
     required this.onDelete,
   });
 
@@ -213,27 +215,28 @@ class _FeedbackItemState extends State<FeedbackItem> {
                           // ),
                         ],
                       ),
-                      Align(
-                        child: Column(
-                          children: [
-                            Text(
-                              space!.titulo,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
+                      if (!widget.hideThings)
+                        Align(
+                          child: Column(
+                            children: [
+                              Text(
+                                space!.titulo,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 3),
-                            Text(
-                              '${space!.bairro}, ${space!.cidade}',
-                              style: const TextStyle(
-                                fontSize: 11,
-                                color: Color(0xff5E5E5E),
+                              const SizedBox(height: 3),
+                              Text(
+                                '${space!.bairro}, ${space!.cidade}',
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: Color(0xff5E5E5E),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
                       const SizedBox(height: 17),
                       Text(myFeedback!.content.toString()),
                       const SizedBox(height: 17),
@@ -269,49 +272,52 @@ class _FeedbackItemState extends State<FeedbackItem> {
                           const SizedBox(width: 3),
                           Text('(${myFeedback!.dislikes.length})'),
                           const Spacer(),
-                          GestureDetector(
-                            onTap: () async {
-                              final result = await showDialog<String>(
-                                context: context,
-                                builder: (context) => EditTextDialog(
-                                  initialText: myFeedback!.content,
-                                ),
-                              );
-                              if (result == null) return;
+                          if (!widget.hideThings) ...[
+                            GestureDetector(
+                              onTap: () async {
+                                final result = await showDialog<String>(
+                                  context: context,
+                                  builder: (context) => EditTextDialog(
+                                    initialText: myFeedback!.content,
+                                  ),
+                                );
+                                if (result == null) return;
 
-                              await FeedbackService().updateFeedbackContent(
-                                widget.feedback.id,
-                                result,
-                              );
-                              updateFeedback();
-                            },
-                            child: const Text(
-                              'Editar',
-                              style: TextStyle(
-                                color: Color(0xff9747FF),
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
+                                await FeedbackService().updateFeedbackContent(
+                                  widget.feedback.id,
+                                  result,
+                                );
+                                updateFeedback();
+                              },
+                              child: const Text(
+                                'Editar',
+                                style: TextStyle(
+                                  color: Color(0xff9747FF),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 16),
-                          GestureDetector(
-                            onTap: () async {
-                              await FeedbackService().deleteFeedbackByCondition(
-                                widget.feedback.id,
-                              );
-                              updateFeedback();
-                              widget.onDelete();
-                            },
-                            child: const Text(
-                              'Excluir',
-                              style: TextStyle(
-                                color: Color(0xffFF0000),
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
+                            const SizedBox(width: 16),
+                            GestureDetector(
+                              onTap: () async {
+                                await FeedbackService()
+                                    .deleteFeedbackByCondition(
+                                  widget.feedback.id,
+                                );
+                                updateFeedback();
+                                widget.onDelete();
+                              },
+                              child: const Text(
+                                'Excluir',
+                                style: TextStyle(
+                                  color: Color(0xffFF0000),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ],
                       ),
                     ],

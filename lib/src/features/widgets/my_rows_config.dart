@@ -78,7 +78,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
             context,
             MaterialPageRoute(
                 builder: (context) => widget.userModel.locador
-                    ? AvaliacoesMeusEspacosPage(userId: widget.userModel.uid)
+                    ? const AvaliacoesMeusEspacosPage()
                     : MinhasAtividadesPage(userId: widget.userModel.uid)),
           ),
           icon1: Image.asset(
