@@ -5,16 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/core/exceptions/auth_exception.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/passwordField.dart';
-import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
 import 'package:git_flutter_festou/src/models/reservation_model.dart';
 import 'package:git_flutter_festou/src/services/reserva_service.dart';
 import 'package:lottie/lottie.dart';
 
 class CancelReservationDialog extends StatefulWidget {
   final ReservationModel reservation;
+  final VoidCallback? onReservationCancelled;
   const CancelReservationDialog({
     super.key,
     required this.reservation,
+    this.onReservationCancelled,
   });
 
   @override
@@ -199,6 +200,10 @@ class _CancelReservationDialogState extends State<CancelReservationDialog> {
               Navigator.of(context).pop();
               await ReservaService()
                   .cancelReservation(widget.reservation.id!, reason);
+
+              // Atualiza a lista chamando o callback
+              widget.onReservationCancelled?.call();
+
               Messages.showSuccess('Reserva cancelada com sucesso!', context);
             } on AuthError catch (e) {
               inputErrorText = e.message;

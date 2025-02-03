@@ -8,6 +8,7 @@ import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/services/reserva_service.dart';
 import 'package:git_flutter_festou/src/services/space_service.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 
 class SpaceWithReservation {
   SpaceWithReservation({
@@ -40,15 +41,20 @@ class _MinhasReservasWidgetState extends State<MinhasReservasWidget> {
   Future<void> getMyReservations() async {
     final reservas = await ReservaService().getReservationsByClienId();
 
+    List<SpaceWithReservation> updatedReservationSpaces = [];
+
     for (final reserva in reservas) {
       final space = await SpaceService().getSpaceById(reserva.spaceId);
       if (space == null) continue;
 
-      reservationSpaces
+      updatedReservationSpaces
           .add(SpaceWithReservation(space: space, reserva: reserva));
     }
 
-    setState(() {});
+    setState(() {
+      reservationSpaces =
+          updatedReservationSpaces; // Atualiza a lista completamente
+    });
   }
 
   @override
@@ -116,6 +122,9 @@ class _MinhasReservasWidgetState extends State<MinhasReservasWidget> {
                               context: context,
                               builder: (context) => CancelReservationDialog(
                                 reservation: spaceWithReservation.reserva,
+                                onReservationCancelled: () async {
+                                  await getMyReservations();
+                                },
                               ),
                             );
                           },
@@ -172,12 +181,32 @@ void showCancellationReasonDialog(BuildContext context, String reason) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text('Motivo do Cancelamento'),
-        content: Text(
-          reason.isNotEmpty
-              ? reason
-              : 'Nenhum motivo foi fornecido para este cancelamento.',
-          style: const TextStyle(fontSize: 16),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Lottie.asset(
+              'lib/assets/animations/info.json',
+              width: 100,
+              height: 100,
+              repeat: false,
+            ),
+            const Padding(
+              padding: EdgeInsets.only(bottom: 16.0),
+              child: Text(
+                'Motivo do cancelamento',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Text(
+              reason.isNotEmpty
+                  ? reason
+                  : 'Nenhum motivo foi fornecido para este cancelamento.',
+              style: const TextStyle(fontSize: 16),
+            ),
+          ],
         ),
         actions: [
           TextButton(
