@@ -95,7 +95,7 @@ class FeedbackService {
     return FeedbackModel(
       spaceId: feedbackDocument['space_id'] ?? '',
       userId: feedbackDocument['user_id'] ?? '',
-      deleteAt: feedbackDocument['deleteAt'],
+      deleteAt: feedbackDocument['deletedAt'],
       rating: feedbackDocument['rating'] ?? 0,
       content: feedbackDocument['content'] ?? '',
       userName: feedbackDocument['user_name'] ?? '',
