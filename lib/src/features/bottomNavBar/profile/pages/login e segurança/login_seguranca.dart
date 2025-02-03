@@ -8,6 +8,7 @@ import 'package:git_flutter_festou/src/core/providers/application_providers.dart
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/esqueci_senha.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/patternedButton.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/passwordField.dart';
+import 'package:git_flutter_festou/src/features/login/forgot_password_page.dart';
 import 'package:git_flutter_festou/src/services/auth_services.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 
@@ -490,8 +491,9 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                               onTap: () => Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          const EsqueciSenha(),
+                                      builder: (context) {
+                                        return const ForgotPasswordPage();
+                                      },
                                     ),
                                   ),
                               child: const Padding(
