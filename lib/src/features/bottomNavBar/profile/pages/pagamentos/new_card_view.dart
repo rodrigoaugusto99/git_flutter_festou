@@ -424,7 +424,8 @@ class _NewCardViewState extends State<NewCardView> {
                   children: [
                     CustomTextformfield(
                       onChanged: (p0) => setState(() {}),
-                      ddd: 10,
+                      ddd: 9,
+                      scale: 2.5,
                       svgPath: 'lib/assets/images/icon_pessoa.png',
                       hintText: 'Nome do portador',
                       controller: nameEC,
@@ -433,12 +434,15 @@ class _NewCardViewState extends State<NewCardView> {
                     const SizedBox(height: 15),
                     CustomTextformfield(
                       onChanged: (p0) => setState(() {}),
-                      ddd: 5,
+                      ddd: 0,
+                      svgWidth: 5,
+                      scale: 2.8,
+                      horizontalPadding: 0,
                       hintText: 'Número do cartão',
                       keyboardType: TextInputType.number,
                       controller: numberEC,
                       inputFormatters: [cardNumberFormatter],
-                      svgPath: 'lib/assets/images/icon_card.png',
+                      svgPath: 'lib/assets/images/card-number.png',
                       validator: validate(),
                     ),
                     const SizedBox(height: 15),
@@ -447,7 +451,7 @@ class _NewCardViewState extends State<NewCardView> {
                         Expanded(
                           child: CustomTextformfield(
                             onChanged: (p0) => setState(() {}),
-                            ddd: 10,
+                            ddd: 12,
                             svgPath: 'lib/assets/images/icon_card_cvv.png',
                             controller: cvvEC,
                             inputFormatters: [cvvFormatter],
@@ -460,7 +464,7 @@ class _NewCardViewState extends State<NewCardView> {
                         Expanded(
                           child: CustomTextformfield(
                             onChanged: (p0) => setState(() {}),
-                            ddd: 2,
+                            ddd: 6,
                             validator: (value) {
                               final unmaskedValue =
                                   value != null && value.isNotEmpty
@@ -472,6 +476,7 @@ class _NewCardViewState extends State<NewCardView> {
                               }
                               return null;
                             },
+                            scale: 2.3,
                             svgPath: 'lib/assets/images/icon_calendar.png',
                             keyboardType: TextInputType.number,
                             controller: validateDateEC,
@@ -484,7 +489,7 @@ class _NewCardViewState extends State<NewCardView> {
                     const SizedBox(height: 15),
                     CustomTextformfield(
                       onChanged: (p0) => setState(() {}),
-                      ddd: 10,
+                      ddd: 12,
                       validator: validate(),
                       svgPath: 'lib/assets/images/icon_card_check.png',
                       controller: cardNameEC,

@@ -5,7 +5,9 @@ import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/login/login_state.dart';
 import 'package:git_flutter_festou/src/features/login/login_vm.dart';
 import 'package:git_flutter_festou/src/helpers/constants.dart';
+import 'package:git_flutter_festou/src/helpers/validators.dart';
 import 'package:glassmorphism/glassmorphism.dart';
+import 'package:validatorless/validatorless.dart';
 import 'forgot_password_page.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -57,6 +59,52 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         //changeProviderDialog(dialogMessage);
       }
     });
+
+    bool validateEmail(String? value) {
+      if (value == null || value.isEmpty) {
+        // return 'Insira um email';
+        //todo> chamar message
+        Messages.showError('Insira um e-mail', context);
+        return false;
+      }
+
+      // Regex para validar o formato do email
+      RegExp emailRegExp = RegExp(
+        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+      );
+
+      if (!emailRegExp.hasMatch(value)) {
+        // return 'Email inválido';
+        Messages.showError('E-mail inválido', context);
+        return false;
+        //todo: chamar
+      }
+
+      return true; // Email válido
+    }
+
+    bool validatePassword(String? value) {
+      if (value == null || value.isEmpty) {
+        // return 'Insira um email';
+        //todo> chamar message
+        Messages.showError('Insira sua senha', context);
+        return false;
+      }
+
+      // Regex para validar o formato do email
+      // RegExp emailRegExp = RegExp(
+      //   r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+      // );
+
+      // if (!emailRegExp.hasMatch(value)) {
+      //   // return 'Email inválido';
+      //   Messages.showError('Email inválido', context);
+      //   return false;
+      //   //todo: chamar
+      // }
+
+      return true; // Email válido
+    }
 
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -154,7 +202,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             ),
                             child: TextFormField(
                               style: const TextStyle(fontSize: 14.0),
-                              validator: loginVM.validateEmail(),
+                              //validator: (v) => validateEmail(emailEC.text),
                               controller: emailEC,
                               onTapOutside: (_) =>
                                   FocusScope.of(context).unfocus(),
@@ -187,10 +235,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             ),
                             child: TextFormField(
                               style: const TextStyle(fontSize: 14.0),
-                              validator: loginVM.validatePassword(),
+                              //validator: loginVM.validatePassword(),
                               obscureText: isVisible ? false : true,
                               controller: passwordEC,
                               decoration: InputDecoration(
+                                //errorText: ,
                                 contentPadding: const EdgeInsets.only(top: 12),
                                 hintText: 'Password',
                                 hintStyle:
@@ -252,6 +301,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           ),
                           InkWell(
                             onTap: () {
+                              bool isEmailValid = validateEmail(emailEC.text);
+                              if (!isEmailValid) return;
+                              bool isPasswordValid =
+                                  validatePassword(passwordEC.text);
+                              if (!isPasswordValid) return;
+
                               loginVM.validateForm(
                                 context,
                                 formKey,

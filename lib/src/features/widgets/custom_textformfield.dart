@@ -17,16 +17,20 @@ class CustomTextformfield extends StatefulWidget {
   bool hasEye;
   bool isBig;
   double? ddd;
+  double? scale;
   double? height;
   double? verticalPadding;
   double? horizontalPadding;
+  double? svgWidth;
   Color? fillColor;
   Widget? prefixIcon;
   bool? withCrazyPadding;
   Key? customKey;
+  int? maxLength;
   CustomTextformfield({
     super.key,
     this.label,
+    this.maxLength,
     this.customKey,
     this.hintText,
     this.prefixIcon,
@@ -36,7 +40,9 @@ class CustomTextformfield extends StatefulWidget {
     this.horizontalPadding,
     this.inputFormatters,
     this.ddd,
+    this.scale,
     this.svgPath,
+    this.svgWidth,
     this.hasEye = false,
     required this.controller,
     this.validator,
@@ -56,6 +62,25 @@ class CustomTextformfield extends StatefulWidget {
 bool isVisible = false;
 
 class _CustomTextformfieldState extends State<CustomTextformfield> {
+//  final TextEditingController _controller = TextEditingController();
+  int _charCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(() {
+      setState(() {
+        _charCount = widget.controller.text.length;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -72,24 +97,33 @@ class _CustomTextformfieldState extends State<CustomTextformfield> {
             : isVisible
                 ? false
                 : true,
-        onChanged: widget.onChanged,
+        onChanged: widget.onChanged ?? (v) {},
         enabled: widget.enable,
         controller: widget.controller,
         validator: widget.validator,
-        keyboardType: widget.keyboardType,
-        onTapOutside: (event) => {FocusScope.of(context).unfocus()},
+        keyboardType: widget.keyboardType, maxLength: widget.maxLength,
+        // onTapOutside: (event) => {FocusScope.of(context).unfocus()},
         style: TextStyle(
             fontSize: 14,
             color: widget.enable ? Colors.black : Colors.grey,
             overflow: TextOverflow.ellipsis),
         decoration: InputDecoration(
+          counterText: widget.maxLength == null
+              ? null
+              : "$_charCount / ${widget.maxLength}",
           hintText: widget.hintText,
           prefixIcon: widget.svgPath != null
               ? Padding(
-                  padding: EdgeInsets.only(left: widget.ddd!),
-                  child: Image.asset(
-                    widget.svgPath!,
-                    color: Colors.black,
+                  padding: EdgeInsets.only(left: widget.ddd!, right: 5),
+                  child: Container(
+                    alignment: Alignment.centerRight,
+                    width: widget.svgWidth ?? 0,
+                    // color: Colors.red,
+                    child: Image.asset(
+                      scale: widget.scale ?? 2,
+                      widget.svgPath!,
+                      color: Colors.black,
+                    ),
                   ),
                 )
               : widget.withCrazyPadding == true

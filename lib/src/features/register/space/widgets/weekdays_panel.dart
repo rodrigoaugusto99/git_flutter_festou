@@ -5,8 +5,8 @@ import 'package:git_flutter_festou/src/core/ui/constants.dart';
 class WeekDaysPanel extends StatelessWidget {
   final ValueChanged<String> onDayPressed;
   final String text;
-  final List<String> availableDays;
-  const WeekDaysPanel({
+  List<String> availableDays;
+  WeekDaysPanel({
     required this.onDayPressed,
     required this.text,
     required this.availableDays,
@@ -15,14 +15,23 @@ class WeekDaysPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (availableDays.isEmpty) {
+      availableDays = ['Seg, Ter, Qua, Qui, Sex, Sab, Dom'];
+    }
     return SizedBox(
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          const SizedBox(
+            height: 16,
+          ),
           Text(
             text,
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          ),
+          const SizedBox(
+            height: 16,
           ),
           //rolagem caso dispositivo pequeno
           SingleChildScrollView(

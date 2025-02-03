@@ -17,7 +17,15 @@ class FilterAndOrderState {
           status: FilterAndOrderStateStatus.initial,
           selectedTypes: <String>[],
           selectedServices: <String>[],
-          availableDays: <String>[],
+          availableDays: <String>[
+            'Seg',
+            'Ter',
+            'Qua',
+            'Qui',
+            'Sex',
+            'Sab',
+            'Dom'
+          ],
           filteredSpaces: <SpaceModel>[],
           selectedNotes: <String>[],
         );

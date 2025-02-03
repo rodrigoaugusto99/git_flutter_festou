@@ -25,6 +25,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
   TextEditingController cepEC = TextEditingController();
   TextEditingController logradourolEC = TextEditingController();
   TextEditingController bairroEC = TextEditingController();
+  TextEditingController numberEC = TextEditingController();
   TextEditingController cidadeEC = TextEditingController();
   TextEditingController cpfEC = TextEditingController();
 
@@ -301,6 +302,11 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
               myRow(
                 label: 'Logradouro',
                 controller: logradourolEC,
+                enable: isEditing,
+              ),
+              myRow(
+                label: 'Número',
+                controller: numberEC,
                 enable: isEditing,
               ),
               myRow(

@@ -132,34 +132,48 @@ Future<SpaceModel> mapSpaceDocumentToModel2(
 
   return SpaceModel(
     days: Days(
-      monday: Hours(
-        from: spaceDocument['weekdays']['monday']['from'],
-        to: spaceDocument['weekdays']['monday']['to'],
-      ),
-      tuesday: Hours(
-        from: spaceDocument['weekdays']['tuesday']['from'],
-        to: spaceDocument['weekdays']['tuesday']['to'],
-      ),
-      wednesday: Hours(
-        from: spaceDocument['weekdays']['wednesday']['from'],
-        to: spaceDocument['weekdays']['wednesday']['to'],
-      ),
-      thursday: Hours(
-        from: spaceDocument['weekdays']['thursday']['from'],
-        to: spaceDocument['weekdays']['thursday']['to'],
-      ),
-      friday: Hours(
-        from: spaceDocument['weekdays']['friday']['from'],
-        to: spaceDocument['weekdays']['friday']['to'],
-      ),
-      saturday: Hours(
-        from: spaceDocument['weekdays']['saturday']['from'],
-        to: spaceDocument['weekdays']['saturday']['to'],
-      ),
-      sunday: Hours(
-        from: spaceDocument['weekdays']['sunday']['from'],
-        to: spaceDocument['weekdays']['sunday']['to'],
-      ),
+      monday: spaceDocument['weekdays']['monday'] != null
+          ? Hours(
+              from: spaceDocument['weekdays']['monday']['from'] ?? '',
+              to: spaceDocument['weekdays']['monday']['to'] ?? '',
+            )
+          : null,
+      tuesday: spaceDocument['weekdays']['tuesday'] != null
+          ? Hours(
+              from: spaceDocument['weekdays']['tuesday']['from'] ?? '',
+              to: spaceDocument['weekdays']['tuesday']['to'] ?? '',
+            )
+          : null,
+      wednesday: spaceDocument['weekdays']['wednesday'] != null
+          ? Hours(
+              from: spaceDocument['weekdays']['wednesday']['from'] ?? '',
+              to: spaceDocument['weekdays']['wednesday']['to'] ?? '',
+            )
+          : null,
+      thursday: spaceDocument['weekdays']['thursday'] != null
+          ? Hours(
+              from: spaceDocument['weekdays']['thursday']['from'] ?? '',
+              to: spaceDocument['weekdays']['thursday']['to'] ?? '',
+            )
+          : null,
+      friday: spaceDocument['weekdays']['friday'] != null
+          ? Hours(
+              from: spaceDocument['weekdays']['friday']['from'] ?? '',
+              to: spaceDocument['weekdays']['friday']['to'] ?? '',
+            )
+          : null,
+      saturday: spaceDocument['weekdays']['saturday'] != null
+          ? Hours(
+              from: spaceDocument['weekdays']['saturday']['from'] ?? '',
+              to: spaceDocument['weekdays']['saturday']['to'] ?? '',
+            )
+          : null,
+      sunday: spaceDocument['weekdays']['sunday'] != null
+          ? Hours(
+              from: spaceDocument['weekdays']['sunday']['from'] ?? '',
+              to: spaceDocument['weekdays']['sunday']['to'] ?? '',
+            )
+          : null,
     ),
     videosUrl: List<String>.from(spaceDocument['videos'] ?? []),
     isFavorited: isFavorited,
@@ -285,17 +299,22 @@ Future<SpaceModel> mapSpaceDocumentToModel(
 
 Future<String> getAverageRating(String spaceId) async {
   final spaceDocument = await FirebaseFirestore.instance
-      .collection('spaces')
+      .collection('feedbacks')
       .where('space_id', isEqualTo: spaceId)
       .get();
 
-  if (spaceDocument.docs.isNotEmpty) {
-    String averageRatingValue = spaceDocument.docs.first['average_rating'];
-    return averageRatingValue;
+  if (spaceDocument.docs.isEmpty) {
+    //String averageRatingValue = spaceDocument.docs.first['average_rating'];
+    return '0';
   }
 
-  // Trate o caso em que nenhum espaço foi encontrado.
-  throw Exception("Espaço não encontrado");
+  int allRating = 0;
+  for (final doc in spaceDocument.docs) {
+    allRating = allRating + doc['rating'] as int;
+  }
+
+  double averageRating = allRating / spaceDocument.docs.length;
+  return averageRating.toString();
 }
 
 Future<String> getNumComments(String spaceId) async {

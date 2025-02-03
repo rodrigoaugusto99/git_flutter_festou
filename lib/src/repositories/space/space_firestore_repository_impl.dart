@@ -104,7 +104,6 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
               'cidade': spaceData.cidade,
               'selectedTypes': spaceData.selectedTypes,
               'selectedServices': spaceData.selectedServices,
-              'average_rating': '0',
               'num_comments': '0',
               'locador_name': locadorName,
               'descricao': spaceData.descricao,
@@ -393,18 +392,18 @@ p decidir o isFavorited*/
     return null;
   }
 
-  Future<String> getAverageRating(String spaceId) async {
-    final spaceDocument =
-        await spacesCollection.where('space_id', isEqualTo: spaceId).get();
+  // Future<String> getAverageRating(String spaceId) async {
+  //   final spaceDocument =
+  //       await spacesCollection.where('space_id', isEqualTo: spaceId).get();
 
-    if (spaceDocument.docs.isNotEmpty) {
-      String averageRatingValue = spaceDocument.docs.first['average_rating'];
-      return averageRatingValue;
-    }
+  //   if (spaceDocument.docs.isNotEmpty) {
+  //     String averageRatingValue = spaceDocument.docs.first['average_rating'];
+  //     return averageRatingValue;
+  //   }
 
-    // Trate o caso em que nenhum espaço foi encontrado.
-    throw Exception("Espaço não encontrado");
-  }
+  //   // Trate o caso em que nenhum espaço foi encontrado.
+  //   throw Exception("Espaço não encontrado");
+  // }
 
   Future<String> getNumComments(String spaceId) async {
     final spaceDocument =

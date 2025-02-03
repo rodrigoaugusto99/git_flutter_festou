@@ -98,7 +98,8 @@ class FilterAndOrderVm extends _$FilterAndOrderVm {
       status: FilterAndOrderStateStatus.initial,
       selectedServices: [],
       selectedTypes: [],
-      availableDays: [],
+      availableDays: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'],
+      selectedNotes: [],
     );
   }
 
@@ -113,16 +114,44 @@ class FilterAndOrderVm extends _$FilterAndOrderVm {
       :selectedNotes
     ) = state;
 
-    // Step 1: Query to get documents containing all the days
     Query query = FirebaseFirestore.instance.collection('spaces');
 
-    for (String day in availableDays) {
-      query = query.where('days', arrayContains: day);
-    }
+    List<DocumentSnapshot> filteredByDays = [];
 
-    // Execute the query for days
-    QuerySnapshot daysSnapshot = await query.get();
-    List<DocumentSnapshot> filteredByDays = daysSnapshot.docs;
+    if (availableDays.isNotEmpty) {
+      // Mapa para traduzir os dias
+      const Map<String, String> daysMap = {
+        "Seg": "monday",
+        "Ter": "tuesday",
+        "Qua": "wednesday",
+        "Qui": "thursday",
+        "Sex": "friday",
+        "Sab": "saturday",
+        "Dom": "sunday",
+      };
+
+      // Pegar o primeiro dia e traduzi-lo
+      String? translatedDay = daysMap[availableDays.first];
+      if (translatedDay == null) {
+        log("Dia não reconhecido: ${availableDays.first}");
+        // return;
+      }
+      // Use apenas o primeiro dia para a consulta inicial
+      query = query.where('weekdays.$translatedDay', isNull: false);
+
+      QuerySnapshot daysSnapshot = await query.get();
+      filteredByDays = daysSnapshot.docs;
+
+      filteredByDays.removeWhere((doc) {
+        return availableDays.any((day) {
+          String? translatedDay = daysMap[day];
+          // Verifique se a chave traduzida existe e não é nula
+          return translatedDay != null &&
+              doc['weekdays'][translatedDay] == null;
+        });
+      });
+      log("xx");
+    }
 
     // Step 2: Filter by selectedServices
     filteredByDays = filteredByDays.where((doc) {
@@ -130,24 +159,15 @@ class FilterAndOrderVm extends _$FilterAndOrderVm {
       return selectedServices.every((service) => services.contains(service));
     }).toList();
 
+    log("xx");
+
     // Step 3: Filter by selectedTypes
     List<DocumentSnapshot> finalFiltered = filteredByDays.where((doc) {
       List<dynamic> types = doc['selectedTypes'];
       return selectedTypes.every((type) => types.contains(type));
     }).toList();
 
-    // Step 4: Filter by selectedNotes
-    if (selectedNotes.isNotEmpty) {
-      // Convert selectedNotes to double and find the minimum value
-      double minSelectedNote = selectedNotes
-          .map((note) => double.parse(note.replaceAll('+', '')))
-          .reduce((a, b) => a < b ? a : b);
-
-      finalFiltered = finalFiltered.where((doc) {
-        double averageRating = double.parse(doc['average_rating']);
-        return averageRating >= minSelectedNote;
-      }).toList();
-    }
+    log("xx");
 
     final userSpacesFavorite = await getUserFavoriteSpaces();
 
@@ -158,6 +178,29 @@ class FilterAndOrderVm extends _$FilterAndOrderVm {
           userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
       return mapSpaceDocumentToModel2(spaceDocument, isFavorited);
     }).toList());
+
+    // Step 4: Filter by selectedNotes
+    if (selectedNotes.isNotEmpty) {
+      if (selectedNotes.contains("1")) {
+        selectedNotes.add('0');
+      }
+      // Convert selectedNotes to double and find the minimum value
+      double minSelectedNote = selectedNotes
+          .map((note) => double.parse(note.replaceAll('+', '')))
+          .reduce((a, b) => a < b ? a : b);
+      log(minSelectedNote.toString());
+      spaceModels = spaceModels.where((space) {
+        double averageRating = double.parse(space.averageRating);
+        //double averageRating2 = double.parse(doc['average_rating']);
+        log('averageRating.toString()');
+        log(averageRating.toString());
+        return averageRating >= minSelectedNote;
+      }).toList();
+    }
+    log(spaceModels.length.toString());
+    for (final space in spaceModels) {
+      log(space.spaceId);
+    }
     state = state.copyWith(
       status: FilterAndOrderStateStatus.success,
       filteredSpaces: spaceModels,

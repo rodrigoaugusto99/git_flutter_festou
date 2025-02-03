@@ -1,7 +1,8 @@
 flutter_native_splash:
-  background_image: "lib/assets/images/background_festou.png"
+  color: "ffffff"
+  image: "lib/assets/images/logo_festou.png"
   android: true
   ios: true
 
   android_12:
-    background_image: "lib/assets/images/background_festou.png"
+    color: "ffffff"

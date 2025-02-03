@@ -15,14 +15,11 @@ class LoginVM extends _$LoginVM {
   LoginState build() => LoginState.initial();
 
   //validação email
-  FormFieldValidator<String> validateEmail() {
-    return Validatorless.multiple([]);
-  }
 
 //validação senha
-  FormFieldValidator<String> validatePassword() {
-    return Validatorless.multiple([]);
-  }
+  // FormFieldValidator<String> validatePassword() {
+  //   return Validatorless.multiple([]);
+  // }
 
   String validateAll(code, email, password) {
     String errorMessage;

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/post_single_page.dart';
 import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/models/post_model.dart';
 import 'package:loading_indicator/loading_indicator.dart';
@@ -242,40 +243,43 @@ class _AllPostsState extends State<AllPosts> {
         elevation: 0,
         backgroundColor: Colors.white,
       ),
-      body: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 8,
-        ),
-        itemCount: hasMorePosts ? posts.length + 1 : posts.length,
-        itemBuilder: (context, index) {
-          if (index == posts.length) {
-            return hasMorePosts
-                ? ElevatedButton(
-                    onPressed: _getMorePosts,
-                    child: loadingMorePosts
-                        ? const CustomLoadingIndicator()
-                        : const Text('Load More'),
-                  )
-                : const SizedBox.shrink();
-          }
+      body: loadingPosts
+          ? const CustomLoadingIndicator()
+          : GridView.builder(
+              padding: const EdgeInsets.all(10),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+              ),
+              itemCount: hasMorePosts ? posts.length + 1 : posts.length,
+              itemBuilder: (context, index) {
+                if (index == posts.length) {
+                  return hasMorePosts && !loadingPosts
+                      ? ElevatedButton(
+                          onPressed: _getMorePosts,
+                          child: loadingMorePosts
+                              ? const CustomLoadingIndicator()
+                              : const Text('Load More'),
+                        )
+                      : const SizedBox.shrink();
+                }
 
-          Map<String, dynamic> post =
-              posts[index].data() as Map<String, dynamic>;
+                Map<String, dynamic> post =
+                    posts[index].data() as Map<String, dynamic>;
 
-          final postModel = PostModel(
-            title: post['titulo'],
-            description: post['descricao'],
-            imagens: List<String>.from(post['imagens'] ?? []),
-            coverPhoto: post['coverPhoto'],
-          );
+                final postModel = PostModel(
+                  title: post['titulo'],
+                  description: post['descricao'],
+                  imagens: List<String>.from(post['imagens'] ?? []),
+                  coverPhoto: post['coverPhoto'],
+                );
 
-          return AllPostsWidget(
-            postModel: postModel,
-          );
-        },
-      ),
+                return AllPostsWidget(
+                  postModel: postModel,
+                );
+              },
+            ),
     );
   }
 }
@@ -289,70 +293,82 @@ class AllPostsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      width: 174,
-      height: 110,
-      child: Stack(
-        children: [
-          ClipRRect(
-            //clipBehavior: Clip.none,
-            borderRadius: BorderRadius.circular(10),
-            child: Image.network(
-              height: 250,
-              postModel.coverPhoto,
-              fit: BoxFit.cover,
-            ),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return PostSinglePage(postModel: postModel);
+            },
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: 120,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(24)),
-                color: const Color(0xff4300B1).withOpacity(0.5),
+        );
+      },
+      child: Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        width: 174,
+        height: 110,
+        child: Stack(
+          children: [
+            ClipRRect(
+              //clipBehavior: Clip.none,
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(
+                height: 250,
+                postModel.coverPhoto,
+                fit: BoxFit.cover,
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Align(
-                    alignment: Alignment.center,
-                    child: Stack(
-                      children: [
-                        Text(
-                          postModel.title,
-                          style: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: 120,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(24)),
+                  color: const Color(0xff4300B1).withOpacity(0.5),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Align(
+                      alignment: Alignment.center,
+                      child: Stack(
+                        children: [
+                          Text(
+                            postModel.title,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 7),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      postModel.description,
-                      style: const TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
+                        ],
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 7),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        postModel.description,
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }

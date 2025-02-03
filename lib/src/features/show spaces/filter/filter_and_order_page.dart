@@ -38,6 +38,7 @@ class _FilterAndOrderPageState extends ConsumerState<FilterAndOrderPage> {
           ref.read(filterAndOrderVmProvider).selectedServices;
       //final selectedTypes = ref.read(filterAndOrderVmProvider).selectedTypes;
       final availableDays = ref.read(filterAndOrderVmProvider).availableDays;
+      final selectedNotes = ref.read(filterAndOrderVmProvider).selectedNotes;
       showModalBottomSheet<void>(
         isScrollControlled: true,
         context: context,
@@ -85,6 +86,7 @@ class _FilterAndOrderPageState extends ConsumerState<FilterAndOrderPage> {
                     availableDays: availableDays,
                   ),
                   FeedbacksPanel(
+                    selectedNotes: selectedNotes,
                     text: 'MÉDIA de avaliações',
                     onNotePressed: (String value) {
                       //log('onNotePressed: $value');
