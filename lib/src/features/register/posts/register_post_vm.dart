@@ -70,7 +70,7 @@ class RegisterPostVm with ChangeNotifier {
   }
 
   Future<void> register() async {
-    postService.savePost(
+    await postService.savePost(
       spaceId: spaceModel.spaceId,
       imageFiles: imagesToRegister,
       titulo: tituloEC.text,
