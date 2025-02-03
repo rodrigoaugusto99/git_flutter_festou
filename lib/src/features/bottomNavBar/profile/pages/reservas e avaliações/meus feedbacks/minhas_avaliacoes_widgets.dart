@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/register/avaliacoes/avaliacoes_register_page.dart';
 import 'package:git_flutter_festou/src/models/avaliacoes_model.dart';
@@ -6,11 +7,11 @@ import 'package:git_flutter_festou/src/services/avaliacoes_service.dart';
 import 'package:git_flutter_festou/src/services/space_service.dart';
 
 class MinhasAvaliacoesWidget extends StatefulWidget {
-  final List<AvaliacoesModel> feedbacks;
+  final List<AvaliacoesModel> initialFeedbacks;
 
   const MinhasAvaliacoesWidget({
     super.key,
-    required this.feedbacks,
+    required this.initialFeedbacks,
   });
 
   @override
@@ -18,9 +19,28 @@ class MinhasAvaliacoesWidget extends StatefulWidget {
 }
 
 class _MinhasAvaliacoesWidgetState extends State<MinhasAvaliacoesWidget> {
+  late List<AvaliacoesModel> feedbacks;
+
+  @override
+  void initState() {
+    super.initState();
+    feedbacks = List.from(
+        widget.initialFeedbacks); // Criamos uma cópia da lista inicial
+  }
+
+  Future<void> refreshFeedbacks() async {
+    List<AvaliacoesModel> updatedFeedbacks = await AvaliacoesService()
+        .getMyFeedbacks(FirebaseAuth.instance.currentUser!.uid);
+
+    setState(() {
+      feedbacks =
+          updatedFeedbacks; // Atualiza a lista com os dados do Firestore
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<AvaliacoesModel> validFeedbacks = widget.feedbacks
+    List<AvaliacoesModel> validFeedbacks = feedbacks
         .where(
             (feedback) => feedback.content != '' && feedback.deletedAt == null)
         .toList();
@@ -75,10 +95,8 @@ class _MinhasAvaliacoesWidgetState extends State<MinhasAvaliacoesWidget> {
                       final feedback = validFeedbacks[index];
                       return AvaliacoesItem(
                         feedback: feedback,
-                        onDelete: () {
-                          setState(() {
-                            widget.feedbacks.removeAt(index);
-                          });
+                        onDelete: () async {
+                          await refreshFeedbacks(); // Atualiza toda a lista após a exclusão
                         },
                       );
                     },
@@ -138,6 +156,35 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
   updateFeedback() async {
     myFeedback = await AvaliacoesService().getFeedbackById(widget.feedback.id);
     _checkUserReaction();
+  }
+
+  Future<void> showDeleteConfirmationDialog(
+      BuildContext context, Function onConfirm) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirmar exclusão"),
+          content: const Text(
+              "Tem certeza de que deseja excluir esta avaliação? Esta ação não pode ser desfeita."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Fecha o diálogo sem excluir
+              },
+              child: const Text("Cancelar"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Fecha o diálogo
+                onConfirm(); // Chama a função de exclusão
+              },
+              child: const Text("Excluir", style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -321,12 +368,16 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                           const SizedBox(width: 16),
                           GestureDetector(
                             onTap: () async {
-                              await AvaliacoesService()
-                                  .deleteFeedbackByCondition(
-                                widget.feedback.id,
-                              );
-                              updateFeedback();
-                              widget.onDelete();
+                              showDeleteConfirmationDialog(context, () async {
+                                await AvaliacoesService()
+                                    .deleteFeedbackByCondition(
+                                  widget.feedback.id,
+                                  FirebaseAuth.instance.currentUser!.uid,
+                                );
+
+                                widget
+                                    .onDelete(); // Chama refreshFeedbacks() no widget pai
+                              });
                             },
                             child: const Text(
                               'Excluir',

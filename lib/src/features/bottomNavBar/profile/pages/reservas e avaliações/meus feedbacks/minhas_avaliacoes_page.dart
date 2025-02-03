@@ -31,7 +31,7 @@ class _MinhasAvaliacoesPageState extends State<MinhasAvaliacoesPage> {
   Widget build(BuildContext context) {
     return feedbacks != null
         ? MinhasAvaliacoesWidget(
-            feedbacks: feedbacks!,
+            initialFeedbacks: feedbacks!,
           )
         : const Center(child: CircularProgressIndicator());
   }

@@ -60,26 +60,28 @@ class AvaliacoesService {
     }
   }
 
-  Future<void> deleteFeedbackByCondition(String feedbackId) async {
+  Future<List<AvaliacoesModel>> deleteFeedbackByCondition(
+      String feedbackId, String userId) async {
     try {
-      // Procura pelo documento usando a condição
       QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
           .instance
           .collection('feedbacks')
           .where('id', isEqualTo: feedbackId)
           .get();
 
-      // Garante que existe pelo menos um documento correspondente
       if (snapshot.docs.isNotEmpty) {
-        // Exclui o primeiro documento encontrado
         await FirebaseFirestore.instance
             .collection('feedbacks')
             .doc(snapshot.docs.first.id)
             .update({'deletedAt': FieldValue.serverTimestamp()});
 
         log('Feedback com ID $feedbackId foi excluído com sucesso.');
+
+        // Retorna os feedbacks atualizados para atualizar a UI
+        return await getMyFeedbacks(userId);
       } else {
         log('Nenhum feedback encontrado com o ID fornecido.');
+        return [];
       }
     } catch (e) {
       log('Erro ao excluir feedback: $e');
