@@ -185,7 +185,7 @@ class _ServiceTermsPageState extends ConsumerState<ServiceTermsPage> {
             : Container(),
         centerTitle: true,
         title: const Text(
-          'Termos de Serviço',
+          'Termos de serviços',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,

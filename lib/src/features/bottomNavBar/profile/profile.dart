@@ -380,6 +380,8 @@ class _ProfileState extends ConsumerState<Profile> {
                       const SizedBox(height: 15),
                       MyRow(
                         text: 'Termos de serviço',
+                        // height: 30,
+                        // width: 30,
                         icon1: Image.asset(
                           'lib/assets/images/icon_termos.png',
                         ),
