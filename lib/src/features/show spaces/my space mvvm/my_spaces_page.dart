@@ -110,7 +110,13 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Text('Cadastrar'),
+                  child: Text(
+                    'Cadastrar',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
                 const SizedBox(
                   height: 20,
@@ -140,7 +146,10 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
                     ),
                     Text(
                       'Meus espaços ',
-                      style: TextStyle(fontSize: 12),
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       '(assim que os usuários verão o espaço)',
