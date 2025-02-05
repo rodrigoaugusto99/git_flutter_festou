@@ -141,27 +141,21 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
             return FutureBuilder<bool>(
               future: checkServiceTermsAcceptance(),
               builder: (context, termsSnapshot) {
-                if (termsSnapshot.connectionState == ConnectionState.waiting) {
-                  return const Scaffold(
-                    body: Center(child: CustomLoadingIndicator()),
-                  );
+                if (privacySnapshot.data == true &&
+                    termsSnapshot.data == true) {
+                  return userModel!.locador
+                      ? const BottomNavBarLocadorPage()
+                      : const BottomNavBarLocatarioPage();
+                } else if (privacySnapshot.data == false) {
+                  return const PrivacyPolicyPage(duringLogin: true);
+                } else if (termsSnapshot.data == false) {
+                  return const ServiceTermsPage(duringLogin: true);
                 } else {
-                  if (privacySnapshot.data == true &&
-                      termsSnapshot.data == true) {
-                    return userModel!.locador
-                        ? const BottomNavBarLocadorPage()
-                        : const BottomNavBarLocatarioPage();
-                  } else if (privacySnapshot.data == false) {
-                    return const PrivacyPolicyPage(duringLogin: true);
-                  } else if (termsSnapshot.data == false) {
-                    return const ServiceTermsPage(duringLogin: true);
-                  } else {
-                    return const Scaffold(
-                      body: Center(
-                        child: Text('Erro desconhecido. Tente novamente.'),
-                      ),
-                    );
-                  }
+                  return const Scaffold(
+                    body: Center(
+                      child: Text('Erro desconhecido. Tente novamente.'),
+                    ),
+                  );
                 }
               },
             );
