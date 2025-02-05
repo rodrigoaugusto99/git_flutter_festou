@@ -464,8 +464,11 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
                 ),
               if (!widget.isNear)
                 Positioned(
-                  left: 5,
-                  child: Image.asset('lib/assets/images/icon_calendar.png'),
+                  left: 2,
+                  child: Image.asset(
+                    'lib/assets/images/icon_calendar.png',
+                    height: 25,
+                  ),
                 ),
               const SizedBox(width: 10),
               Positioned(
