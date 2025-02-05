@@ -181,83 +181,118 @@ class _ProfileState extends ConsumerState<Profile> {
   @override
   Widget build(BuildContext context) {
     UserService userService = UserService();
-    return Scaffold(
-      backgroundColor: const Color(0xffF8F8F8),
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Perfil',
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: const Color(0xffF8F8F8),
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            'Perfil',
+            style: TextStyle(
+                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+          elevation: 0,
+          backgroundColor: const Color(0xFFF8F8F8),
+          surfaceTintColor: const Color(0xFFF8F8F8),
         ),
-        elevation: 0,
-        backgroundColor: const Color(0xFFF8F8F8),
-        surfaceTintColor: const Color(0xFFF8F8F8),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 30),
-        child: FutureBuilder<UserModel?>(
-          future: userService.getCurrentUserModel(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CustomLoadingIndicator());
-            }
-            if (snapshot.hasError) {
-              return const Center(child: Text('Erro ao carregar os dados.'));
-            }
-            if (!snapshot.hasData || snapshot.data == null) {
-              return const Center(child: Text('Usuário não encontrado.'));
-            }
+        body: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 30),
+          child: FutureBuilder<UserModel?>(
+            future: userService.getCurrentUserModel(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CustomLoadingIndicator());
+              }
+              if (snapshot.hasError) {
+                return const Center(child: Text('Erro ao carregar os dados.'));
+              }
+              if (!snapshot.hasData || snapshot.data == null) {
+                return const Center(child: Text('Usuário não encontrado.'));
+              }
 
-            final userModel = snapshot.data!;
+              final userModel = snapshot.data!;
 
-            return StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('users')
-                  .where('uid', isEqualTo: userModel.uid)
-                  .limit(1)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CustomLoadingIndicator());
-                }
-                if (snapshot.hasError) {
-                  return const Center(
-                      child: Text('Erro ao carregar os dados.'));
-                }
-                if (snapshot.hasData && !snapshot.data!.docs[0].exists) {
-                  return const Center(child: Text('Usuário não encontrado.'));
-                }
+              return StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('users')
+                    .where('uid', isEqualTo: userModel.uid)
+                    .limit(1)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CustomLoadingIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return const Center(
+                        child: Text('Erro ao carregar os dados.'));
+                  }
+                  if (snapshot.hasData && !snapshot.data!.docs[0].exists) {
+                    return const Center(child: Text('Usuário não encontrado.'));
+                  }
 
-                final data =
-                    snapshot.data!.docs[0].data() as Map<String, dynamic>;
-                UserModel updatedUserModel = UserModel.fromMap(data);
+                  final data =
+                      snapshot.data!.docs[0].data() as Map<String, dynamic>;
+                  UserModel updatedUserModel = UserModel.fromMap(data);
 
-                return SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Avatar
-                      if (updatedUserModel.avatarUrl.isNotEmpty)
-                        Align(
-                          child: GestureDetector(
-                            onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) {
-                                  return Scaffold(
-                                    appBar: AppBar(
-                                      backgroundColor: const Color(0xffffffff),
-                                      title: const Text('Minha foto'),
+                  return SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Avatar
+                        if (updatedUserModel.avatarUrl.isNotEmpty)
+                          Align(
+                            child: GestureDetector(
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                    return Scaffold(
+                                      appBar: AppBar(
+                                        backgroundColor:
+                                            const Color(0xffffffff),
+                                        title: const Text('Minha foto'),
+                                      ),
+                                      body: Center(
+                                        child: Image.network(
+                                            updatedUserModel.avatarUrl),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Container(
+                                    width: 110,
+                                    height: 110,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.black,
+                                      shape: BoxShape.circle,
                                     ),
-                                    body: Center(
-                                      child: Image.network(
-                                          updatedUserModel.avatarUrl),
+                                  ),
+                                  Container(
+                                    width: 105,
+                                    height: 105,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
                                     ),
-                                  );
-                                },
+                                  ),
+                                  CircleAvatar(
+                                    radius: 50,
+                                    backgroundImage: NetworkImage(
+                                        updatedUserModel.avatarUrl),
+                                  ),
+                                ],
                               ),
                             ),
+                          )
+                        else
+                          Align(
                             child: Stack(
                               alignment: Alignment.center,
                               children: [
@@ -278,155 +313,129 @@ class _ProfileState extends ConsumerState<Profile> {
                                   ),
                                 ),
                                 CircleAvatar(
-                                  radius: 50,
-                                  backgroundImage:
-                                      NetworkImage(updatedUserModel.avatarUrl),
-                                ),
+                                    radius: 50,
+                                    child: updatedUserModel.name.isNotEmpty
+                                        ? Text(
+                                            updatedUserModel.name[0],
+                                            style:
+                                                const TextStyle(fontSize: 52),
+                                          )
+                                        : const Icon(
+                                            Icons.person,
+                                            size: 40,
+                                          )),
                               ],
                             ),
                           ),
-                        )
-                      else
+                        const SizedBox(height: 15),
+                        // Nome e Email
                         Align(
-                          child: Stack(
-                            alignment: Alignment.center,
+                          child: Column(
                             children: [
-                              Container(
-                                width: 110,
-                                height: 110,
-                                decoration: const BoxDecoration(
-                                  color: Colors.black,
-                                  shape: BoxShape.circle,
+                              Text(
+                                updatedUserModel.name,
+                                style: const TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w800,
+                                    height: 1.2),
+                              ),
+                              Align(
+                                child: Text(
+                                  updatedUserModel.email,
+                                  style: const TextStyle(
+                                      fontSize: 12, color: Colors.grey),
                                 ),
                               ),
-                              Container(
-                                width: 105,
-                                height: 105,
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                              CircleAvatar(
-                                  radius: 50,
-                                  child: updatedUserModel.name.isNotEmpty
-                                      ? Text(
-                                          updatedUserModel.name[0],
-                                          style: const TextStyle(fontSize: 52),
-                                        )
-                                      : const Icon(
-                                          Icons.person,
-                                          size: 40,
-                                        )),
                             ],
                           ),
                         ),
-                      const SizedBox(height: 15),
-                      // Nome e Email
-                      Align(
-                        child: Column(
-                          children: [
-                            Text(
-                              updatedUserModel.name,
-                              style: const TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w800,
-                                  height: 1.2),
+                        const SizedBox(height: 25),
+                        myText(text: 'Configurações'),
+                        const SizedBox(height: 15),
+                        MyRowsConfig(userModel: updatedUserModel),
+                        const SizedBox(height: 25),
+                        myText(text: 'Locação'),
+                        const SizedBox(height: 15),
+                        MyRow(
+                          customKey: Keys.kProfileViewLocador,
+                          text: userModel.locador
+                              ? 'Quero deixar de ser um locador'
+                              : 'Quero disponibilizar um espaço',
+                          icon1: Image.asset(
+                            'lib/assets/images/icon_disponibilizar.png',
+                          ),
+                          onTap: () => navigateBasedOnContract(context),
+                        ),
+                        const SizedBox(height: 25),
+                        myText(text: 'Atendimento'),
+                        const SizedBox(height: 15),
+                        MyRow(
+                          text: 'Central de ajuda',
+                          icon1: Image.asset(
+                            'lib/assets/images/icon_atendimento.png',
+                          ),
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const CentralDeAjuda(),
                             ),
-                            Align(
-                              child: Text(
-                                updatedUserModel.email,
-                                style: const TextStyle(
-                                    fontSize: 12, color: Colors.grey),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 25),
-                      myText(text: 'Configurações'),
-                      const SizedBox(height: 15),
-                      MyRowsConfig(userModel: updatedUserModel),
-                      const SizedBox(height: 25),
-                      myText(text: 'Locação'),
-                      const SizedBox(height: 15),
-                      MyRow(
-                        customKey: Keys.kProfileViewLocador,
-                        text: userModel.locador
-                            ? 'Quero deixar de ser um locador'
-                            : 'Quero disponibilizar um espaço',
-                        icon1: Image.asset(
-                          'lib/assets/images/icon_disponibilizar.png',
-                        ),
-                        onTap: () => navigateBasedOnContract(context),
-                      ),
-                      const SizedBox(height: 25),
-                      myText(text: 'Atendimento'),
-                      const SizedBox(height: 15),
-                      MyRow(
-                        text: 'Central de ajuda',
-                        icon1: Image.asset(
-                          'lib/assets/images/icon_atendimento.png',
-                        ),
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const CentralDeAjuda(),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 25),
-                      myText(text: 'Jurídico'),
-                      const SizedBox(height: 15),
-                      MyRow(
-                        text: 'Termos de serviço',
-                        // height: 30,
-                        // width: 30,
-                        icon1: Image.asset(
-                          'lib/assets/images/icon_termos.png',
+                        const SizedBox(height: 25),
+                        myText(text: 'Jurídico'),
+                        const SizedBox(height: 15),
+                        MyRow(
+                          text: 'Termos de serviço',
+                          // height: 30,
+                          // width: 30,
+                          icon1: Image.asset(
+                            'lib/assets/images/icon_termos.png',
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ServiceTermsPage()),
+                            );
+                          },
                         ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ServiceTermsPage()),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 15),
-                      MyRow(
-                        text: 'Política de privacidade',
-                        icon1: Image.asset(
-                          'lib/assets/images/icon_privacidade.png',
+                        const SizedBox(height: 15),
+                        MyRow(
+                          text: 'Política de privacidade',
+                          icon1: Image.asset(
+                            'lib/assets/images/icon_privacidade.png',
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const PrivacyPolicyPage()),
+                            );
+                          },
                         ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const PrivacyPolicyPage()),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 25),
-                      myText(text: 'Outros'),
-                      const SizedBox(height: 15),
-                      MyRow(
-                        text: 'Sair do Festou',
-                        icon1: Image.asset(
-                          'lib/assets/images/icon_sair.png',
+                        const SizedBox(height: 25),
+                        myText(text: 'Outros'),
+                        const SizedBox(height: 15),
+                        MyRow(
+                          text: 'Sair do Festou',
+                          icon1: Image.asset(
+                            'lib/assets/images/icon_sair.png',
+                          ),
+                          onTap: () {
+                            LogoutDialog.showExitConfirmationDialog(
+                                context, ref);
+                          },
                         ),
-                        onTap: () {
-                          LogoutDialog.showExitConfirmationDialog(context, ref);
-                        },
-                      ),
-                      const SizedBox(height: 40),
-                    ],
-                  ),
-                );
-              },
-            );
-          },
+                        const SizedBox(height: 40),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
     );

@@ -299,137 +299,142 @@ class _MensagensState extends State<Mensagens> {
   @override
   Widget build(BuildContext context) {
     final currentUserID = _auth.currentUser!.uid;
-    return FutureBuilder<UserModel>(
-      future: getUserById(currentUserID),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return const Text('Erro ao carregar o usuário');
-        } else if (!snapshot.hasData) {
-          return const CustomLoadingIndicator();
-        } else {
-          UserModel user = snapshot.data!;
-          return Scaffold(
-            backgroundColor: const Color(0xfff8f8f8),
-            appBar: AppBar(
-              leading: !user.locador
-                  ? Padding(
-                      padding: const EdgeInsets.only(left: 18.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 2,
-                              blurRadius: 5,
-                              offset: const Offset(0, 2),
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: FutureBuilder<UserModel>(
+        future: getUserById(currentUserID),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const Text('Erro ao carregar o usuário');
+          } else {
+            if (snapshot.data == null) return const SizedBox();
+            UserModel user = snapshot.data!;
+            return Scaffold(
+              backgroundColor: const Color(0xfff8f8f8),
+              appBar: AppBar(
+                leading: !user.locador
+                    ? Padding(
+                        padding: const EdgeInsets.only(left: 18.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: InkWell(
+                            onTap: () => onLongPressSelection
+                                ? deselectAllChatRooms()
+                                : Navigator.of(context).pop(),
+                            child: const Icon(
+                              Icons.arrow_back,
+                              color: Colors.black,
                             ),
-                          ],
-                        ),
-                        child: InkWell(
-                          onTap: () => onLongPressSelection
-                              ? deselectAllChatRooms()
-                              : Navigator.of(context).pop(),
-                          child: const Icon(
-                            Icons.arrow_back,
-                            color: Colors.black,
                           ),
                         ),
-                      ),
-                    )
-                  : Container(),
-              centerTitle: true,
-              title: const Text(
-                'Mensagens',
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
+                      )
+                    : Container(),
+                centerTitle: true,
+                title: const Text(
+                  'Mensagens',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                ),
+                elevation: 0,
+                backgroundColor: const Color(0xfff8f8f8),
+                actions: onLongPressSelection
+                    ? [
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () async {
+                            bool? confirmDeletion = await showDialog<bool>(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Confirmar Exclusão'),
+                                  content: const Text(
+                                      'Tem certeza que deseja apagar as conversas selecionadas?'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: const Text('Cancelar'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop(false);
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: const Text('Confirmar'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop(true);
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+
+                            if (confirmDeletion == true) {
+                              await deleteSelectedChatRooms();
+                            }
+                          },
+                        ),
+                      ]
+                    : [],
               ),
-              elevation: 0,
-              backgroundColor: const Color(0xfff8f8f8),
-              actions: onLongPressSelection
-                  ? [
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () async {
-                          bool? confirmDeletion = await showDialog<bool>(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text('Confirmar Exclusão'),
-                                content: const Text(
-                                    'Tem certeza que deseja apagar as conversas selecionadas?'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: const Text('Cancelar'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop(false);
-                                    },
-                                  ),
-                                  TextButton(
-                                    child: const Text('Confirmar'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop(true);
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          );
+              body: StreamBuilder<QuerySnapshot>(
+                stream: chatsStream,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Text('Erro ao carregar os dados');
+                  } else {
+                    if (snapshot.data == null) return const SizedBox.shrink();
+                    final filteredDocs = snapshot.data!.docs.where((doc) {
+                      final data = doc.data() as Map<String, dynamic>;
+                      return data['deletionID$currentUserID'] != true;
+                    }).toList();
 
-                          if (confirmDeletion == true) {
-                            await deleteSelectedChatRooms();
-                          }
-                        },
-                      ),
-                    ]
-                  : [],
-            ),
-            body: StreamBuilder<QuerySnapshot>(
-              stream: chatsStream,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return const Text('Erro ao carregar os dados');
-                } else {
-                  final filteredDocs = snapshot.data!.docs.where((doc) {
-                    final data = doc.data() as Map<String, dynamic>;
-                    return data['deletionID$currentUserID'] != true;
-                  }).toList();
-
-                  Future<bool> hasMessages() async {
-                    for (var doc in filteredDocs) {
-                      final subCollection =
-                          await doc.reference.collection('messages').get();
-                      if (subCollection.docs.isNotEmpty) {
-                        return true;
+                    Future<bool> hasMessages() async {
+                      for (var doc in filteredDocs) {
+                        final subCollection =
+                            await doc.reference.collection('messages').get();
+                        if (subCollection.docs.isNotEmpty) {
+                          return true;
+                        }
                       }
+                      return false;
                     }
-                    return false;
+
+                    return FutureBuilder<bool>(
+                      future: hasMessages(),
+                      builder: (context, snapshotMessage) {
+                        // if (!snapshotMessage.hasData) {
+                        //   return const CustomLoadingIndicator();
+                        // }
+
+                        if (filteredDocs.isEmpty || !snapshotMessage.data!) {
+                          return const Center(
+                              child: Text('Não há conversas no momento!'));
+                        }
+
+                        return buildChatRoomList(snapshot.data!);
+                      },
+                    );
                   }
-
-                  return FutureBuilder<bool>(
-                    future: hasMessages(),
-                    builder: (context, snapshotMessage) {
-                      if (!snapshotMessage.hasData) {
-                        return const CustomLoadingIndicator();
-                      }
-
-                      if (filteredDocs.isEmpty || !snapshotMessage.data!) {
-                        return const Center(
-                            child: Text('Não há conversas no momento!'));
-                      }
-
-                      return buildChatRoomList(snapshot.data!);
-                    },
-                  );
-                }
-              },
-            ),
-          );
-        }
-      },
+                },
+              ),
+            );
+          }
+        },
+      ),
     );
   }
 

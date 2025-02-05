@@ -44,60 +44,65 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     final x = MediaQuery.of(context).size.width;
     final y = MediaQuery.of(context).size.height;
-    return SafeArea(
-      child: AnimatedBuilder(
-          animation: searchViewModel,
-          builder: (context, child) {
-            return Scaffold(
-              resizeToAvoidBottomInset: false,
-              backgroundColor: Colors.white,
-              body: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                child: Column(
-                  children: [
-                    FadeInUp(
-                      duration: const Duration(milliseconds: 400),
-                      from: y * 0.3,
-                      child: Row(
-                        children: [
-                          _buildSearchBox(x, y),
-                          _buildCancelButton(),
-                          SizedBox(
-                            width: x * 0.03,
-                          ),
-                        ],
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: SafeArea(
+        child: AnimatedBuilder(
+            animation: searchViewModel,
+            builder: (context, child) {
+              return Scaffold(
+                resizeToAvoidBottomInset: false,
+                backgroundColor: Colors.white,
+                body: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                  child: Column(
+                    children: [
+                      FadeInUp(
+                        duration: const Duration(milliseconds: 400),
+                        from: y * 0.3,
+                        child: Row(
+                          children: [
+                            _buildSearchBox(x, y),
+                            _buildCancelButton(),
+                            SizedBox(
+                              width: x * 0.03,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    searchViewModel.getSpaces() != []
-                        ? Expanded(
-                            child: ListView.builder(
-                              padding: const EdgeInsets.all(10),
-                              itemCount: searchViewModel.getSpaces().length,
-                              itemBuilder: (context, index) {
-                                return NewSpaceCard(
-                                  hasHeart: true,
-                                  space: searchViewModel.getSpaces()[index],
-                                  isReview: false,
-                                );
-                              },
-                            ),
-                          )
-                        : Column(children: [
-                            Lottie.asset(
-                              'lib/assets/animations/searchAnimation.json',
-                              height: y * 0.3,
-                            ),
-                            const Text(
-                              'Busque pelos melhores espaços disponíveis para o seu Festou!',
-                              textAlign: TextAlign.center,
-                            ),
-                          ]),
-                  ],
+                      searchViewModel.getSpaces() != []
+                          ? Expanded(
+                              child: ListView.builder(
+                                padding: const EdgeInsets.all(10),
+                                itemCount: searchViewModel.getSpaces().length,
+                                itemBuilder: (context, index) {
+                                  return NewSpaceCard(
+                                    hasHeart: true,
+                                    space: searchViewModel.getSpaces()[index],
+                                    isReview: false,
+                                  );
+                                },
+                              ),
+                            )
+                          : Column(children: [
+                              Lottie.asset(
+                                'lib/assets/animations/searchAnimation.json',
+                                height: y * 0.3,
+                              ),
+                              const Text(
+                                'Busque pelos melhores espaços disponíveis para o seu Festou!',
+                                textAlign: TextAlign.center,
+                              ),
+                            ]),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          }),
+              );
+            }),
+      ),
     );
   }
 
