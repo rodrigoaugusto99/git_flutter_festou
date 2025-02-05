@@ -148,8 +148,8 @@ class _CustomTextformfieldState extends State<CustomTextformfield> {
               : null,
           fillColor: widget.fillColor ?? Colors.white,
           filled: true,
-          labelStyle: const TextStyle(
-            color: Colors.black,
+          labelStyle: TextStyle(
+            color: !widget.enable ? Colors.grey[500] : Colors.black,
             fontSize: 14,
           ),
           contentPadding: EdgeInsets.symmetric(

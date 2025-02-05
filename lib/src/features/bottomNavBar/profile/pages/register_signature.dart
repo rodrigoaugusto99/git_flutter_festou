@@ -11,6 +11,7 @@ import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/login/forgot_email_page.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/signature_dialog.dart';
 import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
+import 'package:git_flutter_festou/src/helpers/helpers.dart';
 import 'package:git_flutter_festou/src/helpers/keys.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -91,7 +92,7 @@ class _RegisterSignatureState extends State<RegisterSignature> {
     filter: {"#": RegExp(r'[0-9]')},
     type: MaskAutoCompletionType.lazy,
   );
-
+  String? selectedOption;
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -192,23 +193,59 @@ class _RegisterSignatureState extends State<RegisterSignature> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomTextformfield(
-                      label: 'CPF',
-                      controller: cpfEC,
-                      inputFormatters: [cpfFormatter],
-                      validator: Validatorless.required('Campo obrigatório'),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextformfield(
+                            label: 'CPF',
+                            controller: cpfEC,
+                            inputFormatters: [cpfFormatter],
+                            validator: selectedOption == 'cpf'
+                                ? Validatorless.required('Campo obrigatório')
+                                : null,
+                            enable: selectedOption == 'cpf',
+                          ),
+                        ),
+                        Radio<String>(
+                          value: 'cpf',
+                          groupValue: selectedOption,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedOption = value;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextformfield(
+                            label: 'CNPJ da empresa',
+                            controller: cnpjEmpresaLocadoraEC,
+                            inputFormatters: [cnpjFormatter],
+                            validator: selectedOption == 'cnpj'
+                                ? Validatorless.required('Campo obrigatório')
+                                : null,
+                            enable: selectedOption == 'cnpj',
+                          ),
+                        ),
+                        Radio<String>(
+                          value: 'cnpj',
+                          groupValue: selectedOption,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedOption = value;
+                            });
+                          },
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 10),
                     CustomTextformfield(
                       label: 'Nome da empresa',
                       controller: nomeEmpresaLocadoraEC,
-                      validator: Validatorless.required('Campo obrigatório'),
-                    ),
-                    const SizedBox(height: 10),
-                    CustomTextformfield(
-                      label: 'CNPJ da empresa',
-                      controller: cnpjEmpresaLocadoraEC,
-                      inputFormatters: [cnpjFormatter],
                       validator: Validatorless.required('Campo obrigatório'),
                     ),
                     const SizedBox(height: 20),
