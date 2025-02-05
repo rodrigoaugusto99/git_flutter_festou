@@ -21,6 +21,7 @@ import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dar
 import 'package:git_flutter_festou/src/helpers/helpers.dart';
 import 'package:git_flutter_festou/src/models/feedback_model.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:git_flutter_festou/src/models/user_model.dart';
 import 'package:git_flutter_festou/src/services/feedback_service.dart';
 import 'package:git_flutter_festou/src/services/space_service.dart';
 import 'package:git_flutter_festou/src/services/user_service.dart';
@@ -200,6 +201,8 @@ class _NewCardInfoState extends State<NewCardInfo>
     }
   }
 
+  UserModel? user;
+
   //NewCardInfoEditVm? newCardInfoEditVm;
   List<String> selectedServices = [];
 
@@ -213,9 +216,9 @@ class _NewCardInfoState extends State<NewCardInfo>
     space = await spaceService.getSpaceById(widget.spaceId);
     feedbacks = await feedbackService.getFeedbacksOrdered(widget.spaceId);
     feedbacks!.removeWhere((f) => f.deleteAt != null);
-    final user = await UserService().getCurrentUserModel();
+    user = await UserService().getCurrentUserModel();
     if (user != null) {
-      if (user.uid == space!.userId) {
+      if (user!.uid == space!.userId) {
         setState(() {
           isMySpace = true;
         });
@@ -1663,14 +1666,22 @@ class _NewCardInfoState extends State<NewCardInfo>
                       ],
                     )
                   : GestureDetector(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CalendarPage(
-                            space: space!,
+                      onTap: () {
+                        if (user != null && user!.cpf.isEmpty) {
+                          Messages.showInfo(
+                              'Você precisa de um CPF cadastrado para alugar um espaço',
+                              context);
+                          return;
+                        }
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CalendarPage(
+                              space: space!,
+                            ),
                           ),
-                        ),
-                      ),
+                        );
+                      },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 20, vertical: 8),
