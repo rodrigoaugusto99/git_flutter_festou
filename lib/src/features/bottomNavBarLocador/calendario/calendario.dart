@@ -43,8 +43,9 @@ class _CalendarioState extends State<Calendario> {
     isLoading = true;
     await fetchReservas();
     await fetchSpaces();
-    if (mySpaces != null) {}
-    selectSpace(mySpaces!.first);
+    if (mySpaces != null && mySpaces!.isNotEmpty) {
+      selectSpace(mySpaces!.first);
+    }
 
     mountedSetState();
     isLoading = false;
