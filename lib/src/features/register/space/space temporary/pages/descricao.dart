@@ -15,7 +15,7 @@ class Descricao extends ConsumerStatefulWidget {
 
 class _DescricaoState extends ConsumerState<Descricao> {
   final descricaoEC = TextEditingController();
-  final int maxLength = 250;
+  final int maxLength = 2000;
   @override
   Widget build(BuildContext context) {
     final spaceRegister = ref.watch(newSpaceRegisterVmProvider.notifier);
