@@ -1,15 +1,20 @@
 import 'dart:math' as math;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/register/avaliacoes/avaliacoes_register_vm.dart';
 import 'package:git_flutter_festou/src/models/avaliacoes_model.dart';
+import 'package:git_flutter_festou/src/models/reservation_model.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:git_flutter_festou/src/services/reserva_service.dart';
 
 class AvaliacoesPage extends ConsumerStatefulWidget {
   final SpaceModel space;
   final AvaliacoesModel? feedback;
-  const AvaliacoesPage({super.key, required this.space, this.feedback});
+  final ReservationModel? reservation;
+  const AvaliacoesPage(
+      {super.key, required this.space, this.feedback, this.reservation});
 
   @override
   ConsumerState<AvaliacoesPage> createState() => _RatingViewState();
@@ -38,6 +43,29 @@ class _RatingViewState extends ConsumerState<AvaliacoesPage> {
         _starPosition =
             40.0; // Ajusta a posição das estrelas para a posição correta
       });
+    }
+  }
+
+  Future<String?> getReservationDocumentId(
+      String spaceId, String userId) async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('reservations')
+          .where('space_id', isEqualTo: spaceId)
+          .where('canceledAt', isEqualTo: null)
+          .where('hasReview', isEqualTo: false)
+          .where('client_id', isEqualTo: userId)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs.first.id;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint("Erro ao buscar reserva: $e");
+      return null;
     }
   }
 
@@ -97,20 +125,28 @@ class _RatingViewState extends ConsumerState<AvaliacoesPage> {
                 onPressed: _canConfirm
                     ? () async {
                         AvaliacoesModel updatedFeedback;
+                        String? reservationId = await getReservationDocumentId(
+                          widget.space.spaceId,
+                          widget.reservation!.clientId,
+                        );
 
                         if (widget.feedback == null) {
                           // Criando novo feedback
                           await feedbackRegisterVm.register(
                             spaceId: widget.space.spaceId,
+                            reservationId: reservationId!,
                             rating: starRatingIndex,
                             content: contentController.text,
                           );
+
+                          await ReservaService().updateHasReview(reservationId);
 
                           updatedFeedback = AvaliacoesModel(
                             id: '', // O ID será gerado pelo Firestore
                             spaceId: widget.space.spaceId,
                             userId:
                                 '', // O ID do usuário pode ser recuperado dentro do ViewModel
+                            reservationId: reservationId,
                             rating: starRatingIndex,
                             content: contentController.text,
                             userName:
@@ -127,6 +163,7 @@ class _RatingViewState extends ConsumerState<AvaliacoesPage> {
                           await feedbackRegisterVm.updateFeedback(
                             feedbackId: widget.feedback!.id,
                             spaceId: widget.space.spaceId,
+                            reservationId: reservationId!,
                             rating: starRatingIndex,
                             content: contentController.text,
                           );
@@ -136,6 +173,8 @@ class _RatingViewState extends ConsumerState<AvaliacoesPage> {
                             content: contentController.text,
                           );
                         }
+
+                        setState(() {});
 
                         Navigator.pop(context,
                             updatedFeedback); // Retorna o feedback atualizado

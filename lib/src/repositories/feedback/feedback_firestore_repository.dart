@@ -8,6 +8,7 @@ abstract interface class FeedbackFirestoreRepository {
     ({
       String spaceId,
       String userId,
+      String reservationId,
       int rating,
       String content,
     }) feedbackData,
@@ -17,6 +18,7 @@ abstract interface class FeedbackFirestoreRepository {
     ({
       String hostId,
       String userId,
+      String reservationId,
       int rating,
       String content,
     }) feedbackData,
@@ -26,6 +28,7 @@ abstract interface class FeedbackFirestoreRepository {
     ({
       String guestId,
       String userId,
+      String reservationId,
       int rating,
       String content,
     }) feedbackData,
@@ -34,6 +37,7 @@ abstract interface class FeedbackFirestoreRepository {
   Future<Either<RepositoryException, Nil>> updateFeedback({
     required String feedbackId,
     required String spaceId,
+    required String reservationId,
     required String userId,
     required int rating,
     required String content,

@@ -31,13 +31,13 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
   Future<Either<RepositoryException, Nil>> saveFeedback(
     ({
       String spaceId,
+      String reservationId,
       String userId,
       int rating,
       String content,
     }) feedbackData,
   ) async {
     // Crie um mapa com os dados passados como parâmetros
-    log('entrou');
     String userName = await getUserName();
     String userAvatar = await getUserAvatar();
     final currentDateTime = DateTime.now();
@@ -52,6 +52,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
         'id': id,
         'space_id': feedbackData.spaceId,
         'user_id': feedbackData.userId,
+        'reservationId': feedbackData.reservationId,
         'rating': feedbackData.rating,
         'content': feedbackData.content,
         'user_name': userName,
@@ -79,6 +80,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
     ({
       String hostId,
       String userId,
+      String reservationId,
       int rating,
       String content,
     }) feedbackData,
@@ -118,6 +120,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
       ({
         String content,
         String guestId,
+        String reservationId,
         int rating,
         String userId
       }) feedbackData) async {
@@ -256,6 +259,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
   Future<Either<RepositoryException, Nil>> updateFeedback({
     required String feedbackId,
     required String spaceId,
+    required String reservationId,
     required String userId,
     required int rating,
     required String content,
@@ -483,6 +487,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
         List<String>.from(feedbackDocument['dislikes'] ?? []);
     return AvaliacoesModel(
       spaceId: feedbackDocument['space_id'] ?? '',
+      reservationId: feedbackDocument['reservation_id'] ?? '',
       deletedAt: feedbackDocument['deletedAt'],
       userId: feedbackDocument['user_id'] ?? '',
       rating: feedbackDocument['rating'] ?? 0,

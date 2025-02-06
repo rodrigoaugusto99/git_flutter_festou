@@ -24,6 +24,7 @@ class AvaliacoesRegisterVm extends _$FeedbackRegisterVm {
   /// **Registra um novo feedback**
   Future<void> register({
     required String spaceId,
+    required String reservationId,
     required int rating,
     required String content,
   }) async {
@@ -34,6 +35,7 @@ class AvaliacoesRegisterVm extends _$FeedbackRegisterVm {
     final feedbackData = (
       userId: userId,
       spaceId: spaceId,
+      reservationId: reservationId,
       rating: rating,
       content: content,
     );
@@ -58,6 +60,7 @@ class AvaliacoesRegisterVm extends _$FeedbackRegisterVm {
   Future<void> updateFeedback({
     required String feedbackId,
     required String spaceId,
+    required String reservationId,
     required int rating,
     required String content,
   }) async {
@@ -70,6 +73,7 @@ class AvaliacoesRegisterVm extends _$FeedbackRegisterVm {
       final updateResult = await feedbackFirestoreRepository.updateFeedback(
         feedbackId: feedbackId,
         userId: userId,
+        reservationId: reservationId,
         spaceId: spaceId,
         rating: rating,
         content: content,

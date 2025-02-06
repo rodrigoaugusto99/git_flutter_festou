@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/register/avaliacoes/avaliacoes_register_page.dart';
 import 'package:git_flutter_festou/src/models/avaliacoes_model.dart';
+import 'package:git_flutter_festou/src/models/reservation_model.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 import 'package:git_flutter_festou/src/services/avaliacoes_service.dart';
+import 'package:git_flutter_festou/src/services/reserva_service.dart';
 import 'package:git_flutter_festou/src/services/space_service.dart';
 
 class MinhasAvaliacoesWidget extends StatefulWidget {
@@ -123,7 +126,47 @@ class AvaliacoesItem extends StatefulWidget {
 class _AvaliacoesItemState extends State<AvaliacoesItem> {
   bool isLiked = false;
   bool isDisliked = false;
+  bool canShowButtons = false;
+  ReservationModel? reservation;
   late AvaliacoesService feedbackService;
+
+  Future<void> _loadReservation() async {
+    try {
+      final reservations = await ReservaService()
+          .getReservationsBySpaceId(widget.feedback.spaceId);
+
+      ReservationModel? latestValidReservation;
+
+      for (var reservation in reservations) {
+        if (reservation.canceledAt == null && reservation.hasReview == false) {
+          latestValidReservation = reservation;
+        }
+      }
+
+      if (latestValidReservation != null) {
+        setState(() {
+          reservation = latestValidReservation;
+          canShowButtons = _validateReservation(latestValidReservation!);
+        });
+      } else {
+        print("Nenhuma reserva válida encontrada.");
+      }
+    } catch (e) {
+      print("Erro ao buscar reserva: $e");
+    }
+  }
+
+  bool _validateReservation(ReservationModel reservation) {
+    final DateTime now = DateTime.now();
+    final DateTime threeMonthLimit;
+
+    DateTime selectedFinalDate;
+
+    selectedFinalDate = (reservation.selectedFinalDate).toDate();
+    threeMonthLimit = selectedFinalDate.add(const Duration(days: 90));
+
+    return now.isBefore(threeMonthLimit) && reservation.canceledAt == null;
+  }
 
   @override
   void initState() {
@@ -131,6 +174,7 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
     feedbackService = AvaliacoesService();
     myFeedback = widget.feedback;
     _checkUserReaction();
+    _loadReservation();
     getSpace();
   }
 
@@ -333,59 +377,62 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                           const SizedBox(width: 3),
                           Text('(${myFeedback!.dislikes.length})'),
                           const Spacer(),
-                          GestureDetector(
-                            onTap: () async {
-                              final updatedFeedback =
-                                  await showDialog<AvaliacoesModel>(
-                                context: context,
-                                builder: (context) {
-                                  return Dialog(
-                                    child: AvaliacoesPage(
-                                      space: space!,
-                                      feedback:
-                                          myFeedback, // Passando a avaliação existente
-                                    ),
-                                  );
-                                },
-                              );
-                              if (updatedFeedback != null) {
-                                setState(() {
-                                  myFeedback = updatedFeedback;
-                                });
-                              }
-                            },
-                            child: const Text(
-                              'Editar',
-                              style: TextStyle(
-                                color: Color(0xff9747FF),
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          GestureDetector(
-                            onTap: () async {
-                              showDeleteConfirmationDialog(context, () async {
-                                await AvaliacoesService()
-                                    .deleteFeedbackByCondition(
-                                  widget.feedback.id,
-                                  FirebaseAuth.instance.currentUser!.uid,
-                                );
+                          if (canShowButtons)
+                            GestureDetector(
+                              onTap: () async {
+                                final updatedFeedback =
+                                    await showDialog<AvaliacoesModel>(
+                                  context: context,
+                                  builder: (context) {
+                                    return Dialog(
+                                      child: AvaliacoesPage(
+                                        space: space!,
 
-                                widget
-                                    .onDelete(); // Chama refreshFeedbacks() no widget pai
-                              });
-                            },
-                            child: const Text(
-                              'Excluir',
-                              style: TextStyle(
-                                color: Color(0xffFF0000),
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
+                                        feedback:
+                                            myFeedback, // Passando a avaliação existente
+                                      ),
+                                    );
+                                  },
+                                );
+                                if (updatedFeedback != null) {
+                                  setState(() {
+                                    myFeedback = updatedFeedback;
+                                  });
+                                }
+                              },
+                              child: const Text(
+                                'Editar',
+                                style: TextStyle(
+                                  color: Color(0xff9747FF),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ),
+                          const SizedBox(width: 16),
+                          if (canShowButtons)
+                            GestureDetector(
+                              onTap: () async {
+                                showDeleteConfirmationDialog(context, () async {
+                                  await AvaliacoesService()
+                                      .deleteFeedbackByCondition(
+                                    widget.feedback.id,
+                                    FirebaseAuth.instance.currentUser!.uid,
+                                  );
+
+                                  widget
+                                      .onDelete(); // Chama refreshFeedbacks() no widget pai
+                                });
+                              },
+                              child: const Text(
+                                'Excluir',
+                                style: TextStyle(
+                                  color: Color(0xffFF0000),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
                         ],
                       ),
                     ],

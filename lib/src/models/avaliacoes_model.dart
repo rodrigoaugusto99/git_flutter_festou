@@ -7,6 +7,7 @@ class AvaliacoesModel {
   final String content;
   final String userId;
   final String spaceId;
+  final String reservationId;
   final String userName;
   final String date;
   final String avatar;
@@ -20,6 +21,7 @@ class AvaliacoesModel {
     required this.rating,
     required this.content,
     required this.spaceId,
+    required this.reservationId,
     required this.userId,
     required this.userName,
     required this.date,
@@ -34,6 +36,7 @@ class AvaliacoesModel {
     String? id,
     String? spaceId,
     String? userId,
+    String? reservationId,
     int? rating,
     String? content,
     String? userName,
@@ -46,6 +49,7 @@ class AvaliacoesModel {
     return AvaliacoesModel(
       id: id ?? this.id,
       spaceId: spaceId ?? this.spaceId,
+      reservationId: reservationId ?? this.reservationId,
       userId: userId ?? this.userId,
       rating: rating ?? this.rating,
       content: content ?? this.content,

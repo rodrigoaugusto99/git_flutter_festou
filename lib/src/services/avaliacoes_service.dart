@@ -97,6 +97,7 @@ class AvaliacoesService {
     return AvaliacoesModel(
       spaceId: feedbackDocument['space_id'] ?? '',
       userId: feedbackDocument['user_id'] ?? '',
+      reservationId: feedbackDocument['reservationId'] ?? '',
       deletedAt: feedbackDocument['deletedAt'],
       rating: feedbackDocument['rating'] ?? 0,
       content: feedbackDocument['content'] ?? '',

@@ -39,7 +39,7 @@ class _MinhasReservasWidgetState extends State<MinhasReservasWidget> {
   //todo: mostrar o x se estiver cancelado
 
   Future<void> getMyReservations() async {
-    final reservas = await ReservaService().getReservationsByClienId();
+    final reservas = await ReservaService().getReservationsByClientId();
 
     List<SpaceWithReservation> updatedReservationSpaces = [];
 
