@@ -4,39 +4,52 @@ import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/reser
 import 'package:git_flutter_festou/src/models/avaliacoes_model.dart';
 import 'package:git_flutter_festou/src/services/avaliacoes_service.dart';
 
-class MinhasAvaliacoesPage extends StatefulWidget {
+class MinhasAvaliacoesPage extends StatelessWidget {
   final String userId;
   const MinhasAvaliacoesPage({super.key, required this.userId});
 
-  @override
-  State<MinhasAvaliacoesPage> createState() => _MinhasAvaliacoesPageState();
-}
+  Future<List<AvaliacoesModel>> _getFeedbacks() async {
+    List<AvaliacoesModel> feedbacks = await AvaliacoesService()
+        .getMyFeedbacks(FirebaseAuth.instance.currentUser!.uid);
 
-class _MinhasAvaliacoesPageState extends State<MinhasAvaliacoesPage> {
-  List<AvaliacoesModel>? feedbacks;
-  User? currUser = FirebaseAuth.instance.currentUser;
-
-  @override
-  void initState() {
-    getFeedbacks();
-    super.initState();
-  }
-
-  getFeedbacks() async {
-    feedbacks = await AvaliacoesService().getMyFeedbacks(currUser!.uid);
-    setState(() {});
+    return feedbacks.where((feedback) => feedback.deletedAt == null).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    List<AvaliacoesModel> validFeedbacks = feedbacks != null
-        ? feedbacks!.where((feedback) => feedback.deletedAt == null).toList()
-        : [];
+    return FutureBuilder<List<AvaliacoesModel>>(
+      future: _getFeedbacks(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return MinhasAvaliacoesWidget(initialFeedbacks: snapshot.data!);
+        }
 
-    return feedbacks != null
-        ? MinhasAvaliacoesWidget(
-            initialFeedbacks: validFeedbacks, // Usando os feedbacks filtrados
-          )
-        : const Center(child: CircularProgressIndicator());
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: ExpansionTile(
+            collapsedBackgroundColor: Colors.white,
+            collapsedShape: const RoundedRectangleBorder(
+              side: BorderSide.none,
+            ),
+            shape: const RoundedRectangleBorder(
+              side: BorderSide.none,
+            ),
+            leading: Image.asset(
+              'lib/assets/images/icon_avaliacao.png',
+              width: 30,
+              height: 30,
+            ),
+            title: const Text(
+              'Minhas avaliações',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.black,
+              ),
+            ),
+            children: const [],
+          ),
+        );
+      },
+    );
   }
 }
