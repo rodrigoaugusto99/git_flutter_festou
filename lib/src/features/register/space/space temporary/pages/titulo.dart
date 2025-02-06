@@ -15,6 +15,14 @@ class Titulo extends ConsumerStatefulWidget {
 }
 
 class _TituloState extends ConsumerState<Titulo> {
+  @override
+  void initState() {
+    super.initState();
+    final vm = ref.read(newSpaceRegisterVmProvider.notifier);
+    final state = vm.getState();
+    tituloEC.text = state.titulo;
+  }
+
   final tituloEC = TextEditingController();
   final int maxLength = 100;
   @override

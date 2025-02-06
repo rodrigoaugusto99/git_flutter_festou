@@ -17,6 +17,18 @@ class Localizacao extends ConsumerStatefulWidget {
 }
 
 class _LocalizacaoState extends ConsumerState<Localizacao> {
+  @override
+  void initState() {
+    super.initState();
+    final vm = ref.read(newSpaceRegisterVmProvider.notifier);
+    final state = vm.getState();
+    logradouroEC.text = state.logradouro;
+    bairroEC.text = state.bairro;
+    cidadeEC.text = state.cidade;
+    cepEC.text = state.cep;
+    numeroEC.text = state.numero;
+  }
+
   final formKey = GlobalKey<FormState>();
 
   final cepEC = TextEditingController();

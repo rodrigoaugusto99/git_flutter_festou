@@ -27,6 +27,10 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
   final uuid = const Uuid();
   final user = FirebaseAuth.instance.currentUser!;
 
+  NewSpaceRegisterState getState() {
+    return state;
+  }
+
   void addOrRemoveType(String type) {
     final selectedTypes = state.selectedTypes;
 

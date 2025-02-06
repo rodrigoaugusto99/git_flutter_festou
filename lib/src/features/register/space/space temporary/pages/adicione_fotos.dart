@@ -23,7 +23,9 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
   @override
   void initState() {
     super.initState();
-
+    // final vm = ref.read(newSpaceRegisterVmProvider.notifier);
+    // final state = vm.getState();
+    // selectedTypes = state.selectedTypes;
     // Cria um Timer que atualiza o estado a cada 5 segundos
     _timer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
       setState(() {

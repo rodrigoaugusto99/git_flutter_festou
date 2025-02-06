@@ -19,6 +19,15 @@ class ServicosAcomodacoes extends ConsumerStatefulWidget {
 
 class _ServicosAcomodacoesState extends ConsumerState<ServicosAcomodacoes> {
   @override
+  void initState() {
+    super.initState();
+    final vm = ref.read(newSpaceRegisterVmProvider.notifier);
+    final state = vm.getState();
+    selected = state.selectedServices;
+  }
+
+  List<String> selected = [];
+  @override
   Widget build(BuildContext context) {
     final newSpaceRegister = ref.read(newSpaceRegisterVmProvider.notifier);
     return Scaffold(
@@ -82,7 +91,7 @@ class _ServicosAcomodacoesState extends ConsumerState<ServicosAcomodacoes> {
                       log('onServicePressed: $value');
                       newSpaceRegister.addOrRemoveService(value);
                     },
-                    selectedServices: const [],
+                    selectedServices: selected,
                   ),
                 ],
               ),

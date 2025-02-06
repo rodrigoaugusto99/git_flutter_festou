@@ -15,6 +15,15 @@ class TipoEspaco extends ConsumerStatefulWidget {
 
 class _TipoEspacoState extends ConsumerState<TipoEspaco> {
   @override
+  void initState() {
+    super.initState();
+    final vm = ref.read(newSpaceRegisterVmProvider.notifier);
+    final state = vm.getState();
+    selectedTypes = state.selectedTypes;
+  }
+
+  List<String> selectedTypes = [];
+  @override
   Widget build(BuildContext context) {
     final newSpaceRegister = ref.watch(newSpaceRegisterVmProvider.notifier);
 
@@ -74,7 +83,7 @@ class _TipoEspacoState extends ConsumerState<TipoEspaco> {
                     log('onTypePressed: $value');
                     newSpaceRegister.addOrRemoveType(value);
                   },
-                  selectedTypes: const [],
+                  selectedTypes: selectedTypes,
                 ),
               ],
             ),

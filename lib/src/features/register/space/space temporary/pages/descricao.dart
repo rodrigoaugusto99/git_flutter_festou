@@ -14,6 +14,14 @@ class Descricao extends ConsumerStatefulWidget {
 }
 
 class _DescricaoState extends ConsumerState<Descricao> {
+  @override
+  void initState() {
+    super.initState();
+    final vm = ref.read(newSpaceRegisterVmProvider.notifier);
+    final state = vm.getState();
+    descricaoEC.text = state.descricao;
+  }
+
   final descricaoEC = TextEditingController();
   final int maxLength = 2000;
   @override
