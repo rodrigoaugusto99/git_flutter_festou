@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
@@ -53,13 +54,37 @@ class _RatingViewState extends ConsumerState<AvaliacoesPage> {
           .collection('reservations')
           .where('space_id', isEqualTo: spaceId)
           .where('canceledAt', isEqualTo: null)
-          .where('hasReview', isEqualTo: false)
           .where('client_id', isEqualTo: userId)
           .limit(1)
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
         return querySnapshot.docs.first.id;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint("Erro ao buscar reserva: $e");
+      return null;
+    }
+  }
+
+  Future<ReservationModel?> getReservation(
+      String spaceId, String userId) async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('reservations')
+          .where('space_id', isEqualTo: spaceId)
+          .where('canceledAt', isEqualTo: null)
+          .where('client_id', isEqualTo: userId)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        ReservationModel reservation = ReservationModel.fromFirestore(
+          querySnapshot.docs.first,
+        );
+        return reservation;
       } else {
         return null;
       }
@@ -125,9 +150,10 @@ class _RatingViewState extends ConsumerState<AvaliacoesPage> {
                 onPressed: _canConfirm
                     ? () async {
                         AvaliacoesModel updatedFeedback;
+                        User? user = FirebaseAuth.instance.currentUser;
                         String? reservationId = await getReservationDocumentId(
                           widget.space.spaceId,
-                          widget.reservation!.clientId,
+                          user!.uid,
                         );
 
                         if (widget.feedback == null) {
@@ -139,7 +165,8 @@ class _RatingViewState extends ConsumerState<AvaliacoesPage> {
                             content: contentController.text,
                           );
 
-                          await ReservaService().updateHasReview(reservationId);
+                          await ReservaService()
+                              .updateHasReview(reservationId, true);
 
                           updatedFeedback = AvaliacoesModel(
                             id: '', // O ID será gerado pelo Firestore

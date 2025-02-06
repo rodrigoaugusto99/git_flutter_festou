@@ -152,12 +152,12 @@ class ReservaService {
     }
   }
 
-  Future<void> updateHasReview(String reservationId) async {
+  Future<void> updateHasReview(String reservationId, bool hasReview) async {
     try {
       await reservationCollection.doc(reservationId).update({
-        'hasReview': true,
+        'hasReview': hasReview,
       });
-      log('Campo hasReview atualizado para true na reserva: $reservationId');
+      log('Campo hasReview atualizado para $hasReview na reserva: $reservationId');
     } catch (e) {
       log('Erro ao atualizar o campo hasReview: $e');
       throw Exception(e);

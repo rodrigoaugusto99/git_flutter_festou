@@ -387,7 +387,6 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                                     return Dialog(
                                       child: AvaliacoesPage(
                                         space: space!,
-
                                         feedback:
                                             myFeedback, // Passando a avaliação existente
                                       ),
@@ -419,6 +418,9 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                                     widget.feedback.id,
                                     FirebaseAuth.instance.currentUser!.uid,
                                   );
+
+                                  await ReservaService().updateHasReview(
+                                      widget.feedback.reservationId, false);
 
                                   widget
                                       .onDelete(); // Chama refreshFeedbacks() no widget pai
