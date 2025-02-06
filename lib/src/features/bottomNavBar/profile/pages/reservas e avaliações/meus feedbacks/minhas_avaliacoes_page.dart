@@ -29,9 +29,13 @@ class _MinhasAvaliacoesPageState extends State<MinhasAvaliacoesPage> {
 
   @override
   Widget build(BuildContext context) {
+    List<AvaliacoesModel> validFeedbacks = feedbacks != null
+        ? feedbacks!.where((feedback) => feedback.deletedAt == null).toList()
+        : [];
+
     return feedbacks != null
         ? MinhasAvaliacoesWidget(
-            initialFeedbacks: feedbacks!,
+            initialFeedbacks: validFeedbacks, // Usando os feedbacks filtrados
           )
         : const Center(child: CircularProgressIndicator());
   }

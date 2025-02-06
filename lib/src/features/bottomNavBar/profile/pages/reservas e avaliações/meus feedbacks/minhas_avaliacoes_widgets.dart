@@ -41,11 +41,6 @@ class _MinhasAvaliacoesWidgetState extends State<MinhasAvaliacoesWidget> {
 
   @override
   Widget build(BuildContext context) {
-    List<AvaliacoesModel> validFeedbacks = feedbacks
-        .where(
-            (feedback) => feedback.content != '' && feedback.deletedAt == null)
-        .toList();
-
     return Container(
       decoration: const BoxDecoration(
         color: Colors.transparent,
@@ -91,9 +86,9 @@ class _MinhasAvaliacoesWidgetState extends State<MinhasAvaliacoesWidget> {
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: validFeedbacks.length,
+                    itemCount: feedbacks.length,
                     itemBuilder: (BuildContext context, int index) {
-                      final feedback = validFeedbacks[index];
+                      final feedback = feedbacks[index];
                       return AvaliacoesItem(
                         feedback: feedback,
                         onDelete: () async {
