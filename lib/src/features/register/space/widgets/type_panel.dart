@@ -32,7 +32,7 @@ class TypePanel extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            height: 42,
+            height: 16,
           ),
           Wrap(
             spacing: 8,

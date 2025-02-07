@@ -62,76 +62,88 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
     final y = MediaQuery.of(context).size.height;
 
     void showFilterModal(BuildContext context) {
-      final selectedServices =
-          ref.read(filterAndOrderVmProvider).selectedServices;
-      final selectedTypes = ref.read(filterAndOrderVmProvider).selectedTypes;
-      final availableDays = ref.read(filterAndOrderVmProvider).availableDays;
+      if (!ref
+          .read(filterAndOrderVmProvider)
+          .selectedTypes
+          .contains(widget.type[0])) {
+        filterAnOrderVm.addOrRemoveType(widget.type[0]);
+      }
       showModalBottomSheet<void>(
         isScrollControlled: true,
         context: context,
         builder: (BuildContext context) {
-          return Container(
-            height: y * 0.8,
-            padding: const EdgeInsets.all(16),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ElevatedButton(
-                    onPressed: () => setState(() {
-                      filterAnOrderVm.redefinir();
-                    }),
-                    child: const Text('Redefinir'),
-                  ),
-                  const Text(
-                    'Filtrar',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 16),
-                  ServicesPanel(
-                    text: 'SERVIÇOS do espaço',
-                    onServicePressed: (value) {
-                      //log('onServicePressed: $value');
-                      filterAnOrderVm.addOrRemoveService(value);
-                    },
-                    selectedServices: selectedServices,
-                  ),
-                  TypePanel(
-                    text: 'TIPO de espaço',
-                    onTypePressed: (value) {
-                      //log('onTypePressed: $value');
-                      filterAnOrderVm.addOrRemoveType(value);
-                    },
-                    selectedTypes: selectedTypes,
-                  ),
-                  WeekDaysPanel(
-                    text: 'dias disponiveis',
-                    onDayPressed: (value) {
-                      //log('onTypePressed: $value');
-                      filterAnOrderVm.addOrRemoveAvailableDay(value);
-                    },
-                    availableDays: availableDays,
-                  ),
-                  FeedbacksPanel(
-                    text: 'MÉDIA de avaliações',
-                    onNotePressed: (String value) {
-                      log('onNotePressed: $value');
-                      filterAnOrderVm.addOrRemoveNote(value);
-                    },
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: InkWell(
-                      onTap: () async {
-                        await filterAnOrderVm.filter();
+          return StatefulBuilder(builder: (context, setModalState) {
+            return Container(
+              height: y * 0.8,
+              padding: const EdgeInsets.all(16),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        filterAnOrderVm.redefinir();
+                        setModalState(() {}); // Atualiza o modal
                       },
-                      child: const Text('Aplicar filtros'),
+                      child: const Text('Redefinir'),
                     ),
-                  ),
-                ],
+                    const Text(
+                      'Filtrar',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 16),
+                    ServicesPanel(
+                      text: 'SERVIÇOS do espaço',
+                      onServicePressed: (value) {
+                        //log('onServicePressed: $value');
+                        filterAnOrderVm.addOrRemoveService(value);
+                      },
+                      selectedServices:
+                          ref.read(filterAndOrderVmProvider).selectedServices,
+                    ),
+                    TypePanel(
+                      text: 'TIPO de espaço',
+                      onTypePressed: (value) {
+                        //log('onTypePressed: $value');
+                        filterAnOrderVm.addOrRemoveType(value);
+                      },
+                      selectedTypes:
+                          ref.read(filterAndOrderVmProvider).selectedTypes,
+                    ),
+                    WeekDaysPanel(
+                      text: 'dias disponiveis',
+                      onDayPressed: (value) {
+                        //log('onTypePressed: $value');
+                        filterAnOrderVm.addOrRemoveAvailableDay(value);
+                      },
+                      availableDays:
+                          ref.read(filterAndOrderVmProvider).availableDays,
+                    ),
+                    FeedbacksPanel(
+                      selectedNotes:
+                          ref.read(filterAndOrderVmProvider).selectedNotes,
+                      text: 'MÉDIA de avaliações',
+                      onNotePressed: (String value) {
+                        log('onNotePressed: $value');
+                        filterAnOrderVm.addOrRemoveNote(value);
+                        setModalState(() {});
+                      },
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: InkWell(
+                        onTap: () async {
+                          await filterAnOrderVm.filter();
+                        },
+                        child: const Text('Aplicar filtros'),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
+            );
+          });
         },
       );
     }
@@ -152,9 +164,11 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
           animation: spaceByTypeViewModel,
           builder: (context, child) {
             return Scaffold(
+              //backgroundColor: Colors.white,
               extendBodyBehindAppBar: true,
               appBar: AppBar(
                 backgroundColor: Colors.transparent,
+                // backgroundColor: Colors.white,
                 actions: [
                   Padding(
                     padding: const EdgeInsets.only(right: 18.0),
@@ -226,69 +240,80 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                       image: AssetImage(cds[widget.type[0]]!),
                       fit: BoxFit.cover),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 100,
-                      ),
-                      Row(
-                        children: [
-                          _buildSearchBox(x, y),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 15),
-                            child: GestureDetector(
-                              onTap: () => showFilterModal(context),
-                              child: Container(
-                                width: 35,
-                                height: 35,
-                                decoration: BoxDecoration(
-                                  //color: Colors.white.withOpacity(0.7),
-                                  color: const Color(0xff9747FF),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Image.asset(
-                                    'lib/assets/images/icon_filtro.png'),
+                child: Column(
+                  //mainAxisAlignment: MainAxisAlignment.end,
+                  // crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const SizedBox(
+                      height: 120,
+                    ),
+                    Row(
+                      children: [
+                        _buildSearchBox(x, y),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 15),
+                          child: GestureDetector(
+                            onTap: () => showFilterModal(context),
+                            child: Container(
+                              width: 35,
+                              height: 35,
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                //color: Colors.white.withOpacity(0.7),
+                                color: const Color(0xff9747FF),
+                                borderRadius: BorderRadius.circular(10),
                               ),
+                              child: Image.asset(
+                                  'lib/assets/images/icon_filtro.png'),
                             ),
                           ),
-                        ],
+                        ),
+                      ],
+                    ),
+                    if ((spaceByTypeViewModel.getSpaces != null &&
+                        spaceByTypeViewModel.showSpacesByType &&
+                        spaceByTypeViewModel.getSpaces!.isEmpty))
+                      const Text('Não foram encontrado espaços'),
+                    if ((spaceByTypeViewModel.getFiltered != null &&
+                        spaceByTypeViewModel.showFiltered &&
+                        spaceByTypeViewModel.getFiltered!.isEmpty))
+                      const Expanded(
+                        child: Align(
+                            alignment: Alignment.center,
+                            child: Text('Não foram encontrado espaços')),
                       ),
-                      if (spaceByTypeViewModel.getSpaces() != null &&
-                          spaceByTypeViewModel.showSpacesByType)
-                        Expanded(
-                          child: ListView.builder(
-                            padding: const EdgeInsets.all(10),
-                            itemCount: spaceByTypeViewModel.getSpaces()!.length,
-                            itemBuilder: (context, index) {
-                              return NewSpaceCard(
-                                hasHeart: true,
-                                space: spaceByTypeViewModel.getSpaces()![index],
-                                isReview: false,
-                              );
-                            },
-                          ),
+                    if (spaceByTypeViewModel.getSpaces != null &&
+                        spaceByTypeViewModel.showSpacesByType) ...[
+                      Expanded(
+                        child: ListView.builder(
+                          padding: const EdgeInsets.all(10),
+                          itemCount: spaceByTypeViewModel.getSpaces!.length,
+                          itemBuilder: (context, index) {
+                            return NewSpaceCard(
+                              hasHeart: true,
+                              space: spaceByTypeViewModel.getSpaces![index],
+                              isReview: false,
+                            );
+                          },
                         ),
-                      if (spaceByTypeViewModel.getFiltered() != null &&
-                          spaceByTypeViewModel.showFiltered)
-                        Expanded(
-                          child: ListView.builder(
-                            padding: const EdgeInsets.all(10),
-                            itemCount:
-                                spaceByTypeViewModel.getFiltered()!.length,
-                            itemBuilder: (context, index) {
-                              return NewSpaceCard(
-                                hasHeart: true,
-                                space:
-                                    spaceByTypeViewModel.getFiltered()![index],
-                                isReview: false,
-                              );
-                            },
-                          ),
-                        ),
+                      ),
                     ],
-                  ),
+                    if (spaceByTypeViewModel.getFiltered != null &&
+                        spaceByTypeViewModel.showFiltered)
+                      Expanded(
+                        child: ListView.builder(
+                          padding: const EdgeInsets.all(10),
+                          itemCount: spaceByTypeViewModel.getFiltered!.length,
+                          itemBuilder: (context, index) {
+                            return NewSpaceCard(
+                              hasHeart: true,
+                              space: spaceByTypeViewModel.getFiltered![index],
+                              isReview: false,
+                            );
+                          },
+                        ),
+                      ),
+                  ],
                 ),
               ),
             );

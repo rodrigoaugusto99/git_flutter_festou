@@ -10,7 +10,7 @@ import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dar
 import 'package:validatorless/validatorless.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({Key? key}) : super(key: key);
+  const ForgotPasswordPage({super.key});
 
   @override
   State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
@@ -253,7 +253,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(right: 75, left: 75, bottom: 90),
         child: InkWell(
-          onTap: () => Navigator.of(context).pushNamed('/login'),
+          onTap: () => Navigator.of(context).pop(),
           child: Container(
             alignment: Alignment.center,
             width: buttonWidth,

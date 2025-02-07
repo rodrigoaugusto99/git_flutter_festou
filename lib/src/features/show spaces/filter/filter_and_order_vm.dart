@@ -98,7 +98,8 @@ class FilterAndOrderVm extends _$FilterAndOrderVm {
       status: FilterAndOrderStateStatus.initial,
       selectedServices: [],
       selectedTypes: [],
-      availableDays: [],
+      availableDays: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'],
+      selectedNotes: [],
     );
   }
 
@@ -195,6 +196,10 @@ class FilterAndOrderVm extends _$FilterAndOrderVm {
         log(averageRating.toString());
         return averageRating >= minSelectedNote;
       }).toList();
+    }
+    log(spaceModels.length.toString());
+    for (final space in spaceModels) {
+      log(space.spaceId);
     }
     state = state.copyWith(
       status: FilterAndOrderStateStatus.success,

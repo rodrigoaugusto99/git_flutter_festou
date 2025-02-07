@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:git_flutter_festou/src/features/register/avaliacoes/avaliacoes_register_page.dart';
@@ -105,12 +104,14 @@ class _MinhasAvaliacoesWidgetState extends State<MinhasAvaliacoesWidget> {
 }
 
 class AvaliacoesItem extends StatefulWidget {
+  final bool hideThings;
   final AvaliacoesModel feedback;
   final VoidCallback onDelete;
 
   const AvaliacoesItem({
     super.key,
     required this.feedback,
+    this.hideThings = false,
     required this.onDelete,
   });
 
@@ -316,27 +317,28 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                           ),
                         ],
                       ),
-                      Align(
-                        child: Column(
-                          children: [
-                            Text(
-                              space!.titulo,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
+                      if (!widget.hideThings)
+                        Align(
+                          child: Column(
+                            children: [
+                              Text(
+                                space!.titulo,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 3),
-                            Text(
-                              '${space!.bairro}, ${space!.cidade}',
-                              style: const TextStyle(
-                                fontSize: 11,
-                                color: Color(0xff5E5E5E),
+                              const SizedBox(height: 3),
+                              Text(
+                                '${space!.bairro}, ${space!.cidade}',
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: Color(0xff5E5E5E),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
                       const SizedBox(height: 17),
                       Text(myFeedback!.content.toString()),
                       const SizedBox(height: 17),

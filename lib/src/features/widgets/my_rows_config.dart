@@ -45,7 +45,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
         ),
         const SizedBox(height: 16),
         MyRow(
-          text: 'Login e Segurança',
+          text: 'Login e segurança',
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
@@ -78,7 +78,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
             context,
             MaterialPageRoute(
                 builder: (context) => widget.userModel.locador
-                    ? AvaliacoesMeusEspacosPage(userId: widget.userModel.uid)
+                    ? const AvaliacoesMeusEspacosPage()
                     : ReservasAvaliacoesPage(userId: widget.userModel.uid)),
           ),
           icon1: Image.asset(

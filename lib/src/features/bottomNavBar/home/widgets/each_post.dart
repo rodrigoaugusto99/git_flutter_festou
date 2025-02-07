@@ -87,6 +87,7 @@ class _EachPostState extends State<EachPost> {
               width: 170,
               height: 110,
               child: Stack(
+                fit: StackFit.expand,
                 children: [
                   ClipRRect(
                     //clipBehavior: Clip.none,

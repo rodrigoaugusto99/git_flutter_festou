@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class FeedbacksPanel extends StatefulWidget {
   final ValueChanged<String> onNotePressed;
   final String text;
+  final List<String> selectedNotes;
 
   const FeedbacksPanel({
     super.key,
     required this.onNotePressed,
     required this.text,
+    required this.selectedNotes,
   });
 
   @override
@@ -20,7 +22,7 @@ class _FeedbacksPanelState extends State<FeedbacksPanel> {
   void updateSelectedNote(String note) {
     setState(() {
       selectedNote = note;
-      widget.onNotePressed(note);
+      widget.onNotePressed(selectedNote);
     });
   }
 
@@ -33,17 +35,26 @@ class _FeedbacksPanelState extends State<FeedbacksPanel> {
 
   @override
   Widget build(BuildContext context) {
+    selectedNote = widget.selectedNotes.isNotEmpty
+        ? '${widget.selectedNotes.map((e) => double.parse(e.replaceAll('+', ''))).reduce((a, b) => a < b ? a : b)}+'
+        : '0+';
     return SizedBox(
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          const SizedBox(
+            height: 16,
+          ),
           Text(
             widget.text,
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
+          ),
+          const SizedBox(
+            height: 16,
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
