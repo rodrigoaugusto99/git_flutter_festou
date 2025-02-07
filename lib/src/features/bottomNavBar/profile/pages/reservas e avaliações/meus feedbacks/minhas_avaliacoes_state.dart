@@ -1,21 +1,21 @@
 import 'package:git_flutter_festou/src/models/avaliacoes_model.dart';
 
-enum SpaceFeedbacksStateStatus { success, error }
+enum MinhasAvaliacoesStateStatus { success, error }
 
-class SpaceFeedbacksState {
-  final SpaceFeedbacksStateStatus status;
+class MinhasAvaliacoesState {
+  final MinhasAvaliacoesStateStatus status;
   final List<AvaliacoesModel> feedbacks;
 
-  SpaceFeedbacksState({
+  MinhasAvaliacoesState({
     required this.status,
     required this.feedbacks,
   });
 
-  SpaceFeedbacksState copyWith({
-    SpaceFeedbacksStateStatus? status,
+  MinhasAvaliacoesState copyWith({
+    MinhasAvaliacoesStateStatus? status,
     List<AvaliacoesModel>? feedbacks,
   }) {
-    return SpaceFeedbacksState(
+    return MinhasAvaliacoesState(
       status: status ?? this.status,
       feedbacks: feedbacks ?? this.feedbacks,
     );

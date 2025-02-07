@@ -1,32 +1,48 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/meus%20feedbacks/edit_dialog.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/meus%20feedbacks/meus_feedbacks_state.dart';
-import 'package:git_flutter_festou/src/models/feedback_model.dart';
+import 'package:git_flutter_festou/src/features/register/avaliacoes/avaliacoes_register_page.dart';
+import 'package:git_flutter_festou/src/models/avaliacoes_model.dart';
+import 'package:git_flutter_festou/src/models/reservation_model.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
-import 'package:git_flutter_festou/src/repositories/feedback/feedback_firestore_repository_impl.dart';
-import 'package:git_flutter_festou/src/services/feedback_service.dart';
+import 'package:git_flutter_festou/src/services/avaliacoes_service.dart';
+import 'package:git_flutter_festou/src/services/reserva_service.dart';
 import 'package:git_flutter_festou/src/services/space_service.dart';
 
-class FeedbacksWidget extends StatefulWidget {
-  final List<FeedbackModel> feedbacks;
+class MinhasAvaliacoesWidget extends StatefulWidget {
+  final List<AvaliacoesModel> initialFeedbacks;
 
-  const FeedbacksWidget({
+  const MinhasAvaliacoesWidget({
     super.key,
-    required this.feedbacks,
+    required this.initialFeedbacks,
   });
 
   @override
-  State<FeedbacksWidget> createState() => _FeedbacksWidgetState();
+  State<MinhasAvaliacoesWidget> createState() => _MinhasAvaliacoesWidgetState();
 }
 
-class _FeedbacksWidgetState extends State<FeedbacksWidget> {
+class _MinhasAvaliacoesWidgetState extends State<MinhasAvaliacoesWidget> {
+  late List<AvaliacoesModel> feedbacks;
+
+  @override
+  void initState() {
+    super.initState();
+    feedbacks = List.from(widget.initialFeedbacks);
+  }
+
+  Future<void> refreshFeedbacks() async {
+    List<AvaliacoesModel> updatedFeedbacks = await AvaliacoesService()
+        .getMyFeedbacks(FirebaseAuth.instance.currentUser!.uid);
+
+    setState(() {
+      feedbacks = updatedFeedbacks;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
         color: Colors.transparent,
-        //borderRadius: BorderRadius.circular(18),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
@@ -38,39 +54,61 @@ class _FeedbacksWidgetState extends State<FeedbacksWidget> {
           shape: const RoundedRectangleBorder(
             side: BorderSide.none,
           ),
-          leading: Image.asset('lib/assets/images/icon_avaliacao.png'),
-          title: const Text('Minhas avaliações'),
-          children: [
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: widget.feedbacks.length,
-              itemBuilder: (BuildContext context, int index) {
-                final feedback = widget.feedbacks[index];
-                if (feedback.content == '' || feedback.deleteAt != null) {
-                  return const SizedBox.shrink();
-                }
-                return FeedbackItem(
-                  feedback: feedback,
-                  onDelete: () {
-                    widget.feedbacks.removeAt(index);
-                  },
-                );
-              },
+          leading: Image.asset(
+            'lib/assets/images/icon_avaliacao.png',
+            width: 30,
+            height: 30,
+          ),
+          title: const Text(
+            'Minhas avaliações',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.black,
             ),
-          ],
+          ),
+          children: feedbacks.isEmpty
+              ? [
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text(
+                          'Nenhuma avaliação encontrada.',
+                          style: TextStyle(fontSize: 14, color: Colors.black54),
+                        ),
+                      ),
+                    ],
+                  ),
+                ]
+              : [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: feedbacks.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final feedback = feedbacks[index];
+                      return AvaliacoesItem(
+                        feedback: feedback,
+                        onDelete: () async {
+                          await refreshFeedbacks();
+                        },
+                      );
+                    },
+                  ),
+                ],
         ),
       ),
     );
   }
 }
 
-class FeedbackItem extends StatefulWidget {
+class AvaliacoesItem extends StatefulWidget {
   final bool hideThings;
-  final FeedbackModel feedback;
+  final AvaliacoesModel feedback;
   final VoidCallback onDelete;
 
-  const FeedbackItem({
+  const AvaliacoesItem({
     super.key,
     required this.feedback,
     this.hideThings = false,
@@ -78,25 +116,66 @@ class FeedbackItem extends StatefulWidget {
   });
 
   @override
-  _FeedbackItemState createState() => _FeedbackItemState();
+  _AvaliacoesItemState createState() => _AvaliacoesItemState();
 }
 
-class _FeedbackItemState extends State<FeedbackItem> {
+class _AvaliacoesItemState extends State<AvaliacoesItem> {
   bool isLiked = false;
   bool isDisliked = false;
-  late FeedbackService feedbackService;
+  bool canShowButtons = false;
+  ReservationModel? reservation;
+  late AvaliacoesService feedbackService;
+
+  Future<void> _loadReservation() async {
+    try {
+      final reservations = await ReservaService()
+          .getReservationsBySpaceId(widget.feedback.spaceId);
+
+      ReservationModel? latestValidReservation;
+
+      for (var reservation in reservations) {
+        if (reservation.canceledAt == null && reservation.hasReview == false) {
+          latestValidReservation = reservation;
+        }
+      }
+
+      if (latestValidReservation != null) {
+        setState(() {
+          reservation = latestValidReservation;
+          canShowButtons = _validateReservation(latestValidReservation!);
+        });
+      } else {
+        print("Nenhuma reserva válida encontrada.");
+      }
+    } catch (e) {
+      print("Erro ao buscar reserva: $e");
+    }
+  }
+
+  bool _validateReservation(ReservationModel reservation) {
+    final DateTime now = DateTime.now();
+    final DateTime threeMonthLimit;
+
+    DateTime selectedFinalDate;
+
+    selectedFinalDate = (reservation.selectedFinalDate).toDate();
+    threeMonthLimit = selectedFinalDate.add(const Duration(days: 90));
+
+    return now.isBefore(threeMonthLimit) && reservation.canceledAt == null;
+  }
 
   @override
   void initState() {
     super.initState();
-    feedbackService = FeedbackService();
+    feedbackService = AvaliacoesService();
     myFeedback = widget.feedback;
     _checkUserReaction();
+    _loadReservation();
     getSpace();
   }
 
   SpaceModel? space;
-  FeedbackModel? myFeedback;
+  AvaliacoesModel? myFeedback;
 
   Future<void> getSpace() async {
     space = await SpaceService().getSpaceById(widget.feedback.spaceId);
@@ -113,8 +192,37 @@ class _FeedbackItemState extends State<FeedbackItem> {
   }
 
   updateFeedback() async {
-    myFeedback = await FeedbackService().getFeedbackById(widget.feedback.id);
+    myFeedback = await AvaliacoesService().getFeedbackById(widget.feedback.id);
     _checkUserReaction();
+  }
+
+  Future<void> showDeleteConfirmationDialog(
+      BuildContext context, Function onConfirm) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirmar exclusão"),
+          content: const Text(
+              "Tem certeza de que deseja excluir esta avaliação? Esta ação não pode ser desfeita."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Fecha o diálogo sem excluir
+              },
+              child: const Text("Cancelar"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Fecha o diálogo
+                onConfirm(); // Chama a função de exclusão
+              },
+              child: const Text("Excluir", style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -162,7 +270,6 @@ class _FeedbackItemState extends State<FeedbackItem> {
                           const SizedBox(width: 10),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            // mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(
                                 myFeedback!.userName,
@@ -208,11 +315,6 @@ class _FeedbackItemState extends State<FeedbackItem> {
                               ),
                             ),
                           ),
-                          // Row(
-                          //   children: [
-                          //     ...buildStarIcons(widget.feedback.rating),
-                          //   ],
-                          // ),
                         ],
                       ),
                       if (!widget.hideThings)
@@ -272,22 +374,27 @@ class _FeedbackItemState extends State<FeedbackItem> {
                           const SizedBox(width: 3),
                           Text('(${myFeedback!.dislikes.length})'),
                           const Spacer(),
-                          if (!widget.hideThings) ...[
+                          if (canShowButtons)
                             GestureDetector(
                               onTap: () async {
-                                final result = await showDialog<String>(
+                                final updatedFeedback =
+                                    await showDialog<AvaliacoesModel>(
                                   context: context,
-                                  builder: (context) => EditTextDialog(
-                                    initialText: myFeedback!.content,
-                                  ),
+                                  builder: (context) {
+                                    return Dialog(
+                                      child: AvaliacoesPage(
+                                        space: space!,
+                                        feedback:
+                                            myFeedback, // Passando a avaliação existente
+                                      ),
+                                    );
+                                  },
                                 );
-                                if (result == null) return;
-
-                                await FeedbackService().updateFeedbackContent(
-                                  widget.feedback.id,
-                                  result,
-                                );
-                                updateFeedback();
+                                if (updatedFeedback != null) {
+                                  setState(() {
+                                    myFeedback = updatedFeedback;
+                                  });
+                                }
                               },
                               child: const Text(
                                 'Editar',
@@ -298,15 +405,23 @@ class _FeedbackItemState extends State<FeedbackItem> {
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 16),
+                          const SizedBox(width: 16),
+                          if (canShowButtons)
                             GestureDetector(
                               onTap: () async {
-                                await FeedbackService()
-                                    .deleteFeedbackByCondition(
-                                  widget.feedback.id,
-                                );
-                                updateFeedback();
-                                widget.onDelete();
+                                showDeleteConfirmationDialog(context, () async {
+                                  await AvaliacoesService()
+                                      .deleteFeedbackByCondition(
+                                    widget.feedback.id,
+                                    FirebaseAuth.instance.currentUser!.uid,
+                                  );
+
+                                  await ReservaService().updateHasReview(
+                                      widget.feedback.reservationId, false);
+
+                                  widget
+                                      .onDelete(); // Chama refreshFeedbacks() no widget pai
+                                });
                               },
                               child: const Text(
                                 'Excluir',
@@ -317,7 +432,6 @@ class _FeedbackItemState extends State<FeedbackItem> {
                                 ),
                               ),
                             ),
-                          ],
                         ],
                       ),
                     ],
@@ -332,9 +446,9 @@ class _FeedbackItemState extends State<FeedbackItem> {
     if (averageRating >= 4) {
       return const Color(0xff00A355);
     } else if (averageRating >= 2 && averageRating < 4) {
-      return Colors.orange; // Ícone laranja para rating entre 2 e 4 (exclusive)
+      return Colors.orange;
     } else {
-      return Colors.red; // Ícone vermelho para rating abaixo de 2
+      return Colors.red;
     }
   }
 
@@ -349,7 +463,7 @@ class _FeedbackItemState extends State<FeedbackItem> {
                 : rating == 3
                     ? Colors.orange
                     : Colors.green
-            : Colors.grey[300], // Cinza claro para estrelas não atingidas
+            : Colors.grey[300],
         size: 14.0,
       ),
     );
