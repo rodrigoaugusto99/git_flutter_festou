@@ -422,7 +422,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
 //     widget.summaryData.html = modifiedHtml;
     //widget.summaryData.totalHours = hoursDifference;
 
-    await Navigator.pushReplacement(
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ContratoPage(
