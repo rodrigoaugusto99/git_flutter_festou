@@ -68,10 +68,6 @@ class _AvaliacoesMeusEspacosPageState extends State<AvaliacoesMeusEspacosPage> {
               const SizedBox(
                 height: 10,
               ),
-              //todo: minhas reservas
-              // MinhasReservasPage(
-              //   userId: widget.userId,
-              // ),
               const SizedBox(
                 height: 10,
               ),
