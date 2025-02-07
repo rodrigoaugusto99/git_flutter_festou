@@ -1,0 +1,8 @@
+flutter_native_splash:
+  color: "ffffff"
+  image: "lib/assets/images/logo_festou.png"
+  android: true
+  ios: true
+
+  android_12:
+    color: "ffffff"
