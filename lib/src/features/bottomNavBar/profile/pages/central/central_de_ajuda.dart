@@ -63,10 +63,21 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
     filteredQuestions = [];
   }
 
+  FocusNode focusNode = FocusNode();
+
   Widget _buildSearchBox(BuildContext context) {
     return CompositedTransformTarget(
       link: _layerLink,
-      child: TextField(
+      child: TextFormField(
+        focusNode: focusNode,
+        onTapOutside: (v) {
+          focusNode.unfocus(); // Primeiro desfoca o campo
+
+          Future.delayed(const Duration(milliseconds: 50), () {
+            filteredQuestions.clear(); // Limpa a lista após o desfocar
+            setState(() {}); // Atualiza a interface uma única vez
+          });
+        },
         controller: searchEC,
         decoration: InputDecoration(
           hintText: 'Pesquise sua dúvida',
