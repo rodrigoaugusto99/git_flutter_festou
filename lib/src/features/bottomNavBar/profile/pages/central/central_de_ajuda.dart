@@ -807,7 +807,8 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                       padding: EdgeInsets.only(left: 16.0),
                       child: Text(
                         'Perguntas Frequentes',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 17),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -906,7 +907,8 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                       padding: EdgeInsets.only(left: 16.0),
                       child: Text(
                         'Suporte',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 17),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -956,7 +958,7 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                                             height: 20,
                                             width: 20,
                                             child: Image.asset(
-                                              'lib/assets/images/imagem_chamado.png',
+                                              'lib/assets/images/imagem-chamado-papai.png',
                                               width: 20,
                                             ),
                                           ),
@@ -1179,7 +1181,8 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                       padding: EdgeInsets.only(left: 16.0),
                       child: Text(
                         'Meus Tickets',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 17),
                       ),
                     ),
                     const SizedBox(height: 20),
