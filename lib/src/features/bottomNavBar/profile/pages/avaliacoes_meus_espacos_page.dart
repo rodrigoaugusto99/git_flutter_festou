@@ -120,7 +120,7 @@ class _AvaliacoesMeusEspacosPageState extends State<AvaliacoesMeusEspacosPage> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Avaliações',
+          'Avaliações recebidas',
           style: TextStyle(
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
@@ -129,71 +129,82 @@ class _AvaliacoesMeusEspacosPageState extends State<AvaliacoesMeusEspacosPage> {
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Padding(
+          : SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  //clipBehavior: Clip.none,
-                  // padding: const EdgeInsets.all(20),
-                  children: [
-                    const Text('Escolha o espaço'),
-                    const SizedBox(height: 20),
-                    ...mySpaces!.map((space) {
-                      return Column(
-                        children: [
-                          SpaceWidget(
-                            isSelected: selectedSpace!.spaceId == space.spaceId,
-                            space: space,
-                            onTap: () => selectSpace(space),
-                          ),
-                          const SizedBox(height: 17),
-                        ],
-                      );
-                    }),
-                    const SizedBox(height: 30),
-                    Row(
-                      children: [
-                        const Text('Avaliações '),
-                        Text(
-                          '(${selectedSpaceFeedbacks!.length} avaliações)',
-                          style: const TextStyle(
-                            fontSize: 11,
-                            color: Color(0xff5E5E5E),
-                          ),
-                        ),
-                      ],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                //clipBehavior: Clip.none,
+                // padding: const EdgeInsets.all(20),
+                children: [
+                  const SizedBox(
+                    height: 24,
+                  ),
+                  const Text(
+                    'Escolha o espaço',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
                     ),
-                    if (selectedSpaceFeedbacks != null &&
-                        selectedSpaceFeedbacks!.isNotEmpty) ...[
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: selectedSpaceFeedbacks!.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final feedback = selectedSpaceFeedbacks![index];
-                          if (feedback.content == '' ||
-                              feedback.deleteAt != null) {
-                            return const SizedBox.shrink();
-                          }
-                          return FeedbackItem(
-                            hideThings: true,
-                            feedback: feedback,
-                            onDelete: () {
-                              selectedSpaceFeedbacks!.removeAt(index);
-                            },
-                          );
-                        },
-                      ),
-                    ] else ...[
-                      const SizedBox(height: 20),
-                      const Text(
-                        'Nenhuma avaliação',
-                        style: TextStyle(color: Colors.grey),
+                  ),
+                  const SizedBox(height: 20),
+                  ...mySpaces!.map((space) {
+                    return Column(
+                      children: [
+                        SpaceWidget(
+                          isSelected: selectedSpace!.spaceId == space.spaceId,
+                          space: space,
+                          onTap: () => selectSpace(space),
+                        ),
+                        const SizedBox(height: 17),
+                      ],
+                    );
+                  }),
+                  const SizedBox(height: 30),
+                  Row(
+                    children: [
+                      const Text('Avaliações ',
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                          )),
+                      Text(
+                        '(${selectedSpaceFeedbacks!.length} avaliações)',
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: Color(0xff5E5E5E),
+                        ),
                       ),
                     ],
+                  ),
+                  if (selectedSpaceFeedbacks != null &&
+                      selectedSpaceFeedbacks!.isNotEmpty) ...[
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: selectedSpaceFeedbacks!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final feedback = selectedSpaceFeedbacks![index];
+                        if (feedback.content == '' ||
+                            feedback.deleteAt != null) {
+                          return const SizedBox.shrink();
+                        }
+                        return FeedbackItem(
+                          hideThings: true,
+                          feedback: feedback,
+                          onDelete: () {
+                            selectedSpaceFeedbacks!.removeAt(index);
+                          },
+                        );
+                      },
+                    ),
+                  ] else ...[
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Nenhuma avaliação',
+                      style: TextStyle(color: Colors.grey),
+                    ),
                   ],
-                ),
+                ],
               ),
             ),
     );
@@ -223,20 +234,24 @@ class SpaceWidget extends StatelessWidget {
             decContainer(
               radius: 8,
               color: Colors.blue,
-              width: screenWidth(context) / 2,
+              width: screenWidth(context) / 1.5,
               height: 61,
               child: Stack(
                 children: [
-                  Image.network(
-                    space.imagesUrl.isNotEmpty
-                        ? space.imagesUrl[0]
-                        : 'URL de uma imagem padrão ou vazia',
-                    width: screenWidth(context) / 2,
-                    height: 61,
-                    // color: Colors.green,
+                  if (space.imagesUrl.isNotEmpty)
+                    Image.network(
+                      space.imagesUrl[0],
+                      width: screenWidth(context) / 2,
+                      height: 61,
+                      // color: Colors.green,
 
-                    fit: BoxFit.cover,
-                  ),
+                      fit: BoxFit.cover,
+                    ),
+                  if (space.imagesUrl.isEmpty)
+                    Container(
+                      height: 61,
+                      color: Colors.grey,
+                    ),
                   Positioned(
                     bottom: 0,
                     left: 0,
