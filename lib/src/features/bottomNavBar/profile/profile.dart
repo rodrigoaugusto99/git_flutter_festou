@@ -71,9 +71,9 @@ class _ProfileState extends ConsumerState<Profile> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Espaços Registrados'),
+            title: const Text('Espaços cadastrados'),
             content: const Text(
-                'Você possui espaços cadastrados no seu nome e não pode mudar para locatário.'),
+                'Você possui espaços cadastrados, por isso não é possível alterar o tipo de conta para locatário.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
