@@ -982,68 +982,71 @@ class _NewCardInfoState extends State<NewCardInfo>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 60,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: space!.selectedServices.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          constraints: BoxConstraints(minWidth: x / 3.5),
-                          child: Row(
-                            children: [
-                              Stack(
-                                clipBehavior: Clip.none,
-                                children: [
-                                  Image.asset(
-                                    getIconPath(space!.selectedServices[index]),
-                                    width: 40,
-                                  ),
-                                  if (isEditing)
-                                    Positioned(
-                                      top: -3,
-                                      right: -3,
-                                      child: GestureDetector(
-                                        onTap: () => addOrRemoveService(
-                                            space!.selectedServices[index]),
-                                        child: Image.asset(
-                                          'lib/assets/images/icon_delete.png',
-                                          width: 20,
+            if (space!.selectedServices.isNotEmpty)
+              SizedBox(
+                height: 60,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: space!.selectedServices.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            constraints: BoxConstraints(minWidth: x / 3.5),
+                            child: Row(
+                              children: [
+                                Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    Image.asset(
+                                      getIconPath(
+                                          space!.selectedServices[index]),
+                                      width: 40,
+                                    ),
+                                    if (isEditing)
+                                      Positioned(
+                                        top: -3,
+                                        right: -3,
+                                        child: GestureDetector(
+                                          onTap: () => addOrRemoveService(
+                                              space!.selectedServices[index]),
+                                          child: Image.asset(
+                                            'lib/assets/images/icon_delete.png',
+                                            width: 20,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                ],
-                              ),
+                                  ],
+                                ),
 
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              // const Icon(Icons.align_vertical_top_sharp),
-                              Text(space!.selectedServices[index]),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  if (isEditing)
-                    const SizedBox(
-                      width: 10,
-                    ),
-                  if (isEditing)
-                    GestureDetector(
-                      onTap: () => showBottomSheet2(context, selectedServices),
-                      child: Image.asset(
-                        'lib/assets/images/imagem_mais.png',
-                        width: 30,
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                // const Icon(Icons.align_vertical_top_sharp),
+                                Text(space!.selectedServices[index]),
+                              ],
+                            ),
+                          );
+                        },
                       ),
                     ),
-                ],
+                    if (isEditing)
+                      const SizedBox(
+                        width: 10,
+                      ),
+                    if (isEditing)
+                      GestureDetector(
+                        onTap: () =>
+                            showBottomSheet2(context, selectedServices),
+                        child: Image.asset(
+                          'lib/assets/images/imagem_mais.png',
+                          width: 30,
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
             const Text(
               'Visão geral',
               style: TextStyle(
