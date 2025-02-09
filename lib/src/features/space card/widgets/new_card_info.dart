@@ -267,7 +267,7 @@ class _NewCardInfoState extends State<NewCardInfo>
     feedbacks!.removeWhere((f) => f.deletedAt != null);
     final user = await UserService().getCurrentUserModel();
     if (user != null) {
-      if (user!.uid == space!.userId) {
+      if (user.uid == space!.userId) {
         setState(() {
           isMySpace = true;
         });
@@ -747,11 +747,14 @@ class _NewCardInfoState extends State<NewCardInfo>
           if (space!.numComments != '0' && feedbacks != null) ...[
             if (feedbacks!.isEmpty)
               const Center(
-                child: Text(
-                  'Sem avaliações(ainda)',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                child: Padding(
+                  padding: EdgeInsets.only(top: 54),
+                  child: Text(
+                    'Sem avaliações',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -761,7 +764,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                 feedbacks: feedbacks!,
               ),
           ],
-          if (space!.numComments != '0')
+          if (feedbacks != null && feedbacks!.isNotEmpty)
             InkWell(
               child: Align(
                 alignment: Alignment.centerRight,
@@ -1774,45 +1777,81 @@ class _NewCardInfoState extends State<NewCardInfo>
                         ),
                       ],
                     )
-                  : GestureDetector(
-                      onTap: () {
-                        if (user != null && user!.cpf.isEmpty) {
-                          Messages.showInfo(
-                              'Você precisa de um CPF cadastrado para alugar um espaço',
-                              context);
-                          return;
-                        }
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CalendarPage(
-                              space: space!,
+                  : isMySpace
+                      ? GestureDetector(
+                          onTap: () {
+                            if (isMySpace) return;
+                            if (user != null && user!.cpf.isEmpty) {
+                              Messages.showInfo(
+                                  'Você precisa de um CPF cadastrado para alugar um espaço',
+                                  context);
+                              return;
+                            }
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CalendarPage(
+                                  space: space!,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 8),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                color: Colors.grey),
+                            child: const Text(
+                              'Alugar',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700),
+                              textAlign: TextAlign.center,
                             ),
                           ),
-                        );
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 8),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          gradient: const LinearGradient(
-                            colors: [
-                              Color(0xff9747FF),
-                              Color(0xff44300b1),
-                            ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            if (isMySpace) return;
+                            if (user != null && user!.cpf.isEmpty) {
+                              Messages.showInfo(
+                                  'Você precisa de um CPF cadastrado para alugar um espaço',
+                                  context);
+                              return;
+                            }
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CalendarPage(
+                                  space: space!,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color(0xff9747FF),
+                                  Color(0xff44300b1),
+                                ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                              ),
+                            ),
+                            child: const Text(
+                              'Alugar',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                         ),
-                        child: const Text(
-                          'Alugar',
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.w700),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
             ),
           );
   }
