@@ -16,6 +16,14 @@ class Preco extends ConsumerStatefulWidget {
 }
 
 class _PrecoState extends ConsumerState<Preco> {
+  @override
+  void initState() {
+    super.initState();
+    final vm = ref.read(newSpaceRegisterVmProvider.notifier);
+    final state = vm.getState();
+    precoEC.text = 'R\$ ${state.preco.replaceAll('.', ',')}';
+  }
+
   int extrairNumerosComoInteiro(String texto) {
     // Remove todos os caracteres não numéricos da string
     String apenasNumeros = texto.replaceAll(RegExp(r'[^0-9]'), '');
@@ -28,6 +36,8 @@ class _PrecoState extends ConsumerState<Preco> {
   @override
   Widget build(BuildContext context) {
     final spaceRegister = ref.watch(newSpaceRegisterVmProvider.notifier);
+    //final state = spaceRegister.getState();
+
     return Scaffold(
       backgroundColor: const Color(0xffF8F8F8),
       appBar: AppBar(
@@ -119,37 +129,6 @@ class _PrecoState extends ConsumerState<Preco> {
           mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
-                alignment: Alignment.center,
-                height: 35,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xff9747FF),
-                      Color(0xff44300b1),
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                ),
-                child: const Text(
-                  'Voltar',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 9,
-            ),
-            GestureDetector(
               key: Keys.k8creenButton,
               onTap: () {
                 final formattedPrice =
@@ -186,6 +165,37 @@ class _PrecoState extends ConsumerState<Preco> {
                 ),
                 child: const Text(
                   'Avançar',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 9,
+            ),
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                alignment: Alignment.center,
+                height: 35,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xff9747FF),
+                      Color(0xff44300b1),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+                child: const Text(
+                  'Voltar',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,

@@ -17,6 +17,18 @@ class Localizacao extends ConsumerStatefulWidget {
 }
 
 class _LocalizacaoState extends ConsumerState<Localizacao> {
+  @override
+  void initState() {
+    super.initState();
+    final vm = ref.read(newSpaceRegisterVmProvider.notifier);
+    final state = vm.getState();
+    logradouroEC.text = state.logradouro;
+    bairroEC.text = state.bairro;
+    cidadeEC.text = state.cidade;
+    cepEC.text = state.cep;
+    numeroEC.text = state.numero;
+  }
+
   final formKey = GlobalKey<FormState>();
 
   final cepEC = TextEditingController();
@@ -200,37 +212,6 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
           mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
-                alignment: Alignment.center,
-                height: 35,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xff9747FF),
-                      Color(0xff44300b1),
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                ),
-                child: const Text(
-                  'Voltar',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 9,
-            ),
-            GestureDetector(
               key: Keys.k3creenButton,
               onTap: () async {
                 final stringResponse = await spaceRegister.validateForm(
@@ -272,6 +253,37 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
                 ),
                 child: const Text(
                   'Avançar',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 9,
+            ),
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                alignment: Alignment.center,
+                height: 35,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xff9747FF),
+                      Color(0xff44300b1),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+                child: const Text(
+                  'Voltar',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,

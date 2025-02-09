@@ -15,6 +15,15 @@ class TipoEspaco extends ConsumerStatefulWidget {
 
 class _TipoEspacoState extends ConsumerState<TipoEspaco> {
   @override
+  void initState() {
+    super.initState();
+    final vm = ref.read(newSpaceRegisterVmProvider.notifier);
+    final state = vm.getState();
+    selectedTypes = state.selectedTypes;
+  }
+
+  List<String> selectedTypes = [];
+  @override
   Widget build(BuildContext context) {
     final newSpaceRegister = ref.watch(newSpaceRegisterVmProvider.notifier);
 
@@ -74,7 +83,7 @@ class _TipoEspacoState extends ConsumerState<TipoEspaco> {
                     log('onTypePressed: $value');
                     newSpaceRegister.addOrRemoveType(value);
                   },
-                  selectedTypes: const [],
+                  selectedTypes: selectedTypes,
                 ),
               ],
             ),
@@ -86,37 +95,6 @@ class _TipoEspacoState extends ConsumerState<TipoEspaco> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
-                alignment: Alignment.center,
-                height: 35,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xff9747FF),
-                      Color(0xff44300b1),
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                ),
-                child: const Text(
-                  'Voltar',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 9,
-            ),
             GestureDetector(
               key: Keys.kSecondScreenButton,
               onTap: () => Navigator.push(
@@ -143,6 +121,37 @@ class _TipoEspacoState extends ConsumerState<TipoEspaco> {
                 ),
                 child: const Text(
                   'Avançar',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 9,
+            ),
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                alignment: Alignment.center,
+                height: 35,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xff9747FF),
+                      Color(0xff44300b1),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+                child: const Text(
+                  'Voltar',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,

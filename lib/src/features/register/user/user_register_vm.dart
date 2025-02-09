@@ -26,7 +26,7 @@ class UserRegisterVm extends _$UserRegisterVm {
   //validação email
   FormFieldValidator<String> validateName() {
     return Validatorless.multiple([
-      Validatorless.required('Nome obrigatorio'),
+      Validatorless.required('Nome obrigatório'),
     ]);
   }
 
@@ -69,14 +69,14 @@ class UserRegisterVm extends _$UserRegisterVm {
   //validação email
   FormFieldValidator<String> validateCpf() {
     return Validatorless.multiple([
-      Validatorless.required('CPF obrigatorio'),
+      Validatorless.required('CPF obrigatório'),
     ]);
   }
 
   //validação email
   FormFieldValidator<String> validateEmail() {
     return Validatorless.multiple([
-      Validatorless.required('Email obrigatorio'),
+      Validatorless.required('Email obrigatório'),
       Validatorless.email('Email invalido')
     ]);
   }
