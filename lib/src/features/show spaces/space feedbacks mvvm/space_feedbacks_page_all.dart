@@ -4,14 +4,17 @@ import 'package:git_flutter_festou/src/features/loading_indicator.dart';
 import 'package:git_flutter_festou/src/features/space%20card/widgets/new_feedback_widget_all.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
 import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_vm.dart';
+import 'package:git_flutter_festou/src/models/feedback_model.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
 
 class SpaceFeedbacksPageAll extends ConsumerStatefulWidget {
   final SpaceModel space;
+  final List<FeedbackModel> feedbacks;
 
   const SpaceFeedbacksPageAll({
     super.key,
     required this.space,
+    required this.feedbacks,
   });
 
   @override
@@ -51,7 +54,7 @@ class _SpaceFeedbacksPageAllState extends ConsumerState<SpaceFeedbacksPageAll> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${widget.space.numComments} comentários',
+                      '${widget.feedbacks.length} comentários',
                       style: const TextStyle(
                           fontSize: 20, fontWeight: FontWeight.bold),
                     ),
@@ -87,6 +90,7 @@ class _SpaceFeedbacksPageAllState extends ConsumerState<SpaceFeedbacksPageAll> {
                 child: NewFeedbackWidgetAll(
                   data: data,
                   spaces: spaceFeedbacks,
+                  feedbacks: widget.feedbacks,
                 ),
               ),
             ],

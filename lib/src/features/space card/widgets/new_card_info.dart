@@ -590,6 +590,8 @@ class _NewCardInfoState extends State<NewCardInfo>
         return 'lib/assets/images/icon_iluminacao.png';
       case 'Som':
         return 'lib/assets/images/icon_som.png';
+      case 'Som e Iluminação':
+        return 'lib/assets/images/som_e_iluminacao.png';
       default:
         return 'lib/assets/images/icon_mais.png';
     }
@@ -630,7 +632,10 @@ class _NewCardInfoState extends State<NewCardInfo>
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 child: Row(
                   children: [
-                    Image.asset('lib/assets/images/icon_lapis.png'),
+                    Image.asset(
+                      'lib/assets/images/icon_lapis.png',
+                      height: 24,
+                    ),
                     const SizedBox(width: 17),
                     const Text(
                       'Deixe sua avaliação!',
@@ -691,7 +696,7 @@ class _NewCardInfoState extends State<NewCardInfo>
               ),
             if (feedbacks!.isNotEmpty)
               NewFeedbackWidgetLimited(
-                x: 2,
+                x: 3,
                 feedbacks: feedbacks!,
               ),
           ],
@@ -716,7 +721,10 @@ class _NewCardInfoState extends State<NewCardInfo>
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SpaceFeedbacksPageAll(space: space!),
+                    builder: (context) => SpaceFeedbacksPageAll(
+                      space: space!,
+                      feedbacks: feedbacks!,
+                    ),
                   ),
                 );
               },
@@ -731,21 +739,23 @@ class _NewCardInfoState extends State<NewCardInfo>
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               const Text(
                 'Fotos ',
                 style: TextStyle(
+                  fontSize: 16,
                   fontWeight: FontWeight.w700,
-                  fontSize: 14,
                 ),
               ),
-              Text(
-                '(${space!.imagesUrl.length} ${space!.imagesUrl.length == 1 ? 'foto)' : 'fotos)'}',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12,
-                  color: Color(0xff5E5E5E),
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: Text(
+                  '(${space!.imagesUrl.length} ${space!.imagesUrl.length == 1 ? 'foto)' : 'fotos)'}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                    color: Color(0xff5E5E5E),
+                  ),
                 ),
               ),
             ],
@@ -855,21 +865,23 @@ class _NewCardInfoState extends State<NewCardInfo>
           ),
           const SizedBox(height: 26),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               const Text(
                 'Vídeos ',
                 style: TextStyle(
+                  fontSize: 16,
                   fontWeight: FontWeight.w700,
-                  fontSize: 14,
                 ),
               ),
-              Text(
-                '(${space!.videosUrl.length} ${space!.videosUrl.length == 1 ? 'vídeo' : 'vídeos)'}',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12,
-                  color: Color(0xff5E5E5E),
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: Text(
+                  '(${space!.videosUrl.length} ${space!.videosUrl.length == 1 ? 'vídeo' : 'vídeos)'}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                    color: Color(0xff5E5E5E),
+                  ),
                 ),
               ),
             ],
@@ -992,41 +1004,47 @@ class _NewCardInfoState extends State<NewCardInfo>
                         scrollDirection: Axis.horizontal,
                         itemCount: space!.selectedServices.length,
                         itemBuilder: (context, index) {
-                          return Container(
-                            constraints: BoxConstraints(minWidth: x / 3.5),
-                            child: Row(
-                              children: [
-                                Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    Image.asset(
+                          return Row(
+                            children: [
+                              Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  decContainer(
+                                    height: 35,
+                                    width: 35,
+                                    allPadding: 5,
+                                    radius: 30,
+                                    color: const Color(0xffF3F3F3),
+                                    child: Image.asset(
                                       getIconPath(
                                           space!.selectedServices[index]),
-                                      width: 40,
                                     ),
-                                    if (isEditing)
-                                      Positioned(
-                                        top: -3,
-                                        right: -3,
-                                        child: GestureDetector(
-                                          onTap: () => addOrRemoveService(
-                                              space!.selectedServices[index]),
-                                          child: Image.asset(
-                                            'lib/assets/images/icon_delete.png',
-                                            width: 20,
-                                          ),
+                                  ),
+                                  if (isEditing)
+                                    Positioned(
+                                      top: -3,
+                                      right: -3,
+                                      child: GestureDetector(
+                                        onTap: () => addOrRemoveService(
+                                            space!.selectedServices[index]),
+                                        child: Image.asset(
+                                          'lib/assets/images/icon_delete.png',
+                                          width: 20,
                                         ),
                                       ),
-                                  ],
-                                ),
+                                    ),
+                                ],
+                              ),
 
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                // const Icon(Icons.align_vertical_top_sharp),
-                                Text(space!.selectedServices[index]),
-                              ],
-                            ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              // const Icon(Icons.align_vertical_top_sharp),
+                              Text(space!.selectedServices[index]),
+                              const SizedBox(
+                                width: 12,
+                              ),
+                            ],
                           );
                         },
                       ),
@@ -1047,6 +1065,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                   ],
                 ),
               ),
+            const SizedBox(height: 10),
             const Text(
               'Visão geral',
               style: TextStyle(
@@ -1076,7 +1095,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                 controller: visaoGeralEC,
                 fillColor: const Color(0xffF0F0F0),
               ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 16),
             const Text(
               'Localização',
               style: TextStyle(
@@ -1152,7 +1171,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                   ),
                 ],
               ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 24),
             const Text(
               'Agente Locador',
               style: TextStyle(
@@ -1185,30 +1204,31 @@ class _NewCardInfoState extends State<NewCardInfo>
                   ),
                 ),
                 const Spacer(),
-                InkWell(
-                  child: Container(
-                    padding: const EdgeInsets.all(7),
-                    //alignment: Alignment.center,
-                    decoration: const BoxDecoration(
-                      color: Color(0xffF3F3F3),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.chat_bubble,
-                      color: Color(0xff9747FF),
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ChatPage(
-                          receiverID: space!.userId,
-                        ),
+                if (!isMySpace)
+                  InkWell(
+                    child: Container(
+                      padding: const EdgeInsets.all(7),
+                      //alignment: Alignment.center,
+                      decoration: const BoxDecoration(
+                        color: Color(0xffF3F3F3),
+                        shape: BoxShape.circle,
                       ),
-                    );
-                  },
-                ),
+                      child: const Icon(
+                        Icons.chat_bubble,
+                        color: Color(0xff9747FF),
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChatPage(
+                            receiverID: space!.userId,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
               ],
             ),
           ],
@@ -1246,23 +1266,26 @@ class _NewCardInfoState extends State<NewCardInfo>
                 Padding(
                   padding: const EdgeInsets.only(right: 18.0),
                   child: Container(
-                    padding: const EdgeInsets.all(5),
-                    width: 40,
+                    padding: const EdgeInsets.all(8),
+                    // width: 40,
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.7),
                       shape: BoxShape.circle,
                     ),
-                    child: InkWell(
-                      onTap: () => share(),
-                      child: const Icon(Icons.share),
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 3),
+                      child: InkWell(
+                        onTap: () => share(),
+                        child: const Icon(Icons.share),
+                      ),
                     ),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 18.0),
                   child: Container(
-                    padding: const EdgeInsets.all(5),
-                    width: 40,
+                    padding: const EdgeInsets.all(8),
+                    //width: 40,
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.7),
                       shape: BoxShape.circle,
@@ -1311,7 +1334,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                               options: CarouselOptions(
                                 aspectRatio: 16 / 12,
                                 viewportFraction: 1.0,
-                                enableInfiniteScroll: false,
+                                enableInfiniteScroll: true,
                                 onPageChanged: (index, reason) {
                                   setState(() {
                                     _currentSlide = index;
@@ -1321,10 +1344,10 @@ class _NewCardInfoState extends State<NewCardInfo>
                             ),
                             if (isMySpace)
                               Positioned(
-                                bottom: 0,
-                                left: 0,
-                                child: ElevatedButton(
-                                  onPressed: () {
+                                bottom: 10,
+                                left: 10,
+                                child: GestureDetector(
+                                  onTap: () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -1336,7 +1359,29 @@ class _NewCardInfoState extends State<NewCardInfo>
                                       ),
                                     );
                                   },
-                                  child: const Text('Fazer post'),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 18, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Color(0xff9747FF),
+                                          Color(0xff44300b1),
+                                        ],
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      'Postar feed',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                           ],
@@ -1392,14 +1437,14 @@ class _NewCardInfoState extends State<NewCardInfo>
                                     double.parse(space!.averageRating),
                                   ),
                                 ),
-                                height: 20,
-                                width: 20,
+                                height: 26,
+                                width: 26,
                                 child: Center(
                                   child: Text(
                                     double.parse(space!.averageRating)
                                         .toStringAsFixed(1),
                                     style: const TextStyle(
-                                      fontSize: 8,
+                                      fontSize: 12,
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -1417,7 +1462,10 @@ class _NewCardInfoState extends State<NewCardInfo>
                                           fontWeight: FontWeight.w700),
                                       "R\$ ${trocarPontoPorVirgula(space!.preco)}",
                                     ),
-                                    const Text('Por hora'),
+                                    const Text(
+                                      'Por hora',
+                                      style: TextStyle(fontSize: 12),
+                                    ),
                                   ],
                                 ),
                               if (isEditing)
@@ -1678,8 +1726,16 @@ class _NewCardInfoState extends State<NewCardInfo>
                         padding: const EdgeInsets.symmetric(
                             horizontal: 20, vertical: 8),
                         decoration: BoxDecoration(
-                            color: const Color(0xff9747FF),
-                            borderRadius: BorderRadius.circular(50)),
+                          borderRadius: BorderRadius.circular(50),
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color(0xff9747FF),
+                              Color(0xff44300b1),
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ),
+                        ),
                         child: const Text(
                           'Alugar',
                           style: TextStyle(
