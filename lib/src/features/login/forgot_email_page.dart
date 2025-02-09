@@ -1,9 +1,9 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/core/ui/constants.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
+import 'package:Festou/src/core/ui/constants.dart';
+import 'package:Festou/src/core/ui/helpers/messages.dart';
+import 'package:Festou/src/features/widgets/custom_textformfield.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class ForgotEmailPage extends StatefulWidget {
@@ -16,12 +16,6 @@ class ForgotEmailPage extends StatefulWidget {
 class _ForgotEmailPageState extends State<ForgotEmailPage> {
   final cpfEC = TextEditingController();
   final formKey = GlobalKey<FormState>();
-
-  @override
-  void dispose() {
-    cpfEC.dispose();
-    super.dispose();
-  }
 
   String email = '';
   var invisibleOpacity = 0.0;

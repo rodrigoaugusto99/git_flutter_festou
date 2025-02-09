@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_bubble.dart';
+import 'package:Festou/src/features/space%20card/widgets/chat_bubble.dart';
 
 class ExpandableMessage extends StatefulWidget {
   final String message;

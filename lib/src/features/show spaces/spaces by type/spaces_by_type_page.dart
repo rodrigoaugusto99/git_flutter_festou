@@ -2,17 +2,17 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/ui/constants.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/services_panel.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/type_panel.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/weekdays_panel.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/filter/filter_and_order_state.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/filter/filter_and_order_vm.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/filter/new_page_filtered.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/filter/widgets/feedbacks_panel.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/spaces%20by%20type/spaces_by_type_vm.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
+import 'package:Festou/src/core/ui/constants.dart';
+import 'package:Festou/src/core/ui/helpers/messages.dart';
+import 'package:Festou/src/features/register/space/widgets/services_panel.dart';
+import 'package:Festou/src/features/register/space/widgets/type_panel.dart';
+import 'package:Festou/src/features/register/space/widgets/weekdays_panel.dart';
+import 'package:Festou/src/features/show%20spaces/filter/filter_and_order_state.dart';
+import 'package:Festou/src/features/show%20spaces/filter/filter_and_order_vm.dart';
+import 'package:Festou/src/features/show%20spaces/filter/new_page_filtered.dart';
+import 'package:Festou/src/features/show%20spaces/filter/widgets/feedbacks_panel.dart';
+import 'package:Festou/src/features/show%20spaces/spaces%20by%20type/spaces_by_type_vm.dart';
+import 'package:Festou/src/features/space%20card/widgets/new_space_card.dart';
 
 class SpacesByTypePage extends ConsumerStatefulWidget {
   final List<String> type;

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/ui/constants.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/login/login_state.dart';
-import 'package:git_flutter_festou/src/features/login/login_vm.dart';
-import 'package:git_flutter_festou/src/helpers/constants.dart';
-import 'package:git_flutter_festou/src/helpers/validators.dart';
+import 'package:Festou/src/core/ui/constants.dart';
+import 'package:Festou/src/core/ui/helpers/messages.dart';
+import 'package:Festou/src/features/login/login_state.dart';
+import 'package:Festou/src/features/login/login_vm.dart';
+import 'package:Festou/src/helpers/constants.dart';
+import 'package:Festou/src/helpers/validators.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:validatorless/validatorless.dart';
 import 'forgot_password_page.dart';

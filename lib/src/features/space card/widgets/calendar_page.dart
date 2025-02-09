@@ -1,11 +1,11 @@
 import 'dart:developer';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/resumo_reserva_page.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/summary_data.dart';
-import 'package:git_flutter_festou/src/models/reservation_model.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
-import 'package:git_flutter_festou/src/services/reserva_service.dart';
+import 'package:Festou/src/features/space%20card/widgets/resumo_reserva_page.dart';
+import 'package:Festou/src/features/space%20card/widgets/summary_data.dart';
+import 'package:Festou/src/models/reservation_model.dart';
+import 'package:Festou/src/models/space_model.dart';
+import 'package:Festou/src/services/reserva_service.dart';
 import 'package:intl/intl.dart';
 
 class CalendarPage extends StatefulWidget {

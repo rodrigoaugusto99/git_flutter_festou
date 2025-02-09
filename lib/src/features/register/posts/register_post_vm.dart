@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:Festou/src/models/space_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:validatorless/validatorless.dart';
-import 'package:git_flutter_festou/src/services/post_service.dart';
+import 'package:Festou/src/services/post_service.dart';
 
 class RegisterPostVm with ChangeNotifier {
   RegisterPostVm({
@@ -18,7 +18,7 @@ class RegisterPostVm with ChangeNotifier {
   List<File> imagesToRegister = [];
 
   FormFieldValidator<String> validate() {
-    return Validatorless.required('Campo obrigatorio');
+    return Validatorless.required('Campo obrigatório');
   }
 
   File? photoShowing;

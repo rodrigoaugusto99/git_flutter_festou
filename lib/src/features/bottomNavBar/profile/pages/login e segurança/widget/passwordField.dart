@@ -4,12 +4,14 @@ class PasswordField extends StatefulWidget {
   final TextEditingController controller;
   final String label;
   final double padding;
+  final String? errorText;
 
   const PasswordField({
     super.key,
     required this.controller,
     required this.label,
-    this.padding = 16.0, // Valor padrão para o padding
+    this.padding = 16.0,
+    this.errorText,
   });
 
   @override
@@ -31,6 +33,8 @@ class _PasswordFieldState extends State<PasswordField> {
           fontSize: 14,
         ),
         decoration: InputDecoration(
+          errorText:
+              widget.errorText?.isNotEmpty == true ? widget.errorText : null,
           labelText: widget.label,
           labelStyle: const TextStyle(
             fontSize: 14,

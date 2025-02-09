@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/titulo.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/utils.dart';
-import 'package:git_flutter_festou/src/helpers/keys.dart';
+import 'package:Festou/src/core/ui/helpers/messages.dart';
+import 'package:Festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
+import 'package:Festou/src/features/register/space/space%20temporary/pages/titulo.dart';
+import 'package:Festou/src/features/space%20card/widgets/utils.dart';
+import 'package:Festou/src/helpers/keys.dart';
 import 'package:video_player/video_player.dart';
 
 class AdicioneFotos extends ConsumerStatefulWidget {
@@ -23,7 +23,9 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
   @override
   void initState() {
     super.initState();
-
+    // final vm = ref.read(newSpaceRegisterVmProvider.notifier);
+    // final state = vm.getState();
+    // selectedTypes = state.selectedTypes;
     // Cria um Timer que atualiza o estado a cada 5 segundos
     _timer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
       setState(() {
@@ -357,37 +359,6 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 9),
-                      alignment: Alignment.center,
-                      height: 35,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color(0xff9747FF),
-                            Color(0xff44300b1),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                      ),
-                      child: const Text(
-                        'Voltar',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 9,
-                  ),
-                  GestureDetector(
                     key: Keys.k5creenButton,
                     onTap: () {
                       // if (spaceRegister.imageFiles.isEmpty) {
@@ -421,6 +392,37 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
                       ),
                       child: const Text(
                         'Avançar',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 9,
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 9),
+                      alignment: Alignment.center,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xff9747FF),
+                            Color(0xff44300b1),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                      ),
+                      child: const Text(
+                        'Voltar',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
