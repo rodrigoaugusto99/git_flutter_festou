@@ -155,45 +155,19 @@ class _AvaliacoesMeusEspacosPageState extends State<AvaliacoesMeusEspacosPage> {
                   const SizedBox(height: 30),
                   Row(
                     children: [
-                      const Text('Avaliações ',
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                          )),
+                      const Text(
+                        'Avaliações ',
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       Text(
                         '(${selectedSpaceFeedbacks!.length} avaliações)',
                         style: const TextStyle(
                           fontSize: 11,
                           color: Color(0xff5E5E5E),
                         ),
-                      ],
-                    ),
-                    if (selectedSpaceFeedbacks != null &&
-                        selectedSpaceFeedbacks!.isNotEmpty) ...[
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: selectedSpaceFeedbacks!.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final feedback = selectedSpaceFeedbacks![index];
-                          if (feedback.content == '' ||
-                              feedback.deletedAt != null) {
-                            return const SizedBox.shrink();
-                          }
-                          return AvaliacoesItem(
-                            hideThings: true,
-                            feedback: feedback,
-                            onDelete: () {
-                              selectedSpaceFeedbacks!.removeAt(index);
-                            },
-                          );
-                        },
-                      ),
-                    ] else ...[
-                      const SizedBox(height: 20),
-                      const Text(
-                        'Nenhuma avaliação',
-                        style: TextStyle(color: Colors.grey),
                       ),
                     ],
                   ),
@@ -206,10 +180,38 @@ class _AvaliacoesMeusEspacosPageState extends State<AvaliacoesMeusEspacosPage> {
                       itemBuilder: (BuildContext context, int index) {
                         final feedback = selectedSpaceFeedbacks![index];
                         if (feedback.content == '' ||
-                            feedback.deleteAt != null) {
+                            feedback.deletedAt != null) {
                           return const SizedBox.shrink();
                         }
-                        return FeedbackItem(
+                        return AvaliacoesItem(
+                          hideThings: true,
+                          feedback: feedback,
+                          onDelete: () {
+                            selectedSpaceFeedbacks!.removeAt(index);
+                          },
+                        );
+                      },
+                    ),
+                  ] else ...[
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Nenhuma avaliação',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ],
+                  if (selectedSpaceFeedbacks != null &&
+                      selectedSpaceFeedbacks!.isNotEmpty) ...[
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: selectedSpaceFeedbacks!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final feedback = selectedSpaceFeedbacks![index];
+                        if (feedback.content == '' ||
+                            feedback.deletedAt != null) {
+                          return const SizedBox.shrink();
+                        }
+                        return AvaliacoesItem(
                           hideThings: true,
                           feedback: feedback,
                           onDelete: () {
