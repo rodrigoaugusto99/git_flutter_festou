@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
-import 'package:git_flutter_festou/src/core/fp/either.dart';
-import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
+import 'package:Festou/src/core/exceptions/repository_exception.dart';
+import 'package:Festou/src/core/fp/either.dart';
+import 'package:Festou/src/core/providers/application_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'host_feedback_register_vm.g.dart';
@@ -23,6 +23,7 @@ class HostFeedbackRegisterVm extends _$HostFeedbackRegisterVm {
 
   Future<void> register({
     required String hostId,
+    required String reservationId,
     required int rating,
     required String content,
   }) async {
@@ -32,6 +33,7 @@ class HostFeedbackRegisterVm extends _$HostFeedbackRegisterVm {
     final userId = user.uid;
     final feedbackData = (
       userId: userId,
+      reservationId: reservationId,
       hostId: hostId,
       rating: rating,
       content: content,

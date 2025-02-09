@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:Festou/src/models/space_model.dart';
 
 class MostrarSegurancaPropriedade extends StatefulWidget {
   final SpaceModel space;

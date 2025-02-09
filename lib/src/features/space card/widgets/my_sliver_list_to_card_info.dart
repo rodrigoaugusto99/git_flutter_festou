@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/new_card_info.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:Festou/src/features/space%20card/widgets/new_card_info.dart';
+import 'package:Festou/src/features/space%20card/widgets/new_space_card.dart';
+import 'package:Festou/src/models/space_model.dart';
 
 class MySliverListToCardInfo extends StatelessWidget {
   final List<SpaceModel> spaces;

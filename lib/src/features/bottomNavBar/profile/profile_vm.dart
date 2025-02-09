@@ -1,7 +1,7 @@
-import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
-import 'package:git_flutter_festou/src/core/fp/either.dart';
-import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/profile_status.dart';
+import 'package:Festou/src/core/exceptions/repository_exception.dart';
+import 'package:Festou/src/core/fp/either.dart';
+import 'package:Festou/src/core/providers/application_providers.dart';
+import 'package:Festou/src/features/bottomNavBar/profile/profile_status.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'profile_vm.g.dart';

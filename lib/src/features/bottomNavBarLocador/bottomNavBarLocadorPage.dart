@@ -4,11 +4,11 @@ import 'package:confetti/confetti.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/profile.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBarLocador/calendario/calendario.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
-import 'package:git_flutter_festou/src/features/loading_indicator.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_page.dart';
+import 'package:Festou/src/features/bottomNavBar/profile/profile.dart';
+import 'package:Festou/src/features/bottomNavBarLocador/calendario/calendario.dart';
+import 'package:Festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
+import 'package:Festou/src/features/loading_indicator.dart';
+import 'package:Festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_page.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 class BottomNavBarLocadorPage extends StatefulWidget {
@@ -97,148 +97,155 @@ class _BottomNavBarLocadorPageState extends State<BottomNavBarLocadorPage> {
       return const Center(child: CustomLoadingIndicator());
     }
 
-    return Stack(
-      children: [
-        Scaffold(
-          bottomNavigationBar: StreamBuilder<int>(
-            stream: mensagens.getTotalUnreadMessagesCount(),
-            builder: (context, snapshot) {
-              int notificationCount = snapshot.data ?? 0;
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Stack(
+        children: [
+          Scaffold(
+            bottomNavigationBar: StreamBuilder<int>(
+              stream: mensagens.getTotalUnreadMessagesCount(),
+              builder: (context, snapshot) {
+                int notificationCount = snapshot.data ?? 0;
 
-              return StylishBottomBar(
-                option: DotBarOptions(
-                  dotStyle: DotStyle.tile,
-                  gradient: const LinearGradient(
-                    colors: [
-                      Colors.deepPurple,
-                      Colors.pink,
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                items: [
-                  BottomBarItem(
-                    icon: const Icon(
-                      Icons.house_outlined,
-                    ),
-                    selectedIcon: const Icon(Icons.house_rounded),
-                    selectedColor: Colors.teal,
-                    unSelectedColor: Colors.grey,
-                    title: const Text(
-                      'Início',
-                      style: TextStyle(fontSize: 12),
+                return StylishBottomBar(
+                  option: DotBarOptions(
+                    dotStyle: DotStyle.tile,
+                    gradient: const LinearGradient(
+                      colors: [
+                        Colors.deepPurple,
+                        Colors.pink,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
                   ),
-                  BottomBarItem(
-                    icon: const Icon(Icons.calendar_month_outlined),
-                    selectedIcon: const Icon(Icons.calendar_month),
-                    selectedColor: Colors.blue,
-                    title: const Text(
-                      'Calendário',
-                      style: TextStyle(fontSize: 12),
+                  items: [
+                    BottomBarItem(
+                      icon: const Icon(
+                        Icons.house_outlined,
+                      ),
+                      selectedIcon: const Icon(Icons.house_rounded),
+                      selectedColor: Colors.teal,
+                      unSelectedColor: Colors.grey,
+                      title: const Text(
+                        'Início',
+                        style: TextStyle(fontSize: 12),
+                      ),
                     ),
-                  ),
-                  BottomBarItem(
-                    icon: const Icon(
-                      CupertinoIcons.envelope,
+                    BottomBarItem(
+                      icon: const Icon(Icons.calendar_month_outlined),
+                      selectedIcon: const Icon(Icons.calendar_month),
+                      selectedColor: Colors.blue,
+                      title: const Text(
+                        'Calendário',
+                        style: TextStyle(fontSize: 12),
+                      ),
                     ),
-                    selectedIcon: const Icon(
-                      CupertinoIcons.envelope,
+                    BottomBarItem(
+                      icon: const Icon(
+                        CupertinoIcons.envelope,
+                      ),
+                      selectedIcon: const Icon(
+                        CupertinoIcons.envelope,
+                      ),
+                      selectedColor: Colors.red,
+                      title: const Text(
+                        'Mensagens',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      badge: Text(notificationCount > 99
+                          ? '99+'
+                          : '$notificationCount'),
+                      showBadge: notificationCount > 0 && _currentIndex != 2,
+                      badgeColor: Colors.purple,
                     ),
-                    selectedColor: Colors.red,
-                    title: const Text(
-                      'Mensagens',
-                      style: TextStyle(fontSize: 12),
+                    BottomBarItem(
+                      icon: const Icon(
+                        Icons.person_outline,
+                      ),
+                      selectedIcon: const Icon(
+                        Icons.person,
+                      ),
+                      selectedColor: Colors.deepPurple,
+                      title: const Text(
+                        'Perfil',
+                        style: TextStyle(fontSize: 12),
+                      ),
                     ),
-                    badge: Text(
-                        notificationCount > 99 ? '99+' : '$notificationCount'),
-                    showBadge: notificationCount > 0 && _currentIndex != 2,
-                    badgeColor: Colors.purple,
-                  ),
-                  BottomBarItem(
-                    icon: const Icon(
-                      Icons.person_outline,
-                    ),
-                    selectedIcon: const Icon(
-                      Icons.person,
-                    ),
-                    selectedColor: Colors.deepPurple,
-                    title: const Text(
-                      'Perfil',
-                      style: TextStyle(fontSize: 12),
-                    ),
-                  ),
-                ],
-                hasNotch: true,
-                fabLocation: StylishBarFabLocation.center,
-                currentIndex: _currentIndex,
-                notchStyle: NotchStyle.square,
-                onTap: (index) {
-                  if (index == _currentIndex) return;
-                  _pageController.jumpToPage(index);
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                },
-              );
-            },
-          ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-          body: PageView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            controller: _pageController,
-            onPageChanged: _onPageChanged,
-            itemBuilder: (context, index) {
-              switch (index) {
-                case 0:
-                  return const MySpacesPage();
-                case 1:
-                  return const Calendario();
-                case 2:
-                  return const Mensagens();
-                case 3:
-                  return const Profile();
-                default:
-                  return Container(); // Lida com índices fora do alcance, se aplicável
-              }
-            },
-          ),
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 20),
-            child: Image.asset(
-              'lib/assets/images/logo_festou.png',
-              scale: 5,
-              fit: BoxFit.cover,
+                  ],
+                  hasNotch: true,
+                  fabLocation: StylishBarFabLocation.center,
+                  currentIndex: _currentIndex,
+                  notchStyle: NotchStyle.square,
+                  onTap: (index) {
+                    if (index == _currentIndex) return;
+                    _pageController.jumpToPage(index);
+                    setState(() {
+                      _currentIndex = index;
+                    });
+                  },
+                );
+              },
+            ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.endDocked,
+            body: PageView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              controller: _pageController,
+              onPageChanged: _onPageChanged,
+              itemBuilder: (context, index) {
+                switch (index) {
+                  case 0:
+                    return const MySpacesPage();
+                  case 1:
+                    return const Calendario();
+                  case 2:
+                    return const Mensagens();
+                  case 3:
+                    return const Profile();
+                  default:
+                    return Container(); // Lida com índices fora do alcance, se aplicável
+                }
+              },
             ),
           ),
-        ),
-        Align(
-          alignment: Alignment.center,
-          child: ConfettiWidget(
-            confettiController: _controllerCenter,
-            blastDirection: -pi / 2,
-            particleDrag: 0.05,
-            emissionFrequency: 1,
-            numberOfParticles: 20,
-            gravity: 0.05,
-            shouldLoop: false,
-            maxBlastForce: 70,
-            strokeWidth: 1,
-            strokeColor: Colors.transparent,
-            colors: const [
-              Colors.green,
-              Colors.blue,
-              Colors.pink,
-              Colors.orange,
-              Colors.purple
-            ],
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 20),
+              child: Image.asset(
+                'lib/assets/images/logo_festou.png',
+                scale: 5,
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-        ),
-      ],
+          Align(
+            alignment: Alignment.center,
+            child: ConfettiWidget(
+              confettiController: _controllerCenter,
+              blastDirection: -pi / 2,
+              particleDrag: 0.05,
+              emissionFrequency: 1,
+              numberOfParticles: 20,
+              gravity: 0.05,
+              shouldLoop: false,
+              maxBlastForce: 70,
+              strokeWidth: 1,
+              strokeColor: Colors.transparent,
+              colors: const [
+                Colors.green,
+                Colors.blue,
+                Colors.pink,
+                Colors.orange,
+                Colors.purple
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

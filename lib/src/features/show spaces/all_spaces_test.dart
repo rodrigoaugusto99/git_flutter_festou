@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/loading_indicator.dart';
+import 'package:Festou/src/features/loading_indicator.dart';
 
 class AllPosts extends StatefulWidget {
   const AllPosts({super.key});

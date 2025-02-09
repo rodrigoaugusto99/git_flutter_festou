@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/core/fp/either.dart';
-import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
+import 'package:Festou/src/core/fp/either.dart';
+import 'package:Festou/src/core/providers/application_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -21,23 +21,23 @@ class UserRegisterInfosVm extends _$UserRegisterInfosVm {
   UserRegisterInfosStateStatus build() => UserRegisterInfosStateStatus.initial;
 
   FormFieldValidator<String> validateNome() {
-    return Validatorless.required('Nome obrigatorio');
+    return Validatorless.required('Nome obrigatório');
   }
 
   FormFieldValidator<String> validateCEP() {
-    return Validatorless.required('CEP obrigatorio');
+    return Validatorless.required('CEP obrigatório');
   }
 
   FormFieldValidator<String> validateLogradouro() {
-    return Validatorless.required('Logradouro obrigatorio');
+    return Validatorless.required('Logradouro obrigatório');
   }
 
   FormFieldValidator<String> validateBairro() {
-    return Validatorless.required('Bairro obrigatorio');
+    return Validatorless.required('Bairro obrigatório');
   }
 
   FormFieldValidator<String> validateCidade() {
-    return Validatorless.required('Cidade obrigatorio');
+    return Validatorless.required('Cidade obrigatório');
   }
 
   Future<void> validateForm(

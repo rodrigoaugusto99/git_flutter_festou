@@ -3,10 +3,10 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:git_flutter_festou/src/core/ui/constants.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/login/forgot_email_page.dart';
-import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
+import 'package:Festou/src/core/ui/constants.dart';
+import 'package:Festou/src/core/ui/helpers/messages.dart';
+import 'package:Festou/src/features/login/forgot_email_page.dart';
+import 'package:Festou/src/features/widgets/custom_textformfield.dart';
 import 'package:validatorless/validatorless.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
