@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/revisao.dart';
-import 'package:git_flutter_festou/src/helpers/helpers.dart';
-import 'package:git_flutter_festou/src/helpers/keys.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:Festou/src/core/ui/helpers/messages.dart';
+import 'package:Festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
+import 'package:Festou/src/features/register/space/space%20temporary/pages/revisao.dart';
+import 'package:Festou/src/helpers/helpers.dart';
+import 'package:Festou/src/helpers/keys.dart';
+import 'package:Festou/src/models/space_model.dart';
 import 'package:time_picker_spinner_pop_up/time_picker_spinner_pop_up.dart';
 
 class TimeSelector extends StatelessWidget {

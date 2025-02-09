@@ -1,4 +1,4 @@
-# git_flutter_festou
+# Festou
 
 A new Flutter project.
 

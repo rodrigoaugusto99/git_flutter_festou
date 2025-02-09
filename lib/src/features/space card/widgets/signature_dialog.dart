@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/helpers/keys.dart';
+import 'package:Festou/src/helpers/keys.dart';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:image_painter/image_painter.dart';

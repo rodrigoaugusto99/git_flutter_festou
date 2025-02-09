@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "git_flutter_festou",
+      "name": "Festou",
       "request": "launch",
       "type": "dart"
     },

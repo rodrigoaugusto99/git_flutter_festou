@@ -3,9 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/expandable_message.dart';
-import 'package:git_flutter_festou/src/services/chat_services.dart';
+import 'package:Festou/src/core/ui/helpers/messages.dart';
+import 'package:Festou/src/features/space%20card/widgets/expandable_message.dart';
+import 'package:Festou/src/services/chat_services.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 
 class ChatPage extends StatefulWidget {

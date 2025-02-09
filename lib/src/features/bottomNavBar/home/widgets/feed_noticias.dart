@@ -4,11 +4,11 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/all_posts.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/each_post.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/post_single_page.dart';
-import 'package:git_flutter_festou/src/models/post_model.dart';
-import 'package:git_flutter_festou/src/services/post_service.dart';
+import 'package:Festou/src/features/bottomNavBar/home/widgets/all_posts.dart';
+import 'package:Festou/src/features/bottomNavBar/home/widgets/each_post.dart';
+import 'package:Festou/src/features/bottomNavBar/home/widgets/post_single_page.dart';
+import 'package:Festou/src/models/post_model.dart';
+import 'package:Festou/src/services/post_service.dart';
 import 'package:shimmer/shimmer.dart';
 
 class FeedNoticias extends StatefulWidget {

@@ -1,10 +1,10 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/register/host%20feedback/host_feedback_register_vm.dart';
-import 'package:git_flutter_festou/src/models/reservation_model.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:Festou/src/core/ui/helpers/messages.dart';
+import 'package:Festou/src/features/register/host%20feedback/host_feedback_register_vm.dart';
+import 'package:Festou/src/models/reservation_model.dart';
+import 'package:Festou/src/models/space_model.dart';
 
 class HostFeedbackRegisterPage extends ConsumerStatefulWidget {
   final SpaceModel space;
