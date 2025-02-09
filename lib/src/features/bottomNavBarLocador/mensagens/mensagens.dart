@@ -392,8 +392,6 @@ class _MensagensState extends State<Mensagens> {
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return const Text('Erro ao carregar os dados');
-                } else if (!snapshot.hasData) {
-                  return const SizedBox.shrink();
                 } else {
                   final filteredDocs = snapshot.data!.docs.where((doc) {
                     final data = doc.data() as Map<String, dynamic>;
@@ -416,8 +414,9 @@ class _MensagensState extends State<Mensagens> {
                     builder: (context, snapshotMessage) {
                       if (!snapshotMessage.hasData) {
                         return const CustomLoadingIndicator();
-                      } else if (filteredDocs.isEmpty ||
-                          !snapshotMessage.data!) {
+                      }
+
+                      if (filteredDocs.isEmpty || !snapshotMessage.data!) {
                         return const Center(
                             child: Text('Não há conversas no momento!'));
                       }
@@ -493,7 +492,7 @@ class _MensagensState extends State<Mensagens> {
                           'Erro ao carregar a mensagem: ${combinedSnapshot.error}');
                       return const Text('Erro ao carregar a mensagem');
                     } else if (!combinedSnapshot.hasData) {
-                      return const SizedBox.shrink();
+                      return const Center(child: CustomLoadingIndicator());
                     } else {
                       final messages = combinedSnapshot.data!['messages']
                           as List<QueryDocumentSnapshot<Map<String, dynamic>>>;
