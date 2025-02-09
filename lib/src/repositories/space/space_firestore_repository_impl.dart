@@ -107,7 +107,6 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
               'num_comments': '0',
               'locador_name': locadorName,
               'descricao': spaceData.descricao,
-              'city': 'xxx',
               'latitude': spaceData.latitude,
               'longitude': spaceData.longitude,
               'locadorAvatarUrl': locadorAvatar,

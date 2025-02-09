@@ -385,9 +385,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
 
     modifiedHtml = modifiedHtml.replaceAll('{Data}',
         '<b>${DateFormat("d 'de' MMMM 'de' y", 'pt_BR').format(DateTime.now())}</b>');
-
-    modifiedHtml = modifiedHtml.replaceAll('{Nome do responsável pelo espaço}',
-        '<b>${widget.summaryData.spaceModel.locadorName}</b>');
+//Nome Responsável
 
     modifiedHtml = modifiedHtml.replaceAll(
         '{Nome do Espaço}', '<b>${widget.summaryData.spaceModel.titulo}</b>');
@@ -405,22 +403,26 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
         '{Estado}', '<b>${widget.summaryData.spaceModel.estado}</b>');
     modifiedHtml = modifiedHtml.replaceAll('{Nome da Empresa Locadora}',
         '<b>${widget.summaryData.spaceModel.nomeEmpresaLocadora}</b>');
-    modifiedHtml = modifiedHtml.replaceAll('{CNPJ da Empresa Locadora}',
-        '<b>${widget.summaryData.spaceModel.cnpjEmpresaLocadora}</b>');
+    if (widget.summaryData.spaceModel.cnpjEmpresaLocadora.isNotEmpty) {
+      modifiedHtml = modifiedHtml.replaceAll('{CNPJ da Empresa Locadora}',
+          '<b>${widget.summaryData.spaceModel.cnpjEmpresaLocadora}</b>');
+      modifiedHtml = modifiedHtml.replaceAll('{CNPJ ou CPF}', 'CNPJ');
+      modifiedHtml =
+          modifiedHtml.replaceAll('{Tipo pessoa}', 'Pessoa jurídica');
+      modifiedHtml = modifiedHtml.replaceAll('{Nome Responsável}',
+          '<b>${widget.summaryData.spaceModel.nomeEmpresaLocadora}</b>');
+    } else {
+      modifiedHtml = modifiedHtml.replaceAll('{CNPJ da Empresa Locadora}',
+          '<b>${widget.summaryData.spaceModel.locadorCpf}</b>');
+      modifiedHtml = modifiedHtml.replaceAll('{CNPJ ou CPF}', 'CPF');
+      modifiedHtml = modifiedHtml.replaceAll('{Nome Responsável}',
+          '<b>${widget.summaryData.spaceModel.locadorName}</b>');
+      modifiedHtml = modifiedHtml.replaceAll('{Tipo pessoa}', 'Pessoa física');
+    }
 
     modifiedHtml = modifiedHtml.replaceAll(
         '[Assinatura registrada do responsável pelo espaço]',
         '<img src="${widget.summaryData.spaceModel.locadorAssinatura}" alt="Descrição da imagem"/>');
-
-// //todo: assinatura do locador vai ser salva no firestore como String
-// //todo: no cadastro do espaco, pedir a assinatura e fzr esse imageToBase64
-//     String base64Image = '';
-//     if (image != null) {
-//       base64Image = await imageToBase64(image);
-//     }
-//     modifiedHtml += '<img src="$base64Image" alt="Descrição da imagem"/>';
-//     widget.summaryData.html = modifiedHtml;
-    //widget.summaryData.totalHours = hoursDifference;
 
     await Navigator.pushReplacement(
       context,

@@ -64,7 +64,6 @@ class SpaceModel {
   final String numComments;
   final String locadorName;
   final String descricao;
-  final String city;
   final List<String> imagesUrl;
   final List<String> videosUrl;
 
@@ -100,7 +99,6 @@ class SpaceModel {
     required this.numComments,
     required this.locadorName,
     required this.descricao,
-    required this.city,
     required this.imagesUrl,
     required this.latitude,
     required this.longitude,
@@ -191,7 +189,6 @@ Future<SpaceModel> mapSpaceDocumentToModel2(
     numComments: numComments,
     locadorName: spaceDocument['locador_name'] ?? '',
     descricao: spaceDocument['descricao'] ?? '',
-    city: spaceDocument['city'] ?? '',
     imagesUrl: imagesUrl,
     latitude: spaceDocument['latitude'] ?? 0.0,
     longitude: spaceDocument['longitude'] ?? 0.0,
@@ -282,7 +279,6 @@ Future<SpaceModel> mapSpaceDocumentToModel(
     numComments: numComments,
     locadorName: spaceDocument['locador_name'] ?? '',
     descricao: spaceDocument['descricao'] ?? '',
-    city: spaceDocument['city'] ?? '',
     imagesUrl: imagesUrl,
     latitude: spaceDocument['latitude'] ?? 0.0,
     longitude: spaceDocument['longitude'] ?? 0.0,
