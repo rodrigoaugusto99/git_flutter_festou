@@ -969,7 +969,7 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                                             height: 20,
                                             width: 20,
                                             child: Image.asset(
-                                              'lib/assets/images/imagem-chamado-papai.png',
+                                              'lib/assets/images/icon-chamado.png',
                                               width: 20,
                                             ),
                                           ),
