@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'feedback_register_vm.dart';
+part of 'avaliacoes_register_vm.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,11 +9,11 @@ part of 'feedback_register_vm.dart';
 String _$feedbackRegisterVmHash() =>
     r'4c0e2ef71beae2bfcf388f28c0b8d0c8066c4400';
 
-/// See also [FeedbackRegisterVm].
-@ProviderFor(FeedbackRegisterVm)
+/// See also [AvaliacoesRegisterVm].
+@ProviderFor(AvaliacoesRegisterVm)
 final feedbackRegisterVmProvider = AutoDisposeNotifierProvider<
-    FeedbackRegisterVm, FeedbackRegisterStateStatus>.internal(
-  FeedbackRegisterVm.new,
+    AvaliacoesRegisterVm, FeedbackRegisterStateStatus>.internal(
+  AvaliacoesRegisterVm.new,
   name: r'feedbackRegisterVmProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
