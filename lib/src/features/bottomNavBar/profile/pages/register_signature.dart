@@ -332,7 +332,7 @@ class _RegisterSignatureState extends State<RegisterSignature> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(right: 75, left: 75, bottom: 90),
+        padding: const EdgeInsets.only(right: 30, left: 30, bottom: 90),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -360,57 +360,59 @@ class _RegisterSignatureState extends State<RegisterSignature> {
                 }
               },
               child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
                 alignment: Alignment.center,
-                width: buttonWidth,
-                height: buttonHeight,
+                height: 35,
                 decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
                   gradient: const LinearGradient(
                     colors: [
                       Color(0xff9747FF),
-                      Color(0xff4300B1),
+                      Color(0xff44300b1),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                   ),
-                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Align(
                   alignment: Alignment.center,
                   child: Text(
-                    'ENVIAR',
+                    'Enviar',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 12,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 9),
             InkWell(
               onTap: () => Navigator.of(context).pop(),
               child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
                 alignment: Alignment.center,
-                width: buttonWidth,
-                height: buttonHeight,
+                height: 35,
                 decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
                   gradient: const LinearGradient(
                     colors: [
                       Color(0xff9747FF),
-                      Color(0xff4300B1),
+                      Color(0xff44300b1),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                   ),
-                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Text(
-                  'VOLTAR',
+                  'Voltar',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 12,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
