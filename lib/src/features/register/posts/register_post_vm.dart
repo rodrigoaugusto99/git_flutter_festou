@@ -18,7 +18,7 @@ class RegisterPostVm with ChangeNotifier {
   List<File> imagesToRegister = [];
 
   FormFieldValidator<String> validate() {
-    return Validatorless.required('Campo obrigatorio');
+    return Validatorless.required('Campo obrigatório');
   }
 
   File? photoShowing;

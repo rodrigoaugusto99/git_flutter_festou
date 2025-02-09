@@ -234,7 +234,7 @@ class _RegisterPostPageState extends State<RegisterPostPage> {
                         /*
                           os textfields, ao serem clicados, abrira um dialog com o campo a ser
                           preenchido e os botoes cancelar e salvar. Ao salvar, o texto vai aparecer 
-                          no espaco abaixo, aparecendo botao de editar. titulo obrigatorio apenas
+                          no espaco abaixo, aparecendo botao de editar. titulo obrigatório apenas
                            */
                         const SizedBox(height: 15),
                         CustomTextformfield(
