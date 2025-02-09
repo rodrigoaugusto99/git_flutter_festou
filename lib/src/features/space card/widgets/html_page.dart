@@ -20,7 +20,6 @@ class HtmlPage extends StatelessWidget {
           padding: const EdgeInsets.only(left: 18.0),
           child: Container(
             decoration: BoxDecoration(
-              //color: Colors.white.withOpacity(0.7),
               color: Colors.white,
               shape: BoxShape.circle,
               boxShadow: [
@@ -74,25 +73,6 @@ class HtmlPage extends StatelessWidget {
                   ),
                 },
               ),
-              // const SizedBox(
-              //   height: 24,
-              // ),
-              // Row(
-              //   children: [
-              //     ElevatedButton(
-              //       onPressed: () {
-              //         Navigator.of(context).pop(false);
-              //       },
-              //       child: const Text('Voltar'),
-              //     ),
-              //     ElevatedButton(
-              //       onPressed: () {
-              //         Navigator.of(context).pop(true);
-              //       },
-              //       child: const Text('Assinar de novo'),
-              //     ),
-              //   ],
-              // )
             ],
           ),
         ),
