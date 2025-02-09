@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/meus%20feedbacks/minhas_avaliacoes_widgets.dart';
-import 'package:git_flutter_festou/src/models/avaliacoes_model.dart';
-import 'package:git_flutter_festou/src/services/avaliacoes_service.dart';
+import 'package:Festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/meus%20feedbacks/minhas_avaliacoes_widgets.dart';
+import 'package:Festou/src/models/avaliacoes_model.dart';
+import 'package:Festou/src/services/avaliacoes_service.dart';
 
 class MinhasAvaliacoesPage extends StatelessWidget {
   final String userId;

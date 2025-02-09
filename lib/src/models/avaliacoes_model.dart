@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:Festou/src/models/space_model.dart';
 
 class AvaliacoesModel {
   final String id;

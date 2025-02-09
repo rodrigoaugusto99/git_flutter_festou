@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/descricao.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/textfield.dart';
-import 'package:git_flutter_festou/src/helpers/keys.dart';
+import 'package:Festou/src/core/ui/helpers/messages.dart';
+import 'package:Festou/src/features/register/space/space%20temporary/pages/descricao.dart';
+import 'package:Festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
+import 'package:Festou/src/features/register/space/space%20temporary/pages/textfield.dart';
+import 'package:Festou/src/helpers/keys.dart';
 
 class Titulo extends ConsumerStatefulWidget {
   const Titulo({super.key});

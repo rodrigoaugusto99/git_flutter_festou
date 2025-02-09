@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/new_card_info.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
-import 'package:git_flutter_festou/src/services/user_service.dart';
+import 'package:Festou/src/core/providers/application_providers.dart';
+import 'package:Festou/src/features/space%20card/widgets/new_card_info.dart';
+import 'package:Festou/src/models/space_model.dart';
+import 'package:Festou/src/services/user_service.dart';
 import 'package:lottie/lottie.dart';
 
 class NewSpaceCard extends ConsumerStatefulWidget {

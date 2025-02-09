@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/new_card_info.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:Festou/src/features/space%20card/widgets/new_card_info.dart';
+import 'package:Festou/src/models/space_model.dart';
 import 'package:shimmer/shimmer.dart';
 
 class EachLastSeen extends StatefulWidget {

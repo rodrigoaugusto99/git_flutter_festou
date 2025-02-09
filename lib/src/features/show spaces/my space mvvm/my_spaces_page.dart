@@ -1,16 +1,16 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/loading_indicator.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/my_sliver_list_to_card_info.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_state.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_vm.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_page.dart';
-import 'package:git_flutter_festou/src/helpers/keys.dart';
-import 'package:git_flutter_festou/src/models/user_model.dart';
-import 'package:git_flutter_festou/src/services/user_service.dart';
+import 'package:Festou/src/core/ui/helpers/messages.dart';
+import 'package:Festou/src/features/loading_indicator.dart';
+import 'package:Festou/src/features/register/space/space%20temporary/pages/new_space_register.dart';
+import 'package:Festou/src/features/space%20card/widgets/my_sliver_list_to_card_info.dart';
+import 'package:Festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_state.dart';
+import 'package:Festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_vm.dart';
+import 'package:Festou/src/features/space%20card/widgets/notificacoes_page.dart';
+import 'package:Festou/src/helpers/keys.dart';
+import 'package:Festou/src/models/user_model.dart';
+import 'package:Festou/src/services/user_service.dart';
 
 class MySpacesPage extends ConsumerStatefulWidget {
   const MySpacesPage({super.key});
@@ -52,127 +52,132 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
       'lib/assets/images/banner_destaque.png',
     ];
 
-    return Scaffold(
-      backgroundColor: Colors.grey[100],
-      appBar: CustomAppBar(
-        userModel: userModel,
-      ),
-      body: mySpaces.when(
-        data: (MySpacesState data) {
-          return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  children: [
-                    CarouselSlider(
-                      items: images.map((imagePath) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 40),
-                          child: Image.asset(
-                            imagePath,
-                          ),
-                        );
-                      }).toList(),
-                      options: CarouselOptions(
-                        autoPlay: true,
-                        aspectRatio: 16 / 9,
-                        viewportFraction: 1,
-                        enableInfiniteScroll: true,
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            currentSlide = index;
-                          });
-                        },
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: Colors.grey[100],
+        appBar: CustomAppBar(
+          userModel: userModel,
+        ),
+        body: mySpaces.when(
+          data: (MySpacesState data) {
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    children: [
+                      CarouselSlider(
+                        items: images.map((imagePath) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 40),
+                            child: Image.asset(
+                              imagePath,
+                            ),
+                          );
+                        }).toList(),
+                        options: CarouselOptions(
+                          autoPlay: true,
+                          aspectRatio: 16 / 9,
+                          viewportFraction: 1,
+                          enableInfiniteScroll: true,
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              currentSlide = index;
+                            });
+                          },
+                        ),
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: images.map((url) {
-                        int index = images.indexOf(url);
-                        return Container(
-                          width: 8.0,
-                          height: 8.0,
-                          margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: currentSlide == index
-                                ? const Color(0xff9747FF)
-                                : Colors.grey.shade300,
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Text('Cadastrar'),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 60),
-                  child: InkWell(
-                      key: Keys.kLocadorViewRegisterSpace,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const NewSpaceRegister(),
-                          ),
-                        );
-                      },
-                      child:
-                          Image.asset('lib/assets/images/banner_cadastre.png')),
-                ),
-                const SizedBox(
-                  height: 50,
-                ),
-                const Row(
-                  children: [
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      'Meus espaços ',
-                      style: TextStyle(fontSize: 12),
-                    ),
-                    Text(
-                      '(assim que os usuários verão o espaço)',
-                      style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
-                          overflow: TextOverflow.ellipsis),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 25,
-                ),
-                MySliverListToCardInfo(
-                  isLocadorFlow: true,
-                  spaces: data.spaces,
-                  x: false,
-                ),
-              ],
-            ),
-          );
-        },
-        error: (Object error, StackTrace stackTrace) {
-          return const Stack(children: [
-            Center(child: Icon(Icons.error)),
-          ]);
-        },
-        loading: () {
-          return const Stack(children: [
-            Center(child: CustomLoadingIndicator()),
-          ]);
-        },
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: images.map((url) {
+                          int index = images.indexOf(url);
+                          return Container(
+                            width: 8.0,
+                            height: 8.0,
+                            margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: currentSlide == index
+                                  ? const Color(0xff9747FF)
+                                  : Colors.grey.shade300,
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text('Cadastrar'),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 60),
+                    child: InkWell(
+                        key: Keys.kLocadorViewRegisterSpace,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const NewSpaceRegister(),
+                            ),
+                          );
+                        },
+                        child: Image.asset(
+                            'lib/assets/images/banner_cadastre.png')),
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  const Row(
+                    children: [
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        'Meus espaços ',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      Text(
+                        '(assim que os usuários verão o espaço)',
+                        style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                            overflow: TextOverflow.ellipsis),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 25,
+                  ),
+                  MySliverListToCardInfo(
+                    isLocadorFlow: true,
+                    spaces: data.spaces,
+                    x: false,
+                  ),
+                ],
+              ),
+            );
+          },
+          error: (Object error, StackTrace stackTrace) {
+            return const Stack(children: [
+              Center(child: Icon(Icons.error)),
+            ]);
+          },
+          loading: () {
+            return const Stack(children: [
+              Center(child: CustomLoadingIndicator()),
+            ]);
+          },
+        ),
       ),
     );
   }

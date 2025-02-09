@@ -1,6 +1,6 @@
-import 'package:git_flutter_festou/src/core/fp/either.dart';
-import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/meus%20feedbacks/minhas_avaliacoes_state.dart';
+import 'package:Festou/src/core/fp/either.dart';
+import 'package:Festou/src/core/providers/application_providers.dart';
+import 'package:Festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/meus%20feedbacks/minhas_avaliacoes_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'minhas_avaliacoes_vm.g.dart';

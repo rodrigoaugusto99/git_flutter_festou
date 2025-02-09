@@ -1,5 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+<<<<<<< HEAD
+import 'package:Festou/src/core/ui/helpers/messages.dart';
+import 'package:Festou/src/features/bottomNavBar/bottomNavBarLocatarioPage.dart';
+import 'package:Festou/src/features/bottomNavBar/home/home_page.dart';
+import 'package:Festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
+import 'package:Festou/src/features/register/space/space_register_state.dart';
+import 'package:Festou/src/helpers/helpers.dart';
+import 'package:Festou/src/helpers/keys.dart';
+import 'package:Festou/src/models/space_model.dart';
+=======
 import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarLocatarioPage.dart';
 import 'package:git_flutter_festou/src/features/bottomNavBar/home/home_page.dart';
@@ -9,6 +19,7 @@ import 'package:git_flutter_festou/src/features/register/space/space_register_st
 import 'package:git_flutter_festou/src/helpers/helpers.dart';
 import 'package:git_flutter_festou/src/helpers/keys.dart';
 import 'package:git_flutter_festou/src/models/space_model.dart';
+>>>>>>> origin/master
 
 class Revisao extends ConsumerStatefulWidget {
   const Revisao({super.key});
