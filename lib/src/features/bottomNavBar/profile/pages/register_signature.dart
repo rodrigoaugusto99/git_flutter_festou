@@ -91,7 +91,7 @@ class _RegisterSignatureState extends State<RegisterSignature> {
     filter: {"#": RegExp(r'[0-9]')},
     type: MaskAutoCompletionType.lazy,
   );
-
+  String? selectedOption;
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -192,23 +192,59 @@ class _RegisterSignatureState extends State<RegisterSignature> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomTextformfield(
-                      label: 'CPF',
-                      controller: cpfEC,
-                      inputFormatters: [cpfFormatter],
-                      validator: Validatorless.required('Campo obrigatório'),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextformfield(
+                            label: 'CPF',
+                            controller: cpfEC,
+                            inputFormatters: [cpfFormatter],
+                            validator: selectedOption == 'cpf'
+                                ? Validatorless.required('Campo obrigatório')
+                                : null,
+                            enable: selectedOption == 'cpf',
+                          ),
+                        ),
+                        Radio<String>(
+                          value: 'cpf',
+                          groupValue: selectedOption,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedOption = value;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextformfield(
+                            label: 'CNPJ da empresa',
+                            controller: cnpjEmpresaLocadoraEC,
+                            inputFormatters: [cnpjFormatter],
+                            validator: selectedOption == 'cnpj'
+                                ? Validatorless.required('Campo obrigatório')
+                                : null,
+                            enable: selectedOption == 'cnpj',
+                          ),
+                        ),
+                        Radio<String>(
+                          value: 'cnpj',
+                          groupValue: selectedOption,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedOption = value;
+                            });
+                          },
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 10),
                     CustomTextformfield(
                       label: 'Nome da empresa',
                       controller: nomeEmpresaLocadoraEC,
-                      validator: Validatorless.required('Campo obrigatório'),
-                    ),
-                    const SizedBox(height: 10),
-                    CustomTextformfield(
-                      label: 'CNPJ da empresa',
-                      controller: cnpjEmpresaLocadoraEC,
-                      inputFormatters: [cnpjFormatter],
                       validator: Validatorless.required('Campo obrigatório'),
                     ),
                     const SizedBox(height: 20),
@@ -295,7 +331,7 @@ class _RegisterSignatureState extends State<RegisterSignature> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(right: 75, left: 75, bottom: 90),
+        padding: const EdgeInsets.only(right: 30, left: 30, bottom: 90),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -323,57 +359,59 @@ class _RegisterSignatureState extends State<RegisterSignature> {
                 }
               },
               child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
                 alignment: Alignment.center,
-                width: buttonWidth,
-                height: buttonHeight,
+                height: 35,
                 decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
                   gradient: const LinearGradient(
                     colors: [
                       Color(0xff9747FF),
-                      Color(0xff4300B1),
+                      Color(0xff44300b1),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                   ),
-                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Align(
                   alignment: Alignment.center,
                   child: Text(
-                    'ENVIAR',
+                    'Enviar',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 12,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 9),
             InkWell(
               onTap: () => Navigator.of(context).pop(),
               child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
                 alignment: Alignment.center,
-                width: buttonWidth,
-                height: buttonHeight,
+                height: 35,
                 decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
                   gradient: const LinearGradient(
                     colors: [
                       Color(0xff9747FF),
-                      Color(0xff4300B1),
+                      Color(0xff44300b1),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                   ),
-                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Text(
-                  'VOLTAR',
+                  'Voltar',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 12,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
