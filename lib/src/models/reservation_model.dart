@@ -1,8 +1,5 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:Festou/src/models/user_model.dart';
 
 class ReservationModel {
   final String? id;
@@ -11,6 +8,7 @@ class ReservationModel {
   final String spaceId;
   final int checkInTime;
   final int checkOutTime;
+  final bool hasReview;
   final Timestamp? createdAt;
   final Timestamp selectedDate;
   final Timestamp selectedFinalDate;
@@ -27,6 +25,7 @@ class ReservationModel {
     required this.locadorId,
     required this.checkInTime,
     required this.checkOutTime,
+    required this.hasReview,
     required this.selectedDate,
     required this.selectedFinalDate,
     this.reason,
@@ -37,6 +36,25 @@ class ReservationModel {
     this.user,
   });
 
+  factory ReservationModel.fromFirestore(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    return ReservationModel(
+      id: doc.id,
+      clientId: data['client_id'] ?? '',
+      locadorId: data['locador_id'] ?? '',
+      spaceId: data['space_id'] ?? '',
+      checkInTime: data['checkInTime'] ?? '',
+      checkOutTime: data['checkOutTime'] ?? '',
+      hasReview: data['hasReview'] ?? false,
+      createdAt: data['createdAt'] ?? Timestamp.now(),
+      selectedDate: data['selectedDate'] ?? Timestamp.now(),
+      selectedFinalDate: data['selectedFinalDate'] ?? Timestamp.now(),
+      contratoHtml: data['contratoHtml'] ?? '',
+      cardId: data['cardId'] ?? '',
+      reason: data['reason'] ?? '',
+    );
+  }
+
   factory ReservationModel.fromMap(Map<String, dynamic> map, String id) {
     return ReservationModel(
       id: id,
@@ -45,6 +63,7 @@ class ReservationModel {
       spaceId: map['spaceId'],
       checkInTime: map['checkInTime'],
       checkOutTime: map['checkOutTime'],
+      hasReview: map['hasReview'],
       createdAt: map['createdAt'],
       selectedDate: map['selectedDate'],
       selectedFinalDate: map['selectedFinalDate'],

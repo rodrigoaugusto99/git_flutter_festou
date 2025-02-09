@@ -1,10 +1,10 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
-import 'package:git_flutter_festou/src/core/fp/either.dart';
-import 'package:git_flutter_festou/src/core/fp/nil.dart';
-import 'package:git_flutter_festou/src/models/feedback_model.dart';
+import 'package:Festou/src/core/exceptions/repository_exception.dart';
+import 'package:Festou/src/core/fp/either.dart';
+import 'package:Festou/src/core/fp/nil.dart';
+import 'package:Festou/src/models/avaliacoes_model.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import './feedback_firestore_repository.dart';
@@ -31,13 +31,13 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
   Future<Either<RepositoryException, Nil>> saveFeedback(
     ({
       String spaceId,
+      String reservationId,
       String userId,
       int rating,
       String content,
     }) feedbackData,
   ) async {
     // Crie um mapa com os dados passados como parâmetros
-    log('entrou');
     String userName = await getUserName();
     String userAvatar = await getUserAvatar();
     final currentDateTime = DateTime.now();
@@ -52,6 +52,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
         'id': id,
         'space_id': feedbackData.spaceId,
         'user_id': feedbackData.userId,
+        'reservationId': feedbackData.reservationId,
         'rating': feedbackData.rating,
         'content': feedbackData.content,
         'user_name': userName,
@@ -59,7 +60,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
         'avatar': userAvatar,
         'likes': [],
         'dislikes': [],
-        'deleteAt': null,
+        'deletedAt': null,
       };
       log('ntrou');
       await feedbacksCollection.add(newFeedback);
@@ -79,6 +80,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
     ({
       String hostId,
       String userId,
+      String reservationId,
       int rating,
       String content,
     }) feedbackData,
@@ -118,6 +120,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
       ({
         String content,
         String guestId,
+        String reservationId,
         int rating,
         String userId
       }) feedbackData) async {
@@ -249,6 +252,50 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
       });
     } catch (e) {
       log('Erro ao atualizar numero de comntarios: $e');
+    }
+  }
+
+  @override
+  Future<Either<RepositoryException, Nil>> updateFeedback({
+    required String feedbackId,
+    required String spaceId,
+    required String reservationId,
+    required String userId,
+    required int rating,
+    required String content,
+  }) async {
+    try {
+      // Verifica se o feedback existe antes de tentar atualizar
+      final feedbackQuery = await feedbacksCollection
+          .where('id', isEqualTo: feedbackId) // Use feedbackId diretamente
+          .limit(1)
+          .get();
+
+      if (feedbackQuery.docs.isEmpty) {
+        return Failure(
+            RepositoryException(message: 'Feedback não encontrado.'));
+      }
+
+      // Obtém a referência do documento
+      final feedbackDocRef = feedbackQuery.docs.first.reference;
+
+      // Atualiza os dados do feedback
+      await feedbackDocRef.update({
+        'rating': rating,
+        'content': content,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+
+      log('Feedback atualizado com sucesso!');
+
+      // Atualiza a contagem de comentários, se necessário
+      await updateNumComments(spaceId);
+
+      return Success(Nil());
+    } catch (e) {
+      log('Erro ao atualizar o feedback: $e');
+      return Failure(
+          RepositoryException(message: 'Erro ao atualizar feedback.'));
     }
   }
 
@@ -394,13 +441,13 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
   // }
 
   @override
-  Future<Either<RepositoryException, List<FeedbackModel>>> getFeedbacks(
+  Future<Either<RepositoryException, List<AvaliacoesModel>>> getFeedbacks(
       String spaceId) async {
     try {
       final allFeedbacksDocuments =
           await feedbacksCollection.where('space_id', isEqualTo: spaceId).get();
 
-      List<FeedbackModel> feedbackModels =
+      List<AvaliacoesModel> feedbackModels =
           allFeedbacksDocuments.docs.map((feedbackDocument) {
         return mapFeedbackDocumentToModel(feedbackDocument);
       }).toList();
@@ -413,15 +460,15 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
   }
 
   @override
-  Future<Either<RepositoryException, List<FeedbackModel>>> getFeedbacksOrdered(
-      String spaceId, String orderBy) async {
+  Future<Either<RepositoryException, List<AvaliacoesModel>>>
+      getFeedbacksOrdered(String spaceId, String orderBy) async {
     try {
       QuerySnapshot allFeedbacksDocuments = await feedbacksCollection
           .where('space_id', isEqualTo: spaceId)
           .orderBy(orderBy, descending: true)
           .get();
 
-      List<FeedbackModel> feedbackModels =
+      List<AvaliacoesModel> feedbackModels =
           allFeedbacksDocuments.docs.map((feedbackDocument) {
         return mapFeedbackDocumentToModel(feedbackDocument);
       }).toList();
@@ -433,14 +480,15 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
     }
   }
 
-  FeedbackModel mapFeedbackDocumentToModel(
+  AvaliacoesModel mapFeedbackDocumentToModel(
       QueryDocumentSnapshot feedbackDocument) {
     List<String> likes = List<String>.from(feedbackDocument['likes'] ?? []);
     List<String> dislikes =
         List<String>.from(feedbackDocument['dislikes'] ?? []);
-    return FeedbackModel(
+    return AvaliacoesModel(
       spaceId: feedbackDocument['space_id'] ?? '',
-      deleteAt: feedbackDocument['deleteAt'],
+      reservationId: feedbackDocument['reservation_id'] ?? '',
+      deletedAt: feedbackDocument['deletedAt'],
       userId: feedbackDocument['user_id'] ?? '',
       rating: feedbackDocument['rating'] ?? 0,
       content: feedbackDocument['content'] ?? '',
@@ -490,13 +538,13 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
   }
 
   @override
-  Future<Either<RepositoryException, List<FeedbackModel>>> getMyFeedbacks(
+  Future<Either<RepositoryException, List<AvaliacoesModel>>> getMyFeedbacks(
       String userId) async {
     try {
       final allFeedbacksDocuments =
           await feedbacksCollection.where('user_id', isEqualTo: userId).get();
 
-      List<FeedbackModel> feedbackModels =
+      List<AvaliacoesModel> feedbackModels =
           allFeedbacksDocuments.docs.map((feedbackDocument) {
         return mapFeedbackDocumentToModel(feedbackDocument);
       }).toList();

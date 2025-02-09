@@ -3,11 +3,11 @@ import 'dart:developer';
 import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/ui/constants.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/register/user/user_register_vm.dart';
-import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
-import 'package:git_flutter_festou/src/helpers/constants.dart';
+import 'package:Festou/src/core/ui/constants.dart';
+import 'package:Festou/src/core/ui/helpers/messages.dart';
+import 'package:Festou/src/features/register/user/user_register_vm.dart';
+import 'package:Festou/src/features/widgets/custom_textformfield.dart';
+import 'package:Festou/src/helpers/constants.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class UserRegisterPage extends ConsumerStatefulWidget {

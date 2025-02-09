@@ -2,9 +2,9 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/core/fp/either.dart';
-import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
+import 'package:Festou/src/core/fp/either.dart';
+import 'package:Festou/src/core/providers/application_providers.dart';
+import 'package:Festou/src/core/ui/helpers/messages.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -26,7 +26,7 @@ class UserRegisterVm extends _$UserRegisterVm {
   //validação email
   FormFieldValidator<String> validateName() {
     return Validatorless.multiple([
-      Validatorless.required('Nome obrigatorio'),
+      Validatorless.required('Nome obrigatório'),
     ]);
   }
 
@@ -69,14 +69,14 @@ class UserRegisterVm extends _$UserRegisterVm {
   //validação email
   FormFieldValidator<String> validateCpf() {
     return Validatorless.multiple([
-      Validatorless.required('CPF obrigatorio'),
+      Validatorless.required('CPF obrigatório'),
     ]);
   }
 
   //validação email
   FormFieldValidator<String> validateEmail() {
     return Validatorless.multiple([
-      Validatorless.required('Email obrigatorio'),
+      Validatorless.required('Email obrigatório'),
       Validatorless.email('Email invalido')
     ]);
   }

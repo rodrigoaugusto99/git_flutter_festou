@@ -2,9 +2,9 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/models/cupom_model.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
-import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:Festou/src/models/cupom_model.dart';
+import 'package:Festou/src/models/space_model.dart';
+import 'package:Festou/src/models/user_model.dart';
 
 class UserService {
   final FirebaseAuth _auth = FirebaseAuth.instance;

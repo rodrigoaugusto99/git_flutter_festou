@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/auth/verify_email_page.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/bottomNavBarLocatarioPage.dart';
-import 'package:git_flutter_festou/src/features/login/login_page.dart';
-import 'package:git_flutter_festou/src/helpers/constants.dart';
+import 'package:Festou/src/features/auth/verify_email_page.dart';
+import 'package:Festou/src/features/bottomNavBar/bottomNavBarLocatarioPage.dart';
+import 'package:Festou/src/features/login/login_page.dart';
+import 'package:Festou/src/helpers/constants.dart';
 
 //transitar entre paginas de acordo com stream
 //checar se o usuario está logado ou nao.

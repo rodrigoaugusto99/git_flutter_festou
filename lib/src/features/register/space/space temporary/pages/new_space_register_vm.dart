@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
-import 'package:git_flutter_festou/src/core/fp/either.dart';
-import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_state.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
-import 'package:git_flutter_festou/src/models/user_model.dart';
-import 'package:git_flutter_festou/src/services/user_service.dart';
+import 'package:Festou/src/core/exceptions/repository_exception.dart';
+import 'package:Festou/src/core/fp/either.dart';
+import 'package:Festou/src/core/providers/application_providers.dart';
+import 'package:Festou/src/features/register/space/space%20temporary/pages/new_space_register_state.dart';
+import 'package:Festou/src/models/space_model.dart';
+import 'package:Festou/src/models/user_model.dart';
+import 'package:Festou/src/services/user_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:image_picker/image_picker.dart';
@@ -26,6 +26,10 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
   NewSpaceRegisterState build() => NewSpaceRegisterState.initial();
   final uuid = const Uuid();
   final user = FirebaseAuth.instance.currentUser!;
+
+  NewSpaceRegisterState getState() {
+    return state;
+  }
 
   void addOrRemoveType(String type) {
     final selectedTypes = state.selectedTypes;
@@ -161,11 +165,11 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
   }
 
   FormFieldValidator<String> validateCEP() {
-    return Validatorless.required('CEP obrigatorio');
+    return Validatorless.required('CEP obrigatório');
   }
 
   FormFieldValidator<String> validateLogradouro() {
-    return Validatorless.required('Logradouro obrigatorio');
+    return Validatorless.required('Logradouro obrigatório');
   }
 
   FormFieldValidator<String> validateNumero() {
@@ -173,11 +177,11 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
   }
 
   FormFieldValidator<String> validateBairro() {
-    return Validatorless.required('Bairro obrigatorio');
+    return Validatorless.required('Bairro obrigatório');
   }
 
   FormFieldValidator<String> validateCidade() {
-    return Validatorless.required('Cidade obrigatorio');
+    return Validatorless.required('Cidade obrigatório');
   }
 
   Future<String?> validateForm(

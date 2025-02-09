@@ -4,10 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/central/perguntas_frequentes.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/central/widget/question.dart';
-import 'package:git_flutter_festou/src/features/loading_indicator.dart';
-import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
+import 'package:Festou/src/features/bottomNavBar/profile/pages/central/perguntas_frequentes.dart';
+import 'package:Festou/src/features/bottomNavBar/profile/pages/central/widget/question.dart';
+import 'package:Festou/src/features/loading_indicator.dart';
+import 'package:Festou/src/features/widgets/custom_textformfield.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -63,10 +63,21 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
     filteredQuestions = [];
   }
 
+  FocusNode focusNode = FocusNode();
+
   Widget _buildSearchBox(BuildContext context) {
     return CompositedTransformTarget(
       link: _layerLink,
-      child: TextField(
+      child: TextFormField(
+        focusNode: focusNode,
+        onTapOutside: (v) {
+          focusNode.unfocus(); // Primeiro desfoca o campo
+
+          Future.delayed(const Duration(milliseconds: 50), () {
+            filteredQuestions.clear(); // Limpa a lista após o desfocar
+            setState(() {}); // Atualiza a interface uma única vez
+          });
+        },
         controller: searchEC,
         decoration: InputDecoration(
           hintText: 'Pesquise sua dúvida',
@@ -807,7 +818,8 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                       padding: EdgeInsets.only(left: 16.0),
                       child: Text(
                         'Perguntas Frequentes',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 17),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -906,7 +918,8 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                       padding: EdgeInsets.only(left: 16.0),
                       child: Text(
                         'Suporte',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 17),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -956,7 +969,7 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                                             height: 20,
                                             width: 20,
                                             child: Image.asset(
-                                              'lib/assets/images/imagem_chamado.png',
+                                              'lib/assets/images/icon-chamado.png',
                                               width: 20,
                                             ),
                                           ),
@@ -1179,7 +1192,8 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                       padding: EdgeInsets.only(left: 16.0),
                       child: Text(
                         'Meus Tickets',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 17),
                       ),
                     ),
                     const SizedBox(height: 20),

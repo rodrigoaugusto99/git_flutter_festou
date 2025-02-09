@@ -4,13 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/esqueci_senha.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/patternedButton.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/passwordField.dart';
-import 'package:git_flutter_festou/src/features/login/forgot_password_page.dart';
-import 'package:git_flutter_festou/src/services/auth_services.dart';
-import 'package:git_flutter_festou/src/services/user_service.dart';
+import 'package:Festou/src/core/providers/application_providers.dart';
+import 'package:Festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/esqueci_senha.dart';
+import 'package:Festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/patternedButton.dart';
+import 'package:Festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/passwordField.dart';
+import 'package:Festou/src/features/login/forgot_password_page.dart';
+import 'package:Festou/src/services/auth_services.dart';
+import 'package:Festou/src/services/user_service.dart';
 import 'package:lottie/lottie.dart';
 
 class LoginSeguranca extends ConsumerStatefulWidget {
@@ -1141,13 +1141,29 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                       context: context2,
                                       builder: (BuildContext context2) {
                                         return AlertDialog(
-                                          content: const Column(
+                                          content: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Text(
-                                                  'O usuário possui reservas não consumadas.'),
+                                              Row(children: [
+                                                Lottie.asset(
+                                                  'lib/assets/animations/info.json',
+                                                  width: 100,
+                                                  height: 100,
+                                                  repeat: true,
+                                                ),
+                                                const SizedBox(height: 16),
+                                                const Text(
+                                                  'Não permitido!',
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ]),
+                                              const Text(
+                                                  'O usuário possui reservas em aberto.'),
                                             ],
                                           ),
                                           actions: <Widget>[

@@ -1,10 +1,10 @@
-import 'package:git_flutter_festou/src/models/feedback_model.dart';
+import 'package:Festou/src/models/avaliacoes_model.dart';
 
 enum SpaceFeedbacksStateStatus { success, error }
 
 class SpaceFeedbacksState {
   final SpaceFeedbacksStateStatus status;
-  final List<FeedbackModel> feedbacks;
+  final List<AvaliacoesModel> feedbacks;
 
   SpaceFeedbacksState({
     required this.status,
@@ -13,7 +13,7 @@ class SpaceFeedbacksState {
 
   SpaceFeedbacksState copyWith({
     SpaceFeedbacksStateStatus? status,
-    List<FeedbackModel>? feedbacks,
+    List<AvaliacoesModel>? feedbacks,
   }) {
     return SpaceFeedbacksState(
       status: status ?? this.status,

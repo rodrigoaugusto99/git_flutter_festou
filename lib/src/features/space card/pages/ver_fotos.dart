@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:Festou/src/models/space_model.dart';
 
 class VerFotos extends StatefulWidget {
   final SpaceModel space;

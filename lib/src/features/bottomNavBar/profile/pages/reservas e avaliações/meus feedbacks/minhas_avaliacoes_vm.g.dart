@@ -1,12 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'meus_feedbacks_vm.dart';
+part of 'minhas_avaliacoes_vm.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$meusFeedbacksVmHash() => r'208e3d8d3c66a318d031c81e3785d7513536063d';
+String _$minhasAvaliacoesVmHash() =>
+    r'208e3d8d3c66a318d031c81e3785d7513536063d';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,37 +30,38 @@ class _SystemHash {
   }
 }
 
-abstract class _$MeusFeedbacksVm
-    extends BuildlessAutoDisposeAsyncNotifier<MeusFeedbacksState> {
+abstract class _$MinhasAvaliacoesVm
+    extends BuildlessAutoDisposeAsyncNotifier<MinhasAvaliacoesState> {
   late final String userId;
 
-  Future<MeusFeedbacksState> build(
+  Future<MinhasAvaliacoesState> build(
     String userId,
   );
 }
 
-/// See also [MeusFeedbacksVm].
-@ProviderFor(MeusFeedbacksVm)
-const meusFeedbacksVmProvider = MeusFeedbacksVmFamily();
+/// See also [MinhasAvaliacoesVm].
+@ProviderFor(MinhasAvaliacoesVm)
+const meusFeedbacksVmProvider = MinhasAvaliacoesVmFamily();
 
-/// See also [MeusFeedbacksVm].
-class MeusFeedbacksVmFamily extends Family<AsyncValue<MeusFeedbacksState>> {
-  /// See also [MeusFeedbacksVm].
-  const MeusFeedbacksVmFamily();
+/// See also [MinhasAvaliacoesVm].
+class MinhasAvaliacoesVmFamily
+    extends Family<AsyncValue<MinhasAvaliacoesState>> {
+  /// See also [MinhasAvaliacoesVm].
+  const MinhasAvaliacoesVmFamily();
 
-  /// See also [MeusFeedbacksVm].
-  MeusFeedbacksVmProvider call(
+  /// See also [MinhasAvaliacoesVm].
+  MinhasAvaliacoesVmProvider call(
     String userId,
   ) {
-    return MeusFeedbacksVmProvider(
+    return MinhasAvaliacoesVmProvider(
       userId,
     );
   }
 
   @visibleForOverriding
   @override
-  MeusFeedbacksVmProvider getProviderOverride(
-    covariant MeusFeedbacksVmProvider provider,
+  MinhasAvaliacoesVmProvider getProviderOverride(
+    covariant MinhasAvaliacoesVmProvider provider,
   ) {
     return call(
       provider.userId,
@@ -81,27 +83,27 @@ class MeusFeedbacksVmFamily extends Family<AsyncValue<MeusFeedbacksState>> {
   String? get name => r'meusFeedbacksVmProvider';
 }
 
-/// See also [MeusFeedbacksVm].
-class MeusFeedbacksVmProvider extends AutoDisposeAsyncNotifierProviderImpl<
-    MeusFeedbacksVm, MeusFeedbacksState> {
-  /// See also [MeusFeedbacksVm].
-  MeusFeedbacksVmProvider(
+/// See also [MinhasAvaliacoesVm].
+class MinhasAvaliacoesVmProvider extends AutoDisposeAsyncNotifierProviderImpl<
+    MinhasAvaliacoesVm, MinhasAvaliacoesState> {
+  /// See also [MinhasAvaliacoesVm].
+  MinhasAvaliacoesVmProvider(
     String userId,
   ) : this._internal(
-          () => MeusFeedbacksVm()..userId = userId,
+          () => MinhasAvaliacoesVm()..userId = userId,
           from: meusFeedbacksVmProvider,
           name: r'meusFeedbacksVmProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$meusFeedbacksVmHash,
-          dependencies: MeusFeedbacksVmFamily._dependencies,
+                  : _$minhasAvaliacoesVmHash,
+          dependencies: MinhasAvaliacoesVmFamily._dependencies,
           allTransitiveDependencies:
-              MeusFeedbacksVmFamily._allTransitiveDependencies,
+              MinhasAvaliacoesVmFamily._allTransitiveDependencies,
           userId: userId,
         );
 
-  MeusFeedbacksVmProvider._internal(
+  MinhasAvaliacoesVmProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -114,8 +116,8 @@ class MeusFeedbacksVmProvider extends AutoDisposeAsyncNotifierProviderImpl<
   final String userId;
 
   @override
-  Future<MeusFeedbacksState> runNotifierBuild(
-    covariant MeusFeedbacksVm notifier,
+  Future<MinhasAvaliacoesState> runNotifierBuild(
+    covariant MinhasAvaliacoesVm notifier,
   ) {
     return notifier.build(
       userId,
@@ -123,10 +125,10 @@ class MeusFeedbacksVmProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 
   @override
-  Override overrideWith(MeusFeedbacksVm Function() create) {
+  Override overrideWith(MinhasAvaliacoesVm Function() create) {
     return ProviderOverride(
       origin: this,
-      override: MeusFeedbacksVmProvider._internal(
+      override: MinhasAvaliacoesVmProvider._internal(
         () => create()..userId = userId,
         from: from,
         name: null,
@@ -144,14 +146,14 @@ class MeusFeedbacksVmProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<MeusFeedbacksVm, MeusFeedbacksState>
-      createElement() {
-    return _MeusFeedbacksVmProviderElement(this);
+  AutoDisposeAsyncNotifierProviderElement<MinhasAvaliacoesVm,
+      MinhasAvaliacoesState> createElement() {
+    return _MinhasAvaliacoesVmProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is MeusFeedbacksVmProvider && other.userId == userId;
+    return other is MinhasAvaliacoesVmProvider && other.userId == userId;
   }
 
   @override
@@ -163,19 +165,19 @@ class MeusFeedbacksVmProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 }
 
-mixin MeusFeedbacksVmRef
-    on AutoDisposeAsyncNotifierProviderRef<MeusFeedbacksState> {
+mixin MinhasAvaliacoesVmRef
+    on AutoDisposeAsyncNotifierProviderRef<MinhasAvaliacoesState> {
   /// The parameter `userId` of this provider.
   String get userId;
 }
 
-class _MeusFeedbacksVmProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<MeusFeedbacksVm,
-        MeusFeedbacksState> with MeusFeedbacksVmRef {
-  _MeusFeedbacksVmProviderElement(super.provider);
+class _MinhasAvaliacoesVmProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<MinhasAvaliacoesVm,
+        MinhasAvaliacoesState> with MinhasAvaliacoesVmRef {
+  _MinhasAvaliacoesVmProviderElement(super.provider);
 
   @override
-  String get userId => (origin as MeusFeedbacksVmProvider).userId;
+  String get userId => (origin as MinhasAvaliacoesVmProvider).userId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

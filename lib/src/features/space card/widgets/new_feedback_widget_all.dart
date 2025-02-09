@@ -1,13 +1,13 @@
+import 'package:Festou/src/models/avaliacoes_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
-import 'package:git_flutter_festou/src/models/feedback_model.dart';
+import 'package:Festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
 import 'package:intl/intl.dart';
 
 class NewFeedbackWidgetAll extends StatefulWidget {
   final SpaceFeedbacksState data;
   final AsyncValue spaces;
-  final List<FeedbackModel> feedbacks;
+  final List<AvaliacoesModel> feedbacks;
 
   const NewFeedbackWidgetAll({
     super.key,

@@ -1,10 +1,9 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
-import 'package:git_flutter_festou/src/models/reservation_model.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:Festou/src/models/reservation_model.dart';
 
 class ReservaService {
   final CollectionReference reservationCollection =
@@ -23,6 +22,7 @@ class ReservaService {
         'client_id': reservationModel.clientId,
         'locador_id': reservationModel.locadorId,
         'space_id': reservationModel.spaceId,
+        'hasReview': false,
         'checkInTime': reservationModel.checkInTime,
         'checkOutTime': reservationModel.checkOutTime,
         'selectedDate': reservationModel.selectedDate,
@@ -64,6 +64,7 @@ class ReservaService {
       locadorId: reservationDocument['locador_id'] ?? '',
       checkInTime: reservationDocument['checkInTime'] ?? '',
       checkOutTime: reservationDocument['checkOutTime'] ?? '',
+      hasReview: reservationDocument['hasReview'] ?? false,
       selectedFinalDate: reservationDocument['selectedFinalDate'] ?? '',
       selectedDate: reservationDocument['selectedDate'] ?? '',
       createdAt: reservationDocument['createdAt'] ?? '',
@@ -71,18 +72,6 @@ class ReservaService {
       reason: reservationDocument['reason'] ?? '',
     );
   }
-
-  // Future<DocumentSnapshot> getUserDocumentById(String userId) async {
-  //   final userDocument =
-  //       await usersCollection.where('uid', isEqualTo: userId).get();
-
-  //   if (userDocument.docs.isNotEmpty) {
-  //     return userDocument.docs[0]; // Retorna o primeiro documento encontrado.
-  //   }
-
-  //   // Trate o caso em que nenhum usuário foi encontrado.
-  //   throw Exception("Usuário não encontrado");
-  // }
 
   Future<List<ReservationModel>> getReservationsByLocadorId(
     String userId,
@@ -127,7 +116,7 @@ class ReservaService {
     }
   }
 
-  Future<List<ReservationModel>> getReservationsByClienId() async {
+  Future<List<ReservationModel>> getReservationsByClientId() async {
     try {
       final allReservationsDocuments = await reservationCollection
           .where('client_id', isEqualTo: user.uid)
@@ -142,5 +131,66 @@ class ReservaService {
       log('Erro ao recuperar as reservas do firestore: $e');
       throw Exception(e);
     }
+  }
+
+  Future<List<ReservationModel>> getReservationsByClientIdAndSpaceId(
+      String spaceId) async {
+    try {
+      final allReservationsDocuments = await reservationCollection
+          .where('client_id', isEqualTo: user.uid)
+          .where('space_id', isEqualTo: spaceId)
+          .get();
+
+      List<ReservationModel> reservationModels =
+          allReservationsDocuments.docs.map((reservationModels) {
+        return mapReservationDocumentToModel(reservationModels);
+      }).toList();
+      return reservationModels;
+    } catch (e) {
+      log('Erro ao recuperar as reservas do firestore: $e');
+      throw Exception(e);
+    }
+  }
+
+  Future<void> updateHasReview(String reservationId, bool hasReview) async {
+    try {
+      await reservationCollection.doc(reservationId).update({
+        'hasReview': hasReview,
+      });
+      log('Campo hasReview atualizado para $hasReview na reserva: $reservationId');
+    } catch (e) {
+      log('Erro ao atualizar o campo hasReview: $e');
+      throw Exception(e);
+    }
+  }
+
+  void cancelReservationListener() {
+    reservationSubscription?.cancel();
+  }
+
+  StreamSubscription? reservationSubscription;
+
+  Future<void> setReservationListener(
+    String spaceId,
+    String userId,
+    void Function(ReservationModel?) onNewSnapshot,
+  ) async {
+    final query = FirebaseFirestore.instance
+        .collection('reservations')
+        .where('space_id', isEqualTo: spaceId)
+        .where('canceledAt', isEqualTo: null)
+        .where('hasReview', isEqualTo: false)
+        .where('client_id', isEqualTo: userId)
+        .limit(1);
+
+    reservationSubscription = query.snapshots().listen((snapshot) {
+      if (snapshot.docs.isEmpty) {
+        onNewSnapshot(null); // Nenhuma reserva encontrada
+        return;
+      }
+
+      final reservation = ReservationModel.fromFirestore(snapshot.docs.first);
+      onNewSnapshot(reservation);
+    });
   }
 }

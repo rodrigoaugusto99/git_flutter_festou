@@ -1,15 +1,15 @@
+import 'package:Festou/src/models/avaliacoes_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/features/loading_indicator.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/new_feedback_widget_all.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_vm.dart';
-import 'package:git_flutter_festou/src/models/feedback_model.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:Festou/src/features/loading_indicator.dart';
+import 'package:Festou/src/features/space%20card/widgets/new_feedback_widget_all.dart';
+import 'package:Festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
+import 'package:Festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_vm.dart';
+import 'package:Festou/src/models/space_model.dart';
 
 class SpaceFeedbacksPageAll extends ConsumerStatefulWidget {
   final SpaceModel space;
-  final List<FeedbackModel> feedbacks;
+  final List<AvaliacoesModel> feedbacks;
 
   const SpaceFeedbacksPageAll({
     super.key,
