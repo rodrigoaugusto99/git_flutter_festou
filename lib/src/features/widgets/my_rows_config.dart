@@ -72,8 +72,9 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
         const SizedBox(height: 16),
         MyRow(
           text: widget.userModel.locador
-              ? 'Avaliações dos meus espaços'
-              : 'Reservas e avaliações',
+              ? 'Avaliações recebidas'
+              : 'Minhas reservas e avaliações',
+
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
