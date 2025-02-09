@@ -718,33 +718,33 @@ class _NewCardInfoState extends State<NewCardInfo>
               ),
             ),
           const SizedBox(height: 17),
-          if (space!.numComments != '0')
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                const Text(
-                  'Avaliações ',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
-                  ),
+          // if (feedbacks!.isNotEmpty)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              const Text(
+                'Avaliações ',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
                 ),
-                Text(
-                  '(${feedbacks!.length} avaliações)',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 12,
-                    color: Color(0xff5E5E5E),
-                  ),
+              ),
+              Text(
+                '(${feedbacks!.length} avaliações)',
+                style: const TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12,
+                  color: Color(0xff5E5E5E),
                 ),
-              ],
-            ),
+              ),
+            ],
+          ),
           // if (space!.numComments != '0')
           //   SpaceFeedbacksPageLimited(
           //     x: 2,
           //     space: space!,
           //   ),
-          if (space!.numComments != '0' && feedbacks != null) ...[
+          if (feedbacks != null) ...[
             if (feedbacks!.isEmpty)
               const Center(
                 child: Padding(
