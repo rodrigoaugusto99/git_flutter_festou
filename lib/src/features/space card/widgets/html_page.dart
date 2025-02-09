@@ -102,71 +102,74 @@ class HtmlPage extends StatelessWidget {
           horizontal: 51,
           vertical: 20,
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).pop(false);
-              },
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
-                alignment: Alignment.center,
-                height: 35,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xff9747FF),
-                      Color(0xff44300b1),
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
+        child: Container(
+          color: Colors.transparent,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop(false);
+                },
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                  alignment: Alignment.center,
+                  height: 35,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xff9747FF),
+                        Color(0xff44300b1),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
                   ),
-                ),
-                child: const Text(
-                  'Voltar',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 9,
-            ),
-            GestureDetector(
-              onTap: () => Navigator.of(context).pop(true),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
-                alignment: Alignment.center,
-                height: 35,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xff9747FF),
-                      Color(0xff44300b1),
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                ),
-                child: const Text(
-                  'Assinar de novo',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                  child: const Text(
+                    'Voltar',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(
+                height: 9,
+              ),
+              GestureDetector(
+                onTap: () => Navigator.of(context).pop(true),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                  alignment: Alignment.center,
+                  height: 35,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xff9747FF),
+                        Color(0xff44300b1),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                  child: const Text(
+                    'Assinar de novo',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
