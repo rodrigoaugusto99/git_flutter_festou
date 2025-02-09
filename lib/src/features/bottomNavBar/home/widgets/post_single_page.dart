@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:git_flutter_festou/src/models/post_model.dart';
+import 'package:Festou/src/models/post_model.dart';
 
 class PostSinglePage extends StatelessWidget {
   final PostModel postModel;

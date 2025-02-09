@@ -1,4 +1,4 @@
-import 'package:git_flutter_festou/src/models/avaliacoes_model.dart';
+import 'package:Festou/src/models/avaliacoes_model.dart';
 
 enum SpaceFeedbacksStateStatus { success, error }
 

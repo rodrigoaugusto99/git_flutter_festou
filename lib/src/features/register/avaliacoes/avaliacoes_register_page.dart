@@ -3,12 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/register/avaliacoes/avaliacoes_register_vm.dart';
-import 'package:git_flutter_festou/src/models/avaliacoes_model.dart';
-import 'package:git_flutter_festou/src/models/reservation_model.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
-import 'package:git_flutter_festou/src/services/reserva_service.dart';
+import 'package:Festou/src/core/ui/helpers/messages.dart';
+import 'package:Festou/src/features/register/avaliacoes/avaliacoes_register_vm.dart';
+import 'package:Festou/src/models/avaliacoes_model.dart';
+import 'package:Festou/src/models/reservation_model.dart';
+import 'package:Festou/src/models/space_model.dart';
+import 'package:Festou/src/services/reserva_service.dart';
 
 class AvaliacoesPage extends ConsumerStatefulWidget {
   final SpaceModel space;

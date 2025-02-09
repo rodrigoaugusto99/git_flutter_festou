@@ -2,9 +2,9 @@ import 'dart:developer';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/search/search_page_vm.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:Festou/src/features/bottomNavBar/search/search_page_vm.dart';
+import 'package:Festou/src/features/space%20card/widgets/new_space_card.dart';
+import 'package:Festou/src/models/space_model.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import '../bottomNavBarLocatarioPage.dart';
 import 'package:lottie/lottie.dart';

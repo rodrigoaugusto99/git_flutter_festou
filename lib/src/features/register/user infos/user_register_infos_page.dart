@@ -2,10 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/ui/constants.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/register/user%20infos/user_register_infos_vm.dart';
-import 'package:git_flutter_festou/src/features/register/user%20infos/widgets/avatar_widget.dart';
+import 'package:Festou/src/core/ui/constants.dart';
+import 'package:Festou/src/core/ui/helpers/messages.dart';
+import 'package:Festou/src/features/register/user%20infos/user_register_infos_vm.dart';
+import 'package:Festou/src/features/register/user%20infos/widgets/avatar_widget.dart';
 import 'package:search_cep/search_cep.dart';
 import 'package:validatorless/validatorless.dart';
 

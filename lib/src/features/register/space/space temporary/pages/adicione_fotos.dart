@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/titulo.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/utils.dart';
-import 'package:git_flutter_festou/src/helpers/keys.dart';
+import 'package:Festou/src/core/ui/helpers/messages.dart';
+import 'package:Festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
+import 'package:Festou/src/features/register/space/space%20temporary/pages/titulo.dart';
+import 'package:Festou/src/features/space%20card/widgets/utils.dart';
+import 'package:Festou/src/helpers/keys.dart';
 import 'package:video_player/video_player.dart';
 
 class AdicioneFotos extends ConsumerStatefulWidget {

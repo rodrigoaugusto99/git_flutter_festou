@@ -1,10 +1,10 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
-import 'package:git_flutter_festou/src/core/fp/either.dart';
-import 'package:git_flutter_festou/src/core/fp/nil.dart';
-import 'package:git_flutter_festou/src/models/avaliacoes_model.dart';
+import 'package:Festou/src/core/exceptions/repository_exception.dart';
+import 'package:Festou/src/core/fp/either.dart';
+import 'package:Festou/src/core/fp/nil.dart';
+import 'package:Festou/src/models/avaliacoes_model.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import './feedback_firestore_repository.dart';

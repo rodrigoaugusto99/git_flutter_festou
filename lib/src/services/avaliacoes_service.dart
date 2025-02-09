@@ -3,8 +3,8 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
-import 'package:git_flutter_festou/src/models/avaliacoes_model.dart';
+import 'package:Festou/src/core/exceptions/repository_exception.dart';
+import 'package:Festou/src/models/avaliacoes_model.dart';
 
 class AvaliacoesService {
   User? currUser = FirebaseAuth.instance.currentUser;

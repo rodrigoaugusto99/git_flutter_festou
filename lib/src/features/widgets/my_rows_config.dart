@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/avaliacoes_meus_espacos_page.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/login_seguranca.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/widgets/my_row.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/reservas_avaliacoes_page.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_page.dart';
-import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:Festou/src/features/bottomNavBar/profile/pages/avaliacoes_meus_espacos_page.dart';
+import 'package:Festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais.dart';
+import 'package:Festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/login_seguranca.dart';
+import 'package:Festou/src/features/bottomNavBar/profile/pages/widgets/my_row.dart';
+import 'package:Festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/reservas_avaliacoes_page.dart';
+import 'package:Festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
+import 'package:Festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
+import 'package:Festou/src/features/space%20card/widgets/notificacoes_page.dart';
+import 'package:Festou/src/models/user_model.dart';
 
 class MyRowsConfig extends StatefulWidget {
   final UserModel userModel;

@@ -1,8 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:Festou/src/core/providers/application_providers.dart';
+import 'package:Festou/src/models/space_model.dart';
 
 class SmallSpaceCard extends ConsumerStatefulWidget {
   final SpaceModel space;

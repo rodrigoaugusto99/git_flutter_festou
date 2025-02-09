@@ -1,11 +1,11 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/loading_indicator.dart';
-import 'package:git_flutter_festou/src/features/register/posts/register_post_vm.dart';
-import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
-import 'package:git_flutter_festou/src/helpers/helpers.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:Festou/src/core/ui/helpers/messages.dart';
+import 'package:Festou/src/features/loading_indicator.dart';
+import 'package:Festou/src/features/register/posts/register_post_vm.dart';
+import 'package:Festou/src/features/widgets/custom_textformfield.dart';
+import 'package:Festou/src/helpers/helpers.dart';
+import 'package:Festou/src/models/space_model.dart';
 import 'package:svg_flutter/svg.dart';
 
 class RegisterPostPage extends StatefulWidget {

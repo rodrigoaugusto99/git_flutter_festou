@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'package:git_flutter_festou/src/features/bottomNavBar/my%20favorite%20spaces%20mvvm/my_favorite_spaces_vm.dart';
-import 'package:git_flutter_festou/src/features/loading_indicator.dart';
+import 'package:Festou/src/features/bottomNavBar/my%20favorite%20spaces%20mvvm/my_favorite_spaces_vm.dart';
+import 'package:Festou/src/features/loading_indicator.dart';
 
-import 'package:git_flutter_festou/src/features/space%20card/widgets/new_card_info.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_page.dart';
+import 'package:Festou/src/features/space%20card/widgets/new_card_info.dart';
+import 'package:Festou/src/features/space%20card/widgets/new_space_card.dart';
+import 'package:Festou/src/features/space%20card/widgets/notificacoes_page.dart';
 
 class MyFavoriteSpacePage extends StatefulWidget {
   const MyFavoriteSpacePage({super.key});
