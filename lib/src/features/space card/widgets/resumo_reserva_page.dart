@@ -1466,6 +1466,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                   clientId: userModel!.uid,
                   checkInTime: widget.summaryData.checkInTime,
                   checkOutTime: widget.summaryData.checkOutTime,
+                  hasReview: false,
                   selectedDate:
                       Timestamp.fromDate(widget.summaryData.selectedDate),
                   selectedFinalDate:

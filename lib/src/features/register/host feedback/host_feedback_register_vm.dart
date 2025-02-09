@@ -23,6 +23,7 @@ class HostFeedbackRegisterVm extends _$HostFeedbackRegisterVm {
 
   Future<void> register({
     required String hostId,
+    required String reservationId,
     required int rating,
     required String content,
   }) async {
@@ -32,6 +33,7 @@ class HostFeedbackRegisterVm extends _$HostFeedbackRegisterVm {
     final userId = user.uid;
     final feedbackData = (
       userId: userId,
+      reservationId: reservationId,
       hostId: hostId,
       rating: rating,
       content: content,

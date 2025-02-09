@@ -17,12 +17,6 @@ class _ForgotEmailPageState extends State<ForgotEmailPage> {
   final cpfEC = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  @override
-  void dispose() {
-    cpfEC.dispose();
-    super.dispose();
-  }
-
   String email = '';
   var invisibleOpacity = 0.0;
 
