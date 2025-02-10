@@ -1,8 +1,9 @@
 import 'dart:developer';
 
+import 'package:Festou/src/models/space_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Festou/src/core/ui/constants.dart';
 import 'package:Festou/src/core/ui/helpers/messages.dart';
 import 'package:Festou/src/features/register/space/widgets/services_panel.dart';
 import 'package:Festou/src/features/register/space/widgets/type_panel.dart';
@@ -13,6 +14,7 @@ import 'package:Festou/src/features/show%20spaces/filter/new_page_filtered.dart'
 import 'package:Festou/src/features/show%20spaces/filter/widgets/feedbacks_panel.dart';
 import 'package:Festou/src/features/show%20spaces/spaces%20by%20type/spaces_by_type_vm.dart';
 import 'package:Festou/src/features/space%20card/widgets/new_space_card.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class SpacesByTypePage extends ConsumerStatefulWidget {
   final List<String> type;
@@ -25,18 +27,51 @@ class SpacesByTypePage extends ConsumerStatefulWidget {
 class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
   List<String> searchHistory = [];
   SpacesByTypeVm spaceByTypeViewModel = SpacesByTypeVm();
+  final PagingController<DocumentSnapshot?, SpaceModel> pagingController =
+      PagingController(firstPageKey: null);
+  static const int _pageSize = 3;
+
   @override
   void initState() {
-    spaceByTypeViewModel.init(widget.type);
+    //spaceByTypeViewModel.init(widget.type);
+
+    super.initState();
+
+    // **Carregar os primeiros 3 espaços ao iniciar a tela**
+    spaceByTypeViewModel.fetchInitialSpaces(widget.type).then((_) {
+      pagingController.notifyListeners(); // 🚨 Força a UI a ser atualizada
+    });
+
+    pagingController.addPageRequestListener((pageKey) {
+      log("🚀 Página solicitada: ${pageKey?.id ?? 'null'}");
+      _fetchPage(pageKey);
+    });
 
     spaceByTypeViewModel.addListener(_onTextChanged);
-    super.initState();
+  }
+
+  Future<void> _fetchPage(DocumentSnapshot? pageKey) async {
+    log("🔄 Starting _fetchPage() with pageKey: ${pageKey?.id ?? 'null'}");
+
+    try {
+      await Future.delayed(const Duration(seconds: 2)); // Simulação de atraso
+
+      await spaceByTypeViewModel
+          .fetchSpaces(pageKey); // 🚨 Agora apenas chama a função
+
+      log("✅ Fetch process completed.");
+    } catch (error, stacktrace) {
+      log("❌ Error in _fetchPage(): $error");
+      log("🔍 Stacktrace: $stacktrace");
+      pagingController.error = error;
+    }
   }
 
   @override
   void dispose() {
     spaceByTypeViewModel.removeListener(_onTextChanged);
     spaceByTypeViewModel.dispose();
+    pagingController.dispose();
     super.dispose();
   }
 
@@ -274,9 +309,9 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                         spaceByTypeViewModel.showSpacesByType &&
                         spaceByTypeViewModel.getSpaces!.isEmpty))
                       const Text('Não foram encontrado espaços'),
-                    if ((spaceByTypeViewModel.getFiltered != null &&
+                    if ((spaceByTypeViewModel.getFiltered.isEmpty &&
                         spaceByTypeViewModel.showFiltered &&
-                        spaceByTypeViewModel.getFiltered!.isEmpty))
+                        spaceByTypeViewModel.getFiltered.isEmpty))
                       const Expanded(
                         child: Align(
                             alignment: Alignment.center,
@@ -285,32 +320,39 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                     if (spaceByTypeViewModel.getSpaces != null &&
                         spaceByTypeViewModel.showSpacesByType) ...[
                       Expanded(
-                        child: ListView.builder(
-                          padding: const EdgeInsets.all(10),
-                          itemCount: spaceByTypeViewModel.getSpaces!.length,
-                          itemBuilder: (context, index) {
-                            return NewSpaceCard(
-                              hasHeart: true,
-                              space: spaceByTypeViewModel.getSpaces![index],
-                              isReview: false,
-                            );
-                          },
+                        child: PagedListView<DocumentSnapshot?, SpaceModel>(
+                          pagingController: spaceByTypeViewModel
+                              .pagingController, // 🚨 Certifique-se de que este é o mesmo controller atualizado
+                          builderDelegate:
+                              PagedChildBuilderDelegate<SpaceModel>(
+                            itemBuilder: (context, item, index) {
+                              return NewSpaceCard(
+                                hasHeart: true,
+                                space: item,
+                                isReview: false,
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ],
-                    if (spaceByTypeViewModel.getFiltered != null &&
+                    if (spaceByTypeViewModel.getFiltered.isNotEmpty &&
                         spaceByTypeViewModel.showFiltered)
                       Expanded(
-                        child: ListView.builder(
-                          padding: const EdgeInsets.all(10),
-                          itemCount: spaceByTypeViewModel.getFiltered!.length,
-                          itemBuilder: (context, index) {
-                            return NewSpaceCard(
-                              hasHeart: true,
-                              space: spaceByTypeViewModel.getFiltered![index],
-                              isReview: false,
-                            );
-                          },
+                        child: PagedListView<DocumentSnapshot?, SpaceModel>(
+                          pagingController:
+                              spaceByTypeViewModel.pagingController,
+                          builderDelegate:
+                              PagedChildBuilderDelegate<SpaceModel>(
+                            itemBuilder: (context, item, index) {
+                              log("Building item: ${item.spaceId}"); // 🛑 Verificação de exibição
+                              return NewSpaceCard(
+                                hasHeart: true,
+                                space: item,
+                                isReview: false,
+                              );
+                            },
+                          ),
                         ),
                       ),
                   ],
