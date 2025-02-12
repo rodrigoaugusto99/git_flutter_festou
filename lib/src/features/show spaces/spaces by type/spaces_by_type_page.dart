@@ -321,6 +321,7 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                         spaceByTypeViewModel.showSpacesByType) ...[
                       Expanded(
                         child: PagedListView<DocumentSnapshot?, SpaceModel>(
+                          padding: const EdgeInsets.only(top: 20),
                           pagingController: spaceByTypeViewModel
                               .pagingController, // 🚨 Certifique-se de que este é o mesmo controller atualizado
                           builderDelegate:
