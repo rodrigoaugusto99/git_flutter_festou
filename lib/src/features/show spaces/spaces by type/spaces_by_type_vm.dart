@@ -49,23 +49,48 @@ class SpacesByTypeVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onChangedSearch(String value) {
+  Future<void> onChangedSearch(String value, List<String> types) async {
     if (value.isEmpty) {
       showSpacesByType = true;
       showFiltered = false;
       _filteredList.clear();
       notifyListeners();
-    } else {
+      return;
+    }
+
+    try {
+      // 🔹 Atualiza UI antes de buscar (garante que lista anterior some)
       showSpacesByType = false;
       showFiltered = true;
+      _filteredList.clear();
+      notifyListeners();
 
       String searchValue = value.toLowerCase();
-      _filteredList = _allSpacesByType!
-          .where(
-              (project) => project.titulo.toLowerCase().contains(searchValue))
-          .toList();
+
+      final searchSpaceDocuments = await spacesCollection
+          .where('selectedTypes', arrayContainsAny: types)
+          .orderBy('createdAt', descending: true)
+          .get();
+
+      final userSpacesFavorite = await getUserFavoriteSpaces();
+
+      List<SpaceModel> searchResults = [];
+
+      for (var doc in searchSpaceDocuments.docs) {
+        final titulo = doc['titulo']?.toString().toLowerCase() ?? '';
+        if (titulo.contains(searchValue)) {
+          final isFavorited =
+              userSpacesFavorite?.contains(doc['space_id']) ?? false;
+          SpaceModel space = await mapSpaceDocumentToModel(doc, isFavorited);
+          searchResults.add(space);
+        }
+      }
+
+      _filteredList = searchResults;
+      notifyListeners(); // 🔥 Garante que a UI receba a atualização
+    } catch (e) {
+      log("❌ Erro ao buscar espaços por título: $e");
     }
-    notifyListeners();
   }
 
   Future<List<SpaceModel>> getSpacesByType(List<String> types) async {

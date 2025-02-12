@@ -37,6 +37,13 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
 
     super.initState();
 
+    // Adiciona um listener para atualizar a UI sempre que showFiltered mudar
+    spaceByTypeViewModel.addListener(() {
+      if (mounted) {
+        setState(() {}); // 🔥 Atualiza a UI automaticamente
+      }
+    });
+
     // **Carregar os primeiros 3 espaços ao iniciar a tela**
     spaceByTypeViewModel.fetchInitialSpaces(widget.type).then((_) {
       pagingController.notifyListeners(); // 🚨 Força a UI a ser atualizada
@@ -317,45 +324,38 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                             alignment: Alignment.center,
                             child: Text('Não foram encontrado espaços')),
                       ),
-                    if (spaceByTypeViewModel.getSpaces != null &&
-                        spaceByTypeViewModel.showSpacesByType) ...[
-                      Expanded(
-                        child: PagedListView<DocumentSnapshot?, SpaceModel>(
-                          padding: const EdgeInsets.only(top: 20),
-                          pagingController: spaceByTypeViewModel
-                              .pagingController, // 🚨 Certifique-se de que este é o mesmo controller atualizado
-                          builderDelegate:
-                              PagedChildBuilderDelegate<SpaceModel>(
-                            itemBuilder: (context, item, index) {
-                              return NewSpaceCard(
-                                hasHeart: true,
-                                space: item,
-                                isReview: false,
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                    if (spaceByTypeViewModel.getFiltered.isNotEmpty &&
-                        spaceByTypeViewModel.showFiltered)
-                      Expanded(
-                        child: PagedListView<DocumentSnapshot?, SpaceModel>(
-                          pagingController:
-                              spaceByTypeViewModel.pagingController,
-                          builderDelegate:
-                              PagedChildBuilderDelegate<SpaceModel>(
-                            itemBuilder: (context, item, index) {
-                              log("Building item: ${item.spaceId}"); // 🛑 Verificação de exibição
-                              return NewSpaceCard(
-                                hasHeart: true,
-                                space: item,
-                                isReview: false,
-                              );
-                            },
-                          ),
-                        ),
-                      ),
+                    Expanded(
+                      child: spaceByTypeViewModel.showFiltered
+                          ? ListView.builder(
+                              padding: const EdgeInsets.only(top: 20),
+                              itemCount:
+                                  spaceByTypeViewModel.getFiltered.length,
+                              itemBuilder: (context, index) {
+                                final space =
+                                    spaceByTypeViewModel.getFiltered[index];
+                                return NewSpaceCard(
+                                  hasHeart: true,
+                                  space: space,
+                                  isReview: false,
+                                );
+                              },
+                            )
+                          : PagedListView<DocumentSnapshot?, SpaceModel>(
+                              padding: const EdgeInsets.only(top: 20),
+                              pagingController:
+                                  spaceByTypeViewModel.pagingController,
+                              builderDelegate:
+                                  PagedChildBuilderDelegate<SpaceModel>(
+                                itemBuilder: (context, item, index) {
+                                  return NewSpaceCard(
+                                    hasHeart: true,
+                                    space: item,
+                                    isReview: false,
+                                  );
+                                },
+                              ),
+                            ),
+                    ),
                   ],
                 ),
               ),
@@ -398,8 +398,8 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                                 Expanded(
                                   child: TextField(
                                     onChanged: (value) {
-                                      spaceByTypeViewModel
-                                          .onChangedSearch(value);
+                                      spaceByTypeViewModel.onChangedSearch(
+                                          value, widget.type);
                                     },
                                     controller: spaceByTypeViewModel.controller,
                                     onSubmitted: (value) {
