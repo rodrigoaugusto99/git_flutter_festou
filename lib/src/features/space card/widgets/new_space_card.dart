@@ -226,7 +226,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
         );
       },
       child: Container(
-        padding: const EdgeInsets.all(6),
+        padding: const EdgeInsets.all(16),
         height: 380,
         child: Stack(
           children: [

@@ -3,61 +3,79 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:Festou/src/models/space_model.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class SpacesByTypeVm extends ChangeNotifier {
   final CollectionReference spacesCollection =
       FirebaseFirestore.instance.collection('spaces');
 
-  List<SpaceModel>? _filteredList;
+  List<SpaceModel> _filteredList = [];
   List<SpaceModel>? _allSpacesByType;
-  List<SpaceModel>? get getFiltered => _filteredList;
+
+  List<SpaceModel> get getFiltered => _filteredList;
   List<SpaceModel>? get getSpaces => _allSpacesByType;
+
   bool showSpacesByType = true;
-  bool showFiltered = true;
+  bool showFiltered = false;
   final controller = TextEditingController();
+
+  final PagingController<DocumentSnapshot?, SpaceModel> pagingController =
+      PagingController(firstPageKey: null);
+
+  static const int pageSize = 3;
+
+  SpacesByTypeVm() {
+    pagingController.addPageRequestListener((pageKey) {
+      fetchSpaces(pageKey);
+    });
+  }
 
   Future init(List<String> type) async {
     _allSpacesByType = await getSpacesByType(type);
     notifyListeners();
   }
 
+  @override
+  void dispose() {
+    pagingController.dispose();
+    super.dispose();
+  }
+
   void clear() {
     controller.clear();
     showSpacesByType = true;
     showFiltered = false;
+    _filteredList.clear();
     notifyListeners();
   }
-  //so pode comecar
 
   void onChangedSearch(String value) {
-    if (value == '') {
+    if (value.isEmpty) {
       showSpacesByType = true;
       showFiltered = false;
+      _filteredList.clear();
       notifyListeners();
     } else {
       showSpacesByType = false;
       showFiltered = true;
-      notifyListeners();
+
+      String searchValue = value.toLowerCase();
+      _filteredList = _allSpacesByType!
+          .where(
+              (project) => project.titulo.toLowerCase().contains(searchValue))
+          .toList();
     }
-
-    String searchValue = value.toLowerCase();
-
-    _filteredList = _allSpacesByType!
-        .where((project) => project.titulo.toLowerCase().contains(searchValue))
-        .toList();
     notifyListeners();
   }
 
   Future<List<SpaceModel>> getSpacesByType(List<String> types) async {
     try {
-      // Consulta espaços onde o campo "selectedTypes" contenha pelo menos um dos tipos da lista.
       final spaceDocuments = await spacesCollection
           .where('selectedTypes', arrayContainsAny: types)
           .get();
 
       final userSpacesFavorite = await getUserFavoriteSpaces();
 
-      // Mapeia os documentos de espaço para objetos SpaceModel.
       List<SpaceModel> spaceModels =
           await Future.wait(spaceDocuments.docs.map((spaceDocument) {
         final isFavorited =
@@ -76,6 +94,96 @@ class SpacesByTypeVm extends ChangeNotifier {
     }
   }
 
+  Future<void> fetchInitialSpaces(List<String> types) async {
+    try {
+      final spaceDocuments = await spacesCollection
+          .where('selectedTypes', arrayContainsAny: types)
+          .orderBy('createdAt', descending: true)
+          .limit(pageSize)
+          .get();
+
+      if (spaceDocuments.docs.isEmpty) {
+        log("No initial spaces found.");
+        _allSpacesByType = [];
+        notifyListeners();
+        return;
+      }
+
+      final userSpacesFavorite = await getUserFavoriteSpaces();
+
+      List<SpaceModel> initialSpaces =
+          await Future.wait(spaceDocuments.docs.map((doc) {
+        final isFavorited =
+            userSpacesFavorite?.contains(doc['space_id']) ?? false;
+        return mapSpaceDocumentToModel(doc, isFavorited);
+      }).toList());
+
+      // **🚨 Atualiza _allSpacesByType antes de notificar**
+      _allSpacesByType = initialSpaces;
+      notifyListeners();
+
+      // **Atualiza o PagingController**
+      final DocumentSnapshot? lastDoc = spaceDocuments.docs.last;
+      pagingController.appendPage(initialSpaces, lastDoc);
+
+      log("PagingController updated. Current items: ${pagingController.itemList?.length ?? 0}"); // 🛑 Depuração
+    } catch (e) {
+      log("Error fetching initial spaces: $e");
+      pagingController.error = e;
+    }
+  }
+
+  Future<void> fetchSpaces(DocumentSnapshot? lastDocument) async {
+    log("🔄 Iniciando fetchSpaces()...");
+
+    try {
+      Query query = spacesCollection
+          .orderBy('createdAt', descending: true)
+          .limit(pageSize);
+
+      if (lastDocument != null) {
+        log("📌 Usando lastDocument para paginação: ${lastDocument.id}");
+        query = query.startAfterDocument(lastDocument);
+      } else {
+        log("⚠️ Nenhum lastDocument, pegando primeira página.");
+      }
+
+      final querySnapshot = await query.get();
+      log("📌 Documentos retornados: ${querySnapshot.docs.length}");
+
+      if (querySnapshot.docs.isEmpty) {
+        log("✅ Nenhum novo documento encontrado. Fim da paginação.");
+        pagingController
+            .appendLastPage([]); // 🚨 Finaliza paginação corretamente
+        return;
+      }
+
+      await Future.delayed(const Duration(seconds: 2)); // Simulação de atraso
+
+      final List<SpaceModel> newSpaces = querySnapshot.docs.map((doc) {
+        log("📌 Convertendo documento para SpaceModel: ${doc.id}");
+        return SpaceModel.fromMap(doc.data() as Map<String, dynamic>);
+      }).toList();
+
+      // **🔹 Pegamos o último DocumentSnapshot corretamente**
+      final DocumentSnapshot? lastDoc = getLastDocument(querySnapshot);
+      log("📌 Último documento desta página: ${lastDoc?.id ?? 'null'}");
+
+      // **🔹 Agora adicionamos corretamente os itens paginados**
+      pagingController.appendPage(newSpaces, lastDoc);
+    } catch (e, stacktrace) {
+      log("❌ Erro em fetchSpaces(): $e");
+      log("🔍 Stacktrace: $stacktrace");
+      pagingController.error = e;
+    }
+  }
+
+  DocumentSnapshot? getLastDocument(QuerySnapshot querySnapshot) {
+    if (querySnapshot.docs.isEmpty) return null;
+    return querySnapshot
+        .docs.last; // 🚨 Retorna o último DocumentSnapshot corretamente
+  }
+
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
 
@@ -85,12 +193,10 @@ class SpacesByTypeVm extends ChangeNotifier {
         await usersCollection.where('uid', isEqualTo: user.uid).get();
 
     if (userDocument.docs.isNotEmpty) {
-      return userDocument.docs[0]; // Retorna o primeiro documento encontrado.
+      return userDocument.docs[0];
     }
 
-    // Trate o caso em que nenhum usuário foi encontrado.
-    //se esse erro ocorrer la numm metodo que chama getUsrDocument, o (e) do catch vai ter essa msg
-    throw Exception("Usuário n encontrado");
+    throw Exception("Usuário não encontrado");
   }
 
   Future<List<String>?> getUserFavoriteSpaces() async {
