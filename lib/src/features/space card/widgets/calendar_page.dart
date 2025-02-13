@@ -274,10 +274,6 @@ class _CalendarPageState extends State<CalendarPage> {
             log(startHour.toString());
             final int index = entry.key;
             final int hour = (startHour + index) % 24;
-            if (hour == 15) {
-              log('horario 15');
-              return const SizedBox.shrink();
-            }
 
             // Corrigida a lógica para identificar "dia seguinte"
             final bool isNextDay;
@@ -299,7 +295,11 @@ class _CalendarPageState extends State<CalendarPage> {
             if (isUnavailable) {
               reachedLimit = true;
             }
-
+            if (index == 20) {
+              // log('tchauuuu');
+              return const SizedBox.shrink();
+            }
+            // log('${hour.toString().padLeft(2, '0')}:59  index: $index');
             // Exibe "Dia seguinte" no início de cada hora do próximo dia
             bool showNextDayLabel = isNextDay && !isUnavailable;
 

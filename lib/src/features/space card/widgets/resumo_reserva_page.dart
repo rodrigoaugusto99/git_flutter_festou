@@ -454,6 +454,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     String codigo = cupomController.text;
     final cupom = await userService.getCupom(codigo);
     if (cupom == null) {
+      Messages.showError('Cupom inválido', context);
       dev.log('Cupom nao existe');
       return;
     }
@@ -462,6 +463,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     DateTime cupomValidade = cupom.validade.toDate();
     if (!cupomValidade.isAfter(DateTime.now())) {
       dev.log('Cupom nao eh valido');
+      Messages.showError('Cupom expirado', context);
     }
     //todo: aplicar
     dev.log('Cupom eh valido!!');
