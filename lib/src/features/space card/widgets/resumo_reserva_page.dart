@@ -464,6 +464,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     if (!cupomValidade.isAfter(DateTime.now())) {
       dev.log('Cupom nao eh valido');
       Messages.showError('Cupom expirado', context);
+      return;
     }
     //todo: aplicar
     dev.log('Cupom eh valido!!');
