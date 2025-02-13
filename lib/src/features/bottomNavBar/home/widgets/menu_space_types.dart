@@ -171,7 +171,7 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                 MaterialPageRoute(
                   builder: (context) {
                     return const SpacesByTypePage(
-                      type: ['Cha'],
+                      type: ['Chá'],
                     ); // Substitua NovaPagina com o widget da sua nova tela
                   },
                 ),
@@ -209,7 +209,7 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                 MaterialPageRoute(
                   builder: (context) {
                     return const SpacesByTypePage(
-                      type: ['Reuniao'],
+                      type: ['Reunião'],
                     ); // Substitua NovaPagina com o widget da sua nova tela
                   },
                 ),

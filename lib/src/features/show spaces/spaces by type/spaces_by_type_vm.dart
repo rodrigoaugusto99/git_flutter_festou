@@ -11,9 +11,13 @@ class SpacesByTypeVm extends ChangeNotifier {
 
   List<SpaceModel> _filteredList = [];
   List<SpaceModel>? _allSpacesByType;
+  List<String> _selectedTypes = [];
+  bool _isFetching = false;
+  bool _isLoading = false;
 
   List<SpaceModel> get getFiltered => _filteredList;
   List<SpaceModel>? get getSpaces => _allSpacesByType;
+  bool get isLoading => _isLoading;
 
   bool showSpacesByType = true;
   bool showFiltered = false;
@@ -22,11 +26,12 @@ class SpacesByTypeVm extends ChangeNotifier {
   final PagingController<DocumentSnapshot?, SpaceModel> pagingController =
       PagingController(firstPageKey: null);
 
-  static const int pageSize = 3;
+  static const int pageSize = 2;
 
-  SpacesByTypeVm() {
+  SpacesByTypeVm(List<String> types) {
+    _selectedTypes = types; // 🔥 Salva os tipos selecionados
     pagingController.addPageRequestListener((pageKey) {
-      fetchSpaces(pageKey);
+      fetchSpaces(pageKey, _selectedTypes);
     });
   }
 
@@ -59,7 +64,7 @@ class SpacesByTypeVm extends ChangeNotifier {
     }
 
     try {
-      // 🔹 Atualiza UI antes de buscar (garante que lista anterior some)
+      _isLoading = true;
       showSpacesByType = false;
       showFiltered = true;
       _filteredList.clear();
@@ -90,6 +95,8 @@ class SpacesByTypeVm extends ChangeNotifier {
       notifyListeners(); // 🔥 Garante que a UI receba a atualização
     } catch (e) {
       log("❌ Erro ao buscar espaços por título: $e");
+    } finally {
+      _isLoading = false;
     }
   }
 
@@ -130,7 +137,7 @@ class SpacesByTypeVm extends ChangeNotifier {
       if (spaceDocuments.docs.isEmpty) {
         log("No initial spaces found.");
         _allSpacesByType = [];
-        notifyListeners();
+        //notifyListeners();
         return;
       }
 
@@ -158,11 +165,16 @@ class SpacesByTypeVm extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchSpaces(DocumentSnapshot? lastDocument) async {
-    log("🔄 Iniciando fetchSpaces()...");
+  Future<void> fetchSpaces(
+      DocumentSnapshot? lastDocument, List<String> types) async {
+    if (_isFetching) return; // 🔥 Evita múltiplas chamadas simultâneas
+    _isFetching = true;
+
+    log("🔄 Iniciando fetchSpaces() para os tipos: $types");
 
     try {
       Query query = spacesCollection
+          .where('selectedTypes', arrayContainsAny: types) // Filtra por tipo
           .orderBy('createdAt', descending: true)
           .limit(pageSize);
 
@@ -178,8 +190,7 @@ class SpacesByTypeVm extends ChangeNotifier {
 
       if (querySnapshot.docs.isEmpty) {
         log("✅ Nenhum novo documento encontrado. Fim da paginação.");
-        pagingController
-            .appendLastPage([]); // 🚨 Finaliza paginação corretamente
+        pagingController.appendLastPage([]); // Finaliza paginação corretamente
         return;
       }
 
@@ -200,6 +211,8 @@ class SpacesByTypeVm extends ChangeNotifier {
       log("❌ Erro em fetchSpaces(): $e");
       log("🔍 Stacktrace: $stacktrace");
       pagingController.error = e;
+    } finally {
+      _isFetching = false;
     }
   }
 
