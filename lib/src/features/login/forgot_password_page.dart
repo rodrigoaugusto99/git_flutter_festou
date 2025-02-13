@@ -59,15 +59,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       // Método do Firebase para enviar o link no email
       await FirebaseAuth.instance.sendPasswordResetEmail(email: emailEC.text);
 
-      // Mostrar um diálogo de sucesso
-      showDialog(
-        context: context,
-        builder: (context) {
-          return const AlertDialog(
-            content: Text('Password reset link sent! Check your email'),
-          );
-        },
-      );
+      // Limpar o campo de e-mail
+      emailEC.clear();
+
       Messages.showSuccess(
           'Um link de verificação foi enviado para o e-mail cadastrado',
           context);
