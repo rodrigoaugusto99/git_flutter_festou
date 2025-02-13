@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:Festou/src/features/bottomNavBar/home/widgets/post_single_page.dart';
 import 'package:Festou/src/models/user_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -864,10 +865,26 @@ class _NewCardInfoState extends State<NewCardInfo>
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          height: 90,
-                          space!.imagesUrl[index].toString(),
-                          fit: BoxFit.cover,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PhotoDetailScreen(
+                                  photoUrls: space!.imagesUrl,
+                                  initialIndex: index,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Hero(
+                            tag: space!.imagesUrl[index],
+                            child: Image.network(
+                              height: 90,
+                              space!.imagesUrl[index].toString(),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
                       ),
                       if (isEditing)
