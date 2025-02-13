@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:Festou/src/helpers/keys.dart';
+import 'package:festou/src/helpers/keys.dart';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:image_painter/image_painter.dart';
@@ -43,9 +43,6 @@ class _SignatureDialogState extends State<SignatureDialog> {
           Navigator.of(context).pop(signedImage);
 
           //await navToImageTerms(signedImage);
-        } else {
-          //todo:
-          print('The user did not draw anything.');
         }
       }
     }

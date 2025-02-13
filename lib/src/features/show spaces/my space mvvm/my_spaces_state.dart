@@ -1,4 +1,4 @@
-import 'package:Festou/src/models/space_model.dart';
+import 'package:festou/src/models/space_model.dart';
 
 enum MySpacesStateStatus { loaded, error }
 

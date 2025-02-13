@@ -1,30 +1,30 @@
 import 'dart:developer';
 import 'dart:io';
-import 'package:Festou/src/models/user_model.dart';
+import 'package:festou/src/models/user_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:Festou/src/core/ui/helpers/messages.dart';
-import 'package:Festou/src/features/register/host%20feedback/host_feedback_register_page.dart';
-import 'package:Festou/src/features/register/posts/register_post_page.dart';
-import 'package:Festou/src/features/space%20card/widgets/calendar_page.dart';
-import 'package:Festou/src/features/space%20card/widgets/chat_page.dart';
-import 'package:Festou/src/features/space%20card/widgets/new_feedback_widget_limited.dart';
-import 'package:Festou/src/features/space%20card/widgets/show_new_map.dart';
-import 'package:Festou/src/features/space%20card/widgets/show_map.dart';
-import 'package:Festou/src/features/register/avaliacoes/avaliacoes_register_page.dart';
-import 'package:Festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_all.dart';
-import 'package:Festou/src/features/space%20card/widgets/utils.dart';
-import 'package:Festou/src/features/widgets/custom_textformfield.dart';
-import 'package:Festou/src/helpers/helpers.dart';
-import 'package:Festou/src/models/avaliacoes_model.dart';
-import 'package:Festou/src/models/reservation_model.dart';
-import 'package:Festou/src/models/space_model.dart';
-import 'package:Festou/src/services/avaliacoes_service.dart';
-import 'package:Festou/src/services/reserva_service.dart';
-import 'package:Festou/src/services/space_service.dart';
-import 'package:Festou/src/services/user_service.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/register/host%20feedback/host_feedback_register_page.dart';
+import 'package:festou/src/features/register/posts/register_post_page.dart';
+import 'package:festou/src/features/space%20card/widgets/calendar_page.dart';
+import 'package:festou/src/features/space%20card/widgets/chat_page.dart';
+import 'package:festou/src/features/space%20card/widgets/new_feedback_widget_limited.dart';
+import 'package:festou/src/features/space%20card/widgets/show_new_map.dart';
+import 'package:festou/src/features/space%20card/widgets/show_map.dart';
+import 'package:festou/src/features/register/avaliacoes/avaliacoes_register_page.dart';
+import 'package:festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_all.dart';
+import 'package:festou/src/features/space%20card/widgets/utils.dart';
+import 'package:festou/src/features/widgets/custom_textformfield.dart';
+import 'package:festou/src/helpers/helpers.dart';
+import 'package:festou/src/models/avaliacoes_model.dart';
+import 'package:festou/src/models/reservation_model.dart';
+import 'package:festou/src/models/space_model.dart';
+import 'package:festou/src/services/avaliacoes_service.dart';
+import 'package:festou/src/services/reserva_service.dart';
+import 'package:festou/src/services/space_service.dart';
+import 'package:festou/src/services/user_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social_share/social_share.dart';
@@ -152,7 +152,6 @@ class _NewCardInfoState extends State<NewCardInfo>
 
       return validReservations;
     } catch (e) {
-      print("Erro ao buscar reservas válidas: $e");
       return [];
     }
   }
@@ -267,7 +266,7 @@ class _NewCardInfoState extends State<NewCardInfo>
     feedbacks!.removeWhere((f) => f.deletedAt != null);
     final user = await UserService().getCurrentUserModel();
     if (user != null) {
-      if (user!.uid == space!.userId) {
+      if (user.uid == space!.userId) {
         setState(() {
           isMySpace = true;
         });

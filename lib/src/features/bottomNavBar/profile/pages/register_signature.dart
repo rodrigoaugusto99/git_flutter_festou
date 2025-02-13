@@ -5,14 +5,12 @@ import 'dart:ui' as ui;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:Festou/src/core/ui/constants.dart';
-import 'package:Festou/src/core/ui/helpers/messages.dart';
-import 'package:Festou/src/features/login/forgot_email_page.dart';
-import 'package:Festou/src/features/space%20card/widgets/signature_dialog.dart';
-import 'package:Festou/src/features/widgets/custom_textformfield.dart';
-import 'package:Festou/src/helpers/keys.dart';
-import 'package:Festou/src/services/user_service.dart';
+import 'package:festou/src/core/ui/constants.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/space%20card/widgets/signature_dialog.dart';
+import 'package:festou/src/features/widgets/custom_textformfield.dart';
+import 'package:festou/src/helpers/keys.dart';
+import 'package:festou/src/services/user_service.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -97,8 +95,6 @@ class _RegisterSignatureState extends State<RegisterSignature> {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
     final double firstContainer = (179 / 732) * screenHeight;
-    final double buttonWidth = (260 / 412) * screenWidth;
-    final double buttonHeight = (37 / 732) * screenHeight;
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8F8),
       resizeToAvoidBottomInset: true,

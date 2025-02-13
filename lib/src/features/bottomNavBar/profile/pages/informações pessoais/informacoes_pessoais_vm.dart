@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'package:Festou/src/core/exceptions/repository_exception.dart';
-import 'package:Festou/src/core/fp/either.dart';
-import 'package:Festou/src/core/providers/application_providers.dart';
-import 'package:Festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais_status.dart';
+import 'package:festou/src/core/exceptions/repository_exception.dart';
+import 'package:festou/src/core/fp/either.dart';
+import 'package:festou/src/core/providers/application_providers.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais_status.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -22,6 +22,7 @@ class InformacoesPessoaisVM extends _$InformacoesPessoaisVM {
     required String email,
     required String telefone,
     required String logradouro,
+    required String numero,
     required String bairro,
   }) async {
     final usersRepository = ref.watch(userFirestoreRepositoryProvider);
@@ -34,6 +35,7 @@ class InformacoesPessoaisVM extends _$InformacoesPessoaisVM {
     await usersRepository.updatetUser('email', email);
     await usersRepository.updatetUser('telefone', telefone);
     await usersRepository.updatetUser('logradouro', logradouro);
+    await usersRepository.updatetUser('numero', numero);
     await usersRepository.updatetUser('bairro', bairro);
 
     switch (a) {

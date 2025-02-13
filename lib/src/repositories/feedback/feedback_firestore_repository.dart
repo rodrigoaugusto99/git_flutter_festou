@@ -1,7 +1,7 @@
-import 'package:Festou/src/core/exceptions/repository_exception.dart';
-import 'package:Festou/src/core/fp/either.dart';
-import 'package:Festou/src/core/fp/nil.dart';
-import 'package:Festou/src/models/avaliacoes_model.dart';
+import 'package:festou/src/core/exceptions/repository_exception.dart';
+import 'package:festou/src/core/fp/either.dart';
+import 'package:festou/src/core/fp/nil.dart';
+import 'package:festou/src/models/avaliacoes_model.dart';
 
 abstract interface class FeedbackFirestoreRepository {
   Future<Either<RepositoryException, Nil>> saveFeedback(

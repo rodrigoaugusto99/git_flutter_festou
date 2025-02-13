@@ -4,8 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:Festou/src/models/post_model.dart';
-import 'package:uuid/uuid.dart';
+import 'package:festou/src/models/post_model.dart';
 
 class PostService {
   final storage = FirebaseStorage.instance;
@@ -200,15 +199,12 @@ class PostService {
 
           return postModels;
         } else {
-          print('Usuário não encontrado.');
           return null;
         }
       } catch (e) {
-        print('Erro ao recuperar dados: $e');
         return null;
       }
     } else {
-      print('Usuário não autenticado.');
       return null;
     }
   }

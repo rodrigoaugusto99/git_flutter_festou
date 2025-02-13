@@ -1,12 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/minhas%20reservas/cancel_reservation_dialog.dart';
-import 'package:Festou/src/features/space%20card/widgets/new_space_card.dart';
-import 'package:Festou/src/helpers/helpers.dart';
-import 'package:Festou/src/models/reservation_model.dart';
-import 'package:Festou/src/models/space_model.dart';
-import 'package:Festou/src/services/reserva_service.dart';
-import 'package:Festou/src/services/space_service.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/minhas%20reservas/cancel_reservation_dialog.dart';
+import 'package:festou/src/features/space%20card/widgets/new_space_card.dart';
+import 'package:festou/src/helpers/helpers.dart';
+import 'package:festou/src/models/reservation_model.dart';
+import 'package:festou/src/models/space_model.dart';
+import 'package:festou/src/services/reserva_service.dart';
+import 'package:festou/src/services/space_service.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 

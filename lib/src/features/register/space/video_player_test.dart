@@ -38,7 +38,7 @@ class _VideoPlayerTestState extends State<VideoPlayerTest> {
             });
         });
       } catch (e) {
-        print('Error uploading video: $e');
+        return;
       }
     }
   }

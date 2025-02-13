@@ -1,12 +1,12 @@
-import 'package:Festou/src/features/bottomNavBarLocador/bottomNavBarLocadorPage.dart';
+import 'package:festou/src/features/bottomNavBarLocador/bottom_navbar_locador_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Festou/src/core/ui/helpers/messages.dart';
-import 'package:Festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
-import 'package:Festou/src/features/register/space/space_register_state.dart';
-import 'package:Festou/src/helpers/helpers.dart';
-import 'package:Festou/src/helpers/keys.dart';
-import 'package:Festou/src/models/space_model.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
+import 'package:festou/src/features/register/space/space_register_state.dart';
+import 'package:festou/src/helpers/helpers.dart';
+import 'package:festou/src/helpers/keys.dart';
+import 'package:festou/src/models/space_model.dart';
 
 class Revisao extends ConsumerStatefulWidget {
   const Revisao({super.key});
@@ -270,8 +270,8 @@ class _RevisaoState extends ConsumerState<Revisao> {
                           ),
                         );
                         showSuccessDialog(context);
-                      } on Exception catch (e) {
-                        // TODO
+                      } on Exception {
+                        return;
                       }
                     },
                     child: Container(

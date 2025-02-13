@@ -2,12 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Festou/src/features/register/space/space%20temporary/pages/adicione_fotos.dart';
-import 'package:Festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
+import 'package:festou/src/features/register/space/space%20temporary/pages/adicione_fotos.dart';
+import 'package:festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 
-import 'package:Festou/src/features/register/space/widgets/services_panel.dart';
-import 'package:Festou/src/features/register/space/widgets/type_panel.dart';
-import 'package:Festou/src/helpers/keys.dart';
+import 'package:festou/src/features/register/space/widgets/services_panel.dart';
+import 'package:festou/src/helpers/keys.dart';
 
 class ServicosAcomodacoes extends ConsumerStatefulWidget {
   const ServicosAcomodacoes({super.key});

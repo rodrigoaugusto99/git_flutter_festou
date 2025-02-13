@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:Festou/src/features/space%20card/widgets/resumo_reserva_page.dart';
-import 'package:Festou/src/features/space%20card/widgets/summary_data.dart';
-import 'package:Festou/src/models/cupom_model.dart';
+import 'package:festou/src/features/space%20card/widgets/resumo_reserva_page.dart';
+import 'package:festou/src/features/space%20card/widgets/summary_data.dart';
+import 'package:festou/src/models/cupom_model.dart';
 
 class ContratoAssinadoPage extends StatefulWidget {
   final SummaryData? summaryData;

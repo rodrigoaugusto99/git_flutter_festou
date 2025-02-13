@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/features/bottomNavBar/my%20favorite%20spaces%20mvvm/my_favorite_spaces_page.dart';
-import 'package:Festou/src/features/bottomNavBar/profile/profile.dart';
-import 'package:Festou/src/features/bottomNavBar/search/search_page.dart';
-import 'package:Festou/src/features/bottomNavBar/home/home_page.dart';
+import 'package:festou/src/features/bottomNavBar/my%20favorite%20spaces%20mvvm/my_favorite_spaces_page.dart';
+import 'package:festou/src/features/bottomNavBar/profile/profile.dart';
+import 'package:festou/src/features/bottomNavBar/search/search_page.dart';
+import 'package:festou/src/features/bottomNavBar/home/home_page.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:Festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
-import 'package:Festou/src/features/widgets/notifications_counter.dart';
-import 'package:Festou/src/helpers/keys.dart';
+import 'package:festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
+import 'package:festou/src/features/widgets/notifications_counter.dart';
+import 'package:festou/src/helpers/keys.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 class BottomNavBarLocatarioPage extends StatefulWidget {

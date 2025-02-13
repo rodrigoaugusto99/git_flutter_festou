@@ -2,11 +2,11 @@ import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/core/exceptions/auth_exception.dart';
-import 'package:Festou/src/core/ui/helpers/messages.dart';
-import 'package:Festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/passwordField.dart';
-import 'package:Festou/src/models/reservation_model.dart';
-import 'package:Festou/src/services/reserva_service.dart';
+import 'package:festou/src/core/exceptions/auth_exception.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/passwordField.dart';
+import 'package:festou/src/models/reservation_model.dart';
+import 'package:festou/src/services/reserva_service.dart';
 import 'package:lottie/lottie.dart';
 
 class CancelReservationDialog extends StatefulWidget {

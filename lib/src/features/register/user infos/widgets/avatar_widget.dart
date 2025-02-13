@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:Festou/src/core/ui/constants.dart';
+import 'package:festou/src/core/ui/constants.dart';
 
 class AvatarWidget extends StatelessWidget {
   final bool hideUploadButton;
