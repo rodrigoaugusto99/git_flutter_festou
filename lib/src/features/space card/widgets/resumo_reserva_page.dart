@@ -138,8 +138,8 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
               ),
             ),
             Positioned(
-              left: adjustedOffset.dx + 85,
-              top: adjustedOffset.dy - 120,
+              left: adjustedOffset.dx + 75,
+              top: adjustedOffset.dy - 130,
               child: Material(
                 color: Colors.transparent,
                 child: Stack(
@@ -1495,6 +1495,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
             } else {
               //todo: nao pode reservar
               dev.log('NAO pode reservar.');
+              Messages.showInfo('Complete os dados para continuar', context);
             }
           },
           child: Container(
