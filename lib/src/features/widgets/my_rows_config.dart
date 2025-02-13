@@ -34,8 +34,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  InformacoesPessoais(userModel: widget.userModel),
+              builder: (context) => const InformacoesPessoais(),
             ),
           ),
           icon1: Image.asset(
