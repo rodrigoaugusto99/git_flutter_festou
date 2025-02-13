@@ -8,10 +8,12 @@ class ContratoAssinadoPage extends StatefulWidget {
   final SummaryData? summaryData;
   final CupomModel? cupomModel;
   String? html;
+  bool onlyRead;
   ContratoAssinadoPage({
     super.key,
     this.summaryData,
     this.cupomModel,
+    this.onlyRead = false,
     required this.html,
   });
 
