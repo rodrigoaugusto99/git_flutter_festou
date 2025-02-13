@@ -1,9 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:festou/src/features/space%20card/widgets/new_card_info.dart';
 import 'package:festou/src/models/space_model.dart';
-import 'package:shimmer/shimmer.dart';
 
 class EachLastSeen extends StatefulWidget {
   final SpaceModel space;
@@ -17,20 +14,6 @@ class EachLastSeen extends StatefulWidget {
 }
 
 class _EachLastSeenState extends State<EachLastSeen> {
-  Future<void> _loadImage(String url) async {
-    final ImageStream stream =
-        NetworkImage(url).resolve(ImageConfiguration.empty);
-    final Completer<void> completer = Completer();
-    final ImageStreamListener listener = ImageStreamListener((_, __) {
-      completer.complete();
-    }, onError: (Object exception, StackTrace? stackTrace) {
-      completer.completeError(exception);
-    });
-    stream.addListener(listener);
-    await completer.future;
-    stream.removeListener(listener);
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

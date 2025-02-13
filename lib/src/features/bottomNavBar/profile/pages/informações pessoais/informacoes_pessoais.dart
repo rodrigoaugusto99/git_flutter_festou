@@ -31,6 +31,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
 
   File? _selectedImage;
   bool isEditing = false;
+  bool isLoading = false;
   bool isHovering = false;
   String buttonEditionName = 'Editar';
   String avatarUrl = '';
@@ -133,7 +134,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
         elevation: 0,
         backgroundColor: const Color(0xfff8f8f8),
       ),
-      body: userModel == null
+      body: userModel == null || isLoading
           ? const CustomLoadingIndicator()
           : SingleChildScrollView(
               child: Padding(
@@ -399,6 +400,10 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                     ),
                     GestureDetector(
                       onTap: () async {
+                        setState(() {
+                          isLoading = true;
+                        });
+
                         bool saveImageSuccess = false;
 
                         await informacoesPessoaisVm.updateInfo(
@@ -437,6 +442,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                         }
 
                         setState(() {
+                          isLoading = false;
                           isEditing = false;
                         });
 
