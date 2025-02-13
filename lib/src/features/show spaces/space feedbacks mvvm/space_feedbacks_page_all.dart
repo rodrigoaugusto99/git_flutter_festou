@@ -1,4 +1,4 @@
-import 'package:Festou/src/models/avaliacoes_model.dart';
+import 'package:festou/src/models/avaliacoes_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:festou/src/features/loading_indicator.dart';

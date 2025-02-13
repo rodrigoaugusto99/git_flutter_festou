@@ -102,7 +102,7 @@ class _AnimatedGradientTextState extends State<AnimatedGradientText>
                 _animation.value - 0.4,
                 _animation.value - 0.2,
                 _animation.value,
-                _animation.value + 0.2,           
+                _animation.value + 0.2,
                 _animation.value + 0.4,
                 _animation.value + 0.8,
               ],
@@ -127,5 +127,5 @@ class _AnimatedGradientTextState extends State<AnimatedGradientText>
   void dispose() {
     _controller.dispose();
     super.dispose();
-}
+  }
 }

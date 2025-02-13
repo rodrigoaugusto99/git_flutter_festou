@@ -674,10 +674,6 @@ class _NewCardInfoState extends State<NewCardInfo>
       );
     }
 
-//todo:
-
-    final x = MediaQuery.of(context).size.width;
-
     Widget myThirdWidget() {
       return Column(
         children: [

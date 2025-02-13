@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:Festou/src/models/card_model.dart';
+import 'package:festou/src/models/card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:festou/src/features/space%20card/widgets/contrato_assinado_page.dart';
