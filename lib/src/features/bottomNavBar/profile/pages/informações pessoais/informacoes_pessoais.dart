@@ -31,6 +31,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
 
   File? _selectedImage;
   bool isEditing = false;
+  bool isLoading = false;
   bool isHovering = false;
   String buttonEditionName = 'Editar';
   String avatarUrl = '';
@@ -133,7 +134,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
         elevation: 0,
         backgroundColor: const Color(0xfff8f8f8),
       ),
-      body: userModel == null
+      body: userModel == null || isLoading
           ? const CustomLoadingIndicator()
           : SingleChildScrollView(
               child: Padding(
@@ -337,35 +338,61 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                       enable: isEditing,
                     ),
                     GestureDetector(
-                      onTap: () {
+                      onTap: () async {
                         if (isEditing) {
+                          // Se estiver no modo edição, salva os dados e sai do modo de edição
                           setState(() {
-                            fantasyNameEC = TextEditingController(
-                                text: userModel!.fantasyName);
-                            nameEC =
-                                TextEditingController(text: userModel!.name);
-                            telefoneEC = TextEditingController(
-                                text: userModel!.telefone);
-                            cepEC = TextEditingController(text: userModel!.cep);
-                            logradourolEC = TextEditingController(
-                                text: userModel!.logradouro);
-                            numeroEC =
-                                TextEditingController(text: userModel!.numero);
-                            bairroEC =
-                                TextEditingController(text: userModel!.bairro);
-                            cidadeEC =
-                                TextEditingController(text: userModel!.cidade);
-                            _selectedImage = null;
-                            buttonEditionName = 'Editar';
-                            isEditing = false;
+                            isLoading = true;
+                          });
+
+                          bool saveImageSuccess = false;
+
+                          await informacoesPessoaisVm.updateInfo(
+                            fantasyName: fantasyNameEC.text,
+                            bairro: bairroEC.text,
+                            name: nameEC.text,
+                            cep: cepEC.text,
+                            telefone: telefoneEC.text,
+                            logradouro: logradourolEC.text,
+                            numero: numeroEC.text,
+                            cidade: cidadeEC.text,
+                            email: emailEC.text,
+                          );
+
+                          if (isImageRemoved) {
+                            await informacoesPessoaisVm.deleteImageFirestore(
+                              'avatar_url',
+                              userModel!.uid,
+                            );
                             isImageRemoved = false;
-                            avatarUrl = originalAvatarUrl;
+                          }
+
+                          if (_selectedImage != null) {
+                            saveImageSuccess = await informacoesPessoaisVm
+                                .uploadAvatar(userModel!.uid);
+
+                            if (saveImageSuccess) {
+                              Messages.showSuccess(
+                                  'Dados salvos com sucesso', context);
+                            } else {
+                              Messages.showError(
+                                  'Erro ao salvar dados', context);
+                            }
+                          } else {
+                            Messages.showSuccess(
+                                'Dados salvos com sucesso', context);
+                          }
+
+                          setState(() {
+                            isLoading = false;
+                            isEditing = false;
+                            buttonEditionName = 'Editar';
                           });
                         } else {
+                          // Se não estiver no modo edição, entra no modo edição
                           setState(() {
-                            isEditing = !isEditing;
-                            buttonEditionName =
-                                isEditing ? 'Cancelar' : 'Editar';
+                            isEditing = true;
+                            buttonEditionName = 'Salvar';
                           });
                         }
                       },
@@ -398,49 +425,27 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () async {
-                        bool saveImageSuccess = false;
-
-                        await informacoesPessoaisVm.updateInfo(
-                          fantasyName: fantasyNameEC.text,
-                          bairro: bairroEC.text,
-                          name: nameEC.text,
-                          cep: cepEC.text,
-                          telefone: telefoneEC.text,
-                          logradouro: logradourolEC.text,
-                          numero: numeroEC.text,
-                          cidade: cidadeEC.text,
-                          email: emailEC.text,
-                        );
-
-                        if (isImageRemoved) {
-                          await informacoesPessoaisVm.deleteImageFirestore(
-                            'avatar_url',
-                            userModel!.uid,
-                          );
-                          isImageRemoved = false;
-                        }
-
-                        if (_selectedImage != null) {
-                          saveImageSuccess = await informacoesPessoaisVm
-                              .uploadAvatar(userModel!.uid);
-
-                          if (saveImageSuccess) {
-                            Messages.showSuccess(
-                                'Dados salvos com sucesso', context);
-                          } else {
-                            Messages.showError('Erro ao salvar dados', context);
-                          }
+                      onTap: () {
+                        if (isEditing) {
+                          // Se estiver editando, "Cancelar" restaura os valores originais
+                          setState(() {
+                            fantasyNameEC.text = userModel!.fantasyName;
+                            nameEC.text = userModel!.name;
+                            telefoneEC.text = userModel!.telefone;
+                            cepEC.text = userModel!.cep;
+                            logradourolEC.text = userModel!.logradouro;
+                            numeroEC.text = userModel!.numero;
+                            bairroEC.text = userModel!.bairro;
+                            cidadeEC.text = userModel!.cidade;
+                            _selectedImage = null;
+                            avatarUrl = originalAvatarUrl;
+                            isEditing = false;
+                            buttonEditionName = 'Editar';
+                          });
                         } else {
-                          Messages.showSuccess(
-                              'Dados salvos com sucesso', context);
+                          // Se não estiver editando, volta para a tela anterior
+                          Navigator.of(context).pop();
                         }
-
-                        setState(() {
-                          isEditing = false;
-                        });
-
-                        Navigator.of(context).pop();
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(
@@ -458,10 +463,10 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                             ),
                             borderRadius: BorderRadius.circular(50),
                           ),
-                          child: const Text(
-                            'Salvar',
+                          child: Text(
+                            isEditing ? 'Cancelar' : 'Voltar',
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w700,
                               fontSize: 12,
