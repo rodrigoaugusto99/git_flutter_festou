@@ -274,6 +274,10 @@ class _CalendarPageState extends State<CalendarPage> {
             log(startHour.toString());
             final int index = entry.key;
             final int hour = (startHour + index) % 24;
+            if (hour == 15) {
+              log('horario 15');
+              return const SizedBox.shrink();
+            }
 
             // Corrigida a lógica para identificar "dia seguinte"
             final bool isNextDay;
@@ -736,125 +740,3 @@ class CalendarWidget extends StatelessWidget {
     );
   }
 }
-/*
-      appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 18.0),
-          child: Container(
-            decoration: BoxDecoration(
-              //color: Colors.white.withOpacity(0.7),
-              color: Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 2,
-                  blurRadius: 5,
-                  offset: const Offset(0, 2), // changes position of shadow
-                ),
-              ],
-            ),
-            child: InkWell(
-              onTap: () => Navigator.of(context).pop(),
-              child: const Icon(
-                Icons.arrow_back,
-                color: Colors.black,
-              ),
-            ),
-          ),
-        ),
-        centerTitle: true,
-        title: const Text(
-          'Calendário',
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-      ),
- */
-
-
-
-/*
-bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-        child: GestureDetector(
-          onTap: () {
-            if (_selectedDate == null ||
-                checkInTime == null ||
-                checkOutTime == null) {
-              log('ha variaveis nulas');
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text('Selecione uma data e horarios')));
-              return;
-            }
-
-            // Verificação com ajuste temporário para checkOutTime
-            int adjustedCheckOutTime = checkOutTime!;
-            if (checkOutTime! >= 0 && checkOutTime! <= 4) {
-              adjustedCheckOutTime += 24;
-            }
-
-            if ((adjustedCheckOutTime - checkInTime!) < 4) {
-              setState(() {
-                showWarning = true;
-              });
-              return;
-            }
-
-            SummaryData summaryData = SummaryData(
-              dataAtual: null,
-              selectedDate: _selectedDate!,
-              selectedFinalDate: null, //todo: arrumar
-              spaceModel: widget.space,
-              checkInTime: checkInTime!,
-              checkOutTime: checkOutTime!,
-
-              totalHours: null,
-              valorTotalDasHoras: null,
-              valorDaTaxaConcierge: null,
-
-              valorTotalAPagar: null,
-              valorDaMultaPorHoraExtrapolada: null,
-              nomeDoCliente: null,
-              cpfDoCliente: null,
-              nomeDoLocador: null,
-              cpfDoLocador: null,
-            );
-
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ResumoReservaPage(
-                  summaryData: summaryData,
-                  cupomModel: null,
-                  html: null,
-                ),
-              ),
-            );
-          },
-          child: Container(
-              alignment: Alignment.center,
-              height: 35,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xff9747FF),
-                    Color(0xff44300b1),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-              child: const Text(
-                'Prosseguir',
-                style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white),
-              )),
-        ),
-      ),
- */
