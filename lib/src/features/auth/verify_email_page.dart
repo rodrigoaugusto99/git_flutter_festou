@@ -3,15 +3,14 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/features/bottomNavBar/bottomNavBarLocatarioPage.dart';
-import 'package:Festou/src/features/bottomNavBar/profile/profile.dart';
-import 'package:Festou/src/features/bottomNavBarLocador/bottomNavBarLocadorPage.dart';
-import 'package:Festou/src/features/loading_indicator.dart';
-import 'package:Festou/src/features/space%20card/widgets/privacy_policy_page.dart';
-import 'package:Festou/src/features/space%20card/widgets/service_terms_page.dart';
-import 'package:Festou/src/helpers/constants.dart';
-import 'package:Festou/src/models/user_model.dart';
-import 'package:Festou/src/services/user_service.dart';
+import 'package:festou/src/features/bottomNavBar/bottom_navbar_locatario_page.dart';
+import 'package:festou/src/features/bottomNavBar/profile/profile.dart';
+import 'package:festou/src/features/bottomNavBarLocador/bottom_navbar_locador_page.dart';
+import 'package:festou/src/features/space%20card/widgets/privacy_policy_page.dart';
+import 'package:festou/src/features/space%20card/widgets/service_terms_page.dart';
+import 'package:festou/src/helpers/constants.dart';
+import 'package:festou/src/models/user_model.dart';
+import 'package:festou/src/services/user_service.dart';
 
 class VerifyEmailPage extends StatefulWidget {
   const VerifyEmailPage({super.key});

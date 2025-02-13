@@ -1,7 +1,7 @@
-import 'package:Festou/src/core/exceptions/repository_exception.dart';
-import 'package:Festou/src/core/fp/either.dart';
-import 'package:Festou/src/core/providers/application_providers.dart';
-import 'package:Festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_state.dart';
+import 'package:festou/src/core/exceptions/repository_exception.dart';
+import 'package:festou/src/core/fp/either.dart';
+import 'package:festou/src/core/providers/application_providers.dart';
+import 'package:festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'my_spaces_vm.g.dart';

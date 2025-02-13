@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
-import 'package:Festou/src/models/avaliacoes_model.dart';
+import 'package:festou/src/models/avaliacoes_model.dart';
 
 class NewFeedbackWidgetLimited extends StatefulWidget {
   final List<AvaliacoesModel> feedbacks;

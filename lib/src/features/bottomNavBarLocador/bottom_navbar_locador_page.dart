@@ -4,11 +4,11 @@ import 'package:confetti/confetti.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/features/bottomNavBar/profile/profile.dart';
-import 'package:Festou/src/features/bottomNavBarLocador/calendario/calendario.dart';
-import 'package:Festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
-import 'package:Festou/src/features/loading_indicator.dart';
-import 'package:Festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_page.dart';
+import 'package:festou/src/features/bottomNavBar/profile/profile.dart';
+import 'package:festou/src/features/bottomNavBarLocador/calendario/calendario.dart';
+import 'package:festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
+import 'package:festou/src/features/loading_indicator.dart';
+import 'package:festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_page.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 class BottomNavBarLocadorPage extends StatefulWidget {

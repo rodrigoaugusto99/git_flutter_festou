@@ -3,11 +3,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Festou/src/core/ui/helpers/messages.dart';
-import 'package:Festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
-import 'package:Festou/src/features/register/space/space%20temporary/pages/titulo.dart';
-import 'package:Festou/src/features/space%20card/widgets/utils.dart';
-import 'package:Festou/src/helpers/keys.dart';
+import 'package:festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
+import 'package:festou/src/features/register/space/space%20temporary/pages/titulo.dart';
+import 'package:festou/src/features/space%20card/widgets/utils.dart';
+import 'package:festou/src/helpers/keys.dart';
 import 'package:video_player/video_player.dart';
 
 class AdicioneFotos extends ConsumerStatefulWidget {
@@ -28,10 +27,7 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
     // selectedTypes = state.selectedTypes;
     // Cria um Timer que atualiza o estado a cada 5 segundos
     _timer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
-      setState(() {
-        // Atualize qualquer estado necessário aqui
-        print("setState chamado");
-      });
+      setState(() {});
     });
   }
 

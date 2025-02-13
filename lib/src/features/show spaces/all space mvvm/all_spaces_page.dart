@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Festou/src/core/ui/helpers/messages.dart';
-import 'package:Festou/src/features/loading_indicator.dart';
-import 'package:Festou/src/features/space%20card/widgets/my_sliver_list_normal.dart';
-import 'package:Festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_state.dart';
-import 'package:Festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/loading_indicator.dart';
+import 'package:festou/src/features/space%20card/widgets/my_sliver_list_normal.dart';
+import 'package:festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_state.dart';
+import 'package:festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
 
 class AllSpacesPage extends ConsumerStatefulWidget {
   const AllSpacesPage({super.key});
@@ -12,8 +12,6 @@ class AllSpacesPage extends ConsumerStatefulWidget {
   @override
   ConsumerState<AllSpacesPage> createState() => _AllSpacesPageState();
 }
-
-//TODO: spacs by type
 
 class _AllSpacesPageState extends ConsumerState<AllSpacesPage> {
   @override

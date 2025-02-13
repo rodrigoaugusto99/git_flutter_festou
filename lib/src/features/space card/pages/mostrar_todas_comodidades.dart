@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:Festou/src/models/space_model.dart';
+import 'package:festou/src/models/space_model.dart';
 
 class MostrarTodasComodidades extends StatefulWidget {
   final SpaceModel space;

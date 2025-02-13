@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/features/loading_indicator.dart';
-import 'package:Festou/src/features/space%20card/widgets/chat_page.dart';
-import 'package:Festou/src/models/user_model.dart';
+import 'package:festou/src/features/loading_indicator.dart';
+import 'package:festou/src/features/space%20card/widgets/chat_page.dart';
+import 'package:festou/src/models/user_model.dart';
 import 'package:rxdart/rxdart.dart';
 
 class Mensagens extends StatefulWidget {
@@ -74,7 +74,6 @@ class _MensagensState extends State<Mensagens> {
         .snapshots()
         .listen((snapshot) {
       if (snapshot.docs.isNotEmpty) {
-        print('Nova mensagem recebida no chat room $chatRoomID');
         _firestore.collection('chat_rooms').doc(chatRoomID).update({
           'deletionID$currentUserID': false,
         });
@@ -489,8 +488,6 @@ class _MensagensState extends State<Mensagens> {
                   stream: getLastMessageAndUnreadCount(chatRoom.id),
                   builder: (context, combinedSnapshot) {
                     if (combinedSnapshot.hasError) {
-                      print(
-                          'Erro ao carregar a mensagem: ${combinedSnapshot.error}');
                       return const Text('Erro ao carregar a mensagem');
                     } else if (!combinedSnapshot.hasData) {
                       return const SizedBox.shrink();

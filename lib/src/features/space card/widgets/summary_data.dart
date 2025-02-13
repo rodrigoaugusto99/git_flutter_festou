@@ -1,5 +1,4 @@
-import 'package:Festou/src/models/cupom_model.dart';
-import 'package:Festou/src/models/space_model.dart';
+import 'package:festou/src/models/space_model.dart';
 
 class SummaryData {
   DateTime? dataAtual;

@@ -3,14 +3,14 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:Festou/src/core/exceptions/repository_exception.dart';
-import 'package:Festou/src/core/fp/either.dart';
-import 'package:Festou/src/core/fp/nil.dart';
-import 'package:Festou/src/models/space_model.dart';
-import 'package:Festou/src/models/user_model.dart';
-import 'package:Festou/src/repositories/feedback/feedback_firestore_repository.dart';
-import 'package:Festou/src/repositories/images/images_storage_repository.dart';
-import 'package:Festou/src/repositories/space/space_firestore_repository.dart';
+import 'package:festou/src/core/exceptions/repository_exception.dart';
+import 'package:festou/src/core/fp/either.dart';
+import 'package:festou/src/core/fp/nil.dart';
+import 'package:festou/src/models/space_model.dart';
+import 'package:festou/src/models/user_model.dart';
+import 'package:festou/src/repositories/feedback/feedback_firestore_repository.dart';
+import 'package:festou/src/repositories/images/images_storage_repository.dart';
+import 'package:festou/src/repositories/space/space_firestore_repository.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {

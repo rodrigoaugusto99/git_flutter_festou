@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Festou/src/core/providers/application_providers.dart';
+import 'package:festou/src/core/providers/application_providers.dart';
 import 'package:lottie/lottie.dart';
 
 class LogoutDialog {

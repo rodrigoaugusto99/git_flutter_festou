@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Festou/src/core/providers/application_providers.dart';
-import 'package:Festou/src/features/space%20card/widgets/new_card_info.dart';
-import 'package:Festou/src/models/space_model.dart';
-import 'package:Festou/src/services/user_service.dart';
+import 'package:festou/src/core/providers/application_providers.dart';
+import 'package:festou/src/features/space%20card/widgets/new_card_info.dart';
+import 'package:festou/src/models/space_model.dart';
+import 'package:festou/src/services/user_service.dart';
 import 'package:lottie/lottie.dart';
 
 class NewSpaceCard extends ConsumerStatefulWidget {
@@ -226,7 +226,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
         );
       },
       child: Container(
-        padding: const EdgeInsets.all(6),
+        padding: const EdgeInsets.all(16),
         height: 380,
         child: Stack(
           children: [

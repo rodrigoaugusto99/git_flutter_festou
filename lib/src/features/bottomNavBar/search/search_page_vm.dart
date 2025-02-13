@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/models/space_model.dart';
+import 'package:festou/src/models/space_model.dart';
 
 class SearchViewModel extends ChangeNotifier {
   final CollectionReference spacesCollection =
@@ -98,7 +98,7 @@ class SearchViewModel extends ChangeNotifier {
         String lowerCaseQuery = query.toLowerCase();
         queryBuilder = queryBuilder
             .where('titulo', isGreaterThanOrEqualTo: lowerCaseQuery)
-            .where('titulo', isLessThan: lowerCaseQuery + '\uf8ff');
+            .where('titulo', isLessThan: '$lowerCaseQuery\uf8ff');
       }
 
       if (pageKey > 0) {

@@ -3,7 +3,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:Festou/src/models/reservation_model.dart';
+import 'package:festou/src/models/reservation_model.dart';
 
 class ReservaService {
   final CollectionReference reservationCollection =

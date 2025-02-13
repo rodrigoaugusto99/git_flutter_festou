@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/patternedButton.dart';
-import 'package:Festou/src/features/bottomNavBar/profile/pages/pagamentos/new_card_view.dart';
-import 'package:Festou/src/features/space%20card/widgets/pix_page.dart';
-import 'package:Festou/src/models/card_model.dart';
-import 'package:Festou/src/services/encryption_service.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/patternedButton.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/pagamentos/new_card_view.dart';
+import 'package:festou/src/features/space%20card/widgets/pix_page.dart';
+import 'package:festou/src/models/card_model.dart';
+import 'package:festou/src/services/encryption_service.dart';
 
 class Pagamentos extends StatefulWidget {
   final bool isReservationFlow;

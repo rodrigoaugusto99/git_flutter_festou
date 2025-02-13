@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Festou/src/features/space%20card/widgets/my_sliver_list_filtered.dart';
-import 'package:Festou/src/features/show%20spaces/filter/filter_and_order_page.dart';
-import 'package:Festou/src/features/show%20spaces/filter/filter_and_order_vm.dart';
+import 'package:festou/src/features/space%20card/widgets/my_sliver_list_filtered.dart';
+import 'package:festou/src/features/show%20spaces/filter/filter_and_order_page.dart';
+import 'package:festou/src/features/show%20spaces/filter/filter_and_order_vm.dart';
 
 class NewPageFiltered extends ConsumerWidget {
   const NewPageFiltered({super.key});

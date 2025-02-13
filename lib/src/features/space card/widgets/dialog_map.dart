@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DialogMap extends StatelessWidget {
-  const DialogMap({Key? key}) : super(key: key);
+  const DialogMap({super.key});
 
   @override
   Widget build(BuildContext context) {

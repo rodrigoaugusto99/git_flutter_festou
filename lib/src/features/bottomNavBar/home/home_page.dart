@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Festou/src/core/ui/helpers/messages.dart';
-import 'package:Festou/src/features/bottomNavBar/home/widgets/app_bar_home.dart';
-import 'package:Festou/src/features/bottomNavBar/home/widgets/cupons_e_promocoes.dart';
-import 'package:Festou/src/features/bottomNavBar/home/widgets/feed_noticias.dart';
-import 'package:Festou/src/features/bottomNavBar/home/widgets/menu_space_types.dart';
-import 'package:Festou/src/features/bottomNavBar/home/widgets/search_button.dart';
-import 'package:Festou/src/features/loading_indicator.dart';
-import 'package:Festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_state.dart';
-import 'package:Festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
-import 'package:Festou/src/features/bottomNavBar/home/widgets/my_last_seen_spaces.dart';
-import 'package:Festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_page.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/app_bar_home.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/cupons_e_promocoes.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/feed_noticias.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/menu_space_types.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/search_button.dart';
+import 'package:festou/src/features/loading_indicator.dart';
+import 'package:festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_state.dart';
+import 'package:festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/my_last_seen_spaces.dart';
+import 'package:festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_page.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   final String? previousRoute;
