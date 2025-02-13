@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:developer' as dev;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'package:Festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/reservas_avaliacoes_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -1258,7 +1259,8 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                 height: 15,
               ),
               Container(
-                padding: const EdgeInsets.all(10),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 28),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
@@ -1267,7 +1269,10 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     if (card != null) ...[
-                      Image.asset('lib/assets/images/icon_card_color.png'),
+                      Image.asset(
+                        'lib/assets/images/icon_card_color.png',
+                        height: 23,
+                      ),
                       const SizedBox(
                         width: 5,
                       ),
@@ -1320,12 +1325,15 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
 
                         setState(() {});
                       },
-                      child: Text(
-                        card == null && !isPix ? 'Escolher' : 'Trocar',
-                        style: const TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 4.0),
+                        child: Text(
+                          card == null && !isPix ? 'Escolher' : 'Trocar',
+                          style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ),
                     ),
@@ -1486,6 +1494,12 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                 Navigator.pop(context);
                 Navigator.pop(context);
                 Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ReservasAvaliacoesPage(userId: userModel!.uid)),
+                );
                 Messages.showSuccess('Reserva concluída com sucesso', context);
               } on Exception catch (e) {
                 dev.log(e.toString());
