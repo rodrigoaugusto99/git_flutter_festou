@@ -62,16 +62,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       // Limpar o campo de e-mail
       emailEC.clear();
 
-      // Mostrar um diálogo de sucesso
-      showDialog(
-        context: context,
-        builder: (context) {
-          return const AlertDialog(
-            content: Text(
-                'Link de reset de senha enviado! Verifique sua caixa de e-mail.'),
-          );
-        },
-      );
       Messages.showSuccess(
           'Um link de verificação foi enviado para o e-mail cadastrado',
           context);
