@@ -2,9 +2,9 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/core/fp/either.dart';
-import 'package:Festou/src/core/providers/application_providers.dart';
-import 'package:Festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/core/fp/either.dart';
+import 'package:festou/src/core/providers/application_providers.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:validatorless/validatorless.dart';
 

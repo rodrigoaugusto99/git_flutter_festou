@@ -1,12 +1,10 @@
-import 'dart:developer';
-
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/features/bottomNavBar/search/search_page_vm.dart';
-import 'package:Festou/src/features/space%20card/widgets/new_space_card.dart';
-import 'package:Festou/src/models/space_model.dart';
+import 'package:festou/src/features/bottomNavBar/search/search_page_vm.dart';
+import 'package:festou/src/features/space%20card/widgets/new_space_card.dart';
+import 'package:festou/src/models/space_model.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import '../bottomNavBarLocatarioPage.dart';
+import '../bottom_navbar_locatario_page.dart';
 import 'package:lottie/lottie.dart';
 
 class SearchPage extends StatefulWidget {
@@ -267,45 +265,5 @@ class _SearchPageState extends State<SearchPage> {
         ),
       ),
     );
-  }
-
-  Widget _buildSearchHistory() {
-    return ListView.builder(
-      padding: EdgeInsets.zero,
-      itemCount: searchHistory.length,
-      itemBuilder: (context, index) {
-        final item = searchHistory[index];
-        return ListTile(
-          title: Text(
-            item,
-            style: const TextStyle(fontSize: 12),
-          ),
-          trailing: IconButton(
-            alignment: Alignment.centerRight,
-            icon: const Icon(
-              Icons.clear,
-              size: 15,
-            ),
-            onPressed: () {
-              setState(() {
-                searchHistory.removeAt(index);
-              });
-            },
-          ),
-        );
-      },
-    );
-  }
-
-  void _addSearchToHistory(String search) {
-    setState(() {
-      // Remove a pesquisa se ela já existir (para evitar duplicatas)
-      if (searchHistory.contains(search)) {
-        searchHistory.remove(search);
-      }
-
-      // Adiciona a pesquisa ao início da lista
-      searchHistory.insert(0, search);
-    });
   }
 }

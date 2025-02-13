@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:Festou/src/models/post_model.dart';
+import 'package:festou/src/models/post_model.dart';
 import 'package:shimmer/shimmer.dart';
 
 class EachPost extends StatefulWidget {

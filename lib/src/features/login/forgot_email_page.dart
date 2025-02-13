@@ -1,9 +1,9 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/core/ui/constants.dart';
-import 'package:Festou/src/core/ui/helpers/messages.dart';
-import 'package:Festou/src/features/widgets/custom_textformfield.dart';
+import 'package:festou/src/core/ui/constants.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/widgets/custom_textformfield.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class ForgotEmailPage extends StatefulWidget {

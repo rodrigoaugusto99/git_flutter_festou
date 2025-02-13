@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/models/space_model.dart';
+import 'package:festou/src/models/space_model.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class SpacesByTypeVm extends ChangeNotifier {
@@ -148,7 +148,7 @@ class SpacesByTypeVm extends ChangeNotifier {
       notifyListeners();
 
       // **Atualiza o PagingController**
-      final DocumentSnapshot? lastDoc = spaceDocuments.docs.last;
+      final DocumentSnapshot lastDoc = spaceDocuments.docs.last;
       pagingController.appendPage(initialSpaces, lastDoc);
 
       log("PagingController updated. Current items: ${pagingController.itemList?.length ?? 0}"); // 🛑 Depuração

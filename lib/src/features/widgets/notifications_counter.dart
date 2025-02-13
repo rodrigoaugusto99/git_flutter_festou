@@ -67,9 +67,6 @@ class NotificationCounter {
         _firestore.collection('users').doc(docId).update({
           'notifications': count,
         });
-      } else {
-        // Handle case where no document is found
-        print("No user document found for UID: ${currentUser.uid}");
       }
     }
   }

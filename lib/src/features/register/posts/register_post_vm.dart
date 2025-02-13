@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/models/space_model.dart';
+import 'package:festou/src/models/space_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:validatorless/validatorless.dart';
-import 'package:Festou/src/services/post_service.dart';
+import 'package:festou/src/services/post_service.dart';
 
 class RegisterPostVm with ChangeNotifier {
   RegisterPostVm({

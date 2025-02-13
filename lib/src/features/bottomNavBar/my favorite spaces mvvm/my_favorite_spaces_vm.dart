@@ -3,12 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/core/exceptions/repository_exception.dart';
-import 'package:Festou/src/core/fp/either.dart';
-import 'package:Festou/src/core/providers/application_providers.dart';
-import 'package:Festou/src/features/bottomNavBar/my%20favorite%20spaces%20mvvm/my_favorite_spaces_state.dart';
-import 'package:Festou/src/models/space_model.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:festou/src/models/space_model.dart';
 
 class MyFavoriteSpacesVm extends ChangeNotifier {
   final CollectionReference spacesCollection =

@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/features/register/avaliacoes/avaliacoes_register_page.dart';
-import 'package:Festou/src/models/avaliacoes_model.dart';
-import 'package:Festou/src/models/reservation_model.dart';
-import 'package:Festou/src/models/space_model.dart';
-import 'package:Festou/src/services/avaliacoes_service.dart';
-import 'package:Festou/src/services/reserva_service.dart';
-import 'package:Festou/src/services/space_service.dart';
+import 'package:festou/src/features/register/avaliacoes/avaliacoes_register_page.dart';
+import 'package:festou/src/models/avaliacoes_model.dart';
+import 'package:festou/src/models/reservation_model.dart';
+import 'package:festou/src/models/space_model.dart';
+import 'package:festou/src/services/avaliacoes_service.dart';
+import 'package:festou/src/services/reserva_service.dart';
+import 'package:festou/src/services/space_service.dart';
 
 class MinhasAvaliacoesWidget extends StatefulWidget {
   final List<AvaliacoesModel> initialFeedbacks;
@@ -144,11 +144,9 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
           reservation = latestValidReservation;
           canShowButtons = _validateReservation(latestValidReservation!);
         });
-      } else {
-        print("Nenhuma reserva válida encontrada.");
       }
     } catch (e) {
-      print("Erro ao buscar reserva: $e");
+      return;
     }
   }
 

@@ -4,7 +4,7 @@ import 'package:video_player/video_player.dart';
 class SingleVideoPage extends StatefulWidget {
   final VideoPlayerController? controller;
 
-  const SingleVideoPage({Key? key, required this.controller}) : super(key: key);
+  const SingleVideoPage({super.key, required this.controller});
 
   @override
   _SingleVideoPageState createState() => _SingleVideoPageState();

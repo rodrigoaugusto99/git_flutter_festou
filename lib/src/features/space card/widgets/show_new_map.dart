@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:Festou/src/features/space%20card/widgets/show_map.dart';
-import 'package:Festou/src/models/space_model.dart';
+import 'package:festou/src/features/space%20card/widgets/show_map.dart';
+import 'package:festou/src/models/space_model.dart';
 
 class ShowNewMap extends StatefulWidget {
   final SpaceModel space;

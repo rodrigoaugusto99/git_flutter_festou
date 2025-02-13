@@ -2,8 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:Festou/src/models/space_model.dart';
-import 'package:Festou/src/models/user_model.dart';
+import 'package:festou/src/models/space_model.dart';
 
 Future<String?> createUserAuth() async {
   try {
@@ -70,6 +69,12 @@ Future<void> createUserOnFirestore(String userId) async {
     ],
     "telefone": "ggcg",
     "uid": userId,
-    "user_address": {"bairro": "", "cep": "", "cidade": "", "logradouro": ""}
+    "user_address": {
+      "bairro": "",
+      "cep": "",
+      "cidade": "",
+      "logradouro": "",
+      "numero": ""
+    }
   });
 }

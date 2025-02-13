@@ -4,15 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:Festou/src/core/ui/helpers/messages.dart';
-import 'package:Festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
-import 'package:Festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_state.dart';
-import 'package:Festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_vm.dart';
-import 'package:Festou/src/features/space%20card/widgets/new_card_info.dart';
-import 'package:Festou/src/features/space%20card/widgets/new_space_card.dart';
-import 'package:Festou/src/models/space_model.dart';
-import 'package:Festou/src/services/user_service.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
+import 'package:festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_state.dart';
+import 'package:festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_vm.dart';
+import 'package:festou/src/features/space%20card/widgets/new_card_info.dart';
+import 'package:festou/src/features/space%20card/widgets/new_space_card.dart';
+import 'package:festou/src/models/space_model.dart';
+import 'package:festou/src/services/user_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SurroundingSpacesPage extends ConsumerStatefulWidget {

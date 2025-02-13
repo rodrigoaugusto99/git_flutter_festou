@@ -6,6 +6,7 @@ class UserModel {
   final String cnpj;
   final String cep;
   final String logradouro;
+  final String numero;
   final String telefone;
   final String bairro;
   final String cidade;
@@ -24,6 +25,7 @@ class UserModel {
     required this.cnpj,
     required this.cep,
     required this.logradouro,
+    required this.numero,
     required this.telefone,
     required this.bairro,
     required this.cidade,
@@ -42,12 +44,13 @@ class UserModel {
       name: data['name'] ?? '',
       cpf: data['cpf'] ?? '',
       cnpj: data['cnpj'] ?? '',
-      cep: data['cep'] ?? '',
-      logradouro: data['logradouro'] ?? '',
       telefone: data['telefone'] ?? '',
-      bairro: data['bairro'] ?? '',
-      cidade: data['cidade'] ?? '',
-      estado: data['estado'] ?? '',
+      cep: data['user_address']['cep'] ?? '',
+      logradouro: data['user_address']['logradouro'] ?? '',
+      numero: data['user_address']['numero'] ?? '',
+      bairro: data['user_address']['bairro'] ?? '',
+      cidade: data['user_address']['cidade'] ?? '',
+      estado: data['user_address']['estado'] ?? '',
       uid: data['uid'] ?? '',
       avatarUrl: data['avatar_url'] ?? '',
       assinatura: data['assinatura'] ?? '',
@@ -65,6 +68,7 @@ class UserModel {
       'cnpj': cnpj,
       'cep': cep,
       'logradouro': logradouro,
+      'numero': numero,
       'telefone': telefone,
       'bairro': bairro,
       'cidade': cidade,

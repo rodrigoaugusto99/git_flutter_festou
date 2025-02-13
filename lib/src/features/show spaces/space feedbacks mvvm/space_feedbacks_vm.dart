@@ -1,7 +1,7 @@
-import 'package:Festou/src/core/fp/either.dart';
-import 'package:Festou/src/core/providers/application_providers.dart';
-import 'package:Festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
-import 'package:Festou/src/models/space_model.dart';
+import 'package:festou/src/core/fp/either.dart';
+import 'package:festou/src/core/providers/application_providers.dart';
+import 'package:festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
+import 'package:festou/src/models/space_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'space_feedbacks_vm.g.dart';

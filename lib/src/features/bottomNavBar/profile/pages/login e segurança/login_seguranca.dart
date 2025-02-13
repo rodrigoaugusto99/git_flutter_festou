@@ -1,16 +1,17 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Festou/src/core/providers/application_providers.dart';
-import 'package:Festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/esqueci_senha.dart';
-import 'package:Festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/patternedButton.dart';
-import 'package:Festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/passwordField.dart';
-import 'package:Festou/src/features/login/forgot_password_page.dart';
-import 'package:Festou/src/services/auth_services.dart';
-import 'package:Festou/src/services/user_service.dart';
+import 'package:festou/src/core/providers/application_providers.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/patternedButton.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/passwordField.dart';
+import 'package:festou/src/features/login/forgot_password_page.dart';
+import 'package:festou/src/services/auth_services.dart';
+import 'package:festou/src/services/user_service.dart';
 import 'package:lottie/lottie.dart';
 
 class LoginSeguranca extends ConsumerStatefulWidget {

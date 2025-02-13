@@ -1,7 +1,7 @@
-import 'package:Festou/src/core/exceptions/service_exception.dart';
-import 'package:Festou/src/core/fp/either.dart';
-import 'package:Festou/src/core/fp/nil.dart';
-import 'package:Festou/src/repositories/user/user_auth_repository.dart';
+import 'package:festou/src/core/exceptions/service_exception.dart';
+import 'package:festou/src/core/fp/either.dart';
+import 'package:festou/src/core/fp/nil.dart';
+import 'package:festou/src/repositories/user/user_auth_repository.dart';
 import './user_login_service.dart';
 
 class UserLoginServiceImpl implements UserLoginService {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:Festou/src/models/post_model.dart';
+import 'package:festou/src/models/post_model.dart';
 
 class PostSinglePage extends StatelessWidget {
   final PostModel postModel;
@@ -127,6 +126,7 @@ class PhotoDetailScreen extends StatefulWidget {
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _PhotoDetailScreenState createState() => _PhotoDetailScreenState();
 }
 

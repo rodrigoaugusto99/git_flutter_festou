@@ -3,13 +3,11 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:Festou/src/core/exceptions/repository_exception.dart';
-import 'package:Festou/src/core/fp/either.dart';
-import 'package:Festou/src/core/providers/application_providers.dart';
-import 'package:Festou/src/features/register/space/space%20temporary/pages/new_space_register_state.dart';
-import 'package:Festou/src/models/space_model.dart';
-import 'package:Festou/src/models/user_model.dart';
-import 'package:Festou/src/services/user_service.dart';
+import 'package:festou/src/core/exceptions/repository_exception.dart';
+import 'package:festou/src/core/fp/either.dart';
+import 'package:festou/src/core/providers/application_providers.dart';
+import 'package:festou/src/features/register/space/space%20temporary/pages/new_space_register_state.dart';
+import 'package:festou/src/models/space_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:image_picker/image_picker.dart';

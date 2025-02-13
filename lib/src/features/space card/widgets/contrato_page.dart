@@ -5,10 +5,10 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:Festou/src/features/space%20card/widgets/contrato_assinado_page.dart';
-import 'package:Festou/src/features/space%20card/widgets/signature_dialog.dart';
-import 'package:Festou/src/features/space%20card/widgets/summary_data.dart';
-import 'package:Festou/src/models/cupom_model.dart';
+import 'package:festou/src/features/space%20card/widgets/contrato_assinado_page.dart';
+import 'package:festou/src/features/space%20card/widgets/signature_dialog.dart';
+import 'package:festou/src/features/space%20card/widgets/summary_data.dart';
+import 'package:festou/src/models/cupom_model.dart';
 
 class ContratoPage extends StatefulWidget {
   final SummaryData summaryData;

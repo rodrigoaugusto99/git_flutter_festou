@@ -1,19 +1,19 @@
 import 'dart:developer';
 
-import 'package:Festou/src/models/space_model.dart';
+import 'package:festou/src/models/space_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Festou/src/core/ui/helpers/messages.dart';
-import 'package:Festou/src/features/register/space/widgets/services_panel.dart';
-import 'package:Festou/src/features/register/space/widgets/type_panel.dart';
-import 'package:Festou/src/features/register/space/widgets/weekdays_panel.dart';
-import 'package:Festou/src/features/show%20spaces/filter/filter_and_order_state.dart';
-import 'package:Festou/src/features/show%20spaces/filter/filter_and_order_vm.dart';
-import 'package:Festou/src/features/show%20spaces/filter/new_page_filtered.dart';
-import 'package:Festou/src/features/show%20spaces/filter/widgets/feedbacks_panel.dart';
-import 'package:Festou/src/features/show%20spaces/spaces%20by%20type/spaces_by_type_vm.dart';
-import 'package:Festou/src/features/space%20card/widgets/new_space_card.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/register/space/widgets/services_panel.dart';
+import 'package:festou/src/features/register/space/widgets/type_panel.dart';
+import 'package:festou/src/features/register/space/widgets/weekdays_panel.dart';
+import 'package:festou/src/features/show%20spaces/filter/filter_and_order_state.dart';
+import 'package:festou/src/features/show%20spaces/filter/filter_and_order_vm.dart';
+import 'package:festou/src/features/show%20spaces/filter/new_page_filtered.dart';
+import 'package:festou/src/features/show%20spaces/filter/widgets/feedbacks_panel.dart';
+import 'package:festou/src/features/show%20spaces/spaces%20by%20type/spaces_by_type_vm.dart';
+import 'package:festou/src/features/space%20card/widgets/new_space_card.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class SpacesByTypePage extends ConsumerStatefulWidget {
@@ -29,7 +29,6 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
   SpacesByTypeVm spaceByTypeViewModel = SpacesByTypeVm();
   final PagingController<DocumentSnapshot?, SpaceModel> pagingController =
       PagingController(firstPageKey: null);
-  static const int _pageSize = 3;
 
   @override
   void initState() {

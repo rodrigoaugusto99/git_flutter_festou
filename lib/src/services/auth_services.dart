@@ -2,10 +2,10 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/core/exceptions/auth_exception.dart';
-import 'package:Festou/src/core/exceptions/repository_exception.dart';
-import 'package:Festou/src/core/fp/either.dart';
-import 'package:Festou/src/core/fp/nil.dart';
+import 'package:festou/src/core/exceptions/auth_exception.dart';
+import 'package:festou/src/core/exceptions/repository_exception.dart';
+import 'package:festou/src/core/fp/either.dart';
+import 'package:festou/src/core/fp/nil.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {

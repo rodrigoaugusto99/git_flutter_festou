@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:Festou/src/core/exceptions/repository_exception.dart';
-import 'package:Festou/src/core/fp/either.dart';
-import 'package:Festou/src/core/providers/application_providers.dart';
+import 'package:festou/src/core/exceptions/repository_exception.dart';
+import 'package:festou/src/core/fp/either.dart';
+import 'package:festou/src/core/providers/application_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'avaliacoes_register_vm.g.dart';
