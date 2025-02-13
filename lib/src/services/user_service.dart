@@ -103,9 +103,10 @@ class UserService {
   }
 
   Future<CupomModel?> getCupom(String codigo) async {
+    String codigoLower = codigo.toUpperCase();
     QuerySnapshot querySnapshot = await _firestore
         .collection('cupons')
-        .where('codigo', isEqualTo: codigo)
+        .where('codigo', isEqualTo: codigoLower)
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {

@@ -1,3 +1,4 @@
+import 'package:Festou/src/features/space%20card/widgets/contrato_assinado_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/minhas%20reservas/cancel_reservation_dialog.dart';
@@ -393,6 +394,34 @@ class _MinhasReservasTileState extends State<MinhasReservasTile> {
                 width: 36,
                 align: Alignment.center,
                 color: Colors.red,
+                child: const Text(
+                  'X',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          if (widget.reservationModel.canceledAt == null)
+            Positioned(
+              top: 11,
+              left: 49,
+              child: decContainer(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ContratoAssinadoPage(
+                              html: widget.reservationModel.contratoHtml,
+                            )),
+                  );
+                },
+                radius: 50,
+                height: 36,
+                width: 36,
+                align: Alignment.center,
+                color: Colors.black,
                 child: const Text(
                   'X',
                   style: TextStyle(
