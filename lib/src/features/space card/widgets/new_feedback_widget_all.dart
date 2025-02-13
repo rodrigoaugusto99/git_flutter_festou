@@ -1,3 +1,4 @@
+import 'package:Festou/src/models/avaliacoes_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
@@ -6,11 +7,13 @@ import 'package:intl/intl.dart';
 class NewFeedbackWidgetAll extends StatefulWidget {
   final SpaceFeedbacksState data;
   final AsyncValue spaces;
+  final List<AvaliacoesModel> feedbacks;
 
   const NewFeedbackWidgetAll({
     super.key,
     required this.data,
     required this.spaces,
+    required this.feedbacks,
   });
 
   @override
@@ -43,9 +46,9 @@ class _NewFeedbackWidgetAllState extends State<NewFeedbackWidgetAll> {
     return Container(
       color: Colors.white,
       child: ListView.builder(
-        itemCount: widget.data.feedbacks.length,
+        itemCount: widget.feedbacks.length,
         itemBuilder: (BuildContext context, int index) {
-          final feedback = widget.data.feedbacks[index];
+          final feedback = widget.feedbacks[index];
           return Container(
             width: 240,
             margin: const EdgeInsets.all(10.0),

@@ -150,11 +150,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                 } else if (termsSnapshot.data == false) {
                   return const ServiceTermsPage(duringLogin: true);
                 } else {
-                  return const Scaffold(
-                    body: Center(
-                      child: Text('Erro desconhecido. Tente novamente.'),
-                    ),
-                  );
+                  return const SizedBox.shrink();
                 }
               },
             );

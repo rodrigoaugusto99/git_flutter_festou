@@ -77,7 +77,7 @@ class _CustomTextformfieldState extends State<CustomTextformfield> {
 
   @override
   void dispose() {
-    widget.controller.dispose();
+    //widget.controller.dispose();
     super.dispose();
   }
 
@@ -101,6 +101,7 @@ class _CustomTextformfieldState extends State<CustomTextformfield> {
         enabled: widget.enable,
         controller: widget.controller,
         validator: widget.validator,
+
         keyboardType: widget.keyboardType, maxLength: widget.maxLength,
         // onTapOutside: (event) => {FocusScope.of(context).unfocus()},
         style: TextStyle(

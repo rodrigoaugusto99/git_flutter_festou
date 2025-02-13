@@ -1,3 +1,4 @@
+import 'package:Festou/src/models/card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:festou/src/features/space%20card/widgets/resumo_reserva_page.dart';
@@ -8,10 +9,14 @@ class ContratoAssinadoPage extends StatefulWidget {
   final SummaryData? summaryData;
   final CupomModel? cupomModel;
   String? html;
+  CardModel? card;
+  bool isPix;
   ContratoAssinadoPage({
     super.key,
     this.summaryData,
     this.cupomModel,
+    this.isPix = false,
+    this.card,
     required this.html,
   });
 
@@ -92,6 +97,8 @@ class _ContratoAssinadoPageState extends State<ContratoAssinadoPage> {
             if (widget.summaryData == null) {
               Navigator.of(context).pop();
             } else {
+              Navigator.pop(context);
+
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -100,6 +107,8 @@ class _ContratoAssinadoPageState extends State<ContratoAssinadoPage> {
                     summaryData: widget.summaryData!,
                     cupomModel: widget.cupomModel,
                     html: widget.html,
+                    card: widget.card,
+                    isPix: widget.isPix,
                   ),
                 ),
               );

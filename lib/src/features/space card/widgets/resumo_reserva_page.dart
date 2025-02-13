@@ -63,12 +63,16 @@ class ResumoReservaPage extends StatefulWidget {
   CupomModel? cupomModel;
   bool assinado;
   String? html;
+  CardModel? card;
+  bool isPix;
   ResumoReservaPage({
     super.key,
     required this.summaryData,
     required this.cupomModel,
     required this.html,
     this.assinado = false,
+    this.card,
+    this.isPix = false,
   });
 
   @override
@@ -190,6 +194,8 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
   void initState() {
     init();
     super.initState();
+    isPix = widget.isPix;
+    card = widget.card;
   }
 
   Future<void> getPrincipalPaymentMethod() async {
@@ -427,13 +433,15 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
         '[Assinatura registrada do responsável pelo espaço]',
         '<img src="${widget.summaryData.spaceModel.locadorAssinatura}" alt="Descrição da imagem"/>');
 
-    await Navigator.pushReplacement(
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ContratoPage(
           summaryData: widget.summaryData,
           cupomModel: cupomModel,
           html: modifiedHtml,
+          card: card,
+          isPix: isPix,
         ),
       ),
     );
@@ -1493,6 +1501,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
               }
             } else {
               //todo: nao pode reservar
+              Messages.showInfo('Assine o contrato para alugar', context);
               dev.log('NAO pode reservar.');
             }
           },
