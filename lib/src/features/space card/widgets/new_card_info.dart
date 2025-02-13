@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
-import 'package:Festou/src/features/bottomNavBar/home/widgets/post_single_page.dart';
-import 'package:Festou/src/models/user_model.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/post_single_page.dart';
+import 'package:festou/src/models/user_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
