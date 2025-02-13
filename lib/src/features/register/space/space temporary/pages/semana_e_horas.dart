@@ -2,15 +2,13 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Festou/src/core/ui/helpers/messages.dart';
-import 'package:Festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
-import 'package:Festou/src/features/register/space/space%20temporary/pages/revisao.dart';
-import 'package:Festou/src/helpers/helpers.dart';
-import 'package:Festou/src/helpers/keys.dart';
-import 'package:Festou/src/models/space_model.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
+import 'package:festou/src/features/register/space/space%20temporary/pages/revisao.dart';
+import 'package:festou/src/helpers/helpers.dart';
+import 'package:festou/src/helpers/keys.dart';
+import 'package:festou/src/models/space_model.dart';
 import 'package:time_picker_spinner_pop_up/time_picker_spinner_pop_up.dart';
 
 class TimeSelector extends StatelessWidget {
@@ -420,11 +418,10 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
       //   log('$day: ${day.value}');
       // }
     });
-    print('hoursMap: $hoursMap');
   }
 
   Days _createDaysObject() {
-    final days1 = Days(
+    final days = Days(
       monday: hoursMap['monday'],
       tuesday: hoursMap['tuesday'],
       wednesday: hoursMap['wednesday'],
@@ -434,18 +431,7 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
       sunday: hoursMap['sunday'],
     );
 
-    final day2 = Days(
-      monday: hoursMap['Seg'],
-      tuesday: hoursMap['Ter'],
-      wednesday: hoursMap['Qua'],
-      thursday: hoursMap['Qui'],
-      friday: hoursMap['Sex'],
-      saturday: hoursMap['Sáb'],
-      sunday: hoursMap['Dom'],
-    );
-    // Agora você tem o objeto Days configurado
-    log('');
-    return days1;
+    return days;
   }
 
   final List<String> selectedDays = [];

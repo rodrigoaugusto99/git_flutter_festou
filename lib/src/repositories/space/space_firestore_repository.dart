@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'package:Festou/src/core/exceptions/repository_exception.dart';
-import 'package:Festou/src/core/fp/either.dart';
-import 'package:Festou/src/core/fp/nil.dart';
-import 'package:Festou/src/models/space_model.dart';
+import 'package:festou/src/core/exceptions/repository_exception.dart';
+import 'package:festou/src/core/fp/either.dart';
+import 'package:festou/src/core/fp/nil.dart';
+import 'package:festou/src/models/space_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 abstract interface class SpaceFirestoreRepository {

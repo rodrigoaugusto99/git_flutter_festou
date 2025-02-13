@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/core/fp/either.dart';
-import 'package:Festou/src/core/providers/application_providers.dart';
+import 'package:festou/src/core/fp/either.dart';
+import 'package:festou/src/core/providers/application_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -32,6 +32,10 @@ class UserRegisterInfosVm extends _$UserRegisterInfosVm {
     return Validatorless.required('Logradouro obrigatório');
   }
 
+  FormFieldValidator<String> validateNumero() {
+    return Validatorless.required('Número obrigatório');
+  }
+
   FormFieldValidator<String> validateBairro() {
     return Validatorless.required('Bairro obrigatório');
   }
@@ -48,6 +52,7 @@ class UserRegisterInfosVm extends _$UserRegisterInfosVm {
     telefoneEC,
     cepEC,
     logradouroEC,
+    numeroEC,
     bairroEC,
     cidadeEC,
   ) async {
@@ -58,6 +63,7 @@ class UserRegisterInfosVm extends _$UserRegisterInfosVm {
         telefoneEC,
         cepEC,
         logradouroEC,
+        numeroEC,
         bairroEC,
         cidadeEC,
       );
@@ -72,6 +78,7 @@ class UserRegisterInfosVm extends _$UserRegisterInfosVm {
     String telefone,
     String cep,
     String logradouro,
+    String numero,
     String bairro,
     String cidade,
   ) async {
@@ -85,6 +92,7 @@ class UserRegisterInfosVm extends _$UserRegisterInfosVm {
       telefone: telefone,
       cep: cep,
       logradouro: logradouro,
+      numero: numero,
       bairro: bairro,
       cidade: cidade,
     );

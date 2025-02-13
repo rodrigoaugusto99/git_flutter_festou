@@ -3,10 +3,10 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:Festou/src/core/ui/constants.dart';
-import 'package:Festou/src/core/ui/helpers/messages.dart';
-import 'package:Festou/src/features/login/forgot_email_page.dart';
-import 'package:Festou/src/features/widgets/custom_textformfield.dart';
+import 'package:festou/src/core/ui/constants.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/login/forgot_email_page.dart';
+import 'package:festou/src/features/widgets/custom_textformfield.dart';
 import 'package:validatorless/validatorless.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -59,15 +59,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       // Método do Firebase para enviar o link no email
       await FirebaseAuth.instance.sendPasswordResetEmail(email: emailEC.text);
 
-      // Mostrar um diálogo de sucesso
-      showDialog(
-        context: context,
-        builder: (context) {
-          return const AlertDialog(
-            content: Text('Password reset link sent! Check your email'),
-          );
-        },
-      );
+      // Limpar o campo de e-mail
+      emailEC.clear();
+
       Messages.showSuccess(
           'Um link de verificação foi enviado para o e-mail cadastrado',
           context);

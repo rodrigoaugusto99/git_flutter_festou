@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:Festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
+import 'package:festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
 
 class FeedbackWidget extends StatelessWidget {
   final SpaceFeedbacksState data;

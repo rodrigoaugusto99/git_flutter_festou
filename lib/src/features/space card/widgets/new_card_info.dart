@@ -1,30 +1,31 @@
 import 'dart:developer';
 import 'dart:io';
-import 'package:Festou/src/models/user_model.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/post_single_page.dart';
+import 'package:festou/src/models/user_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:Festou/src/core/ui/helpers/messages.dart';
-import 'package:Festou/src/features/register/host%20feedback/host_feedback_register_page.dart';
-import 'package:Festou/src/features/register/posts/register_post_page.dart';
-import 'package:Festou/src/features/space%20card/widgets/calendar_page.dart';
-import 'package:Festou/src/features/space%20card/widgets/chat_page.dart';
-import 'package:Festou/src/features/space%20card/widgets/new_feedback_widget_limited.dart';
-import 'package:Festou/src/features/space%20card/widgets/show_new_map.dart';
-import 'package:Festou/src/features/space%20card/widgets/show_map.dart';
-import 'package:Festou/src/features/register/avaliacoes/avaliacoes_register_page.dart';
-import 'package:Festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_all.dart';
-import 'package:Festou/src/features/space%20card/widgets/utils.dart';
-import 'package:Festou/src/features/widgets/custom_textformfield.dart';
-import 'package:Festou/src/helpers/helpers.dart';
-import 'package:Festou/src/models/avaliacoes_model.dart';
-import 'package:Festou/src/models/reservation_model.dart';
-import 'package:Festou/src/models/space_model.dart';
-import 'package:Festou/src/services/avaliacoes_service.dart';
-import 'package:Festou/src/services/reserva_service.dart';
-import 'package:Festou/src/services/space_service.dart';
-import 'package:Festou/src/services/user_service.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/register/host%20feedback/host_feedback_register_page.dart';
+import 'package:festou/src/features/register/posts/register_post_page.dart';
+import 'package:festou/src/features/space%20card/widgets/calendar_page.dart';
+import 'package:festou/src/features/space%20card/widgets/chat_page.dart';
+import 'package:festou/src/features/space%20card/widgets/new_feedback_widget_limited.dart';
+import 'package:festou/src/features/space%20card/widgets/show_new_map.dart';
+import 'package:festou/src/features/space%20card/widgets/show_map.dart';
+import 'package:festou/src/features/register/avaliacoes/avaliacoes_register_page.dart';
+import 'package:festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_page_all.dart';
+import 'package:festou/src/features/space%20card/widgets/utils.dart';
+import 'package:festou/src/features/widgets/custom_textformfield.dart';
+import 'package:festou/src/helpers/helpers.dart';
+import 'package:festou/src/models/avaliacoes_model.dart';
+import 'package:festou/src/models/reservation_model.dart';
+import 'package:festou/src/models/space_model.dart';
+import 'package:festou/src/services/avaliacoes_service.dart';
+import 'package:festou/src/services/reserva_service.dart';
+import 'package:festou/src/services/space_service.dart';
+import 'package:festou/src/services/user_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social_share/social_share.dart';
@@ -152,7 +153,6 @@ class _NewCardInfoState extends State<NewCardInfo>
 
       return validReservations;
     } catch (e) {
-      print("Erro ao buscar reservas válidas: $e");
       return [];
     }
   }
@@ -267,7 +267,7 @@ class _NewCardInfoState extends State<NewCardInfo>
     feedbacks!.removeWhere((f) => f.deletedAt != null);
     final user = await UserService().getCurrentUserModel();
     if (user != null) {
-      if (user!.uid == space!.userId) {
+      if (user.uid == space!.userId) {
         setState(() {
           isMySpace = true;
         });
@@ -323,13 +323,13 @@ class _NewCardInfoState extends State<NewCardInfo>
 
   bool isEditing = false;
 
-  final precoEC = TextEditingController();
-  final visaoGeralEC = TextEditingController();
-  final cepEC = TextEditingController();
-  final ruaEC = TextEditingController();
-  final numeroEC = TextEditingController();
-  final bairroEC = TextEditingController();
-  final cidadeEC = TextEditingController();
+  TextEditingController precoEC = TextEditingController();
+  TextEditingController visaoGeralEC = TextEditingController();
+  TextEditingController cepEC = TextEditingController();
+  TextEditingController ruaEC = TextEditingController();
+  TextEditingController numeroEC = TextEditingController();
+  TextEditingController bairroEC = TextEditingController();
+  TextEditingController cidadeEC = TextEditingController();
 
   //todo: verificacao da existencia do endereco.
 
@@ -391,6 +391,7 @@ class _NewCardInfoState extends State<NewCardInfo>
 
       saveChanges();
     }
+    if (!mounted) return;
     setState(() {
       isEditing = !isEditing;
     });
@@ -652,6 +653,8 @@ class _NewCardInfoState extends State<NewCardInfo>
         return 'lib/assets/images/icon_iluminacao.png';
       case 'Som':
         return 'lib/assets/images/icon_som.png';
+      case 'Som e Iluminação':
+        return 'lib/assets/images/som_e_iluminacao.png';
       default:
         return 'lib/assets/images/icon_mais.png';
     }
@@ -671,10 +674,6 @@ class _NewCardInfoState extends State<NewCardInfo>
       );
     }
 
-//todo:
-
-    final x = MediaQuery.of(context).size.width;
-
     Widget myThirdWidget() {
       return Column(
         children: [
@@ -691,7 +690,10 @@ class _NewCardInfoState extends State<NewCardInfo>
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 child: Row(
                   children: [
-                    Image.asset('lib/assets/images/icon_lapis.png'),
+                    Image.asset(
+                      'lib/assets/images/icon_lapis.png',
+                      height: 24,
+                    ),
                     const SizedBox(width: 17),
                     const Text(
                       'Deixe sua avaliação!',
@@ -713,75 +715,94 @@ class _NewCardInfoState extends State<NewCardInfo>
               ),
             ),
           const SizedBox(height: 17),
-          if (space!.numComments != '0')
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                const Text(
-                  'Avaliações ',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
-                  ),
+          // if (feedbacks!.isNotEmpty)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              const Text(
+                'Avaliações ',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
                 ),
-                Text(
-                  '(${feedbacks!.length} avaliações)',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 12,
-                    color: Color(0xff5E5E5E),
-                  ),
+              ),
+              Text(
+                '(${feedbacks!.length} avaliações)',
+                style: const TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12,
+                  color: Color(0xff5E5E5E),
                 ),
-              ],
-            ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
           // if (space!.numComments != '0')
           //   SpaceFeedbacksPageLimited(
           //     x: 2,
           //     space: space!,
           //   ),
-          if (space!.numComments != '0' && feedbacks != null) ...[
+          if (feedbacks != null) ...[
             if (feedbacks!.isEmpty)
               const Center(
-                child: Text(
-                  'Sem avaliações(ainda)',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                child: Padding(
+                  padding: EdgeInsets.only(top: 54),
+                  child: Text(
+                    'Sem avaliações',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
             if (feedbacks!.isNotEmpty)
               NewFeedbackWidgetLimited(
-                x: 2,
+                x: 3,
                 feedbacks: feedbacks!,
               ),
           ],
-          if (space!.numComments != '0')
-            InkWell(
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                  child: const Text(
-                    'Ver tudo',
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
+          // if (feedbacks != null && feedbacks!.length > 3)
+          InkWell(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xff9747FF),
+                      Color(0xff44300b1),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                child: const Text(
+                  'Ver mais',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
                   ),
                 ),
               ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SpaceFeedbacksPageAll(space: space!),
-                  ),
-                );
-              },
             ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SpaceFeedbacksPageAll(
+                    space: space!,
+                    feedbacks: feedbacks!,
+                  ),
+                ),
+              );
+            },
+          ),
         ],
       );
     }
@@ -792,21 +813,23 @@ class _NewCardInfoState extends State<NewCardInfo>
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               const Text(
                 'Fotos ',
                 style: TextStyle(
+                  fontSize: 16,
                   fontWeight: FontWeight.w700,
-                  fontSize: 14,
                 ),
               ),
-              Text(
-                '(${space!.imagesUrl.length} ${space!.imagesUrl.length == 1 ? 'foto)' : 'fotos)'}',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12,
-                  color: Color(0xff5E5E5E),
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: Text(
+                  '(${space!.imagesUrl.length} ${space!.imagesUrl.length == 1 ? 'foto)' : 'fotos)'}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                    color: Color(0xff5E5E5E),
+                  ),
                 ),
               ),
             ],
@@ -837,10 +860,26 @@ class _NewCardInfoState extends State<NewCardInfo>
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          height: 90,
-                          space!.imagesUrl[index].toString(),
-                          fit: BoxFit.cover,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PhotoDetailScreen(
+                                  photoUrls: space!.imagesUrl,
+                                  initialIndex: index,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Hero(
+                            tag: space!.imagesUrl[index],
+                            child: Image.network(
+                              height: 90,
+                              space!.imagesUrl[index].toString(),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
                       ),
                       if (isEditing)
@@ -916,21 +955,23 @@ class _NewCardInfoState extends State<NewCardInfo>
           ),
           const SizedBox(height: 26),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               const Text(
                 'Vídeos ',
                 style: TextStyle(
+                  fontSize: 16,
                   fontWeight: FontWeight.w700,
-                  fontSize: 14,
                 ),
               ),
-              Text(
-                '(${space!.videosUrl.length} ${space!.videosUrl.length == 1 ? 'vídeo' : 'vídeos)'}',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12,
-                  color: Color(0xff5E5E5E),
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: Text(
+                  '(${space!.videosUrl.length} ${space!.videosUrl.length == 1 ? 'vídeo' : 'vídeos)'}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                    color: Color(0xff5E5E5E),
+                  ),
                 ),
               ),
             ],
@@ -1043,25 +1084,31 @@ class _NewCardInfoState extends State<NewCardInfo>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 60,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: space!.selectedServices.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          constraints: BoxConstraints(minWidth: x / 3.5),
-                          child: Row(
+            if (space!.selectedServices.isNotEmpty)
+              SizedBox(
+                height: 60,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: space!.selectedServices.length,
+                        itemBuilder: (context, index) {
+                          return Row(
                             children: [
                               Stack(
                                 clipBehavior: Clip.none,
                                 children: [
-                                  Image.asset(
-                                    getIconPath(space!.selectedServices[index]),
-                                    width: 40,
+                                  decContainer(
+                                    height: 35,
+                                    width: 35,
+                                    allPadding: 5,
+                                    radius: 30,
+                                    color: const Color(0xffF3F3F3),
+                                    child: Image.asset(
+                                      getIconPath(
+                                          space!.selectedServices[index]),
+                                    ),
                                   ),
                                   if (isEditing)
                                     Positioned(
@@ -1084,27 +1131,31 @@ class _NewCardInfoState extends State<NewCardInfo>
                               ),
                               // const Icon(Icons.align_vertical_top_sharp),
                               Text(space!.selectedServices[index]),
+                              const SizedBox(
+                                width: 12,
+                              ),
                             ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  if (isEditing)
-                    const SizedBox(
-                      width: 10,
-                    ),
-                  if (isEditing)
-                    GestureDetector(
-                      onTap: () => showBottomSheet2(context, selectedServices),
-                      child: Image.asset(
-                        'lib/assets/images/imagem_mais.png',
-                        width: 30,
+                          );
+                        },
                       ),
                     ),
-                ],
+                    if (isEditing)
+                      const SizedBox(
+                        width: 10,
+                      ),
+                    if (isEditing)
+                      GestureDetector(
+                        onTap: () =>
+                            showBottomSheet2(context, selectedServices),
+                        child: Image.asset(
+                          'lib/assets/images/imagem_mais.png',
+                          width: 30,
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
+            const SizedBox(height: 10),
             const Text(
               'Visão geral',
               style: TextStyle(
@@ -1130,11 +1181,12 @@ class _NewCardInfoState extends State<NewCardInfo>
               ),
             if (isEditing)
               CustomTextformfield(
+                isBig: true,
                 hintText: 'Visão geral',
                 controller: visaoGeralEC,
                 fillColor: const Color(0xffF0F0F0),
               ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 16),
             const Text(
               'Localização',
               style: TextStyle(
@@ -1210,7 +1262,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                   ),
                 ],
               ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 24),
             const Text(
               'Agente Locador',
               style: TextStyle(
@@ -1243,30 +1295,31 @@ class _NewCardInfoState extends State<NewCardInfo>
                   ),
                 ),
                 const Spacer(),
-                InkWell(
-                  child: Container(
-                    padding: const EdgeInsets.all(7),
-                    //alignment: Alignment.center,
-                    decoration: const BoxDecoration(
-                      color: Color(0xffF3F3F3),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.chat_bubble,
-                      color: Color(0xff9747FF),
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ChatPage(
-                          receiverID: space!.userId,
-                        ),
+                if (!isMySpace)
+                  InkWell(
+                    child: Container(
+                      padding: const EdgeInsets.all(7),
+                      //alignment: Alignment.center,
+                      decoration: const BoxDecoration(
+                        color: Color(0xffF3F3F3),
+                        shape: BoxShape.circle,
                       ),
-                    );
-                  },
-                ),
+                      child: const Icon(
+                        Icons.chat_bubble,
+                        color: Color(0xff9747FF),
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChatPage(
+                            receiverID: space!.userId,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
               ],
             ),
           ],
@@ -1304,23 +1357,26 @@ class _NewCardInfoState extends State<NewCardInfo>
                 Padding(
                   padding: const EdgeInsets.only(right: 18.0),
                   child: Container(
-                    padding: const EdgeInsets.all(5),
-                    width: 40,
+                    padding: const EdgeInsets.all(8),
+                    // width: 40,
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.7),
                       shape: BoxShape.circle,
                     ),
-                    child: InkWell(
-                      onTap: () => share(),
-                      child: const Icon(Icons.share),
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 3),
+                      child: InkWell(
+                        onTap: () => share(),
+                        child: const Icon(Icons.share),
+                      ),
                     ),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 18.0),
                   child: Container(
-                    padding: const EdgeInsets.all(5),
-                    width: 40,
+                    padding: const EdgeInsets.all(8),
+                    //width: 40,
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.7),
                       shape: BoxShape.circle,
@@ -1369,7 +1425,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                               options: CarouselOptions(
                                 aspectRatio: 16 / 12,
                                 viewportFraction: 1.0,
-                                enableInfiniteScroll: false,
+                                enableInfiniteScroll: true,
                                 onPageChanged: (index, reason) {
                                   setState(() {
                                     _currentSlide = index;
@@ -1379,10 +1435,10 @@ class _NewCardInfoState extends State<NewCardInfo>
                             ),
                             if (isMySpace)
                               Positioned(
-                                bottom: 0,
-                                left: 0,
-                                child: ElevatedButton(
-                                  onPressed: () {
+                                bottom: 10,
+                                left: 10,
+                                child: GestureDetector(
+                                  onTap: () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -1394,7 +1450,29 @@ class _NewCardInfoState extends State<NewCardInfo>
                                       ),
                                     );
                                   },
-                                  child: const Text('Fazer post'),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 18, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Color(0xff9747FF),
+                                          Color(0xff44300b1),
+                                        ],
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      'Postar feed',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                           ],
@@ -1450,14 +1528,14 @@ class _NewCardInfoState extends State<NewCardInfo>
                                     double.parse(space!.averageRating),
                                   ),
                                 ),
-                                height: 20,
-                                width: 20,
+                                height: 26,
+                                width: 26,
                                 child: Center(
                                   child: Text(
                                     double.parse(space!.averageRating)
                                         .toStringAsFixed(1),
                                     style: const TextStyle(
-                                      fontSize: 8,
+                                      fontSize: 12,
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -1475,7 +1553,10 @@ class _NewCardInfoState extends State<NewCardInfo>
                                           fontWeight: FontWeight.w700),
                                       "R\$ ${trocarPontoPorVirgula(space!.preco)}",
                                     ),
-                                    const Text('Por hora'),
+                                    const Text(
+                                      'Por hora',
+                                      style: TextStyle(fontSize: 12),
+                                    ),
                                   ],
                                 ),
                               if (isEditing)
@@ -1563,7 +1644,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: SizedBox(
-                            height: 500,
+                            height: 510,
                             child: TabBarView(
                               controller: tabController,
                               //physics: const NeverScrollableScrollPhysics(),
@@ -1723,37 +1804,81 @@ class _NewCardInfoState extends State<NewCardInfo>
                         ),
                       ],
                     )
-                  : GestureDetector(
-                      onTap: () {
-                        if (user != null && user!.cpf.isEmpty) {
-                          Messages.showInfo(
-                              'Você precisa de um CPF cadastrado para alugar um espaço',
-                              context);
-                          return;
-                        }
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CalendarPage(
-                              space: space!,
+                  : isMySpace
+                      ? GestureDetector(
+                          onTap: () {
+                            if (isMySpace) return;
+                            if (user != null && user!.cpf.isEmpty) {
+                              Messages.showInfo(
+                                  'Você precisa de um CPF cadastrado para alugar um espaço',
+                                  context);
+                              return;
+                            }
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CalendarPage(
+                                  space: space!,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 8),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                color: Colors.grey),
+                            child: const Text(
+                              'Alugar',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700),
+                              textAlign: TextAlign.center,
                             ),
                           ),
-                        );
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 8),
-                        decoration: BoxDecoration(
-                            color: const Color(0xff9747FF),
-                            borderRadius: BorderRadius.circular(50)),
-                        child: const Text(
-                          'Alugar',
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.w700),
-                          textAlign: TextAlign.center,
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            if (isMySpace) return;
+                            if (user != null && user!.cpf.isEmpty) {
+                              Messages.showInfo(
+                                  'Você precisa de um CPF cadastrado para alugar um espaço',
+                                  context);
+                              return;
+                            }
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CalendarPage(
+                                  space: space!,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color(0xff9747FF),
+                                  Color(0xff44300b1),
+                                ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                              ),
+                            ),
+                            child: const Text(
+                              'Alugar',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
             ),
           );
   }

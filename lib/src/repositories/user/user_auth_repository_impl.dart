@@ -1,10 +1,10 @@
 import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:Festou/src/core/exceptions/auth_exception.dart';
-import 'package:Festou/src/core/fp/either.dart';
-import 'package:Festou/src/core/fp/nil.dart';
+import 'package:festou/src/core/exceptions/auth_exception.dart';
+import 'package:festou/src/core/fp/either.dart';
+import 'package:festou/src/core/fp/nil.dart';
 
-import 'package:Festou/src/features/login/login_vm.dart';
+import 'package:festou/src/features/login/login_vm.dart';
 
 import 'user_auth_repository.dart';
 

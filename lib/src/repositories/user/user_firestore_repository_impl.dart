@@ -1,12 +1,12 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:Festou/src/core/exceptions/repository_exception.dart';
-import 'package:Festou/src/core/fp/either.dart';
-import 'package:Festou/src/core/fp/nil.dart';
-import 'package:Festou/src/models/user_model.dart';
-import 'package:Festou/src/repositories/images/images_storage_repository.dart';
-import 'package:Festou/src/services/user_service.dart';
+import 'package:festou/src/core/exceptions/repository_exception.dart';
+import 'package:festou/src/core/fp/either.dart';
+import 'package:festou/src/core/fp/nil.dart';
+import 'package:festou/src/models/user_model.dart';
+import 'package:festou/src/repositories/images/images_storage_repository.dart';
+import 'package:festou/src/services/user_service.dart';
 import './user_firestore_repository.dart';
 
 class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
@@ -136,6 +136,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         String telefone,
         String cep,
         String logradouro,
+        String numero,
         String bairro,
         String cidade,
       }) userData) async {
@@ -149,6 +150,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
           'user_address': {
             'cep': userData.cep,
             'logradouro': userData.logradouro,
+            'numero': userData.numero,
             'bairro': userData.bairro,
             'cidade': userData.cidade,
           },
@@ -187,7 +189,6 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
       final userDocument = await getUserDocument();
 
       final userData = userDocument.data() as Map<String, dynamic>;
-      final user = FirebaseAuth.instance.currentUser!;
       UserModel userModel = UserModel.fromMap(userData);
 
       return Success(userModel);
@@ -310,6 +311,11 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         // Lógica para outros campos, se necessário
         await userDocument.reference.update({
           'user_address.logradouro': newText,
+        });
+      } else if (text == 'numero') {
+        // Lógica para outros campos, se necessário
+        await userDocument.reference.update({
+          'user_address.numero': newText,
         });
       }
 

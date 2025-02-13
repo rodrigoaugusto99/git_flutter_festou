@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/core/ui/constants.dart';
+import 'package:festou/src/core/ui/constants.dart';
 
 class EsqueciSenha extends StatefulWidget {
   const EsqueciSenha({super.key});

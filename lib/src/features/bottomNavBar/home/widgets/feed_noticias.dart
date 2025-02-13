@@ -1,14 +1,11 @@
-import 'dart:async';
 import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:Festou/src/features/bottomNavBar/home/widgets/all_posts.dart';
-import 'package:Festou/src/features/bottomNavBar/home/widgets/each_post.dart';
-import 'package:Festou/src/features/bottomNavBar/home/widgets/post_single_page.dart';
-import 'package:Festou/src/models/post_model.dart';
-import 'package:Festou/src/services/post_service.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/all_posts.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/each_post.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/post_single_page.dart';
+import 'package:festou/src/models/post_model.dart';
+import 'package:festou/src/services/post_service.dart';
 import 'package:shimmer/shimmer.dart';
 
 class FeedNoticias extends StatefulWidget {
@@ -23,8 +20,6 @@ class _FeedNoticiasState extends State<FeedNoticias> {
 
   @override
   Widget build(BuildContext context) {
-    double y = MediaQuery.of(context).size.height;
-    double x = MediaQuery.of(context).size.width;
     return FutureBuilder<List<PostModel>?>(
       future: postService.getPostModelsBySpaceIds(),
       builder: (context, snapshot) {

@@ -1,17 +1,20 @@
+import 'package:festou/src/models/avaliacoes_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Festou/src/features/loading_indicator.dart';
-import 'package:Festou/src/features/space%20card/widgets/new_feedback_widget_all.dart';
-import 'package:Festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
-import 'package:Festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_vm.dart';
-import 'package:Festou/src/models/space_model.dart';
+import 'package:festou/src/features/loading_indicator.dart';
+import 'package:festou/src/features/space%20card/widgets/new_feedback_widget_all.dart';
+import 'package:festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
+import 'package:festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_vm.dart';
+import 'package:festou/src/models/space_model.dart';
 
 class SpaceFeedbacksPageAll extends ConsumerStatefulWidget {
   final SpaceModel space;
+  final List<AvaliacoesModel> feedbacks;
 
   const SpaceFeedbacksPageAll({
     super.key,
     required this.space,
+    required this.feedbacks,
   });
 
   @override
@@ -30,10 +33,8 @@ class _SpaceFeedbacksPageAllState extends ConsumerState<SpaceFeedbacksPageAll> {
 
     return spaceFeedbacks.when(
       data: (SpaceFeedbacksState data) {
-        if (data.feedbacks.isEmpty) {
-          return const Center(
-            child: Text('Sem avaliações(ainda)'),
-          );
+        if (widget.feedbacks.isEmpty) {
+          return const SizedBox();
         }
         return Scaffold(
           backgroundColor: Colors.white,
@@ -51,7 +52,7 @@ class _SpaceFeedbacksPageAllState extends ConsumerState<SpaceFeedbacksPageAll> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${widget.space.numComments} comentários',
+                      '${widget.feedbacks.length} comentários',
                       style: const TextStyle(
                           fontSize: 20, fontWeight: FontWeight.bold),
                     ),
@@ -87,6 +88,7 @@ class _SpaceFeedbacksPageAllState extends ConsumerState<SpaceFeedbacksPageAll> {
                 child: NewFeedbackWidgetAll(
                   data: data,
                   spaces: spaceFeedbacks,
+                  feedbacks: widget.feedbacks,
                 ),
               ),
             ],

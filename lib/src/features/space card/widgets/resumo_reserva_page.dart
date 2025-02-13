@@ -1,3 +1,5 @@
+// ignore_for_file: use_full_hex_values_for_flutter_colors, use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:math';
 import 'dart:developer' as dev;
@@ -8,21 +10,21 @@ import 'package:Festou/src/features/loading_indicator.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/core/ui/helpers/messages.dart';
-import 'package:Festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
-import 'package:Festou/src/features/space%20card/widgets/constants2.dart';
-import 'package:Festou/src/features/space%20card/widgets/contrato_page.dart';
-import 'package:Festou/src/features/space%20card/widgets/html_page.dart';
-import 'package:Festou/src/features/space%20card/widgets/new_space_card.dart';
-import 'package:Festou/src/features/space%20card/widgets/summary_data.dart';
-import 'package:Festou/src/helpers/helpers.dart';
-import 'package:Festou/src/models/card_model.dart';
-import 'package:Festou/src/models/cupom_model.dart';
-import 'package:Festou/src/models/reservation_model.dart';
-import 'package:Festou/src/models/user_model.dart';
-import 'package:Festou/src/services/encryption_service.dart';
-import 'package:Festou/src/services/reserva_service.dart';
-import 'package:Festou/src/services/user_service.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
+import 'package:festou/src/features/space%20card/widgets/constants2.dart';
+import 'package:festou/src/features/space%20card/widgets/contrato_page.dart';
+import 'package:festou/src/features/space%20card/widgets/html_page.dart';
+import 'package:festou/src/features/space%20card/widgets/new_space_card.dart';
+import 'package:festou/src/features/space%20card/widgets/summary_data.dart';
+import 'package:festou/src/helpers/helpers.dart';
+import 'package:festou/src/models/card_model.dart';
+import 'package:festou/src/models/cupom_model.dart';
+import 'package:festou/src/models/reservation_model.dart';
+import 'package:festou/src/models/user_model.dart';
+import 'package:festou/src/services/encryption_service.dart';
+import 'package:festou/src/services/reserva_service.dart';
+import 'package:festou/src/services/user_service.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 
@@ -58,17 +60,22 @@ class DialogBubble extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class ResumoReservaPage extends StatefulWidget {
   SummaryData summaryData;
   CupomModel? cupomModel;
   bool assinado;
   String? html;
+  CardModel? card;
+  bool isPix;
   ResumoReservaPage({
     super.key,
     required this.summaryData,
     required this.cupomModel,
     required this.html,
     this.assinado = false,
+    this.card,
+    this.isPix = false,
   });
 
   @override
@@ -190,6 +197,8 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
   void initState() {
     init();
     super.initState();
+    isPix = widget.isPix;
+    card = widget.card;
   }
 
   Future<void> showLoading() async {
@@ -499,13 +508,15 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
         '[Assinatura registrada do responsável pelo espaço]',
         '<img src="${widget.summaryData.spaceModel.locadorAssinatura}" alt="Descrição da imagem"/>');
 
-    await Navigator.pushReplacement(
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ContratoPage(
           summaryData: widget.summaryData,
           cupomModel: cupomModel,
           html: modifiedHtml,
+          card: card,
+          isPix: isPix,
         ),
       ),
     );
@@ -561,8 +572,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     }
     String formattedDate = DateFormat("d 'de' MMMM 'de' y", 'pt_BR')
         .format(widget.summaryData.selectedDate);
-    String formattedCheckOutTime =
-        widget.summaryData.checkOutTime.toString().padLeft(2, '0');
+    widget.summaryData.checkOutTime.toString().padLeft(2, '0');
     String dayLabel = (widget.summaryData.checkOutTime >= 0 &&
             widget.summaryData.checkOutTime <= 6)
         ? 'seguinte'
@@ -1587,6 +1597,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
               }
             } else {
               //todo: nao pode reservar
+              Messages.showInfo('Assine o contrato para alugar', context);
               dev.log('NAO pode reservar.');
               Messages.showInfo('Complete os dados para continuar', context);
             }

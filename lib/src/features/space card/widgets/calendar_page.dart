@@ -1,12 +1,11 @@
 import 'dart:developer';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/features/space%20card/widgets/resumo_reserva_page.dart';
-import 'package:Festou/src/features/space%20card/widgets/summary_data.dart';
-import 'package:Festou/src/models/reservation_model.dart';
-import 'package:Festou/src/models/space_model.dart';
-import 'package:Festou/src/services/reserva_service.dart';
-import 'package:intl/intl.dart';
+import 'package:festou/src/features/space%20card/widgets/resumo_reserva_page.dart';
+import 'package:festou/src/features/space%20card/widgets/summary_data.dart';
+import 'package:festou/src/models/reservation_model.dart';
+import 'package:festou/src/models/space_model.dart';
+import 'package:festou/src/services/reserva_service.dart';
 
 class CalendarPage extends StatefulWidget {
   final SpaceModel space;
@@ -14,6 +13,7 @@ class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key, required this.space});
 
   @override
+  // ignore: library_private_types_in_public_api
   _CalendarPageState createState() => _CalendarPageState();
 }
 
@@ -478,6 +478,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 gradient: const LinearGradient(
                   colors: [
                     Color(0xff9747FF),
+                    // ignore: use_full_hex_values_for_flutter_colors
                     Color(0xff44300b1),
                   ],
                   begin: Alignment.topCenter,
@@ -661,20 +662,6 @@ class _CalendarPageState extends State<CalendarPage> {
         ),
         const SizedBox(height: 14),
       ],
-    );
-  }
-
-  Widget _buildSelectedTimeDisplay() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Text(
-        'Horario de check-in: ${checkInTime.toString().padLeft(2, '0')}:00, '
-        'Horario de saida: ${(checkOutTime! % 24).toString().padLeft(2, '0')}:59',
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
     );
   }
 

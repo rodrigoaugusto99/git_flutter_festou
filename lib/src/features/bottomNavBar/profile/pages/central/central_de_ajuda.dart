@@ -4,10 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/features/bottomNavBar/profile/pages/central/perguntas_frequentes.dart';
-import 'package:Festou/src/features/bottomNavBar/profile/pages/central/widget/question.dart';
-import 'package:Festou/src/features/loading_indicator.dart';
-import 'package:Festou/src/features/widgets/custom_textformfield.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/central/perguntas_frequentes.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/central/widget/question.dart';
+import 'package:festou/src/features/loading_indicator.dart';
+import 'package:festou/src/features/widgets/custom_textformfield.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -318,8 +318,6 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        TextEditingController motivoCancelamentoEC = TextEditingController();
-
         return Dialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),

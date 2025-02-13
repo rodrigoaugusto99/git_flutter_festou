@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:Festou/src/features/bottomNavBar/home/widgets/post_single_page.dart';
-import 'package:Festou/src/features/loading_indicator.dart';
-import 'package:Festou/src/models/post_model.dart';
-import 'package:loading_indicator/loading_indicator.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/post_single_page.dart';
+import 'package:festou/src/features/loading_indicator.dart';
+import 'package:festou/src/models/post_model.dart';
 
 class AllPosts extends StatefulWidget {
   const AllPosts({super.key});
