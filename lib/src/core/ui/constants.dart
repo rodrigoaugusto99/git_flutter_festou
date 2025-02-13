@@ -7,10 +7,6 @@ sealed class ColorsConstants {
   static const blue = Color.fromARGB(255, 38, 157, 201);
 }
 
-/*sealed class FontConstants {
-  static const fontFamily = GoogleFonts.roboto;
-}*/
-
 const String apiKey = "AIzaSyBQadIJFUXrUjxIdXp9ecq10UCesRrMDd8";
 
 sealed class ImageConstants {
@@ -52,7 +48,9 @@ sealed class ListConstants {
     'Casamento',
     'Debutante',
     'Religioso',
-    'Cha',
+    'Chá',
+    'Reunião',
+    'Outros',
   ];
 
   static const availableDays = [
