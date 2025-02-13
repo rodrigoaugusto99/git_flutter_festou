@@ -25,7 +25,7 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
       ...widget.feedbacks.asMap().entries.map((entry) {
         final feedback = entry.value;
         final index = entry.key;
-        if (index > widget.x!) {
+        if (index >= widget.x!) {
           return const SizedBox();
         }
         return Padding(

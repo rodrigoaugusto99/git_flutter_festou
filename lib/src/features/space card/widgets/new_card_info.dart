@@ -323,13 +323,13 @@ class _NewCardInfoState extends State<NewCardInfo>
 
   bool isEditing = false;
 
-  final precoEC = TextEditingController();
-  final visaoGeralEC = TextEditingController();
-  final cepEC = TextEditingController();
-  final ruaEC = TextEditingController();
-  final numeroEC = TextEditingController();
-  final bairroEC = TextEditingController();
-  final cidadeEC = TextEditingController();
+  TextEditingController precoEC = TextEditingController();
+  TextEditingController visaoGeralEC = TextEditingController();
+  TextEditingController cepEC = TextEditingController();
+  TextEditingController ruaEC = TextEditingController();
+  TextEditingController numeroEC = TextEditingController();
+  TextEditingController bairroEC = TextEditingController();
+  TextEditingController cidadeEC = TextEditingController();
 
   //todo: verificacao da existencia do endereco.
 
@@ -391,6 +391,7 @@ class _NewCardInfoState extends State<NewCardInfo>
 
       saveChanges();
     }
+    if (!mounted) return;
     setState(() {
       isEditing = !isEditing;
     });
@@ -739,6 +740,7 @@ class _NewCardInfoState extends State<NewCardInfo>
               ),
             ],
           ),
+          const SizedBox(height: 12),
           // if (space!.numComments != '0')
           //   SpaceFeedbacksPageLimited(
           //     x: 2,
@@ -764,35 +766,47 @@ class _NewCardInfoState extends State<NewCardInfo>
                 feedbacks: feedbacks!,
               ),
           ],
-          if (feedbacks != null && feedbacks!.isNotEmpty)
-            InkWell(
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                  child: const Text(
-                    'Ver tudo',
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
+          // if (feedbacks != null && feedbacks!.length > 3)
+          InkWell(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xff9747FF),
+                      Color(0xff44300b1),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                child: const Text(
+                  'Ver mais',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
                   ),
                 ),
               ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SpaceFeedbacksPageAll(
-                      space: space!,
-                      feedbacks: feedbacks!,
-                    ),
-                  ),
-                );
-              },
             ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SpaceFeedbacksPageAll(
+                    space: space!,
+                    feedbacks: feedbacks!,
+                  ),
+                ),
+              );
+            },
+          ),
         ],
       );
     }
@@ -1155,6 +1169,7 @@ class _NewCardInfoState extends State<NewCardInfo>
               ),
             if (isEditing)
               CustomTextformfield(
+                isBig: true,
                 hintText: 'Visão geral',
                 controller: visaoGeralEC,
                 fillColor: const Color(0xffF0F0F0),
@@ -1617,7 +1632,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: SizedBox(
-                            height: 500,
+                            height: 510,
                             child: TabBarView(
                               controller: tabController,
                               //physics: const NeverScrollableScrollPhysics(),

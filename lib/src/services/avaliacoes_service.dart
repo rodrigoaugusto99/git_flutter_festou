@@ -110,6 +110,11 @@ class AvaliacoesService {
     );
   }
 
+//todo:
+
+/*
+se tiver like do user na coluna likedBy, nem precisa ver o deslikedBy.
+ */
   Future<String> checkUserReaction(String feedbackId) async {
     try {
       // Obtenha o documento específico pelo feedbackId
@@ -142,6 +147,11 @@ class AvaliacoesService {
     }
   }
 
+//todo:
+/*
+subcollection likedBy e deslikedBy, onde o id do doc vai ser o id do usuario e vai ter o campo createdAt
+field likes e deslikes apenas incrementado com fieldvalue.incremente.
+ */
   Future toggleDislikeFeedback(String feedbackId) async {
     try {
       // Obtenha o documento específico pelo feedbackId
@@ -240,6 +250,14 @@ class AvaliacoesService {
     }
   }
 
+//todo: colocar isso la na view e fzr paginacao de 10 em 10
+/*
+na pagina inicialzinha do space vai fazer com limit(4). se tiver 4,
+tem o botao ver mais.
+
+dps na proxima pagina, vms pegar os 10 primeiros feedbacks dps do 3o.
+dps paginacao levando em conta smp o ultimo docId.
+ */
   Future<List<AvaliacoesModel>> getFeedbacksOrdered(String spaceId) async {
     try {
       QuerySnapshot allFeedbacksDocuments = await FirebaseFirestore.instance

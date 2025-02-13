@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:Festou/src/models/card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:Festou/src/features/space%20card/widgets/contrato_assinado_page.dart';
@@ -14,11 +15,15 @@ class ContratoPage extends StatefulWidget {
   final SummaryData summaryData;
   final CupomModel? cupomModel;
   String? html;
+  CardModel? card;
+  bool isPix;
   ContratoPage({
     super.key,
     required this.summaryData,
     required this.cupomModel,
     required this.html,
+    this.card,
+    this.isPix = false,
   });
 
   @override
@@ -47,6 +52,8 @@ class _ContratoPageState extends State<ContratoPage> {
           summaryData: widget.summaryData,
           cupomModel: widget.cupomModel,
           html: widget.html,
+          card: widget.card,
+          isPix: widget.isPix,
         ),
       ),
     );

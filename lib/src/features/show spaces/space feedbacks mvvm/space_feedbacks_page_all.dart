@@ -33,10 +33,8 @@ class _SpaceFeedbacksPageAllState extends ConsumerState<SpaceFeedbacksPageAll> {
 
     return spaceFeedbacks.when(
       data: (SpaceFeedbacksState data) {
-        if (data.feedbacks.isEmpty) {
-          return const Center(
-            child: Text('Sem avaliações(ainda)'),
-          );
+        if (widget.feedbacks.isEmpty) {
+          return const SizedBox();
         }
         return Scaffold(
           backgroundColor: Colors.white,
