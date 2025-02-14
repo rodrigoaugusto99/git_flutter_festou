@@ -103,7 +103,7 @@ class _SearchPageState extends State<SearchPage> {
                           ],
                         ),
                       ),
-                      searchViewModel.getSpaces() != []
+                      searchViewModel.getSpaces().isNotEmpty
                           ? Expanded(
                               child: ListView.builder(
                                 padding: const EdgeInsets.all(10),
@@ -120,7 +120,7 @@ class _SearchPageState extends State<SearchPage> {
                           : Column(children: [
                               Lottie.asset(
                                 'lib/assets/animations/searchAnimation.json',
-                                height: y * 0.3,
+                                height: y * 0.42,
                               ),
                               const Text(
                                 'Busque pelos melhores espaços disponíveis para o seu Festou!',
