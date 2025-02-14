@@ -437,28 +437,31 @@ class _CalendarPageState extends State<CalendarPage> {
                   // TODO
                 }
               },
-              child: Container(
-                  alignment: Alignment.center,
-                  height: 35,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xff9747FF),
-                        // ignore: use_full_hex_values_for_flutter_colors
-                        Color(0xff44300b1),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Container(
+                    alignment: Alignment.center,
+                    height: 35,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xff9747FF),
+                          // ignore: use_full_hex_values_for_flutter_colors
+                          Color(0xff44300b1),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
                     ),
-                  ),
-                  child: const Text(
-                    'Indiponibilizar',
-                    style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white),
-                  )),
+                    child: const Text(
+                      'Indiponibilizar',
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white),
+                    )),
+              ),
             )
           : Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
