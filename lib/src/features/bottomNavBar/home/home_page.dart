@@ -70,7 +70,13 @@ class _HomePageState extends ConsumerState<HomePage> {
                     padding: EdgeInsets.symmetric(horizontal: 16.0),
                     child: Row(
                       children: [
-                        Text('Feed de notícias'),
+                        Text(
+                          'Feed de notícias',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                         // Text(
                         //   'Ver posts já visualizados',
                         //   style: TextStyle(
@@ -89,7 +95,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                   child: Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
-                    child: Text('Cupons e promoções'),
+                    child: Text('Cupons e promoções',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        )),
                   ),
                 ),
                 const SliverToBoxAdapter(
@@ -99,7 +109,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                   child: Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
-                    child: Text('Feed de notícias'),
+                    child: Text('Busque no mapa ',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        )),
                   ),
                 ),
                 SliverToBoxAdapter(

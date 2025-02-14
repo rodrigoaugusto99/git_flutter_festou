@@ -412,22 +412,20 @@ class _MinhasReservasTileState extends State<MinhasReservasTile> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ContratoAssinadoPage(
-                              html: widget.reservationModel.contratoHtml,
-                            )),
+                      builder: (context) => ContratoAssinadoPage(
+                        html: widget.reservationModel.contratoHtml,
+                      ),
+                    ),
                   );
                 },
                 radius: 50,
                 height: 36,
                 width: 36,
                 align: Alignment.center,
-                color: Colors.black,
-                child: const Text(
-                  'X',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                color: Colors.white,
+                child: Image.asset(
+                  'lib/assets/images/icon_termos.png',
+                  width: 16,
                 ),
               ),
             )

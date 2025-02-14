@@ -251,6 +251,7 @@ class _AllPostsState extends State<AllPosts> {
                 crossAxisCount: 2,
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 8,
+                childAspectRatio: 1 / 1.28,
               ),
               itemCount: hasMorePosts ? posts.length + 1 : posts.length,
               itemBuilder: (context, index) {
@@ -347,6 +348,7 @@ class AllPostsWidget extends StatelessWidget {
                               fontWeight: FontWeight.w700,
                               color: Colors.white,
                             ),
+                            overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -356,11 +358,13 @@ class AllPostsWidget extends StatelessWidget {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
+                        maxLines: 5,
                         postModel.description,
                         style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w500,
                           color: Colors.white,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ),

@@ -434,7 +434,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   Messages.showInfo(
                       'Você indisponibilizou este horário', context);
                 } on Exception catch (e) {
-                  // TODO
+                  log(e.toString());
                 }
               },
               child: Padding(

@@ -142,7 +142,7 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
                 const Row(
                   children: [
                     SizedBox(
-                      width: 10,
+                      width: 20,
                     ),
                     Text(
                       'Meus espaços ',
@@ -151,13 +151,13 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(
-                      '(assim que os usuários verão o espaço)',
-                      style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
-                          overflow: TextOverflow.ellipsis),
-                    ),
+                    // Text(
+                    //   '(assim que os usuários verão o espaço)',
+                    //   style: TextStyle(
+                    //       color: Colors.grey,
+                    //       fontSize: 12,
+                    //       overflow: TextOverflow.ellipsis),
+                    // ),
                   ],
                 ),
                 const SizedBox(
