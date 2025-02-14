@@ -77,8 +77,12 @@ class _MyLastSeenSpacesState extends State<MyLastSeenSpaces> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Padding(
-              padding: EdgeInsets.only(left: 16, bottom: 16, top: 30),
-              child: Text('Últimos vistos'),
+              padding: EdgeInsets.only(left: 16, bottom: 16, top: 10),
+              child: Text('Últimos vistos',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  )),
             ),
             // ...spaces.asMap().entries.map((entry) {
             //   final space = entry.value;

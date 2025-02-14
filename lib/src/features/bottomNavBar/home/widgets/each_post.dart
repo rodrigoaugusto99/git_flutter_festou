@@ -104,8 +104,8 @@ class _EachPostState extends State<EachPost> {
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(24),
-                            bottom: Radius.circular(24)),
+                          top: Radius.circular(24),
+                        ),
                         color: const Color(0xff4300B1).withOpacity(0.5),
                       ),
                       child: Column(
@@ -122,6 +122,7 @@ class _EachPostState extends State<EachPost> {
                                     fontWeight: FontWeight.w700,
                                     color: Colors.white,
                                   ),
+                                  overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.center,
                                 ),
                               ],
@@ -131,11 +132,13 @@ class _EachPostState extends State<EachPost> {
                           Align(
                             alignment: Alignment.center,
                             child: Text(
+                              maxLines: 5,
                               widget.post.description,
                               style: const TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.white,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ),

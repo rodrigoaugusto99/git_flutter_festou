@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:festou/src/features/bottomNavBar/home/widgets/post_single_page.dart';
 import 'package:festou/src/models/user_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -1752,7 +1753,84 @@ class _NewCardInfoState extends State<NewCardInfo>
                             if (!isEditing)
                               GestureDetector(
                                 //todo:  excluir
-                                onTap: () {},
+                                onTap: () async {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text(
+                                            'Tem certeza que deseja excluir o espaço?'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text('Cancelar'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              Navigator.of(context).pop();
+                                              final now = DateTime.now();
+                                              final querySnapshot =
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection(
+                                                          'reservations')
+                                                      .where('space_id',
+                                                          isEqualTo:
+                                                              space!.spaceId)
+                                                      .get();
+
+                                              for (var doc
+                                                  in querySnapshot.docs) {
+                                                final selectedDate =
+                                                    (doc['selectedDate']
+                                                            as Timestamp)
+                                                        .toDate();
+                                                if (selectedDate.isAfter(now)) {
+                                                  //nao pode
+                                                  Messages.showError(
+                                                      'Você não pode excluir esse espaço pois há reservas',
+                                                      context);
+                                                  return;
+                                                }
+                                              }
+                                              try {
+                                                final spaceSnapshot =
+                                                    await FirebaseFirestore
+                                                        .instance
+                                                        .collection('spaces')
+                                                        .where('space_id',
+                                                            isEqualTo:
+                                                                space!.spaceId)
+                                                        .get();
+
+                                                for (var doc
+                                                    in spaceSnapshot.docs) {
+                                                  await doc.reference.delete();
+                                                }
+                                                Messages.showSuccess(
+                                                  'O espaço foi excluído',
+                                                  context,
+                                                );
+                                              } on Exception catch (e) {
+                                                log(e.toString());
+                                                Messages.showError(
+                                                  'Houve algum erro ao tentar excluir o espaço. Entre em contato conosco',
+                                                  context,
+                                                );
+                                              }
+                                              // Verifique se o valor digitado é válido e atualize o raio
+                                            },
+                                            child: const Text('Sim, excluir'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+
+                                  //pode deletar
+                                },
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 30,
