@@ -1730,55 +1730,101 @@ class _NewCardInfoState extends State<NewCardInfo>
             bottomNavigationBar: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
               child: widget.isLocadorFlow
-                  ? Row(
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
+                        Row(
                           children: [
-                            Text(
-                              style: const TextStyle(
-                                  color: Color(0xff9747FF),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700),
-                              "R\$${space!.preco}",
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  style: const TextStyle(
+                                      color: Color(0xff9747FF),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700),
+                                  "R\$${space!.preco}",
+                                ),
+                                const Text('Por hora'),
+                              ],
                             ),
-                            const Text('Por hora'),
+                            const Spacer(),
+                            if (!isEditing)
+                              GestureDetector(
+                                //todo:  excluir
+                                onTap: () {},
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 30,
+                                    vertical: 8,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        Color(0xff9747FF),
+                                        Color(0xff4300B1),
+                                      ],
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                    ),
+                                    borderRadius: BorderRadius.circular(24),
+                                  ),
+                                  child: const Text(
+                                    'Excluir',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            GestureDetector(
+                              //todo:
+                              onTap: toggleEditing,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 30, vertical: 8),
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xff9747FF),
+                                      Color(0xff4300B1),
+                                    ],
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                  ),
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                                child: Text(
+                                  isEditing ? 'Salvar' : 'Editar',
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w700),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                        const Spacer(),
-                        if (!isEditing)
-                          GestureDetector(
-                            //todo:  excluir
-                            onTap: () {},
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 30, vertical: 8),
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Color(0xff9747FF),
-                                    Color(0xff4300B1),
-                                  ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                ),
-                                borderRadius: BorderRadius.circular(24),
-                              ),
-                              child: const Text(
-                                'Excluir',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
                         const SizedBox(
-                          width: 10,
+                          height: 14,
                         ),
                         GestureDetector(
                           //todo:
-                          onTap: toggleEditing,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CalendarPage(
+                                  space: space!,
+                                  isIndisponibilizar: true,
+                                ),
+                              ),
+                            );
+                          },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 30, vertical: 8),
@@ -1793,14 +1839,17 @@ class _NewCardInfoState extends State<NewCardInfo>
                               ),
                               borderRadius: BorderRadius.circular(24),
                             ),
-                            child: Text(
-                              isEditing ? 'Salvar' : 'Editar',
-                              style: const TextStyle(
+                            child: const Text(
+                              'Indisponibilizar um horário',
+                              style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w700),
                               textAlign: TextAlign.center,
                             ),
                           ),
+                        ),
+                        const SizedBox(
+                          height: 14,
                         ),
                       ],
                     )
