@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:festou/src/features/bottomNavBar/home/widgets/post_single_page.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/meus%20feedbacks/minhas_avaliacoes_widgets.dart';
 import 'package:festou/src/models/user_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -57,12 +58,21 @@ class _NewCardInfoState extends State<NewCardInfo>
   List<ReservationModel> validReservations = <ReservationModel>[];
   bool isMySpace = false;
   bool canLeaveReview = false;
+  //late List<AvaliacoesModel> feedbacks;
 
   @override
   void initState() {
     super.initState();
     checkUserReservation();
     init();
+    //feedbacks = List.from(_getFeedbacks() as Iterable);
+  }
+
+  Future<List<AvaliacoesModel>> _getFeedbacks() async {
+    List<AvaliacoesModel> feedbacks = await AvaliacoesService()
+        .getMyFeedbacks(FirebaseAuth.instance.currentUser!.uid);
+
+    return feedbacks.where((feedback) => feedback.deletedAt == null).toList();
   }
 
   @override
@@ -158,95 +168,13 @@ class _NewCardInfoState extends State<NewCardInfo>
     }
   }
 
-  Widget boolComments(String text) {
-    if (space!.numComments == '0') {
-      return const Row(
-        children: [
-          Icon(
-            Icons.star,
-            size: 16,
-          ),
-          SizedBox(
-            width: 3,
-          ),
-          Text(
-            'Sem avaliações',
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ],
-      );
-    } else if (space!.numComments == '1') {
-      return Row(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: _getColor(
-                double.parse(space!.averageRating),
-              ),
-            ),
-            height: 35, // Ajuste conforme necessário
-            width: 25, // Ajuste conforme necessário
-            child: Center(
-              child: Text(
-                double.parse(space!.averageRating).toStringAsFixed(1),
-                style: const TextStyle(
-                  color: Colors.white, // Cor do texto
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          Text(
-            '${space!.numComments} avaliação',
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ],
-      );
-    } else {
-      return Row(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: _getColor(
-                double.parse(space!.averageRating),
-              ),
-            ),
-            height: 35, // Ajuste conforme necessário
-            width: 25, // Ajuste conforme necessário
-            child: Center(
-              child: Text(
-                double.parse(space!.averageRating).toStringAsFixed(1),
-                style: const TextStyle(
-                  color: Colors.white, // Cor do texto
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          Text(
-            '${space!.numComments} avaliações',
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ],
-      );
-    }
+  Future<void> refreshFeedbacks() async {
+    List<AvaliacoesModel> updatedFeedbacks = await AvaliacoesService()
+        .getMyFeedbacks(FirebaseAuth.instance.currentUser!.uid);
+
+    setState(() {
+      feedbacks = updatedFeedbacks;
+    });
   }
 
   UserModel? user;
@@ -758,9 +686,20 @@ class _NewCardInfoState extends State<NewCardInfo>
                 ),
               ),
             if (feedbacks!.isNotEmpty)
-              NewFeedbackWidgetLimited(
-                x: 3,
-                feedbacks: feedbacks!,
+              ListView.builder(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: feedbacks!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final feedback = feedbacks![index];
+                  return AvaliacoesItem(
+                    feedback: feedback,
+                    onDelete: () async {
+                      await refreshFeedbacks();
+                    },
+                  );
+                },
               ),
           ],
           if (feedbacks != null && feedbacks!.length > 3)
@@ -1582,7 +1521,6 @@ class _NewCardInfoState extends State<NewCardInfo>
                             ],
                           ),
                         ),
-                        //boolComments('Ainda não tem avaliações.'),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Row(
