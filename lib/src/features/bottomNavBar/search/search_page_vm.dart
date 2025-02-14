@@ -28,7 +28,7 @@ class SearchViewModel extends ChangeNotifier {
   void onChangedSearch(String value) {
     if (value.trim().isEmpty) {
       _isShowing = false;
-      _filteredList = []; // Limpa a lista quando não há texto digitado
+      _filteredList = [];
     } else {
       _isShowing = true;
       String searchValue = value.toLowerCase();
