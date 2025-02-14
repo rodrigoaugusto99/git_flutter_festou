@@ -242,7 +242,8 @@ class PostService {
       }
 
       // Filtra os posts para remover aqueles que o usuário já leu
-      postModels.removeWhere((post) => seenPostsIds.contains(post.id));
+      postModels.removeWhere(
+          (post) => seenPostsIds.contains(post.id) && post.title != 'FESTOU');
 
       return postModels;
     } catch (e) {
