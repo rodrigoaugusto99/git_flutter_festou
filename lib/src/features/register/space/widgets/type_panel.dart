@@ -19,38 +19,45 @@ class TypePanel extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(
-            height: 16,
+            height: 24,
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 27),
-            child: Text(
-              text,
-              style: const TextStyle(
-                fontSize: 12,
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 30.0),
+              child: Text(
+                text,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
           const SizedBox(
             height: 16,
           ),
-          Wrap(
-            spacing: 8,
-            runSpacing: 16,
-            alignment: WrapAlignment.center,
-            children: List.generate(
-              ListConstants.availableTypes.length,
-              (index) {
-                final type = ListConstants.availableTypes[index];
-                final isSelected = selectedTypes
-                    .contains(type); // Verifique se o serviço está selecionado
+          Padding(
+            padding: const EdgeInsets.only(left: 30),
+            child: Wrap(
+              spacing: 4,
+              runSpacing: 4,
+              alignment: WrapAlignment.start,
+              children: List.generate(
+                ListConstants.availableTypes.length,
+                (index) {
+                  final type = ListConstants.availableTypes[index];
+                  final isSelected = selectedTypes.contains(
+                      type); // Verifique se o serviço está selecionado
 
-                return ButtonType(
-                  onTypePressed: onTypePressed,
-                  label: type,
-                  isSelected:
-                      isSelected, // Passe o valor isSelected para o botão
-                );
-              },
+                  return ButtonType(
+                    onTypePressed: onTypePressed,
+                    label: type,
+                    isSelected:
+                        isSelected, // Passe o valor isSelected para o botão
+                  );
+                },
+              ),
             ),
           ),
         ],
