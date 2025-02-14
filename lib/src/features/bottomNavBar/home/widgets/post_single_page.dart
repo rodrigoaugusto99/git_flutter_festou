@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:git_flutter_festou/src/models/post_model.dart';
+import 'package:git_flutter_festou/src/services/post_service.dart';
 
-class PostSinglePage extends StatelessWidget {
+class PostSinglePage extends StatefulWidget {
   final PostModel postModel;
   const PostSinglePage({
     super.key,
     required this.postModel,
   });
+
+  @override
+  State<PostSinglePage> createState() => _PostSinglePageState();
+}
+
+class _PostSinglePageState extends State<PostSinglePage> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.postModel.id == null) return;
+    PostService().setPostAsRead(widget.postModel.id!);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +66,7 @@ class PostSinglePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              postModel.title,
+              widget.postModel.title,
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -61,7 +74,7 @@ class PostSinglePage extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              postModel.description,
+              widget.postModel.description,
               style: const TextStyle(
                 fontSize: 16,
               ),
@@ -74,7 +87,7 @@ class PostSinglePage extends StatelessWidget {
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
                 ),
-                itemCount: postModel.imagens.length,
+                itemCount: widget.postModel.imagens.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
@@ -82,14 +95,14 @@ class PostSinglePage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => PhotoDetailScreen(
-                            photoUrls: postModel.imagens,
+                            photoUrls: widget.postModel.imagens,
                             initialIndex: index,
                           ),
                         ),
                       );
                     },
                     child: Hero(
-                      tag: postModel.imagens[index],
+                      tag: widget.postModel.imagens[index],
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
@@ -99,7 +112,7 @@ class PostSinglePage extends StatelessWidget {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: Image.network(
-                            postModel.imagens[index],
+                            widget.postModel.imagens[index],
                             fit: BoxFit.cover,
                           ),
                         ),

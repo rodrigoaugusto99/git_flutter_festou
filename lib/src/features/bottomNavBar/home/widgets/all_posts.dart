@@ -271,6 +271,7 @@ class _AllPostsState extends State<AllPosts> {
 
                 final postModel = PostModel(
                   title: post['titulo'],
+                  createdAt: post['createdAt'],
                   description: post['descricao'],
                   imagens: List<String>.from(post['imagens'] ?? []),
                   coverPhoto: post['coverPhoto'],
