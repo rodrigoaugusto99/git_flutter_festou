@@ -99,7 +99,7 @@ class _FilterAndOrderPageState extends ConsumerState<FilterAndOrderPage> {
       elevation: 0,
       backgroundColor: Colors.white,
       foregroundColor: Colors.black,
-      pinned: false,
+      pinned: true,
     );
   }
 }

@@ -23,10 +23,13 @@ class MySliverListFiltered extends StatelessWidget {
                       ),
                     ),
                   ),
-              child: NewSpaceCard(
-                hasHeart: true,
-                space: spaces[index],
-                isReview: false,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: NewSpaceCard(
+                  hasHeart: true,
+                  space: spaces[index],
+                  isReview: false,
+                ),
               )),
           childCount: spaces.length),
     );

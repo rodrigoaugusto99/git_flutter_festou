@@ -1,3 +1,4 @@
+import 'package:festou/src/features/loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/models/user_model.dart';
 import 'package:festou/src/services/user_service.dart';
@@ -116,7 +117,7 @@ class _NotificacoesPageState extends State<NotificacoesPage> {
           if (snapshot.hasError) {
             return const Center(child: Text('Error loading user'));
           } else if (!snapshot.hasData || snapshot.data == null) {
-            return const Center(child: Text('User not found'));
+            return const CustomLoadingIndicator();
           } else {
             return ListView.builder(
               itemCount: notificacoes.length,
