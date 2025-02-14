@@ -17,7 +17,7 @@ class UserLoginServiceImpl implements UserLoginService {
       case Success():
         return Success(nil);
       case Failure():
-        return Failure(ServiceException(message: 'Erro ao realizar login'));
+        return Failure(ServiceException(message: 'E-mail ou senha inválidos'));
     }
   }
 }
