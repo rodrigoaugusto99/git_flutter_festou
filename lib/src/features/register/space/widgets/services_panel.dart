@@ -20,33 +20,41 @@ class ServicesPanel extends StatelessWidget {
     return SizedBox(
       child: Column(
         children: [
-          Text(
-            text,
-            style: const TextStyle(
-              fontSize: 12,
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 30.0),
+              child: Text(
+                text,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
           const SizedBox(
             height: 16,
           ),
-          Wrap(
-            spacing: 8,
-            runSpacing: 16,
-            alignment: WrapAlignment.center,
-            children: List.generate(
-              ListConstants.availableServices.length,
-              (index) {
-                final service = ListConstants.availableServices[index];
-                final isSelected = selectedServices.contains(
-                    service); // Verifique se o serviço está selecionado
+          Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: Wrap(
+              spacing: 4,
+              runSpacing: 4,
+              alignment: WrapAlignment.start,
+              children: List.generate(
+                ListConstants.availableServices.length,
+                (index) {
+                  final service = ListConstants.availableServices[index];
+                  final isSelected = selectedServices.contains(service);
 
-                return ButtonType(
-                  onServicePressed: onServicePressed,
-                  label: service,
-                  isSelected:
-                      isSelected, // Passe o valor isSelected para o botão
-                );
-              },
+                  return ButtonType(
+                    onServicePressed: onServicePressed,
+                    label: service,
+                    isSelected: isSelected,
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -55,7 +63,6 @@ class ServicesPanel extends StatelessWidget {
   }
 }
 
-// ignore: must_be_immutable
 class ButtonType extends StatefulWidget {
   final String label;
   final ValueChanged<String> onServicePressed;

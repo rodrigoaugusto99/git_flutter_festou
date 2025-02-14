@@ -40,7 +40,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         case LoginState(status: LoginStateStatus.error, :final errorMessage?):
           Messages.showError(errorMessage, context);
         case LoginState(status: LoginStateStatus.error):
-          Messages.showError('Erro ao realizar login', context);
+          Messages.showError('E-mail ou senha inválidos', context);
           _isLoggingIn = false;
           break;
         case LoginState(status: LoginStateStatus.invalidForm):

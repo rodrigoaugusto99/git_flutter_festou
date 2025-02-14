@@ -57,10 +57,12 @@ class _FeedNoticiasState extends State<FeedNoticias> {
         }
 
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text("No spaces viewed recently."));
+          return const Center(child: Text("Não há posts"));
         }
 
         final posts = snapshot.data!;
+
+        // posts.sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),

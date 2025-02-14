@@ -23,6 +23,7 @@ class _AllPostsState extends State<AllPosts> {
   final int postsPerPage = 10;
   User? user;
   DocumentSnapshot? userDoc;
+  bool hideVerMaisButton = false;
 
   @override
   void initState() {
@@ -134,6 +135,7 @@ class _AllPostsState extends State<AllPosts> {
     setState(() {
       loadingMorePosts = true;
     });
+    hideVerMaisButton = true;
 
     DateTime thirtyDaysAgo = DateTime.now().subtract(const Duration(days: 30));
     Timestamp thirtyDaysAgoTimestamp = Timestamp.fromDate(thirtyDaysAgo);
@@ -179,8 +181,7 @@ class _AllPostsState extends State<AllPosts> {
         postsQuery = postsQuery.startAfterDocument(lastDocument);
       }
 
-      QuerySnapshot postsSnapshot =
-          await postsQuery.limit(postsPerPage - postDocuments.length).get();
+      QuerySnapshot postsSnapshot = await postsQuery.get();
 
       postDocuments.addAll(postsSnapshot.docs);
 
@@ -254,12 +255,12 @@ class _AllPostsState extends State<AllPosts> {
               itemCount: hasMorePosts ? posts.length + 1 : posts.length,
               itemBuilder: (context, index) {
                 if (index == posts.length) {
-                  return hasMorePosts && !loadingPosts
+                  return hasMorePosts && !loadingPosts && !hideVerMaisButton
                       ? ElevatedButton(
                           onPressed: _getMorePosts,
                           child: loadingMorePosts
                               ? const CustomLoadingIndicator()
-                              : const Text('Load More'),
+                              : const Text('Ver mais'),
                         )
                       : const SizedBox.shrink();
                 }
@@ -269,6 +270,7 @@ class _AllPostsState extends State<AllPosts> {
 
                 final postModel = PostModel(
                   title: post['titulo'],
+                  createdAt: post['createdAt'],
                   description: post['descricao'],
                   imagens: List<String>.from(post['imagens'] ?? []),
                   coverPhoto: post['coverPhoto'],

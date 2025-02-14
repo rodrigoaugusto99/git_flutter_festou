@@ -111,27 +111,48 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
         builder: (BuildContext context) {
           return StatefulBuilder(builder: (context, setModalState) {
             return Container(
-              height: y * 0.8,
-              padding: const EdgeInsets.all(16),
+              height: y * 0.82,
+              padding: const EdgeInsets.symmetric(vertical: 20),
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        filterAnOrderVm.redefinir();
-                        setModalState(() {}); // Atualiza o modal
-                      },
-                      child: const Text('Redefinir'),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 30.0),
+                      child: Row(
+                        children: [
+                          const Text(
+                            'Filtrar:',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: x * 0.15),
+                            child: Row(
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    filterAnOrderVm.redefinir();
+                                    setModalState(() {}); // Atualiza o modal
+                                  },
+                                  child: const Text('Limpar'),
+                                ),
+                                const SizedBox(width: 10),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    await filterAnOrderVm.filter();
+                                  },
+                                  child: const Text('Aplicar'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    const Text(
-                      'Filtrar',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: y * 0.01),
                     ServicesPanel(
-                      text: 'SERVIÇOS do espaço',
+                      text: 'Serviços oferecidos:',
                       onServicePressed: (value) {
                         //log('onServicePressed: $value');
                         filterAnOrderVm.addOrRemoveService(value);
@@ -140,7 +161,7 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                           ref.read(filterAndOrderVmProvider).selectedServices,
                     ),
                     TypePanel(
-                      text: 'TIPO de espaço',
+                      text: 'Categorias do espaço:',
                       onTypePressed: (value) {
                         //log('onTypePressed: $value');
                         filterAnOrderVm.addOrRemoveType(value);
@@ -149,7 +170,7 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                           ref.read(filterAndOrderVmProvider).selectedTypes,
                     ),
                     WeekDaysPanel(
-                      text: 'dias disponiveis',
+                      text: 'Dias disponíveis:',
                       onDayPressed: (value) {
                         //log('onTypePressed: $value');
                         filterAnOrderVm.addOrRemoveAvailableDay(value);
@@ -160,21 +181,12 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                     FeedbacksPanel(
                       selectedNotes:
                           ref.read(filterAndOrderVmProvider).selectedNotes,
-                      text: 'MÉDIA de avaliações',
+                      text: 'Média das avaliações:',
                       onNotePressed: (String value) {
                         log('onNotePressed: $value');
                         filterAnOrderVm.addOrRemoveNote(value);
                         setModalState(() {});
                       },
-                    ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: InkWell(
-                        onTap: () async {
-                          await filterAnOrderVm.filter();
-                        },
-                        child: const Text('Aplicar filtros'),
-                      ),
                     ),
                   ],
                 ),
@@ -201,27 +213,47 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
           animation: spaceByTypeViewModel,
           builder: (context, child) {
             return Scaffold(
-              //backgroundColor: Colors.white,
               extendBodyBehindAppBar: true,
-              appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                // backgroundColor: Colors.white,
-                actions: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 18.0),
-                    child: Container(
-                      padding: const EdgeInsets.all(7),
-                      decoration: BoxDecoration(
-                        //color: Colors.white.withOpacity(0.7),
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: const Offset(
-                                0, 2), // changes position of shadow
+              appBar: PreferredSize(
+                preferredSize: const Size.fromHeight(kToolbarHeight),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color(0xffFFFFFF),
+                        Color.fromARGB(209, 255, 255, 255),
+                        Color.fromARGB(178, 255, 255, 255),
+                        Color.fromARGB(0, 255, 255, 255),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                  child: AppBar(
+                    backgroundColor: Colors.transparent,
+                    actions: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 18.0),
+                        child: Container(
+                          padding: const EdgeInsets.all(7),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: InkWell(
+                            onTap: () => Navigator.of(context).pop(),
+                            child: const Icon(
+                              Icons.notifications_outlined,
+                              color: Colors.black,
+                            ),
                           ),
                         ],
                       ),
@@ -238,44 +270,42 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                           color: Colors.black,
                         ),
                       ),
-                    ),
-                  ),
-                ],
-                leading: Padding(
-                  padding: const EdgeInsets.only(left: 18.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      //color: Colors.white.withOpacity(0.7),
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                          offset:
-                              const Offset(0, 2), // changes position of shadow
+                    ],
+                    leading: Padding(
+                      padding: const EdgeInsets.only(left: 18.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: InkWell(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: const Icon(
-                        Icons.arrow_back,
-                        color: Colors.black,
+                        child: InkWell(
+                          onTap: () => Navigator.of(context).pop(),
+                          child: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.black,
+                          ),
+                        ),
                       ),
                     ),
+                    centerTitle: true,
+                    title: Text(
+                      widget.type[0],
+                      style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
+                    elevation: 0,
                   ),
                 ),
-                centerTitle: true,
-                title: Text(
-                  widget.type[0],
-                  style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                ),
-                elevation: 0,
               ),
               body: DecoratedBox(
                 decoration: BoxDecoration(
@@ -284,8 +314,6 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                       fit: BoxFit.cover),
                 ),
                 child: Column(
-                  //mainAxisAlignment: MainAxisAlignment.end,
-                  // crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     const SizedBox(
                       height: 120,
@@ -302,9 +330,15 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                               height: 35,
                               padding: const EdgeInsets.all(6),
                               decoration: BoxDecoration(
-                                //color: Colors.white.withOpacity(0.7),
-                                color: const Color(0xff9747FF),
                                 borderRadius: BorderRadius.circular(10),
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xff9747FF),
+                                    Color(0xff44300b1),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ),
                               ),
                               child: Image.asset(
                                   'lib/assets/images/icon_filtro.png'),

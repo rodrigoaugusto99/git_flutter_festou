@@ -68,7 +68,17 @@ class _HomePageState extends ConsumerState<HomePage> {
                 const SliverToBoxAdapter(
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Text('Feed de notícias'),
+                    child: Row(
+                      children: [
+                        Text('Feed de notícias'),
+                        // Text(
+                        //   'Ver posts já visualizados',
+                        //   style: TextStyle(
+                        //     decoration: TextDecoration.underline,
+                        //   ),
+                        // )
+                      ],
+                    ),
                   ),
                 ),
                 const SliverToBoxAdapter(
