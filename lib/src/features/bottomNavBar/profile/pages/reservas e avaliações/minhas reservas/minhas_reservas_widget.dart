@@ -1,6 +1,5 @@
 import 'package:festou/src/features/space%20card/widgets/contrato_assinado_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:festou/src/features/space%20card/widgets/contrato_assinado_page.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/minhas%20reservas/cancel_reservation_dialog.dart';
 import 'package:festou/src/features/space%20card/widgets/new_space_card.dart';
