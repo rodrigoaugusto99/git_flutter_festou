@@ -1,7 +1,6 @@
 import 'dart:developer';
-import 'dart:ui';
-
 import 'package:festou/src/features/loading_indicator.dart';
+import 'package:festou/src/features/space%20card/widgets/notificacoes_page.dart';
 import 'package:festou/src/models/space_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -227,7 +226,13 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                         ],
                       ),
                       child: InkWell(
-                        onTap: () => Navigator.of(context).pop(),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const NotificacoesPage(locador: true),
+                          ),
+                        ),
                         child: const Icon(
                           Icons.notifications_outlined,
                           color: Colors.black,
@@ -517,7 +522,8 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          padding:
+              EdgeInsets.symmetric(horizontal: x * 0.02, vertical: y * 0.007),
           decoration: BoxDecoration(
               color: const Color(0xffF0F0F0),
               borderRadius: BorderRadius.circular(10)),
@@ -525,16 +531,23 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.search, color: Color(0xff9747FF)),
+                  Icon(Icons.search, color: Colors.purple[300]),
                   const SizedBox(width: 10.0),
                   Expanded(
                     child: Stack(
                       children: [
                         spaceByTypeViewModel.controller.text.isEmpty
-                            ? const Text(
-                                'Buscar',
-                                style:
-                                    TextStyle(fontSize: 11, color: Colors.grey),
+                            ? RichText(
+                                text: TextSpan(
+                                  style: TextStyle(color: Colors.blueGrey[500]),
+                                  children: const <TextSpan>[
+                                    TextSpan(text: 'Buscar no '),
+                                    TextSpan(
+                                        text: 'Festou',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
                               )
                             : Container(
                                 height: 0,

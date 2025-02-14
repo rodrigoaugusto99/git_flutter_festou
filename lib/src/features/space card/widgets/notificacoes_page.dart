@@ -33,7 +33,7 @@ class _NotificacoesPageState extends State<NotificacoesPage> {
         "path": 'lib/assets/images/image_chat.png',
         "text1": 'Espaço Feliz LTDA enviou uma mensagem!',
         "text2":
-            'Olá, João, compartilhar esse momento especial com você e seus...',
+            'Olá, compartilhar esse momento especial com você e seus convidados ser...',
         "time": '1d',
       },
       {

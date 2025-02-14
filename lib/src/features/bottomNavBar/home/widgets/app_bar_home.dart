@@ -1,6 +1,6 @@
+import 'package:festou/src/features/space%20card/widgets/notificacoes_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:festou/src/features/bottomNavBar/profile/pages/widgets/logout_dialog.dart';
 import 'package:festou/src/models/user_model.dart';
 import 'package:festou/src/services/user_service.dart';
 
@@ -79,11 +79,37 @@ class _AppBarMenuSpaceTypesState extends ConsumerState<AppBarHome> {
                       ],
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.logout),
-                    onPressed: () {
-                      LogoutDialog.showExitConfirmationDialog(context, ref);
-                    },
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10.0),
+                    child: Container(
+                      padding: const EdgeInsets.all(7),
+                      decoration: BoxDecoration(
+                        //color: Colors.white.withOpacity(0.7),
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: InkWell(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const NotificacoesPage(locador: false),
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.notifications_outlined,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
