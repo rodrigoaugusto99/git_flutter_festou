@@ -27,7 +27,7 @@ class LoginVM extends _$LoginVM {
       errorMessage = 'E-mail inválido!';
     } else if (password.isEmpty || password == '') {
       errorMessage = 'Senha não informada!';
-    } else if (code == 'INVALID_LOGIN_CREDENTIALS') {
+    } else if (code == 'invalid-credential') {
       errorMessage = 'E-mail ou senha inválidos.';
     } else {
       errorMessage = 'Erro ao realizar login';
