@@ -46,11 +46,17 @@ class _FeedbacksPanelState extends State<FeedbacksPanel> {
           const SizedBox(
             height: 16,
           ),
-          Text(
-            widget.text,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 30.0),
+              child: Text(
+                widget.text,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
           const SizedBox(

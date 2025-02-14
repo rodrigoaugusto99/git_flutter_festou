@@ -150,7 +150,6 @@ class PostService {
     User? user = auth.currentUser;
 
     if (user == null) {
-      print('Usuário não autenticado.');
       return null;
     }
 
@@ -162,7 +161,6 @@ class PostService {
           .get();
 
       if (userSnapshot.docs.isEmpty) {
-        print('Usuário não encontrado.');
         return null;
       }
 
@@ -248,7 +246,7 @@ class PostService {
 
       return postModels;
     } catch (e) {
-      print('Erro ao recuperar dados: $e');
+      log('Erro ao recuperar dados: $e');
       return null;
     }
   }
@@ -259,7 +257,6 @@ class PostService {
     User? user = auth.currentUser;
 
     if (user == null) {
-      print('Usuário não autenticado.');
       return [];
     }
 
@@ -272,7 +269,6 @@ class PostService {
           .get();
 
       if (userSnapshot.docs.isEmpty) {
-        print('Usuário não encontrado.');
         return [];
       }
 
@@ -283,7 +279,6 @@ class PostService {
       List<String> seenPostsIds = List<String>.from(seenPostsDynamic);
 
       if (seenPostsIds.isEmpty) {
-        print('Nenhum post visto encontrado.');
         return [];
       }
 
@@ -319,7 +314,7 @@ class PostService {
 
       return seenPosts;
     } catch (e) {
-      print('Erro ao recuperar posts lidos: $e');
+      log('Erro ao recuperar posts lidos: $e');
       return [];
     }
   }

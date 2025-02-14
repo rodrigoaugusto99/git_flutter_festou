@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:festou/src/models/post_model.dart';
 import 'package:festou/src/services/post_service.dart';
-
 
 class PostSinglePage extends StatefulWidget {
   final PostModel postModel;

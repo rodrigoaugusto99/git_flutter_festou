@@ -9,8 +9,6 @@ import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20av
 import 'package:festou/src/features/loading_indicator.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/reservas_avaliacoes_page.dart';
-import 'package:festou/src/features/loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/core/ui/helpers/messages.dart';
 import 'package:festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
