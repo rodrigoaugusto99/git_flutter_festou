@@ -185,16 +185,16 @@ class _RegisterPostPageState extends State<RegisterPostPage> {
                                   Stack(
                                     alignment: Alignment.center,
                                     children: [
-                                      const Icon(
-                                        Icons.photo,
-                                        size: 50,
-                                        color: Colors.black,
-                                      ),
                                       decContainer(
                                         radius: 10,
                                         color: Colors.black.withOpacity(0.5),
                                         height: 100,
                                         width: 100,
+                                      ),
+                                      const Icon(
+                                        Icons.photo,
+                                        size: 50,
+                                        color: Colors.white,
                                       ),
                                     ],
                                   ),
@@ -254,9 +254,11 @@ class _RegisterPostPageState extends State<RegisterPostPage> {
                               //await Future.delayed(const Duration(seconds: 3));
                               if (context.mounted) {
                                 Navigator.of(context).pop();
+                                Navigator.of(context).pop();
                               }
+
                               Messages.showSuccess(
-                                  'Post feito com sucesso', context);
+                                  'Publicação realizada', context);
                             } on Exception catch (e) {
                               log(e.toString());
                             }
