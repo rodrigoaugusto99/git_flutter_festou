@@ -20,8 +20,7 @@ class SearchViewModel extends ChangeNotifier {
   List<SpaceModel> _allSpaces = [];
 
   Future<void> init() async {
-    _allSpaces = []; // Inicializa vazia para evitar carregamento automático
-    _filteredList = [];
+    await getAllSpaces();
     notifyListeners();
   }
 

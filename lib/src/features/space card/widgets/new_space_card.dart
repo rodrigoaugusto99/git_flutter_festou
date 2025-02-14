@@ -226,7 +226,8 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
         );
       },
       child: Container(
-        padding: const EdgeInsets.all(16),
+        //color: Colors.red,
+        padding: const EdgeInsets.symmetric(vertical: 20),
         height: 380,
         child: Stack(
           children: [
@@ -290,7 +291,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                             ),
                             Padding(
                               padding:
-                                  const EdgeInsets.only(left: 25, right: 30),
+                                  const EdgeInsets.only(left: 20, right: 30),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
@@ -320,7 +321,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                                           ),
                                         ),
                                       ),
-                                      const SizedBox(width: 5),
+                                      const SizedBox(width: 2),
                                       Text(
                                           style: const TextStyle(
                                             color: Color(0xff5E5E5E),
@@ -346,7 +347,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                                             color: Colors.white,
                                           ),
                                         ),
-                                        const SizedBox(width: 5),
+                                        const SizedBox(width: 2),
                                         Text(
                                           style: const TextStyle(
                                               color: Color(0xff9747FF),
