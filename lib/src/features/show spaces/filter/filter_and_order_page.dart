@@ -4,6 +4,7 @@ import 'package:festou/src/core/ui/helpers/messages.dart';
 import 'package:festou/src/features/show%20spaces/filter/filter_and_order_state.dart';
 import 'package:festou/src/features/show%20spaces/filter/filter_and_order_vm.dart';
 import 'package:festou/src/features/show%20spaces/filter/new_page_filtered.dart';
+import 'package:festou/src/features/space%20card/widgets/notificacoes_page.dart';
 
 class FilterAndOrderPage extends ConsumerStatefulWidget {
   const FilterAndOrderPage({
@@ -76,7 +77,12 @@ class _FilterAndOrderPageState extends ConsumerState<FilterAndOrderPage> {
             ],
           ),
           child: InkWell(
-            onTap: () => Navigator.of(context).pop(),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const NotificacoesPage(locador: true),
+              ),
+            ),
             child: const Icon(
               Icons.arrow_back,
               color: Colors.black,
