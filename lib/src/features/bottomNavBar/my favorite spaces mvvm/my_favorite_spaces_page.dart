@@ -64,15 +64,18 @@ class _MyFavoriteSpacePageState extends State<MyFavoriteSpacePage> {
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 2,
                           blurRadius: 5,
-                          offset:
-                              const Offset(0, 2), // changes position of shadow
+                          offset: const Offset(0, 2),
                         ),
                       ],
                     ),
                     child: InkWell(
-                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const NotificacoesPage(),
-                      )),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const NotificacoesPage(locador: true),
+                        ),
+                      ),
                       child: const Icon(
                         Icons.notifications_outlined,
                         color: Colors.black,
