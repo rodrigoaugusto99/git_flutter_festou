@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/historico_reservas_widget.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/meus%20feedbacks/meus_feedbacks_page.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/minhas%20reservas/minhas_reservas_widget.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/meus%20feedbacks/minhas_avaliacoes_page.dart';
 
-class MinhasAtividadesPage extends StatefulWidget {
+class ReservasAvaliacoesPage extends StatefulWidget {
   final String userId;
-  const MinhasAtividadesPage({
+  const ReservasAvaliacoesPage({
     super.key,
     required this.userId,
   });
 
   @override
-  State<MinhasAtividadesPage> createState() => _MinhasAtividadesPageState();
+  State<ReservasAvaliacoesPage> createState() => _ReservasAvaliacoesPageState();
 }
 
-class _MinhasAtividadesPageState extends State<MinhasAtividadesPage> {
+class _ReservasAvaliacoesPageState extends State<ReservasAvaliacoesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +46,7 @@ class _MinhasAtividadesPageState extends State<MinhasAtividadesPage> {
         ),
         centerTitle: true,
         title: const Text(
-          'Atividade e Histórico',
+          'Reservas e avaliações',
           style: TextStyle(
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
@@ -62,28 +62,26 @@ class _MinhasAtividadesPageState extends State<MinhasAtividadesPage> {
               const Text(
                 'Histórico de reservas',
                 style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 17,
                     fontWeight: FontWeight.bold,
                     color: Colors.black),
               ),
               const SizedBox(
                 height: 10,
               ),
-              const HistoricoReservasWidget(),
-              const SizedBox(
-                height: 10,
-              ),
+              const MinhasReservasWidget(),
+              const SizedBox(height: 30),
               const Text(
-                'Feedbacks',
+                'Histórico de avaliações',
                 style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 17,
                     fontWeight: FontWeight.bold,
                     color: Colors.black),
               ),
               const SizedBox(
                 height: 10,
               ),
-              MeusFeedbacksPage(
+              MinhasAvaliacoesPage(
                 userId: widget.userId,
               ),
             ],

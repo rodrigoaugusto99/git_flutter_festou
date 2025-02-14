@@ -2,11 +2,8 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
-import 'package:git_flutter_festou/src/core/fp/either.dart';
-import 'package:git_flutter_festou/src/core/providers/application_providers.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/filter/filter_and_order_state.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:festou/src/features/show%20spaces/filter/filter_and_order_state.dart';
+import 'package:festou/src/models/space_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'filter_and_order_vm.g.dart';

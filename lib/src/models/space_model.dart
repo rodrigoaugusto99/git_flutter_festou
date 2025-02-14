@@ -64,7 +64,6 @@ class SpaceModel {
   final String numComments;
   final String locadorName;
   final String descricao;
-  final String city;
   final List<String> imagesUrl;
   final List<String> videosUrl;
 
@@ -100,7 +99,6 @@ class SpaceModel {
     required this.numComments,
     required this.locadorName,
     required this.descricao,
-    required this.city,
     required this.imagesUrl,
     required this.latitude,
     required this.longitude,
@@ -113,6 +111,82 @@ class SpaceModel {
     required this.locadorAssinatura,
     required this.videosUrl,
   });
+
+  factory SpaceModel.fromMap(Map<String, dynamic> map) {
+    return SpaceModel(
+      isFavorited: map['isFavorited'] ?? false,
+      spaceId: map['space_id'] ?? '',
+      userId: map['user_id'] ?? '',
+      titulo: map['titulo'] ?? '',
+      cep: map['cep'] ?? '',
+      logradouro: map['logradouro'] ?? '',
+      numero: map['numero'] ?? '',
+      bairro: map['bairro'] ?? '',
+      cidade: map['cidade'] ?? '',
+      selectedTypes: List<String>.from(map['selectedTypes'] ?? []),
+      selectedServices: List<String>.from(map['selectedServices'] ?? []),
+      averageRating: map['average_rating']?.toString() ?? '0',
+      numComments: map['num_comments']?.toString() ?? '0',
+      locadorName: map['locador_name'] ?? '',
+      descricao: map['descricao'] ?? '',
+      imagesUrl: List<String>.from(map['images_url'] ?? []),
+      videosUrl: List<String>.from(map['videos'] ?? []),
+      latitude: (map['latitude'] ?? 0.0).toDouble(),
+      longitude: (map['longitude'] ?? 0.0).toDouble(),
+      locadorAvatarUrl: map['locadorAvatarUrl'] ?? '',
+      preco: map['preco'] ?? '',
+      cnpjEmpresaLocadora: map['cnpj_empresa_locadora'] ?? '',
+      estado: map['estado'] ?? '',
+      locadorCpf: map['locador_cpf'] ?? '',
+      nomeEmpresaLocadora: map['nome_empresa_locadora'] ?? '',
+      locadorAssinatura: map['locador_assinatura'] ?? '',
+      numLikes: map['num_likes'] ?? 0,
+      days: Days(
+        monday: map['weekdays']?['monday'] != null
+            ? Hours(
+                from: map['weekdays']['monday']['from'] ?? '',
+                to: map['weekdays']['monday']['to'] ?? '',
+              )
+            : null,
+        tuesday: map['weekdays']?['tuesday'] != null
+            ? Hours(
+                from: map['weekdays']['tuesday']['from'] ?? '',
+                to: map['weekdays']['tuesday']['to'] ?? '',
+              )
+            : null,
+        wednesday: map['weekdays']?['wednesday'] != null
+            ? Hours(
+                from: map['weekdays']['wednesday']['from'] ?? '',
+                to: map['weekdays']['wednesday']['to'] ?? '',
+              )
+            : null,
+        thursday: map['weekdays']?['thursday'] != null
+            ? Hours(
+                from: map['weekdays']['thursday']['from'] ?? '',
+                to: map['weekdays']['thursday']['to'] ?? '',
+              )
+            : null,
+        friday: map['weekdays']?['friday'] != null
+            ? Hours(
+                from: map['weekdays']['friday']['from'] ?? '',
+                to: map['weekdays']['friday']['to'] ?? '',
+              )
+            : null,
+        saturday: map['weekdays']?['saturday'] != null
+            ? Hours(
+                from: map['weekdays']['saturday']['from'] ?? '',
+                to: map['weekdays']['saturday']['to'] ?? '',
+              )
+            : null,
+        sunday: map['weekdays']?['sunday'] != null
+            ? Hours(
+                from: map['weekdays']['sunday']['from'] ?? '',
+                to: map['weekdays']['sunday']['to'] ?? '',
+              )
+            : null,
+      ),
+    );
+  }
 }
 
 Future<SpaceModel> mapSpaceDocumentToModel2(
@@ -191,7 +265,6 @@ Future<SpaceModel> mapSpaceDocumentToModel2(
     numComments: numComments,
     locadorName: spaceDocument['locador_name'] ?? '',
     descricao: spaceDocument['descricao'] ?? '',
-    city: spaceDocument['city'] ?? '',
     imagesUrl: imagesUrl,
     latitude: spaceDocument['latitude'] ?? 0.0,
     longitude: spaceDocument['longitude'] ?? 0.0,
@@ -282,7 +355,6 @@ Future<SpaceModel> mapSpaceDocumentToModel(
     numComments: numComments,
     locadorName: spaceDocument['locador_name'] ?? '',
     descricao: spaceDocument['descricao'] ?? '',
-    city: spaceDocument['city'] ?? '',
     imagesUrl: imagesUrl,
     latitude: spaceDocument['latitude'] ?? 0.0,
     longitude: spaceDocument['longitude'] ?? 0.0,

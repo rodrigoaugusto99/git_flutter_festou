@@ -1,16 +1,16 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/loading_indicator.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/my_sliver_list_to_card_info.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_state.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_vm.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_page.dart';
-import 'package:git_flutter_festou/src/helpers/keys.dart';
-import 'package:git_flutter_festou/src/models/user_model.dart';
-import 'package:git_flutter_festou/src/services/user_service.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/loading_indicator.dart';
+import 'package:festou/src/features/register/space/space%20temporary/pages/new_space_register.dart';
+import 'package:festou/src/features/space%20card/widgets/my_sliver_list_to_card_info.dart';
+import 'package:festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_state.dart';
+import 'package:festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_vm.dart';
+import 'package:festou/src/features/space%20card/widgets/notificacoes_page.dart';
+import 'package:festou/src/helpers/keys.dart';
+import 'package:festou/src/models/user_model.dart';
+import 'package:festou/src/services/user_service.dart';
 
 class MySpacesPage extends ConsumerStatefulWidget {
   const MySpacesPage({super.key});
@@ -110,7 +110,13 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Text('Cadastrar'),
+                  child: Text(
+                    'Cadastrar',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
                 const SizedBox(
                   height: 20,
@@ -140,7 +146,10 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
                     ),
                     Text(
                       'Meus espaços ',
-                      style: TextStyle(fontSize: 12),
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       '(assim que os usuários verão o espaço)',

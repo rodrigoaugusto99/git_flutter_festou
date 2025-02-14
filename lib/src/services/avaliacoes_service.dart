@@ -3,13 +3,13 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
-import 'package:git_flutter_festou/src/models/feedback_model.dart';
+import 'package:festou/src/core/exceptions/repository_exception.dart';
+import 'package:festou/src/models/avaliacoes_model.dart';
 
-class FeedbackService {
+class AvaliacoesService {
   User? currUser = FirebaseAuth.instance.currentUser;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  Future<FeedbackModel?> getFeedbackById(String feedbackId) async {
+  Future<AvaliacoesModel?> getFeedbackById(String feedbackId) async {
     try {
       // Obtém o documento na coleção "feedbacks" pelo ID fornecido
       final snapshot = await _firestore
@@ -60,26 +60,28 @@ class FeedbackService {
     }
   }
 
-  Future<void> deleteFeedbackByCondition(String feedbackId) async {
+  Future<List<AvaliacoesModel>> deleteFeedbackByCondition(
+      String feedbackId, String userId) async {
     try {
-      // Procura pelo documento usando a condição
       QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
           .instance
           .collection('feedbacks')
           .where('id', isEqualTo: feedbackId)
           .get();
 
-      // Garante que existe pelo menos um documento correspondente
       if (snapshot.docs.isNotEmpty) {
-        // Exclui o primeiro documento encontrado
         await FirebaseFirestore.instance
             .collection('feedbacks')
             .doc(snapshot.docs.first.id)
-            .update({'deleteAt': FieldValue.serverTimestamp()});
+            .update({'deletedAt': FieldValue.serverTimestamp()});
 
         log('Feedback com ID $feedbackId foi excluído com sucesso.');
+
+        // Retorna os feedbacks atualizados para atualizar a UI
+        return await getMyFeedbacks(userId);
       } else {
         log('Nenhum feedback encontrado com o ID fornecido.');
+        return [];
       }
     } catch (e) {
       log('Erro ao excluir feedback: $e');
@@ -87,15 +89,16 @@ class FeedbackService {
     }
   }
 
-  FeedbackModel mapFeedbackDocumentToModel(
+  AvaliacoesModel mapFeedbackDocumentToModel(
       QueryDocumentSnapshot feedbackDocument) {
     List<String> likes = List<String>.from(feedbackDocument['likes'] ?? []);
     List<String> dislikes =
         List<String>.from(feedbackDocument['dislikes'] ?? []);
-    return FeedbackModel(
+    return AvaliacoesModel(
       spaceId: feedbackDocument['space_id'] ?? '',
       userId: feedbackDocument['user_id'] ?? '',
-      deleteAt: feedbackDocument['deletedAt'],
+      reservationId: feedbackDocument['reservationId'] ?? '',
+      deletedAt: feedbackDocument['deletedAt'],
       rating: feedbackDocument['rating'] ?? 0,
       content: feedbackDocument['content'] ?? '',
       userName: feedbackDocument['user_name'] ?? '',
@@ -107,6 +110,11 @@ class FeedbackService {
     );
   }
 
+//todo:
+
+/*
+se tiver like do user na coluna likedBy, nem precisa ver o deslikedBy.
+ */
   Future<String> checkUserReaction(String feedbackId) async {
     try {
       // Obtenha o documento específico pelo feedbackId
@@ -139,6 +147,11 @@ class FeedbackService {
     }
   }
 
+//todo:
+/*
+subcollection likedBy e deslikedBy, onde o id do doc vai ser o id do usuario e vai ter o campo createdAt
+field likes e deslikes apenas incrementado com fieldvalue.incremente.
+ */
   Future toggleDislikeFeedback(String feedbackId) async {
     try {
       // Obtenha o documento específico pelo feedbackId
@@ -219,14 +232,14 @@ class FeedbackService {
     }
   }
 
-  Future<List<FeedbackModel>> getMyFeedbacks(String userId) async {
+  Future<List<AvaliacoesModel>> getMyFeedbacks(String userId) async {
     try {
       final allFeedbacksDocuments = await FirebaseFirestore.instance
           .collection('feedbacks')
           .where('user_id', isEqualTo: userId)
           .get();
 
-      List<FeedbackModel> feedbackModels =
+      List<AvaliacoesModel> feedbackModels =
           allFeedbacksDocuments.docs.map((feedbackDocument) {
         return mapFeedbackDocumentToModel(feedbackDocument);
       }).toList();
@@ -237,7 +250,15 @@ class FeedbackService {
     }
   }
 
-  Future<List<FeedbackModel>> getFeedbacksOrdered(String spaceId) async {
+//todo: colocar isso la na view e fzr paginacao de 10 em 10
+/*
+na pagina inicialzinha do space vai fazer com limit(4). se tiver 4,
+tem o botao ver mais.
+
+dps na proxima pagina, vms pegar os 10 primeiros feedbacks dps do 3o.
+dps paginacao levando em conta smp o ultimo docId.
+ */
+  Future<List<AvaliacoesModel>> getFeedbacksOrdered(String spaceId) async {
     try {
       QuerySnapshot allFeedbacksDocuments = await FirebaseFirestore.instance
           .collection('feedbacks')
@@ -245,7 +266,7 @@ class FeedbackService {
           .orderBy('date', descending: true)
           .get();
 
-      List<FeedbackModel> feedbackModels =
+      List<AvaliacoesModel> feedbackModels =
           allFeedbacksDocuments.docs.map((feedbackDocument) {
         return mapFeedbackDocumentToModel(feedbackDocument);
       }).toList();
@@ -264,7 +285,7 @@ class FeedbackService {
 
   Future<void> setSpaceFeedbacksListener(
     String spaceId,
-    void Function(List<FeedbackModel> feedbacks) onNewSnapshot,
+    void Function(List<AvaliacoesModel> feedbacks) onNewSnapshot,
   ) async {
     final query = FirebaseFirestore.instance
         .collection('feedbacks')
@@ -275,7 +296,7 @@ class FeedbackService {
         query.snapshots().skip(1).listen((snapshot) async {
       if (snapshot.docs.isEmpty) return;
 
-      List<FeedbackModel> feedbackModels =
+      List<AvaliacoesModel> feedbackModels =
           snapshot.docs.map((feedbackDocument) {
         return mapFeedbackDocumentToModel(feedbackDocument);
       }).toList();

@@ -5,14 +5,12 @@ import 'dart:ui' as ui;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:git_flutter_festou/src/core/ui/constants.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/login/forgot_email_page.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/signature_dialog.dart';
-import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
-import 'package:git_flutter_festou/src/helpers/keys.dart';
-import 'package:git_flutter_festou/src/services/user_service.dart';
+import 'package:festou/src/core/ui/constants.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/space%20card/widgets/signature_dialog.dart';
+import 'package:festou/src/features/widgets/custom_textformfield.dart';
+import 'package:festou/src/helpers/keys.dart';
+import 'package:festou/src/services/user_service.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -91,14 +89,12 @@ class _RegisterSignatureState extends State<RegisterSignature> {
     filter: {"#": RegExp(r'[0-9]')},
     type: MaskAutoCompletionType.lazy,
   );
-
+  String? selectedOption;
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
     final double firstContainer = (179 / 732) * screenHeight;
-    final double buttonWidth = (260 / 412) * screenWidth;
-    final double buttonHeight = (37 / 732) * screenHeight;
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8F8),
       resizeToAvoidBottomInset: true,
@@ -192,23 +188,59 @@ class _RegisterSignatureState extends State<RegisterSignature> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomTextformfield(
-                      label: 'CPF',
-                      controller: cpfEC,
-                      inputFormatters: [cpfFormatter],
-                      validator: Validatorless.required('Campo obrigatório'),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextformfield(
+                            label: 'CPF',
+                            controller: cpfEC,
+                            inputFormatters: [cpfFormatter],
+                            validator: selectedOption == 'cpf'
+                                ? Validatorless.required('Campo obrigatório')
+                                : null,
+                            enable: selectedOption == 'cpf',
+                          ),
+                        ),
+                        Radio<String>(
+                          value: 'cpf',
+                          groupValue: selectedOption,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedOption = value;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextformfield(
+                            label: 'CNPJ da empresa',
+                            controller: cnpjEmpresaLocadoraEC,
+                            inputFormatters: [cnpjFormatter],
+                            validator: selectedOption == 'cnpj'
+                                ? Validatorless.required('Campo obrigatório')
+                                : null,
+                            enable: selectedOption == 'cnpj',
+                          ),
+                        ),
+                        Radio<String>(
+                          value: 'cnpj',
+                          groupValue: selectedOption,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedOption = value;
+                            });
+                          },
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 10),
                     CustomTextformfield(
                       label: 'Nome da empresa',
                       controller: nomeEmpresaLocadoraEC,
-                      validator: Validatorless.required('Campo obrigatório'),
-                    ),
-                    const SizedBox(height: 10),
-                    CustomTextformfield(
-                      label: 'CNPJ da empresa',
-                      controller: cnpjEmpresaLocadoraEC,
-                      inputFormatters: [cnpjFormatter],
                       validator: Validatorless.required('Campo obrigatório'),
                     ),
                     const SizedBox(height: 20),
@@ -295,7 +327,7 @@ class _RegisterSignatureState extends State<RegisterSignature> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(right: 75, left: 75, bottom: 90),
+        padding: const EdgeInsets.only(right: 30, left: 30, bottom: 90),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -323,57 +355,59 @@ class _RegisterSignatureState extends State<RegisterSignature> {
                 }
               },
               child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
                 alignment: Alignment.center,
-                width: buttonWidth,
-                height: buttonHeight,
+                height: 35,
                 decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
                   gradient: const LinearGradient(
                     colors: [
                       Color(0xff9747FF),
-                      Color(0xff4300B1),
+                      Color(0xff44300b1),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                   ),
-                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Align(
                   alignment: Alignment.center,
                   child: Text(
-                    'ENVIAR',
+                    'Enviar',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 12,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 9),
             InkWell(
               onTap: () => Navigator.of(context).pop(),
               child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
                 alignment: Alignment.center,
-                width: buttonWidth,
-                height: buttonHeight,
+                height: 35,
                 decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
                   gradient: const LinearGradient(
                     colors: [
                       Color(0xff9747FF),
-                      Color(0xff4300B1),
+                      Color(0xff44300b1),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                   ),
-                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Text(
-                  'VOLTAR',
+                  'Voltar',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 12,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),

@@ -4,8 +4,8 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:git_flutter_festou/src/core/exceptions/repository_exception.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:festou/src/core/exceptions/repository_exception.dart';
+import 'package:festou/src/models/space_model.dart';
 
 class SpaceService {
   final CollectionReference spacesCollection =

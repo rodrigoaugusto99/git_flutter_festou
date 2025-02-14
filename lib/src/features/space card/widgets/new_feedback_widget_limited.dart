@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
-import 'package:git_flutter_festou/src/models/feedback_model.dart';
+import 'package:festou/src/models/avaliacoes_model.dart';
 
 class NewFeedbackWidgetLimited extends StatefulWidget {
-  final List<FeedbackModel> feedbacks;
+  final List<AvaliacoesModel> feedbacks;
   final int? x;
 
   const NewFeedbackWidgetLimited({
@@ -21,9 +19,14 @@ class NewFeedbackWidgetLimited extends StatefulWidget {
 class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
+    return Column(children: [
+      ...widget.feedbacks.asMap().entries.map((entry) {
+        final feedback = entry.value;
+        final index = entry.key;
+        if (index >= widget.x!) {
+          return const SizedBox();
+        }
+        return Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
             padding:
@@ -48,22 +51,22 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
                   children: [
                     CircleAvatar(
                       radius: 20,
-                      child: widget.feedbacks[0].avatar != ''
+                      child: feedback.avatar != ''
                           ? CircleAvatar(
                               backgroundImage: Image.network(
-                                widget.feedbacks[0].avatar,
+                                feedback.avatar,
                                 fit: BoxFit.cover,
                               ).image,
                               radius: 20,
                             )
-                          : Text(widget.feedbacks[0].userName[0].toUpperCase()),
+                          : Text(feedback.userName[0].toUpperCase()),
                     ),
                     const SizedBox(width: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.feedbacks[0].userName,
+                          feedback.userName,
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
@@ -71,7 +74,7 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
                           ),
                         ),
                         Text(
-                          widget.feedbacks[0].date,
+                          feedback.date,
                           style: const TextStyle(
                             fontSize: 12,
                             color: Color(0xff5E5E5E),
@@ -82,7 +85,7 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
                     const Spacer(),
                     Row(
                       children: [
-                        ...buildStarIcons(widget.feedbacks[0].rating),
+                        ...buildStarIcons(feedback.rating),
                       ],
                     ),
                   ],
@@ -91,129 +94,16 @@ class _NewFeedbackWidgetLimitedState extends State<NewFeedbackWidgetLimited> {
                 Padding(
                   padding: const EdgeInsets.only(left: 5.0),
                   child: Text(
-                    widget.feedbacks[0].content.toString(),
+                    feedback.content.toString(),
                   ),
                 ),
                 const SizedBox(height: 10),
-                // const Row(
-                //   children: [
-                //     Row(
-                //       children: [
-                //         Icon(Icons.check_circle),
-                //         SizedBox(width: 5),
-                //         Text('(200)'),
-                //       ],
-                //     ),
-                //     Row(
-                //       children: [
-                //         Icon(Icons.thumb_down),
-                //         SizedBox(width: 5),
-                //         Text('(0)'),
-                //       ],
-                //     ),
-                //   ],
-                // ),
               ],
             ),
           ),
-        ),
-        if (widget.x! < 2)
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              padding: const EdgeInsets.only(
-                  left: 27, top: 19, bottom: 7, right: 27),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 3,
-                    blurRadius: 6,
-
-                    offset: const Offset(0, 7), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 20,
-                        child: widget.feedbacks[1].avatar != ''
-                            ? CircleAvatar(
-                                backgroundImage: Image.network(
-                                  widget.feedbacks[1].avatar,
-                                  fit: BoxFit.cover,
-                                ).image,
-                                radius: 100,
-                              )
-                            : const Icon(
-                                Icons.person,
-                                size: 90,
-                              ),
-                      ),
-                      const SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.feedbacks[1].userName,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xff000000),
-                            ),
-                          ),
-                          Text(
-                            widget.feedbacks[1].date,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Color(0xff5E5E5E),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Spacer(),
-                      Row(
-                        children: [
-                          ...buildStarIcons(widget.feedbacks[1].rating),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    widget.feedbacks[1].content.toString(),
-                  ),
-                  const SizedBox(height: 10),
-                  // const Row(
-                  //   children: [
-                  //     Row(
-                  //       children: [
-                  //         Icon(Icons.check_circle),
-                  //         SizedBox(width: 5),
-                  //         Text('(200)'),
-                  //       ],
-                  //     ),
-                  //     Row(
-                  //       children: [
-                  //         Icon(Icons.thumb_down),
-                  //         SizedBox(width: 5),
-                  //         Text('(0)'),
-                  //       ],
-                  //     ),
-                  //   ],
-                  // ),
-                ],
-              ),
-            ),
-          ),
-      ],
-    );
+        );
+      }),
+    ]);
   }
 
   List<Icon> buildStarIcons(int rating) {

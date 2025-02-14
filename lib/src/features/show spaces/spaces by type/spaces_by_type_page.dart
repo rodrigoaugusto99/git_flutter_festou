@@ -1,18 +1,22 @@
 import 'dart:developer';
+import 'dart:ui';
 
+import 'package:festou/src/features/loading_indicator.dart';
+import 'package:festou/src/models/space_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/ui/constants.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/services_panel.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/type_panel.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/weekdays_panel.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/filter/filter_and_order_state.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/filter/filter_and_order_vm.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/filter/new_page_filtered.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/filter/widgets/feedbacks_panel.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/spaces%20by%20type/spaces_by_type_vm.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/register/space/widgets/services_panel.dart';
+import 'package:festou/src/features/register/space/widgets/type_panel.dart';
+import 'package:festou/src/features/register/space/widgets/weekdays_panel.dart';
+import 'package:festou/src/features/show%20spaces/filter/filter_and_order_state.dart';
+import 'package:festou/src/features/show%20spaces/filter/filter_and_order_vm.dart';
+import 'package:festou/src/features/show%20spaces/filter/new_page_filtered.dart';
+import 'package:festou/src/features/show%20spaces/filter/widgets/feedbacks_panel.dart';
+import 'package:festou/src/features/show%20spaces/spaces%20by%20type/spaces_by_type_vm.dart';
+import 'package:festou/src/features/space%20card/widgets/new_space_card.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class SpacesByTypePage extends ConsumerStatefulWidget {
   final List<String> type;
@@ -24,19 +28,53 @@ class SpacesByTypePage extends ConsumerStatefulWidget {
 
 class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
   List<String> searchHistory = [];
-  SpacesByTypeVm spaceByTypeViewModel = SpacesByTypeVm();
+  late SpacesByTypeVm spaceByTypeViewModel;
+  final PagingController<DocumentSnapshot?, SpaceModel> pagingController =
+      PagingController(firstPageKey: null);
+
   @override
   void initState() {
-    spaceByTypeViewModel.init(widget.type);
+    super.initState();
+
+    spaceByTypeViewModel = SpacesByTypeVm(widget.type);
+
+    // Adiciona um listener para atualizar a UI sempre que showFiltered mudar
+    spaceByTypeViewModel.addListener(() {
+      if (mounted) {
+        setState(() {}); // 🔥 Atualiza a UI automaticamente
+      }
+    });
+
+    pagingController.addPageRequestListener((pageKey) {
+      log("🚀 Página solicitada: ${pageKey?.id ?? 'null'}");
+      _fetchPage(pageKey, widget.type);
+    });
 
     spaceByTypeViewModel.addListener(_onTextChanged);
-    super.initState();
+  }
+
+  Future<void> _fetchPage(DocumentSnapshot? pageKey, List<String> types) async {
+    log("🔄 Chamando _fetchPage() com tipo: $types");
+
+    try {
+      await Future.delayed(const Duration(seconds: 2)); // Simulação de atraso
+
+      await spaceByTypeViewModel.fetchSpaces(
+          pageKey, types); // 🔥 Agora passa o tipo
+
+      log("✅ Fetch process completed.");
+    } catch (error, stacktrace) {
+      log("❌ Error in _fetchPage(): $error");
+      log("🔍 Stacktrace: $stacktrace");
+      pagingController.error = error;
+    }
   }
 
   @override
   void dispose() {
     spaceByTypeViewModel.removeListener(_onTextChanged);
     spaceByTypeViewModel.dispose();
+    pagingController.dispose();
     super.dispose();
   }
 
@@ -152,10 +190,10 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
       "Debutante": "lib/assets/images/background_debutante.png",
       "Kids": "lib/assets/images/background_kids.png",
       "Casamento": "lib/assets/images/background_casamento.png",
-      "Reuniao": "lib/assets/images/background_reuniao.png",
+      "Reunião": "lib/assets/images/background_reuniao.png",
       "Outros": "lib/assets/images/background_outros.png",
       "Religioso": "lib/assets/images/background_religioso.png",
-      "Cha": "lib/assets/images/background_cha.png",
+      "Chá": "lib/assets/images/background_cha.png",
     };
 
     return SafeArea(
@@ -270,49 +308,202 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                         ),
                       ],
                     ),
-                    if ((spaceByTypeViewModel.getSpaces != null &&
+                    if ((!spaceByTypeViewModel.isLoading &&
+                        spaceByTypeViewModel.getSpaces != null &&
                         spaceByTypeViewModel.showSpacesByType &&
                         spaceByTypeViewModel.getSpaces!.isEmpty))
-                      const Text('Não foram encontrado espaços'),
-                    if ((spaceByTypeViewModel.getFiltered != null &&
-                        spaceByTypeViewModel.showFiltered &&
-                        spaceByTypeViewModel.getFiltered!.isEmpty))
-                      const Expanded(
-                        child: Align(
-                            alignment: Alignment.center,
-                            child: Text('Não foram encontrado espaços')),
-                      ),
-                    if (spaceByTypeViewModel.getSpaces != null &&
-                        spaceByTypeViewModel.showSpacesByType) ...[
-                      Expanded(
-                        child: ListView.builder(
-                          padding: const EdgeInsets.all(10),
-                          itemCount: spaceByTypeViewModel.getSpaces!.length,
-                          itemBuilder: (context, index) {
-                            return NewSpaceCard(
-                              hasHeart: true,
-                              space: spaceByTypeViewModel.getSpaces![index],
-                              isReview: false,
-                            );
-                          },
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 41, right: 41, top: 281.4),
+                          child: Container(
+                            padding:
+                                const EdgeInsets.all(16), // Espaçamento interno
+                            decoration: BoxDecoration(
+                              color: Colors.white, // Fundo branco
+                              borderRadius: BorderRadius.circular(
+                                  12), // Bordas arredondadas
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black
+                                      .withOpacity(0.1), // Sombra leve
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset:
+                                      const Offset(0, 3), // Direção da sombra
+                                ),
+                              ],
+                            ),
+                            child: const Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.search_off,
+                                    size: 60, color: Colors.grey),
+                                SizedBox(height: 10),
+                                Text(
+                                  "Nenhum espaço encontrado",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  "Tente alterar os filtros ou buscar por outro termo",
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.grey),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
-                    ],
-                    if (spaceByTypeViewModel.getFiltered != null &&
+                    if (!spaceByTypeViewModel.isLoading &&
+                        spaceByTypeViewModel.getFiltered.isEmpty &&
                         spaceByTypeViewModel.showFiltered)
-                      Expanded(
-                        child: ListView.builder(
-                          padding: const EdgeInsets.all(10),
-                          itemCount: spaceByTypeViewModel.getFiltered!.length,
-                          itemBuilder: (context, index) {
-                            return NewSpaceCard(
-                              hasHeart: true,
-                              space: spaceByTypeViewModel.getFiltered![index],
-                              isReview: false,
-                            );
-                          },
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 41, right: 41, top: 281.4),
+                          child: Container(
+                            padding:
+                                const EdgeInsets.all(16), // Espaçamento interno
+                            decoration: BoxDecoration(
+                              color: Colors.white, // Fundo branco
+                              borderRadius: BorderRadius.circular(
+                                  12), // Bordas arredondadas
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black
+                                      .withOpacity(0.1), // Sombra leve
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset:
+                                      const Offset(0, 3), // Direção da sombra
+                                ),
+                              ],
+                            ),
+                            child: const Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.search_off,
+                                    size: 60, color: Colors.grey),
+                                SizedBox(height: 10),
+                                Text(
+                                  "Nenhum espaço encontrado",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  "Tente alterar os filtros ou buscar por outro termo",
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.grey),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
+                    Expanded(
+                      child: spaceByTypeViewModel.isLoading
+                          ? const Center(child: CustomLoadingIndicator())
+                          : spaceByTypeViewModel.showFiltered
+                              ? ListView.builder(
+                                  padding: const EdgeInsets.only(top: 20),
+                                  itemCount:
+                                      spaceByTypeViewModel.getFiltered.length,
+                                  itemBuilder: (context, index) {
+                                    final space =
+                                        spaceByTypeViewModel.getFiltered[index];
+                                    return NewSpaceCard(
+                                      hasHeart: true,
+                                      space: space,
+                                      isReview: false,
+                                    );
+                                  },
+                                )
+                              : PagedListView<DocumentSnapshot?, SpaceModel>(
+                                  padding: const EdgeInsets.only(top: 0),
+                                  pagingController:
+                                      spaceByTypeViewModel.pagingController,
+                                  builderDelegate:
+                                      PagedChildBuilderDelegate<SpaceModel>(
+                                    itemBuilder: (context, item, index) {
+                                      return NewSpaceCard(
+                                        hasHeart: true,
+                                        space: item,
+                                        isReview: false,
+                                      );
+                                    },
+                                    newPageProgressIndicatorBuilder:
+                                        (context) => const Center(
+                                      child: Padding(
+                                        padding: EdgeInsets.only(bottom: 20.0),
+                                        child: CustomLoadingIndicator(),
+                                      ),
+                                    ),
+                                    firstPageProgressIndicatorBuilder:
+                                        (context) => const Center(
+                                      child: CustomLoadingIndicator(),
+                                    ),
+                                    noItemsFoundIndicatorBuilder: (context) =>
+                                        Center(
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.8, // 80% da largura da tela
+                                        padding: const EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.black.withOpacity(0.1),
+                                              spreadRadius: 2,
+                                              blurRadius: 5,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
+                                        ),
+                                        child: const Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.search_off,
+                                                size: 60, color: Colors.grey),
+                                            SizedBox(height: 10),
+                                            Text(
+                                              "Nenhum espaço encontrado",
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            SizedBox(height: 5),
+                                            Text(
+                                              "Tente alterar os filtros ou buscar por outro termo",
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.grey),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                    ),
                   ],
                 ),
               ),
@@ -355,8 +546,8 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                                 Expanded(
                                   child: TextField(
                                     onChanged: (value) {
-                                      spaceByTypeViewModel
-                                          .onChangedSearch(value);
+                                      spaceByTypeViewModel.onChangedSearch(
+                                          value, widget.type);
                                     },
                                     controller: spaceByTypeViewModel.controller,
                                     onSubmitted: (value) {

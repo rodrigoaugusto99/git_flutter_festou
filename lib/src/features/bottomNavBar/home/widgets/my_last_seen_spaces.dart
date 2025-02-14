@@ -1,16 +1,7 @@
-import 'dart:async';
-
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/each_last_seen.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/home/widgets/small_space_card.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_state.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/spaces%20with%20sugestion/spaces_with_sugestion_page.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
-import 'package:git_flutter_festou/src/services/user_service.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/each_last_seen.dart';
+import 'package:festou/src/models/space_model.dart';
+import 'package:festou/src/services/user_service.dart';
 import 'package:shimmer/shimmer.dart';
 
 class MyLastSeenSpaces extends StatefulWidget {

@@ -1,10 +1,10 @@
-import 'dart:developer';
-
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/search/search_page_vm.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
-import '../bottomNavBarLocatarioPage.dart';
+import 'package:festou/src/features/bottomNavBar/search/search_page_vm.dart';
+import 'package:festou/src/features/space%20card/widgets/new_space_card.dart';
+import 'package:festou/src/models/space_model.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import '../bottom_navbar_locatario_page.dart';
 import 'package:lottie/lottie.dart';
 
 class SearchPage extends StatefulWidget {
@@ -18,10 +18,15 @@ class _SearchPageState extends State<SearchPage> {
   final _controller = TextEditingController();
   List<String> searchHistory = [];
   SearchViewModel searchViewModel = SearchViewModel();
+
+  final PagingController<int, SpaceModel> _pagingController =
+      PagingController(firstPageKey: 0);
+
+  static const int _pageSize = 3;
+
   @override
   void initState() {
     searchViewModel.init();
-
     _controller.addListener(_onTextChanged);
     super.initState();
   }
@@ -30,74 +35,104 @@ class _SearchPageState extends State<SearchPage> {
   void dispose() {
     _controller.removeListener(_onTextChanged);
     _controller.dispose();
+    _pagingController.dispose();
     super.dispose();
   }
 
   void _onTextChanged() {
-    setState(() {});
+    String searchText = _controller.text.trim();
+    if (searchText.isNotEmpty) {
+      _pagingController.refresh(); // Recarrega a lista ao digitar
+      _fetchPage(0, searchText); // Passa o texto digitado para a busca
+    } else {
+      setState(() {
+        searchViewModel.onChangedSearch(""); // Limpa a busca
+        _pagingController.refresh(); // Atualiza para lista vazia
+      });
+    }
   }
 
-  //x - limpar filtered
-  //onsubmit - shwing = true
+  Future<void> _fetchPage(int pageKey, String query) async {
+    try {
+      final newItems =
+          await searchViewModel.getPaginatedSpaces(pageKey, _pageSize, query);
+
+      final isLastPage = newItems.length < _pageSize;
+
+      if (isLastPage) {
+        _pagingController.appendLastPage(newItems);
+      } else {
+        final nextPageKey = pageKey + newItems.length;
+        _pagingController.appendPage(newItems, nextPageKey);
+      }
+    } catch (error) {
+      _pagingController.error = error;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final x = MediaQuery.of(context).size.width;
     final y = MediaQuery.of(context).size.height;
-    return SafeArea(
-      child: AnimatedBuilder(
-          animation: searchViewModel,
-          builder: (context, child) {
-            return Scaffold(
-              resizeToAvoidBottomInset: false,
-              backgroundColor: Colors.white,
-              body: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                child: Column(
-                  children: [
-                    FadeInUp(
-                      duration: const Duration(milliseconds: 400),
-                      from: y * 0.3,
-                      child: Row(
-                        children: [
-                          _buildSearchBox(x, y),
-                          _buildCancelButton(),
-                          SizedBox(
-                            width: x * 0.03,
-                          ),
-                        ],
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: SafeArea(
+        child: AnimatedBuilder(
+            animation: searchViewModel,
+            builder: (context, child) {
+              return Scaffold(
+                resizeToAvoidBottomInset: false,
+                backgroundColor: Colors.white,
+                body: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                  child: Column(
+                    children: [
+                      FadeInUp(
+                        duration: const Duration(milliseconds: 400),
+                        from: y * 0.3,
+                        child: Row(
+                          children: [
+                            _buildSearchBox(x, y),
+                            _buildCancelButton(),
+                            SizedBox(
+                              width: x * 0.03,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    searchViewModel.getSpaces() != []
-                        ? Expanded(
-                            child: ListView.builder(
-                              padding: const EdgeInsets.all(10),
-                              itemCount: searchViewModel.getSpaces().length,
-                              itemBuilder: (context, index) {
-                                return NewSpaceCard(
-                                  hasHeart: true,
-                                  space: searchViewModel.getSpaces()[index],
-                                  isReview: false,
-                                );
-                              },
-                            ),
-                          )
-                        : Column(children: [
-                            Lottie.asset(
-                              'lib/assets/animations/searchAnimation.json',
-                              height: y * 0.3,
-                            ),
-                            const Text(
-                              'Busque pelos melhores espaços disponíveis para o seu Festou!',
-                              textAlign: TextAlign.center,
-                            ),
-                          ]),
-                  ],
+                      searchViewModel.getSpaces() != []
+                          ? Expanded(
+                              child: ListView.builder(
+                                padding: const EdgeInsets.all(10),
+                                itemCount: searchViewModel.getSpaces().length,
+                                itemBuilder: (context, index) {
+                                  return NewSpaceCard(
+                                    hasHeart: true,
+                                    space: searchViewModel.getSpaces()[index],
+                                    isReview: false,
+                                  );
+                                },
+                              ),
+                            )
+                          : Column(children: [
+                              Lottie.asset(
+                                'lib/assets/animations/searchAnimation.json',
+                                height: y * 0.3,
+                              ),
+                              const Text(
+                                'Busque pelos melhores espaços disponíveis para o seu Festou!',
+                                textAlign: TextAlign.center,
+                              ),
+                            ]),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          }),
+              );
+            }),
+      ),
     );
   }
 
@@ -230,45 +265,5 @@ class _SearchPageState extends State<SearchPage> {
         ),
       ),
     );
-  }
-
-  Widget _buildSearchHistory() {
-    return ListView.builder(
-      padding: EdgeInsets.zero,
-      itemCount: searchHistory.length,
-      itemBuilder: (context, index) {
-        final item = searchHistory[index];
-        return ListTile(
-          title: Text(
-            item,
-            style: const TextStyle(fontSize: 12),
-          ),
-          trailing: IconButton(
-            alignment: Alignment.centerRight,
-            icon: const Icon(
-              Icons.clear,
-              size: 15,
-            ),
-            onPressed: () {
-              setState(() {
-                searchHistory.removeAt(index);
-              });
-            },
-          ),
-        );
-      },
-    );
-  }
-
-  void _addSearchToHistory(String search) {
-    setState(() {
-      // Remove a pesquisa se ela já existir (para evitar duplicatas)
-      if (searchHistory.contains(search)) {
-        searchHistory.remove(search);
-      }
-
-      // Adiciona a pesquisa ao início da lista
-      searchHistory.insert(0, search);
-    });
   }
 }

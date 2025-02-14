@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:git_flutter_festou/main.dart';
-import 'package:git_flutter_festou/src/helpers/keys.dart';
+import 'package:festou/main.dart';
+import 'package:festou/src/helpers/keys.dart';
 import 'package:patrol_finders/patrol_finders.dart';
 import 'test_utils.dart';
 

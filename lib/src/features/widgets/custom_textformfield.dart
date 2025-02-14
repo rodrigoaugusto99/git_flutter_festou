@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:git_flutter_festou/src/helpers/keys.dart';
+import 'package:festou/src/helpers/keys.dart';
 
 class CustomTextformfield extends StatefulWidget {
   final bool enable;
@@ -77,7 +77,7 @@ class _CustomTextformfieldState extends State<CustomTextformfield> {
 
   @override
   void dispose() {
-    widget.controller.dispose();
+    //widget.controller.dispose();
     super.dispose();
   }
 
@@ -101,6 +101,7 @@ class _CustomTextformfieldState extends State<CustomTextformfield> {
         enabled: widget.enable,
         controller: widget.controller,
         validator: widget.validator,
+
         keyboardType: widget.keyboardType, maxLength: widget.maxLength,
         // onTapOutside: (event) => {FocusScope.of(context).unfocus()},
         style: TextStyle(
@@ -148,8 +149,8 @@ class _CustomTextformfieldState extends State<CustomTextformfield> {
               : null,
           fillColor: widget.fillColor ?? Colors.white,
           filled: true,
-          labelStyle: const TextStyle(
-            color: Colors.black,
+          labelStyle: TextStyle(
+            color: !widget.enable ? Colors.grey[500] : Colors.black,
             fontSize: 14,
           ),
           contentPadding: EdgeInsets.symmetric(

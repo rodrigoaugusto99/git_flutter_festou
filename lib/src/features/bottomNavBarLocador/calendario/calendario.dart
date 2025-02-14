@@ -1,16 +1,16 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_page.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_page.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_assinado_page.dart';
-import 'package:git_flutter_festou/src/helpers/helpers.dart';
-import 'package:git_flutter_festou/src/models/reservation_model.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
-import 'package:git_flutter_festou/src/models/user_model.dart';
-import 'package:git_flutter_festou/src/services/reserva_service.dart';
-import 'package:git_flutter_festou/src/services/space_service.dart';
-import 'package:git_flutter_festou/src/services/user_service.dart';
+import 'package:festou/src/features/space%20card/widgets/notificacoes_page.dart';
+import 'package:festou/src/features/space%20card/widgets/chat_page.dart';
+import 'package:festou/src/features/space%20card/widgets/contrato_assinado_page.dart';
+import 'package:festou/src/helpers/helpers.dart';
+import 'package:festou/src/models/reservation_model.dart';
+import 'package:festou/src/models/space_model.dart';
+import 'package:festou/src/models/user_model.dart';
+import 'package:festou/src/services/reserva_service.dart';
+import 'package:festou/src/services/space_service.dart';
+import 'package:festou/src/services/user_service.dart';
 import 'package:intl/intl.dart';
 
 class Calendario extends StatefulWidget {
@@ -43,8 +43,9 @@ class _CalendarioState extends State<Calendario> {
     isLoading = true;
     await fetchReservas();
     await fetchSpaces();
-    if (mySpaces != null) {}
-    selectSpace(mySpaces!.first);
+    if (mySpaces != null && mySpaces!.isNotEmpty) {
+      selectSpace(mySpaces!.first);
+    }
 
     mountedSetState();
     isLoading = false;
@@ -181,52 +182,64 @@ class _CalendarioState extends State<Calendario> {
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  //clipBehavior: Clip.none,
-                  // padding: const EdgeInsets.all(20),
-                  children: [
-                    const Text('Escolha o espaço'),
-                    const SizedBox(height: 20),
-                    ...mySpaces!.map((space) {
-                      return Column(
+          : mySpaces != null && mySpaces!.isEmpty
+              ? const Center(
+                  child: Text(
+                    'Você não tem espaços',
+                    style: TextStyle(fontSize: 17),
+                  ),
+                )
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: SingleChildScrollView(
+                    child: Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        //clipBehavior: Clip.none,
+                        // padding: const EdgeInsets.all(20),
                         children: [
-                          SpaceWidget(
-                            isSelected: selectedSpace!.spaceId == space.spaceId,
-                            space: space,
-                            onTap: () => selectSpace(space),
-                          ),
-                          const SizedBox(height: 17),
+                          if (mySpaces != null && mySpaces!.isNotEmpty) ...[
+                            const Text('Escolha o espaço'),
+                            const SizedBox(height: 20),
+                            ...mySpaces!.map((space) {
+                              return Column(
+                                children: [
+                                  SpaceWidget(
+                                    isSelected:
+                                        selectedSpace!.spaceId == space.spaceId,
+                                    space: space,
+                                    onTap: () => selectSpace(space),
+                                  ),
+                                  const SizedBox(height: 17),
+                                ],
+                              );
+                            }),
+                            const SizedBox(height: 30),
+                            const Text('Calendário de reservas'),
+                            if (selectedSpaceReservations != null) ...[
+                              const SizedBox(height: 20),
+                              CalendarioExpansioWidget(
+                                minhasReservas: selectedSpaceReservations!,
+                                title: 'Todas as reservas desse espaço',
+                              ),
+                            ],
+                            const SizedBox(height: 14),
+                            CalendarioExpansioWidget(
+                              minhasReservas: minhasReservas!,
+                              title: 'Todas as reservas',
+                            ),
+                            const SizedBox(height: 14),
+                            CalendarioExpansioWidget(
+                              minhasReservas: minhasReservasProximas!,
+                              title: 'Próximas reservas',
+                              isNear: true,
+                            ),
+                          ]
                         ],
-                      );
-                    }),
-                    const SizedBox(height: 30),
-                    const Text('Calendário de reservas'),
-                    if (selectedSpaceReservations != null) ...[
-                      const SizedBox(height: 20),
-                      CalendarioExpansioWidget(
-                        minhasReservas: selectedSpaceReservations!,
-                        title: 'Todas as reservas desse espaço',
                       ),
-                    ],
-                    const SizedBox(height: 14),
-                    CalendarioExpansioWidget(
-                      minhasReservas: minhasReservas!,
-                      title: 'Todas as reservas',
                     ),
-                    const SizedBox(height: 14),
-                    CalendarioExpansioWidget(
-                      minhasReservas: minhasReservasProximas!,
-                      title: 'Próximas reservas',
-                      isNear: true,
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
     );
   }
 }
@@ -463,8 +476,11 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
                 ),
               if (!widget.isNear)
                 Positioned(
-                  left: 5,
-                  child: Image.asset('lib/assets/images/icon_calendar.png'),
+                  left: 2,
+                  child: Image.asset(
+                    'lib/assets/images/icon_calendar.png',
+                    height: 25,
+                  ),
                 ),
               const SizedBox(width: 10),
               Positioned(

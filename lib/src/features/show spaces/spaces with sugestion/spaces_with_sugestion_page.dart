@@ -1,16 +1,16 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/loading_indicator.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/new_card_info.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/my_sliver_list_to_card_info.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/spaces%20with%20sugestion/spaces_with_sugestion_state.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/spaces%20with%20sugestion/spaces_with_sugestion_vm.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_page.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/loading_indicator.dart';
+import 'package:festou/src/features/space%20card/widgets/new_card_info.dart';
+import 'package:festou/src/features/space%20card/widgets/new_space_card.dart';
+import 'package:festou/src/features/space%20card/widgets/my_sliver_list_to_card_info.dart';
+import 'package:festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
+import 'package:festou/src/features/show%20spaces/spaces%20with%20sugestion/spaces_with_sugestion_state.dart';
+import 'package:festou/src/features/show%20spaces/spaces%20with%20sugestion/spaces_with_sugestion_vm.dart';
+import 'package:festou/src/features/space%20card/widgets/notificacoes_page.dart';
+import 'package:festou/src/models/space_model.dart';
 
 class SpacesWithSugestionPage extends ConsumerStatefulWidget {
   final SpaceModel space;
@@ -21,8 +21,6 @@ class SpacesWithSugestionPage extends ConsumerStatefulWidget {
   ConsumerState<SpacesWithSugestionPage> createState() =>
       _SpacesWithSugestionPageState();
 }
-
-//TODO: space with sugestion
 
 class _SpacesWithSugestionPageState
     extends ConsumerState<SpacesWithSugestionPage> {

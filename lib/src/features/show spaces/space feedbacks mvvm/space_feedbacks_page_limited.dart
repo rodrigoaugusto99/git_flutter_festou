@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/new_feedback_widget_limited.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_vm.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:festou/src/features/space%20card/widgets/new_feedback_widget_limited.dart';
+import 'package:festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_state.dart';
+import 'package:festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_vm.dart';
+import 'package:festou/src/models/space_model.dart';
 
 class SpaceFeedbacksPageLimited extends ConsumerStatefulWidget {
   final SpaceModel space;

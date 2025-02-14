@@ -1,13 +1,16 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/register/host%20feedback/host_feedback_register_vm.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/register/host%20feedback/host_feedback_register_vm.dart';
+import 'package:festou/src/models/reservation_model.dart';
+import 'package:festou/src/models/space_model.dart';
 
 class HostFeedbackRegisterPage extends ConsumerStatefulWidget {
   final SpaceModel space;
-  const HostFeedbackRegisterPage({super.key, required this.space});
+  final ReservationModel reservation;
+  const HostFeedbackRegisterPage(
+      {super.key, required this.space, required this.reservation});
 
   @override
   ConsumerState<HostFeedbackRegisterPage> createState() =>
@@ -75,6 +78,7 @@ class _HostFeedbackRegisterPageState
                 onPressed: () {
                   hostFeedbackRegisterVm.register(
                     hostId: widget.space.userId,
+                    reservationId: widget.reservation.id!,
                     rating: starRatingIndex,
                     content: contentController.text,
                   );

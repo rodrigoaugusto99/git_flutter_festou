@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:git_flutter_festou/src/core/ui/constants.dart';
-import 'package:git_flutter_festou/src/features/auth/auth_page.dart';
+import 'package:festou/src/core/ui/constants.dart';
+import 'package:festou/src/features/auth/auth_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});

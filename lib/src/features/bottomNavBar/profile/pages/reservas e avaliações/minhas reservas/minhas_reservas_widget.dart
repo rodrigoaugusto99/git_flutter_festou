@@ -1,14 +1,16 @@
+import 'package:festou/src/features/space%20card/widgets/contrato_assinado_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:festou/src/features/space%20card/widgets/contrato_assinado_page.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/meus%20feedbacks/cancel_reservation_dialog.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
-import 'package:git_flutter_festou/src/helpers/helpers.dart';
-import 'package:git_flutter_festou/src/models/reservation_model.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
-import 'package:git_flutter_festou/src/services/reserva_service.dart';
-import 'package:git_flutter_festou/src/services/space_service.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/minhas%20reservas/cancel_reservation_dialog.dart';
+import 'package:festou/src/features/space%20card/widgets/new_space_card.dart';
+import 'package:festou/src/helpers/helpers.dart';
+import 'package:festou/src/models/reservation_model.dart';
+import 'package:festou/src/models/space_model.dart';
+import 'package:festou/src/services/reserva_service.dart';
+import 'package:festou/src/services/space_service.dart';
 import 'package:intl/intl.dart';
-import 'package:svg_flutter/svg.dart';
+import 'package:lottie/lottie.dart';
 
 class SpaceWithReservation {
   SpaceWithReservation({
@@ -19,17 +21,16 @@ class SpaceWithReservation {
   final ReservationModel reserva;
 }
 
-class HistoricoReservasWidget extends StatefulWidget {
-  const HistoricoReservasWidget({
+class MinhasReservasWidget extends StatefulWidget {
+  const MinhasReservasWidget({
     super.key,
   });
 
   @override
-  State<HistoricoReservasWidget> createState() =>
-      _HistoricoReservasWidgetState();
+  State<MinhasReservasWidget> createState() => _MinhasReservasWidgetState();
 }
 
-class _HistoricoReservasWidgetState extends State<HistoricoReservasWidget> {
+class _MinhasReservasWidgetState extends State<MinhasReservasWidget> {
   @override
   void initState() {
     super.initState();
@@ -40,17 +41,22 @@ class _HistoricoReservasWidgetState extends State<HistoricoReservasWidget> {
   //todo: mostrar o x se estiver cancelado
 
   Future<void> getMyReservations() async {
-    final reservas = await ReservaService().getReservationsByClienId();
+    final reservas = await ReservaService().getReservationsByClientId();
+
+    List<SpaceWithReservation> updatedReservationSpaces = [];
 
     for (final reserva in reservas) {
       final space = await SpaceService().getSpaceById(reserva.spaceId);
       if (space == null) continue;
 
-      reservationSpaces
+      updatedReservationSpaces
           .add(SpaceWithReservation(space: space, reserva: reserva));
     }
 
-    setState(() {});
+    setState(() {
+      reservationSpaces =
+          updatedReservationSpaces; // Atualiza a lista completamente
+    });
   }
 
   @override
@@ -70,43 +76,76 @@ class _HistoricoReservasWidgetState extends State<HistoricoReservasWidget> {
           shape: const RoundedRectangleBorder(
             side: BorderSide.none,
           ),
-          leading: Image.asset('lib/assets/images/icon_avaliacao.png'),
-          title: const Text('Minhas reservas'),
-          children: [
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: reservationSpaces.length,
-              itemBuilder: (BuildContext context, int index) {
-                final spaceWithReservation = reservationSpaces[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 50, top: 10),
-                  child: HistoricoReservasTile(
-                      spaceShowing: spaceWithReservation.space,
-                      reservationModel: spaceWithReservation.reserva,
-                      showCancelReservationDialog: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => CancelReservationDialog(
-                            reservation: spaceWithReservation.reserva,
-                          ),
-                        );
-                      }),
-                );
-              },
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 4.0),
+            child: Image.asset(
+              'lib/assets/images/icon_calendario_check.png',
+              width: 25,
+              height: 25,
             ),
-          ],
+          ),
+          title: const Text(
+            'Minhas reservas',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.black,
+            ),
+          ),
+          children: reservationSpaces.isEmpty
+              ? [
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text(
+                          'Nenhuma reserva encontrada.',
+                          style: TextStyle(fontSize: 14, color: Colors.black54),
+                        ),
+                      ),
+                    ],
+                  ),
+                ]
+              : [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: reservationSpaces.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final spaceWithReservation = reservationSpaces[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                            bottom: 70, top: 10, right: 20, left: 20),
+                        child: MinhasReservasTile(
+                          spaceShowing: spaceWithReservation.space,
+                          reservationModel: spaceWithReservation.reserva,
+                          showCancelReservationDialog: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => CancelReservationDialog(
+                                reservation: spaceWithReservation.reserva,
+                                onReservationCancelled: () async {
+                                  await getMyReservations();
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ],
         ),
       ),
     );
   }
 }
 
-class HistoricoReservasTile extends StatefulWidget {
+class MinhasReservasTile extends StatefulWidget {
   final SpaceModel spaceShowing;
   final ReservationModel reservationModel;
   final Function()? showCancelReservationDialog;
-  const HistoricoReservasTile({
+  const MinhasReservasTile({
     super.key,
     required this.spaceShowing,
     required this.reservationModel,
@@ -114,7 +153,7 @@ class HistoricoReservasTile extends StatefulWidget {
   });
 
   @override
-  State<HistoricoReservasTile> createState() => _HistoricoReservasTileState();
+  State<MinhasReservasTile> createState() => _MinhasReservasTileState();
 }
 
 String formatDateTime(DateTime date, int startHour, int endHour) {
@@ -144,12 +183,32 @@ void showCancellationReasonDialog(BuildContext context, String reason) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text('Motivo do Cancelamento'),
-        content: Text(
-          reason.isNotEmpty
-              ? reason
-              : 'Nenhum motivo foi fornecido para este cancelamento.',
-          style: const TextStyle(fontSize: 16),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Lottie.asset(
+              'lib/assets/animations/info.json',
+              width: 100,
+              height: 100,
+              repeat: false,
+            ),
+            const Padding(
+              padding: EdgeInsets.only(bottom: 16.0),
+              child: Text(
+                'Motivo do cancelamento',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Text(
+              reason.isNotEmpty
+                  ? reason
+                  : 'Nenhum motivo foi fornecido para este cancelamento.',
+              style: const TextStyle(fontSize: 16),
+            ),
+          ],
         ),
         actions: [
           TextButton(
@@ -164,7 +223,7 @@ void showCancellationReasonDialog(BuildContext context, String reason) {
   );
 }
 
-class _HistoricoReservasTileState extends State<HistoricoReservasTile> {
+class _MinhasReservasTileState extends State<MinhasReservasTile> {
   int currentIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -193,7 +252,9 @@ class _HistoricoReservasTileState extends State<HistoricoReservasTile> {
                               ),
                               child: Image.network(
                                 imageUrl,
-                                fit: BoxFit.cover,
+                                fit: BoxFit.fill,
+                                width: double.infinity,
+                                height: double.infinity,
                               ),
                             ),
                           )
@@ -202,13 +263,14 @@ class _HistoricoReservasTileState extends State<HistoricoReservasTile> {
                           .map(
                             (imageUrl) => Image.network(
                               imageUrl,
-                              fit: BoxFit.cover,
+                              fit: BoxFit.fill,
+                              width: double.infinity,
+                              height: double.infinity,
                             ),
                           )
                           .toList(),
                   options: CarouselOptions(
                     autoPlay: true,
-                    aspectRatio: 305 / 179,
                     viewportFraction: 1.0,
                     enableInfiniteScroll: true,
                     onPageChanged: (index, reason) {
@@ -309,7 +371,7 @@ class _HistoricoReservasTileState extends State<HistoricoReservasTile> {
                                 widget.reservationModel.checkOutTime,
                               ),
                               style: const TextStyle(
-                                fontSize: 9,
+                                fontSize: 11,
                                 color: Color(0xff5E5E5E),
                               ),
                             ),
@@ -333,6 +395,34 @@ class _HistoricoReservasTileState extends State<HistoricoReservasTile> {
                 width: 36,
                 align: Alignment.center,
                 color: Colors.red,
+                child: const Text(
+                  'X',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          if (widget.reservationModel.canceledAt == null)
+            Positioned(
+              top: 11,
+              left: 49,
+              child: decContainer(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ContratoAssinadoPage(
+                              html: widget.reservationModel.contratoHtml,
+                            )),
+                  );
+                },
+                radius: 50,
+                height: 36,
+                width: 36,
+                align: Alignment.center,
+                color: Colors.black,
                 child: const Text(
                   'X',
                   style: TextStyle(

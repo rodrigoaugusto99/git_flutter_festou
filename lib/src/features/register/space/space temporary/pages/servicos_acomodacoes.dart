@@ -2,12 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/adicione_fotos.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
+import 'package:festou/src/features/register/space/space%20temporary/pages/adicione_fotos.dart';
+import 'package:festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 
-import 'package:git_flutter_festou/src/features/register/space/widgets/services_panel.dart';
-import 'package:git_flutter_festou/src/features/register/space/widgets/type_panel.dart';
-import 'package:git_flutter_festou/src/helpers/keys.dart';
+import 'package:festou/src/features/register/space/widgets/services_panel.dart';
+import 'package:festou/src/helpers/keys.dart';
 
 class ServicosAcomodacoes extends ConsumerStatefulWidget {
   const ServicosAcomodacoes({super.key});
@@ -18,6 +17,15 @@ class ServicosAcomodacoes extends ConsumerStatefulWidget {
 }
 
 class _ServicosAcomodacoesState extends ConsumerState<ServicosAcomodacoes> {
+  @override
+  void initState() {
+    super.initState();
+    final vm = ref.read(newSpaceRegisterVmProvider.notifier);
+    final state = vm.getState();
+    selected = state.selectedServices;
+  }
+
+  List<String> selected = [];
   @override
   Widget build(BuildContext context) {
     final newSpaceRegister = ref.read(newSpaceRegisterVmProvider.notifier);
@@ -82,7 +90,7 @@ class _ServicosAcomodacoesState extends ConsumerState<ServicosAcomodacoes> {
                       log('onServicePressed: $value');
                       newSpaceRegister.addOrRemoveService(value);
                     },
-                    selectedServices: const [],
+                    selectedServices: selected,
                   ),
                 ],
               ),
@@ -95,37 +103,6 @@ class _ServicosAcomodacoesState extends ConsumerState<ServicosAcomodacoes> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
-                alignment: Alignment.center,
-                height: 35,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xff9747FF),
-                      Color(0xff44300b1),
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                ),
-                child: const Text(
-                  'Voltar',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 9,
-            ),
             GestureDetector(
               key: Keys.k4ScreenButton,
               onTap: () => Navigator.push(
@@ -152,6 +129,37 @@ class _ServicosAcomodacoesState extends ConsumerState<ServicosAcomodacoes> {
                 ),
                 child: const Text(
                   'Avançar',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 9,
+            ),
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                alignment: Alignment.center,
+                height: 35,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xff9747FF),
+                      Color(0xff44300b1),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+                child: const Text(
+                  'Voltar',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,

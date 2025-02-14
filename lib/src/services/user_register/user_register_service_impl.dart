@@ -1,9 +1,9 @@
-import 'package:git_flutter_festou/src/core/exceptions/service_exception.dart';
-import 'package:git_flutter_festou/src/core/fp/either.dart';
-import 'package:git_flutter_festou/src/core/fp/nil.dart';
-import 'package:git_flutter_festou/src/repositories/user/user_auth_repository.dart';
-import 'package:git_flutter_festou/src/repositories/user/user_firestore_repository.dart';
-import 'package:git_flutter_festou/src/services/user_login/user_login_service.dart';
+import 'package:festou/src/core/exceptions/service_exception.dart';
+import 'package:festou/src/core/fp/either.dart';
+import 'package:festou/src/core/fp/nil.dart';
+import 'package:festou/src/repositories/user/user_auth_repository.dart';
+import 'package:festou/src/repositories/user/user_firestore_repository.dart';
+import 'package:festou/src/services/user_login/user_login_service.dart';
 import './user_register_service.dart';
 
 class UserRegisterServiceImpl implements UserRegisterService {

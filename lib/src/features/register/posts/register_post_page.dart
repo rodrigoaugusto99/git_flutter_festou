@@ -1,11 +1,11 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/loading_indicator.dart';
-import 'package:git_flutter_festou/src/features/register/posts/register_post_vm.dart';
-import 'package:git_flutter_festou/src/features/widgets/custom_textformfield.dart';
-import 'package:git_flutter_festou/src/helpers/helpers.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/loading_indicator.dart';
+import 'package:festou/src/features/register/posts/register_post_vm.dart';
+import 'package:festou/src/features/widgets/custom_textformfield.dart';
+import 'package:festou/src/helpers/helpers.dart';
+import 'package:festou/src/models/space_model.dart';
 import 'package:svg_flutter/svg.dart';
 
 class RegisterPostPage extends StatefulWidget {
@@ -185,16 +185,16 @@ class _RegisterPostPageState extends State<RegisterPostPage> {
                                   Stack(
                                     alignment: Alignment.center,
                                     children: [
-                                      const Icon(
-                                        Icons.photo,
-                                        size: 50,
-                                        color: Colors.black,
-                                      ),
                                       decContainer(
                                         radius: 10,
                                         color: Colors.black.withOpacity(0.5),
                                         height: 100,
                                         width: 100,
+                                      ),
+                                      const Icon(
+                                        Icons.photo,
+                                        size: 50,
+                                        color: Colors.white,
                                       ),
                                     ],
                                   ),
@@ -234,7 +234,7 @@ class _RegisterPostPageState extends State<RegisterPostPage> {
                         /*
                           os textfields, ao serem clicados, abrira um dialog com o campo a ser
                           preenchido e os botoes cancelar e salvar. Ao salvar, o texto vai aparecer 
-                          no espaco abaixo, aparecendo botao de editar. titulo obrigatorio apenas
+                          no espaco abaixo, aparecendo botao de editar. titulo obrigatório apenas
                            */
                         const SizedBox(height: 15),
                         CustomTextformfield(
@@ -254,9 +254,11 @@ class _RegisterPostPageState extends State<RegisterPostPage> {
                               //await Future.delayed(const Duration(seconds: 3));
                               if (context.mounted) {
                                 Navigator.of(context).pop();
+                                Navigator.of(context).pop();
                               }
+
                               Messages.showSuccess(
-                                  'Post feito com sucesso', context);
+                                  'Publicação realizada', context);
                             } on Exception catch (e) {
                               log(e.toString());
                             }

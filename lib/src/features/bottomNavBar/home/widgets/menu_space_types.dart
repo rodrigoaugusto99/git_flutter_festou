@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/show%20spaces/spaces%20by%20type/spaces_by_type_page.dart';
+import 'package:festou/src/features/show%20spaces/spaces%20by%20type/spaces_by_type_page.dart';
 
 class MenuSpaceTypes extends StatefulWidget {
   const MenuSpaceTypes({super.key});
@@ -10,8 +10,7 @@ class MenuSpaceTypes extends StatefulWidget {
 }
 
 class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
-  final user = FirebaseAuth.instance
-      .currentUser!; //TODO: Remover os botões de "Todos os espaços" e "Meus espaços" dessa classe
+  final user = FirebaseAuth.instance.currentUser!;
 
   @override
   Widget build(BuildContext context) {
@@ -172,7 +171,7 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                 MaterialPageRoute(
                   builder: (context) {
                     return const SpacesByTypePage(
-                      type: ['Cha'],
+                      type: ['Chá'],
                     ); // Substitua NovaPagina com o widget da sua nova tela
                   },
                 ),
@@ -210,7 +209,7 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                 MaterialPageRoute(
                   builder: (context) {
                     return const SpacesByTypePage(
-                      type: ['Reuniao'],
+                      type: ['Reunião'],
                     ); // Substitua NovaPagina com o widget da sua nova tela
                   },
                 ),

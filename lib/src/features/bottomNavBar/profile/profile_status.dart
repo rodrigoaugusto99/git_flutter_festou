@@ -1,4 +1,4 @@
-import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:festou/src/models/user_model.dart';
 
 enum ProfileStateStatus { loaded, error }
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/single_video_page.dart';
+import 'package:festou/src/features/space%20card/widgets/single_video_page.dart';
 import 'package:video_player/video_player.dart';
 
 Widget buildVideoPlayer(

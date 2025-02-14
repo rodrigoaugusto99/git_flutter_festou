@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/loading_indicator.dart';
+import 'package:festou/src/features/loading_indicator.dart';
 
 class AllPosts extends StatefulWidget {
   const AllPosts({super.key});
@@ -12,6 +12,7 @@ class AllPosts extends StatefulWidget {
 class _AllPostsState extends State<AllPosts> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   List<DocumentSnapshot> _spaces = [];
+  // ignore: unused_field
   bool _loadingSpaces = true;
   bool _loadingMoreSpaces = false;
   DocumentSnapshot? _lastDocument;

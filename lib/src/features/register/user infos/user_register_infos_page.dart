@@ -2,10 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/ui/constants.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/register/user%20infos/user_register_infos_vm.dart';
-import 'package:git_flutter_festou/src/features/register/user%20infos/widgets/avatar_widget.dart';
+import 'package:festou/src/core/ui/constants.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/register/user%20infos/user_register_infos_vm.dart';
+import 'package:festou/src/features/register/user%20infos/widgets/avatar_widget.dart';
 import 'package:search_cep/search_cep.dart';
 import 'package:validatorless/validatorless.dart';
 
@@ -23,6 +23,7 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
   final telefoneEC = TextEditingController();
   final cepEC = TextEditingController();
   final logradouroEC = TextEditingController();
+  final numeroEC = TextEditingController();
   final bairroEC = TextEditingController();
   final cidadeEC = TextEditingController();
   bool isCepAutoCompleted = false;
@@ -37,6 +38,7 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
     telefoneEC.dispose();
     cepEC.dispose();
     logradouroEC.dispose();
+    numeroEC.dispose();
     bairroEC.dispose();
     cidadeEC.dispose();
     super.dispose();
@@ -57,6 +59,7 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
         (infoCepJSON) {
           setState(() {
             logradouroEC.text = infoCepJSON.logradouro ?? '';
+            // numeroEC.text = infoCepJSON.numero ?? '';
             bairroEC.text = infoCepJSON.bairro ?? '';
             cidadeEC.text = infoCepJSON.localidade ?? '';
             isCepAutoCompleted = true;
@@ -138,6 +141,14 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
                       ),
                       const SizedBox(height: 10),
                       TextFormField(
+                        validator: userRegisterInfosVM.validateNumero(),
+                        decoration: const InputDecoration(
+                          hintText: 'numero',
+                        ),
+                        controller: numeroEC,
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
                         enabled: !isCepAutoCompleted,
                         validator: userRegisterInfosVM.validateBairro(),
                         decoration: const InputDecoration(
@@ -167,6 +178,7 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
                               telefoneEC.text,
                               cepEC.text,
                               logradouroEC.text,
+                              numeroEC.text,
                               bairroEC.text,
                               cidadeEC.text);
                         },

@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/core/ui/constants.dart';
-import 'package:git_flutter_festou/src/helpers/keys.dart';
+import 'package:festou/src/core/ui/constants.dart';
+import 'package:festou/src/helpers/keys.dart';
 
 class ServicesPanel extends StatelessWidget {
   final ValueChanged<String> onServicePressed;

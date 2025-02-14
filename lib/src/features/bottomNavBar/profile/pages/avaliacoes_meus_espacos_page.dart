@@ -1,20 +1,13 @@
 import 'dart:developer';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/meus%20feedbacks/feedbacks_widgets.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_page.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/chat_page.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_assinado_page.dart';
-import 'package:git_flutter_festou/src/helpers/helpers.dart';
-import 'package:git_flutter_festou/src/models/feedback_model.dart';
-import 'package:git_flutter_festou/src/models/reservation_model.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
-import 'package:git_flutter_festou/src/models/user_model.dart';
-import 'package:git_flutter_festou/src/services/feedback_service.dart';
-import 'package:git_flutter_festou/src/services/reserva_service.dart';
-import 'package:git_flutter_festou/src/services/space_service.dart';
-import 'package:git_flutter_festou/src/services/user_service.dart';
-import 'package:intl/intl.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/meus%20feedbacks/minhas_avaliacoes_widgets.dart';
+import 'package:festou/src/helpers/helpers.dart';
+import 'package:festou/src/models/avaliacoes_model.dart';
+import 'package:festou/src/models/space_model.dart';
+import 'package:festou/src/models/user_model.dart';
+import 'package:festou/src/services/avaliacoes_service.dart';
+import 'package:festou/src/services/space_service.dart';
+import 'package:festou/src/services/user_service.dart';
 
 class AvaliacoesMeusEspacosPage extends StatefulWidget {
   const AvaliacoesMeusEspacosPage({super.key});
@@ -25,13 +18,13 @@ class AvaliacoesMeusEspacosPage extends StatefulWidget {
 }
 
 class _AvaliacoesMeusEspacosPageState extends State<AvaliacoesMeusEspacosPage> {
-  List<FeedbackModel>? meusFeedbacks;
+  List<AvaliacoesModel>? meusFeedbacks;
   List<SpaceModel>? mySpaces;
   UserService userService = UserService();
   SpaceService spaceService = SpaceService();
   UserModel? userModel;
 
-  List<FeedbackModel>? selectedSpaceFeedbacks;
+  List<AvaliacoesModel>? selectedSpaceFeedbacks;
 
   SpaceModel? selectedSpace;
   bool isLoading = false;
@@ -63,7 +56,7 @@ class _AvaliacoesMeusEspacosPageState extends State<AvaliacoesMeusEspacosPage> {
     // selectedSpaceReservations =
     //     await ReservaService().getReservationsBySpaceId(spaceId);
     selectedSpaceFeedbacks =
-        await FeedbackService().getFeedbacksOrdered(selectedSpace!.spaceId);
+        await AvaliacoesService().getFeedbacksOrdered(selectedSpace!.spaceId);
     if (selectedSpaceFeedbacks == null) {
       log('selectedSpaceFeedbacks null');
       return;
@@ -120,7 +113,7 @@ class _AvaliacoesMeusEspacosPageState extends State<AvaliacoesMeusEspacosPage> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Avaliações',
+          'Avaliações recebidas',
           style: TextStyle(
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
@@ -129,71 +122,112 @@ class _AvaliacoesMeusEspacosPageState extends State<AvaliacoesMeusEspacosPage> {
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Padding(
+          : SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  //clipBehavior: Clip.none,
-                  // padding: const EdgeInsets.all(20),
-                  children: [
-                    const Text('Escolha o espaço'),
-                    const SizedBox(height: 20),
-                    ...mySpaces!.map((space) {
-                      return Column(
-                        children: [
-                          SpaceWidget(
-                            isSelected: selectedSpace!.spaceId == space.spaceId,
-                            space: space,
-                            onTap: () => selectSpace(space),
-                          ),
-                          const SizedBox(height: 17),
-                        ],
-                      );
-                    }),
-                    const SizedBox(height: 30),
-                    Row(
-                      children: [
-                        const Text('Avaliações '),
-                        Text(
-                          '(${selectedSpaceFeedbacks!.length} avaliações)',
-                          style: const TextStyle(
-                            fontSize: 11,
-                            color: Color(0xff5E5E5E),
-                          ),
-                        ),
-                      ],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                //clipBehavior: Clip.none,
+                // padding: const EdgeInsets.all(20),
+                children: [
+                  const SizedBox(
+                    height: 24,
+                  ),
+                  const Text(
+                    'Escolha o espaço',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
                     ),
-                    if (selectedSpaceFeedbacks != null &&
-                        selectedSpaceFeedbacks!.isNotEmpty) ...[
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: selectedSpaceFeedbacks!.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final feedback = selectedSpaceFeedbacks![index];
-                          if (feedback.content == '' ||
-                              feedback.deleteAt != null) {
-                            return const SizedBox.shrink();
-                          }
-                          return FeedbackItem(
-                            hideThings: true,
-                            feedback: feedback,
-                            onDelete: () {
-                              selectedSpaceFeedbacks!.removeAt(index);
-                            },
-                          );
-                        },
-                      ),
-                    ] else ...[
-                      const SizedBox(height: 20),
+                  ),
+                  const SizedBox(height: 20),
+                  ...mySpaces!.map((space) {
+                    return Column(
+                      children: [
+                        SpaceWidget(
+                          isSelected: selectedSpace!.spaceId == space.spaceId,
+                          space: space,
+                          onTap: () => selectSpace(space),
+                        ),
+                        const SizedBox(height: 17),
+                      ],
+                    );
+                  }),
+                  const SizedBox(height: 30),
+                  Row(
+                    children: [
                       const Text(
-                        'Nenhuma avaliação',
-                        style: TextStyle(color: Colors.grey),
+                        'Avaliações ',
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        '(${selectedSpaceFeedbacks!.length} avaliações)',
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: Color(0xff5E5E5E),
+                        ),
                       ),
                     ],
+                  ),
+                  if (selectedSpaceFeedbacks != null &&
+                      selectedSpaceFeedbacks!.isNotEmpty) ...[
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: selectedSpaceFeedbacks!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final feedback = selectedSpaceFeedbacks![index];
+                        if (feedback.content == '' ||
+                            feedback.deletedAt != null) {
+                          return const SizedBox.shrink();
+                        }
+                        return AvaliacoesItem(
+                          hideThings: true,
+                          feedback: feedback,
+                          onDelete: () {
+                            selectedSpaceFeedbacks!.removeAt(index);
+                          },
+                        );
+                      },
+                    ),
+                  ] else ...[
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Nenhuma avaliação',
+                      style: TextStyle(color: Colors.grey),
+                    ),
                   ],
-                ),
+                  if (selectedSpaceFeedbacks != null &&
+                      selectedSpaceFeedbacks!.isNotEmpty) ...[
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: selectedSpaceFeedbacks!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final feedback = selectedSpaceFeedbacks![index];
+                        if (feedback.content == '' ||
+                            feedback.deletedAt != null) {
+                          return const SizedBox.shrink();
+                        }
+                        return AvaliacoesItem(
+                          hideThings: true,
+                          feedback: feedback,
+                          onDelete: () {
+                            selectedSpaceFeedbacks!.removeAt(index);
+                          },
+                        );
+                      },
+                    ),
+                  ] else ...[
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Nenhuma avaliação',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ],
+                ],
               ),
             ),
     );
@@ -223,20 +257,24 @@ class SpaceWidget extends StatelessWidget {
             decContainer(
               radius: 8,
               color: Colors.blue,
-              width: screenWidth(context) / 2,
+              width: screenWidth(context) / 1.5,
               height: 61,
               child: Stack(
                 children: [
-                  Image.network(
-                    space.imagesUrl.isNotEmpty
-                        ? space.imagesUrl[0]
-                        : 'URL de uma imagem padrão ou vazia',
-                    width: screenWidth(context) / 2,
-                    height: 61,
-                    // color: Colors.green,
+                  if (space.imagesUrl.isNotEmpty)
+                    Image.network(
+                      space.imagesUrl[0],
+                      width: screenWidth(context) / 2,
+                      height: 61,
+                      // color: Colors.green,
 
-                    fit: BoxFit.cover,
-                  ),
+                      fit: BoxFit.cover,
+                    ),
+                  if (space.imagesUrl.isEmpty)
+                    Container(
+                      height: 61,
+                      color: Colors.grey,
+                    ),
                   Positioned(
                     bottom: 0,
                     left: 0,

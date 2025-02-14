@@ -1,4 +1,4 @@
-import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:festou/src/models/space_model.dart';
 
 enum SpacesByTypeStateStatus { loaded, error }
 

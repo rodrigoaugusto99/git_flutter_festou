@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:git_flutter_festou/src/helpers/keys.dart';
+import 'package:festou/src/helpers/keys.dart';
 
 Widget myRow({
   required String label,

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/tipo_espaco.dart';
-import 'package:git_flutter_festou/src/helpers/helpers.dart';
-import 'package:git_flutter_festou/src/helpers/keys.dart';
+import 'package:festou/src/features/register/space/space%20temporary/pages/tipo_espaco.dart';
+import 'package:festou/src/helpers/helpers.dart';
+import 'package:festou/src/helpers/keys.dart';
 
 class NewSpaceRegister extends StatefulWidget {
   const NewSpaceRegister({super.key});

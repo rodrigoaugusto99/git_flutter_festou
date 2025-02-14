@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/avaliacoes_meus_espacos_page.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/login_seguranca.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/widgets/my_row.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/minhas%20atividades/minhas_atividades_page.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/notificacoes_page.dart';
-import 'package:git_flutter_festou/src/models/user_model.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/avaliacoes_meus_espacos_page.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/login_seguranca.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/widgets/my_row.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/reservas_avaliacoes_page.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
+import 'package:festou/src/features/bottomNavBarLocador/mensagens/mensagens.dart';
+import 'package:festou/src/features/space%20card/widgets/notificacoes_page.dart';
+import 'package:festou/src/models/user_model.dart';
 
 class MyRowsConfig extends StatefulWidget {
   final UserModel userModel;
@@ -34,8 +34,7 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  InformacoesPessoais(userModel: widget.userModel),
+              builder: (context) => const InformacoesPessoais(),
             ),
           ),
           icon1: Image.asset(
@@ -72,14 +71,14 @@ class _MyRowsConfigState extends State<MyRowsConfig> {
         const SizedBox(height: 16),
         MyRow(
           text: widget.userModel.locador
-              ? 'Avaliações dos meus espaços'
+              ? 'Avaliações recebidas'
               : 'Minhas reservas e avaliações',
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => widget.userModel.locador
                     ? const AvaliacoesMeusEspacosPage()
-                    : MinhasAtividadesPage(userId: widget.userModel.uid)),
+                    : ReservasAvaliacoesPage(userId: widget.userModel.uid)),
           ),
           icon1: Image.asset(
             'lib/assets/images/icon_disponibilizar.png',

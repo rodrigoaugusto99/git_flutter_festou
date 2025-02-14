@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/ui/constants.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/login/login_state.dart';
-import 'package:git_flutter_festou/src/features/login/login_vm.dart';
-import 'package:git_flutter_festou/src/helpers/constants.dart';
-import 'package:git_flutter_festou/src/helpers/validators.dart';
+import 'package:festou/src/core/ui/constants.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/login/login_state.dart';
+import 'package:festou/src/features/login/login_vm.dart';
 import 'package:glassmorphism/glassmorphism.dart';
-import 'package:validatorless/validatorless.dart';
 import 'forgot_password_page.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -22,14 +19,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   final passwordEC = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
+  bool isVisible = false;
+  bool _isLoggingIn = false;
+
   @override
   void dispose() {
     emailEC.dispose();
     passwordEC.dispose();
     super.dispose();
   }
-
-  bool isVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +41,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           Messages.showError(errorMessage, context);
         case LoginState(status: LoginStateStatus.error):
           Messages.showError('Erro ao realizar login', context);
+          _isLoggingIn = false;
+          break;
         case LoginState(status: LoginStateStatus.invalidForm):
           Messages.showInfo('Formulário inválido', context);
+          _isLoggingIn = false;
+          break;
         case LoginState(status: LoginStateStatus.userLogin):
           // if (isTest) {
           //   Navigator.of(context)
@@ -54,7 +56,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           // }
           Navigator.of(context)
               .pushNamedAndRemoveUntil('/emailVerification', (route) => false);
-
+          _isLoggingIn = false;
           break;
         //changeProviderDialog(dialogMessage);
       }
@@ -406,7 +408,28 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             height: screenHeight * 0.025,
                           ),
                           InkWell(
-                            onTap: () => loginVM.loginWithGoogle(context),
+                            onTap: _isLoggingIn
+                                ? null // Desativa o clique se já estiver processando
+                                : () async {
+                                    setState(() {
+                                      _isLoggingIn =
+                                          true; // Bloqueia novos cliques
+                                    });
+
+                                    try {
+                                      await loginVM.loginWithGoogle(
+                                          context); // Aguarda o login ser concluído
+                                    } catch (e) {
+                                      Messages.showError(
+                                          "Erro ao logar com Google: $e",
+                                          context);
+                                    } finally {
+                                      setState(() {
+                                        _isLoggingIn =
+                                            false; // Só libera o botão após conclusão
+                                      });
+                                    }
+                                  },
                             child: Container(
                               width: googleLoginButtonWidth,
                               height: googleLoginButtonHeight,

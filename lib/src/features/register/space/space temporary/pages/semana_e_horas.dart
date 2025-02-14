@@ -2,15 +2,13 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/revisao.dart';
-import 'package:git_flutter_festou/src/helpers/helpers.dart';
-import 'package:git_flutter_festou/src/helpers/keys.dart';
-import 'package:git_flutter_festou/src/models/space_model.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
+import 'package:festou/src/features/register/space/space%20temporary/pages/revisao.dart';
+import 'package:festou/src/helpers/helpers.dart';
+import 'package:festou/src/helpers/keys.dart';
+import 'package:festou/src/models/space_model.dart';
 import 'package:time_picker_spinner_pop_up/time_picker_spinner_pop_up.dart';
 
 class TimeSelector extends StatelessWidget {
@@ -73,6 +71,8 @@ class TimePickerForDay extends StatefulWidget {
   final Function(String day, String? from, String? to) onSetHours;
   final bool isFilled;
   final bool isFirst;
+  final String? from;
+  final String? to;
 
   const TimePickerForDay({
     super.key,
@@ -80,6 +80,8 @@ class TimePickerForDay extends StatefulWidget {
     required this.onSetHours,
     this.isFilled = false,
     this.isFirst = false,
+    this.from,
+    this.to,
   });
 
   @override
@@ -151,9 +153,9 @@ class _TimePickerForDayState extends State<TimePickerForDay> {
     //     DateTime.now()
     //         .copyWith(hour: 23, minute: 59, second: 0, millisecond: 0);
 
-    String fromtime = fromTime ?? '00:00';
+    String fromtime = fromTime ?? widget.from ?? '00:00';
 
-    String totime = toTime ?? '23:59';
+    String totime = toTime ?? widget.to ?? '23:59';
     return Column(
       children: [
         Row(
@@ -366,7 +368,45 @@ class SemanaEHoras extends ConsumerStatefulWidget {
 }
 
 class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
-  final Map<String, Hours> hoursMap = {};
+  @override
+  void initState() {
+    super.initState();
+    final vm = ref.read(newSpaceRegisterVmProvider.notifier);
+    final state = vm.getState();
+    final days = state.days;
+    if (days == null) return;
+    if (days.friday != null) {
+      hoursMap['friday'] = days.friday!;
+      selectedDays.add('Sex');
+    }
+    if (days.monday != null) {
+      hoursMap['monday'] = days.monday!;
+      selectedDays.add('Seg');
+    }
+    if (days.tuesday != null) {
+      hoursMap['tuesday'] = days.tuesday!;
+      selectedDays.add('Ter');
+    }
+    if (days.wednesday != null) {
+      hoursMap['wednesday'] = days.wednesday!;
+      selectedDays.add('Qua');
+    }
+    if (days.thursday != null) {
+      hoursMap['thursday'] = days.thursday!;
+      selectedDays.add('Qui');
+    }
+    if (days.sunday != null) {
+      hoursMap['sunday'] = days.sunday!;
+      selectedDays.add('Dom');
+    }
+
+    if (days.saturday != null) {
+      hoursMap['saturday'] = days.saturday!;
+      selectedDays.add('Sáb');
+    }
+  }
+
+  final Map<String, Hours?> hoursMap = {};
 
   void _onSetHours(String day, String? from, String? to) {
     log('_onSetHours');
@@ -378,11 +418,10 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
       //   log('$day: ${day.value}');
       // }
     });
-    print('hoursMap: $hoursMap');
   }
 
   Days _createDaysObject() {
-    final days1 = Days(
+    final days = Days(
       monday: hoursMap['monday'],
       tuesday: hoursMap['tuesday'],
       wednesday: hoursMap['wednesday'],
@@ -392,18 +431,7 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
       sunday: hoursMap['sunday'],
     );
 
-    final day2 = Days(
-      monday: hoursMap['Seg'],
-      tuesday: hoursMap['Ter'],
-      wednesday: hoursMap['Qua'],
-      thursday: hoursMap['Qui'],
-      friday: hoursMap['Sex'],
-      saturday: hoursMap['Sáb'],
-      sunday: hoursMap['Dom'],
-    );
-    // Agora você tem o objeto Days configurado
-    log('');
-    return days1;
+    return days;
   }
 
   final List<String> selectedDays = [];
@@ -573,36 +601,50 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
                         isFirst: true,
                         dayOfWeek: 'monday',
                         onSetHours: _onSetHours,
+                        from: hoursMap['monday']?.from,
+                        to: hoursMap['monday']?.to,
                         isFilled: selectedDays.contains('Seg'),
                       ),
                       TimePickerForDay(
                         dayOfWeek: 'tuesday',
                         onSetHours: _onSetHours,
+                        from: hoursMap['tuesday']?.from,
+                        to: hoursMap['tuesday']?.to,
                         isFilled: selectedDays.contains('Ter'),
                       ),
                       TimePickerForDay(
                         dayOfWeek: 'wednesday',
                         onSetHours: _onSetHours,
+                        from: hoursMap['wednesday']?.from,
+                        to: hoursMap['wednesday']?.to,
                         isFilled: selectedDays.contains('Qua'),
                       ),
                       TimePickerForDay(
                         dayOfWeek: 'thursday',
                         onSetHours: _onSetHours,
+                        from: hoursMap['thursday']?.from,
+                        to: hoursMap['thursday']?.to,
                         isFilled: selectedDays.contains('Qui'),
                       ),
                       TimePickerForDay(
                         dayOfWeek: 'friday',
                         onSetHours: _onSetHours,
+                        from: hoursMap['friday']?.from,
+                        to: hoursMap['friday']?.to,
                         isFilled: selectedDays.contains('Sex'),
                       ),
                       TimePickerForDay(
                         dayOfWeek: 'saturday',
                         onSetHours: _onSetHours,
+                        from: hoursMap['saturday']?.from,
+                        to: hoursMap['saturday']?.to,
                         isFilled: selectedDays.contains('Sáb'),
                       ),
                       TimePickerForDay(
                         dayOfWeek: 'sunday',
                         onSetHours: _onSetHours,
+                        from: hoursMap['sunday']?.from,
+                        to: hoursMap['sunday']?.to,
                         isFilled: selectedDays.contains('Dom'),
                       ),
                     ],
@@ -615,37 +657,6 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 9),
-                      alignment: Alignment.center,
-                      height: 35,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color(0xff9747FF),
-                            Color(0xff44300b1),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                      ),
-                      child: const Text(
-                        'Voltar',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 9,
-                  ),
                   GestureDetector(
                     key: Keys.k9ScreenButton,
                     onTap: () {
@@ -687,6 +698,37 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
                       ),
                       child: const Text(
                         'Avançar',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 9,
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 9),
+                      alignment: Alignment.center,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xff9747FF),
+                            Color(0xff44300b1),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                      ),
+                      child: const Text(
+                        'Voltar',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,

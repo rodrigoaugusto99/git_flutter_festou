@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/loading_indicator.dart';
-import 'package:git_flutter_festou/src/models/user_model.dart';
-import 'package:git_flutter_festou/src/services/user_service.dart';
+import 'package:festou/src/models/user_model.dart';
+import 'package:festou/src/services/user_service.dart';
 
 class NotificacoesPage extends StatefulWidget {
   final bool locador;
@@ -129,7 +128,6 @@ class _NotificacoesPageState extends State<NotificacoesPage> {
                       .horizontal, // Permite deslizar para ambos os lados
                   onDismissed: (direction) {
                     // Remover a notificação da lista
-                    final removedNotification = notificacoes[index];
                     setState(() {
                       notificacoes.removeAt(index);
                     });

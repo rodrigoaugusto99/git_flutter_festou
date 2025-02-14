@@ -1,27 +1,34 @@
+// ignore_for_file: use_full_hex_values_for_flutter_colors, use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:math';
 import 'dart:developer' as dev;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/reservas_avaliacoes_page.dart';
+import 'package:festou/src/features/loading_indicator.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/reservas_avaliacoes_page.dart';
+import 'package:festou/src/features/loading_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/constants2.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/contrato_page.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/html_page.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/new_space_card.dart';
-import 'package:git_flutter_festou/src/features/space%20card/widgets/summary_data.dart';
-import 'package:git_flutter_festou/src/helpers/helpers.dart';
-import 'package:git_flutter_festou/src/models/card_model.dart';
-import 'package:git_flutter_festou/src/models/cupom_model.dart';
-import 'package:git_flutter_festou/src/models/reservation_model.dart';
-import 'package:git_flutter_festou/src/models/user_model.dart';
-import 'package:git_flutter_festou/src/services/encryption_service.dart';
-import 'package:git_flutter_festou/src/services/reserva_service.dart';
-import 'package:git_flutter_festou/src/services/user_service.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
+import 'package:festou/src/features/space%20card/widgets/constants2.dart';
+import 'package:festou/src/features/space%20card/widgets/contrato_page.dart';
+import 'package:festou/src/features/space%20card/widgets/html_page.dart';
+import 'package:festou/src/features/space%20card/widgets/new_space_card.dart';
+import 'package:festou/src/features/space%20card/widgets/summary_data.dart';
+import 'package:festou/src/helpers/helpers.dart';
+import 'package:festou/src/models/card_model.dart';
+import 'package:festou/src/models/cupom_model.dart';
+import 'package:festou/src/models/reservation_model.dart';
+import 'package:festou/src/models/user_model.dart';
+import 'package:festou/src/services/encryption_service.dart';
+import 'package:festou/src/services/reserva_service.dart';
+import 'package:festou/src/services/user_service.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 
 class DialogBubble extends StatelessWidget {
   final String text;
@@ -55,17 +62,22 @@ class DialogBubble extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class ResumoReservaPage extends StatefulWidget {
   SummaryData summaryData;
   CupomModel? cupomModel;
   bool assinado;
   String? html;
+  CardModel? card;
+  bool isPix;
   ResumoReservaPage({
     super.key,
     required this.summaryData,
     required this.cupomModel,
     required this.html,
     this.assinado = false,
+    this.card,
+    this.isPix = false,
   });
 
   @override
@@ -138,8 +150,8 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
               ),
             ),
             Positioned(
-              left: adjustedOffset.dx + 85,
-              top: adjustedOffset.dy - 120,
+              left: adjustedOffset.dx + 75,
+              top: adjustedOffset.dy - 130,
               child: Material(
                 color: Colors.transparent,
                 child: Stack(
@@ -187,6 +199,75 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
   void initState() {
     init();
     super.initState();
+    isPix = widget.isPix;
+    card = widget.card;
+  }
+
+  Future<void> showLoading() async {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Impede que o usuário feche tocando fora
+      builder: (context) => const Dialog(
+        backgroundColor: Colors.transparent, // Deixa apenas a animação visível
+        elevation: 0,
+        child: CustomLoadingIndicator(),
+      ),
+    );
+
+    // Fecha o dialog após 3 segundos
+    await Future.delayed(const Duration(seconds: 3), () {
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+    });
+  }
+
+  Future<void> showPaymentLottieDialog() async {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Impede que o usuário feche tocando fora
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent, // Deixa apenas a animação visível
+        elevation: 0,
+        child: Lottie.asset(
+          'lib/assets/animations/payment.json',
+          repeat: false,
+          width: 400,
+          height: 400,
+          //frameRate: const FrameRate(1),
+        ),
+      ),
+    );
+
+    // Fecha o dialog após 3 segundos
+    await Future.delayed(const Duration(seconds: 3), () {
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+    });
+  }
+
+  Future<void> showReservationLottieDialog() async {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Impede que o usuário feche tocando fora
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent, // Deixa apenas a animação visível
+        elevation: 0,
+        child: Lottie.asset(
+          'lib/assets/animations/party.json',
+          width: screenWidth(context),
+          height: screenHeight(context),
+        ),
+      ),
+    );
+
+    // Fecha o dialog após 3 segundos
+    await Future.delayed(const Duration(seconds: 3), () {
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+    });
   }
 
   Future<void> getPrincipalPaymentMethod() async {
@@ -200,12 +281,17 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
         final userData = userSnapshot.data();
         if (userData != null && userData['principal_method_payment'] != null) {
           principalPaymentMethod = userData['principal_method_payment'];
-          setState(() {});
+          setFuckingState();
         }
       }
     } catch (e) {
       dev.log('Erro ao verificar o método principal de pagamento: $e');
     }
+  }
+
+  void setFuckingState() {
+    if (!mounted) return;
+    setState(() {});
   }
 
   void setPrincipalPaymentMethod() {
@@ -219,7 +305,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
         this.card = card;
       }
     }
-    setState(() {});
+    setFuckingState();
   }
 
   Future<void> init() async {
@@ -385,9 +471,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
 
     modifiedHtml = modifiedHtml.replaceAll('{Data}',
         '<b>${DateFormat("d 'de' MMMM 'de' y", 'pt_BR').format(DateTime.now())}</b>');
-
-    modifiedHtml = modifiedHtml.replaceAll('{Nome do responsável pelo espaço}',
-        '<b>${widget.summaryData.spaceModel.locadorName}</b>');
+//Nome Responsável
 
     modifiedHtml = modifiedHtml.replaceAll(
         '{Nome do Espaço}', '<b>${widget.summaryData.spaceModel.titulo}</b>');
@@ -405,30 +489,36 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
         '{Estado}', '<b>${widget.summaryData.spaceModel.estado}</b>');
     modifiedHtml = modifiedHtml.replaceAll('{Nome da Empresa Locadora}',
         '<b>${widget.summaryData.spaceModel.nomeEmpresaLocadora}</b>');
-    modifiedHtml = modifiedHtml.replaceAll('{CNPJ da Empresa Locadora}',
-        '<b>${widget.summaryData.spaceModel.cnpjEmpresaLocadora}</b>');
+    if (widget.summaryData.spaceModel.cnpjEmpresaLocadora.isNotEmpty) {
+      modifiedHtml = modifiedHtml.replaceAll('{CNPJ da Empresa Locadora}',
+          '<b>${widget.summaryData.spaceModel.cnpjEmpresaLocadora}</b>');
+      modifiedHtml = modifiedHtml.replaceAll('{CNPJ ou CPF}', 'CNPJ');
+      modifiedHtml =
+          modifiedHtml.replaceAll('{Tipo pessoa}', 'Pessoa jurídica');
+      modifiedHtml = modifiedHtml.replaceAll('{Nome Responsável}',
+          '<b>${widget.summaryData.spaceModel.nomeEmpresaLocadora}</b>');
+    } else {
+      modifiedHtml = modifiedHtml.replaceAll('{CNPJ da Empresa Locadora}',
+          '<b>${widget.summaryData.spaceModel.locadorCpf}</b>');
+      modifiedHtml = modifiedHtml.replaceAll('{CNPJ ou CPF}', 'CPF');
+      modifiedHtml = modifiedHtml.replaceAll('{Nome Responsável}',
+          '<b>${widget.summaryData.spaceModel.locadorName}</b>');
+      modifiedHtml = modifiedHtml.replaceAll('{Tipo pessoa}', 'Pessoa física');
+    }
 
     modifiedHtml = modifiedHtml.replaceAll(
         '[Assinatura registrada do responsável pelo espaço]',
         '<img src="${widget.summaryData.spaceModel.locadorAssinatura}" alt="Descrição da imagem"/>');
 
-// //todo: assinatura do locador vai ser salva no firestore como String
-// //todo: no cadastro do espaco, pedir a assinatura e fzr esse imageToBase64
-//     String base64Image = '';
-//     if (image != null) {
-//       base64Image = await imageToBase64(image);
-//     }
-//     modifiedHtml += '<img src="$base64Image" alt="Descrição da imagem"/>';
-//     widget.summaryData.html = modifiedHtml;
-    //widget.summaryData.totalHours = hoursDifference;
-
-    await Navigator.pushReplacement(
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ContratoPage(
           summaryData: widget.summaryData,
           cupomModel: cupomModel,
           html: modifiedHtml,
+          card: card,
+          isPix: isPix,
         ),
       ),
     );
@@ -452,6 +542,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     String codigo = cupomController.text;
     final cupom = await userService.getCupom(codigo);
     if (cupom == null) {
+      Messages.showError('Cupom inválido', context);
       dev.log('Cupom nao existe');
       return;
     }
@@ -460,13 +551,16 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     DateTime cupomValidade = cupom.validade.toDate();
     if (!cupomValidade.isAfter(DateTime.now())) {
       dev.log('Cupom nao eh valido');
+      Messages.showError('Cupom expirado', context);
+      return;
     }
     //todo: aplicar
     dev.log('Cupom eh valido!!');
-    setState(() {
-      cupomController.text = '';
-      cupomModel = cupom;
-    });
+
+    cupomController.text = '';
+    cupomModel = cupom;
+
+    setFuckingState();
   }
 
   @override
@@ -480,8 +574,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     }
     String formattedDate = DateFormat("d 'de' MMMM 'de' y", 'pt_BR')
         .format(widget.summaryData.selectedDate);
-    String formattedCheckOutTime =
-        widget.summaryData.checkOutTime.toString().padLeft(2, '0');
+    widget.summaryData.checkOutTime.toString().padLeft(2, '0');
     String dayLabel = (widget.summaryData.checkOutTime >= 0 &&
             widget.summaryData.checkOutTime <= 6)
         ? 'seguinte'
@@ -506,9 +599,8 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
     // Calculate final price after adding fee and subtracting cupom
     double? finalPrice;
     if (cupomModel != null) {
-      setState(() {
-        finalPrice = (totalPrice + feeAmount) - cupomModel!.valorDesconto;
-      });
+      finalPrice = (totalPrice + feeAmount) - cupomModel!.valorDesconto;
+      setFuckingState();
     } else {
       finalPrice = (totalPrice + feeAmount);
     }
@@ -1011,12 +1103,12 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                                       TextButton(
                                         child: const Text('Remover'),
                                         onPressed: () {
-                                          setState(() {
-                                            cupomModel = null;
-                                            widget.cupomModel = null;
-                                            widget.assinado = false;
-                                            widget.html = null;
-                                          });
+                                          cupomModel = null;
+                                          widget.cupomModel = null;
+                                          widget.assinado = false;
+                                          widget.html = null;
+
+                                          setFuckingState();
                                           Navigator.of(context).pop();
                                         },
                                       ),
@@ -1231,7 +1323,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                           widget.cupomModel != null
                               ? NumberFormat.currency(
                                       locale: 'pt_BR', symbol: 'R\$')
-                                  .format(finalPrice! -
+                                  .format(finalPrice -
                                       widget.cupomModel!.valorDesconto)
                               : formattedFinalPrice,
                           style: const TextStyle(
@@ -1253,7 +1345,8 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                 height: 15,
               ),
               Container(
-                padding: const EdgeInsets.all(10),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 28),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
@@ -1262,7 +1355,10 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     if (card != null) ...[
-                      Image.asset('lib/assets/images/icon_card_color.png'),
+                      Image.asset(
+                        'lib/assets/images/icon_card_color.png',
+                        height: 23,
+                      ),
                       const SizedBox(
                         width: 5,
                       ),
@@ -1313,14 +1409,17 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                           card = null;
                         }
 
-                        setState(() {});
+                        setFuckingState();
                       },
-                      child: Text(
-                        card == null && !isPix ? 'Escolher' : 'Trocar',
-                        style: const TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 4.0),
+                        child: Text(
+                          card == null && !isPix ? 'Escolher' : 'Trocar',
+                          style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ),
                     ),
@@ -1459,6 +1558,10 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
 
             if (widget.assinado && widget.html != null && userModel != null) {
               //todo: pode reservar
+
+              await showLoading();
+              await showPaymentLottieDialog();
+              // await showReservationLottieDialog();
               try {
                 final reservationModel = ReservationModel(
                   spaceId: widget.summaryData.spaceModel.spaceId,
@@ -1466,6 +1569,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                   clientId: userModel!.uid,
                   checkInTime: widget.summaryData.checkInTime,
                   checkOutTime: widget.summaryData.checkOutTime,
+                  hasReview: false,
                   selectedDate:
                       Timestamp.fromDate(widget.summaryData.selectedDate),
                   selectedFinalDate:
@@ -1480,6 +1584,13 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                 Navigator.pop(context);
                 Navigator.pop(context);
                 Navigator.pop(context);
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ReservasAvaliacoesPage(userId: userModel!.uid)),
+                );
                 Messages.showSuccess('Reserva concluída com sucesso', context);
               } on Exception catch (e) {
                 dev.log(e.toString());
@@ -1488,7 +1599,9 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
               }
             } else {
               //todo: nao pode reservar
+              Messages.showInfo('Assine o contrato para alugar', context);
               dev.log('NAO pode reservar.');
+              Messages.showInfo('Complete os dados para continuar', context);
             }
           },
           child: Container(

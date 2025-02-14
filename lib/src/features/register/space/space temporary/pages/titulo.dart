@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:git_flutter_festou/src/core/ui/helpers/messages.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/descricao.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
-import 'package:git_flutter_festou/src/features/register/space/space%20temporary/pages/textfield.dart';
-import 'package:git_flutter_festou/src/helpers/keys.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/register/space/space%20temporary/pages/descricao.dart';
+import 'package:festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
+import 'package:festou/src/features/register/space/space%20temporary/pages/textfield.dart';
+import 'package:festou/src/helpers/keys.dart';
 
 class Titulo extends ConsumerStatefulWidget {
   const Titulo({super.key});
@@ -15,6 +14,14 @@ class Titulo extends ConsumerStatefulWidget {
 }
 
 class _TituloState extends ConsumerState<Titulo> {
+  @override
+  void initState() {
+    super.initState();
+    final vm = ref.read(newSpaceRegisterVmProvider.notifier);
+    final state = vm.getState();
+    tituloEC.text = state.titulo;
+  }
+
   final tituloEC = TextEditingController();
   final int maxLength = 100;
   @override
@@ -103,37 +110,6 @@ class _TituloState extends ConsumerState<Titulo> {
           mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
-                alignment: Alignment.center,
-                height: 35,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xff9747FF),
-                      Color(0xff44300b1),
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                ),
-                child: const Text(
-                  'Voltar',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 9,
-            ),
-            GestureDetector(
               key: Keys.k6ScreenButton,
               onTap: () {
                 final result = spaceRegister.validateTitulo(
@@ -168,6 +144,37 @@ class _TituloState extends ConsumerState<Titulo> {
                 ),
                 child: const Text(
                   'Avançar',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 9,
+            ),
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                alignment: Alignment.center,
+                height: 35,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xff9747FF),
+                      Color(0xff44300b1),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+                child: const Text(
+                  'Voltar',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,

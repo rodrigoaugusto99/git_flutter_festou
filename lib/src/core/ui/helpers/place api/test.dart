@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
 }
 
 class QuickSearchScreen extends StatefulWidget {
-  const QuickSearchScreen({Key? key}) : super(key: key);
+  const QuickSearchScreen({super.key});
 
   @override
   _QuickSearchScreenState createState() => _QuickSearchScreenState();
@@ -112,7 +112,6 @@ class _QuickSearchScreenState extends State<QuickSearchScreen> {
       Placemark firstPlacemark = placemarks.first;
       return "${firstPlacemark.street}, ${firstPlacemark.locality}, ${firstPlacemark.administrativeArea}";
     } catch (e) {
-      print("Error getting address from coordinates: $e");
       return 'N/A';
     }
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/help/widgets/help_center_page.dart';
-import 'package:git_flutter_festou/src/features/bottomNavBar/profile/pages/help/widgets/report_bug_page.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/help/widgets/help_center_page.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/help/widgets/report_bug_page.dart';
 
 class HelpPage extends StatelessWidget {
   const HelpPage({super.key});
