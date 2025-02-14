@@ -59,7 +59,7 @@ class _UserRegisterInfosPageState extends ConsumerState<UserRegisterInfosPage> {
         (infoCepJSON) {
           setState(() {
             logradouroEC.text = infoCepJSON.logradouro ?? '';
-            numeroEC.text = infoCepJSON.numero ?? '';
+            // numeroEC.text = infoCepJSON.numero ?? '';
             bairroEC.text = infoCepJSON.bairro ?? '';
             cidadeEC.text = infoCepJSON.localidade ?? '';
             isCepAutoCompleted = true;
