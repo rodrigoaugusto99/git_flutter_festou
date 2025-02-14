@@ -1,5 +1,7 @@
 import 'dart:developer';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/features/space%20card/widgets/resumo_reserva_page.dart';
 import 'package:festou/src/features/space%20card/widgets/summary_data.dart';
@@ -9,8 +11,13 @@ import 'package:festou/src/services/reserva_service.dart';
 
 class CalendarPage extends StatefulWidget {
   final SpaceModel space;
+  final bool isIndisponibilizar;
 
-  const CalendarPage({super.key, required this.space});
+  const CalendarPage({
+    super.key,
+    required this.space,
+    this.isIndisponibilizar = false,
+  });
 
   @override
   // ignore: library_private_types_in_public_api
@@ -413,87 +420,130 @@ class _CalendarPageState extends State<CalendarPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-        child: GestureDetector(
-          onTap: () {
-            if (_selectedDate == null ||
-                checkInTime == null ||
-                checkOutTime == null) {
-              log('ha variaveis nulas');
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text('Selecione uma data e horarios')));
-              return;
-            }
-
-            // Verificação com ajuste temporário para checkOutTime
-            int adjustedCheckOutTime = checkOutTime!;
-            if (checkOutTime! >= 0 && checkOutTime! <= 4) {
-              adjustedCheckOutTime += 24;
-            }
-
-            if ((adjustedCheckOutTime - checkInTime!) < 4) {
-              setState(() {
-                showWarning = true;
-              });
-              return;
-            }
-
-            SummaryData summaryData = SummaryData(
-              dataAtual: null,
-              selectedDate: _selectedDate!,
-              selectedFinalDate: null, //todo: arrumar
-              spaceModel: widget.space,
-              checkInTime: checkInTime!,
-              checkOutTime: checkOutTime!,
-
-              totalHours: null,
-              valorTotalDasHoras: null,
-              valorDaTaxaConcierge: null,
-
-              valorTotalAPagar: null,
-              valorDaMultaPorHoraExtrapolada: null,
-              nomeDoCliente: null,
-              cpfDoCliente: null,
-              nomeDoLocador: null,
-              cpfDoLocador: null,
-            );
-
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ResumoReservaPage(
-                  summaryData: summaryData,
-                  cupomModel: null,
-                  html: null,
-                ),
+      bottomNavigationBar: widget.isIndisponibilizar
+          ? GestureDetector(
+              onTap: () async {
+                try {
+                  await ReservaService().indisponibilizar(
+                    checkInTime: checkInTime!,
+                    selectedDate: Timestamp.fromDate(_selectedDate!),
+                    spaceId: widget.space.spaceId,
+                    checkOutTime: checkOutTime!,
+                  );
+                  Navigator.pop(context);
+                  Messages.showInfo(
+                      'Você indisponibilizou este horário', context);
+                } on Exception catch (e) {
+                  // TODO
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Container(
+                    alignment: Alignment.center,
+                    height: 35,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xff9747FF),
+                          // ignore: use_full_hex_values_for_flutter_colors
+                          Color(0xff44300b1),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                    child: const Text(
+                      'Indiponibilizar',
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white),
+                    )),
               ),
-            );
-          },
-          child: Container(
-              alignment: Alignment.center,
-              height: 35,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xff9747FF),
-                    // ignore: use_full_hex_values_for_flutter_colors
-                    Color(0xff44300b1),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
+            )
+          : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              child: GestureDetector(
+                onTap: () {
+                  if (_selectedDate == null ||
+                      checkInTime == null ||
+                      checkOutTime == null) {
+                    log('ha variaveis nulas');
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Selecione uma data e horarios')));
+                    return;
+                  }
+
+                  // Verificação com ajuste temporário para checkOutTime
+                  int adjustedCheckOutTime = checkOutTime!;
+                  if (checkOutTime! >= 0 && checkOutTime! <= 4) {
+                    adjustedCheckOutTime += 24;
+                  }
+
+                  if ((adjustedCheckOutTime - checkInTime!) < 4) {
+                    setState(() {
+                      showWarning = true;
+                    });
+                    return;
+                  }
+
+                  SummaryData summaryData = SummaryData(
+                    dataAtual: null,
+                    selectedDate: _selectedDate!,
+                    selectedFinalDate: null, //todo: arrumar
+                    spaceModel: widget.space,
+                    checkInTime: checkInTime!,
+                    checkOutTime: checkOutTime!,
+
+                    totalHours: null,
+                    valorTotalDasHoras: null,
+                    valorDaTaxaConcierge: null,
+
+                    valorTotalAPagar: null,
+                    valorDaMultaPorHoraExtrapolada: null,
+                    nomeDoCliente: null,
+                    cpfDoCliente: null,
+                    nomeDoLocador: null,
+                    cpfDoLocador: null,
+                  );
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ResumoReservaPage(
+                        summaryData: summaryData,
+                        cupomModel: null,
+                        html: null,
+                      ),
+                    ),
+                  );
+                },
+                child: Container(
+                    alignment: Alignment.center,
+                    height: 35,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xff9747FF),
+                          // ignore: use_full_hex_values_for_flutter_colors
+                          Color(0xff44300b1),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                    child: const Text(
+                      'Prosseguir',
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white),
+                    )),
               ),
-              child: const Text(
-                'Prosseguir',
-                style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white),
-              )),
-        ),
-      ),
+            ),
       appBar: AppBar(
         leading: Padding(
           padding: const EdgeInsets.only(left: 18.0),

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:festou/src/services/user_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:festou/src/models/reservation_model.dart';
 
@@ -16,6 +17,39 @@ class ReservaService {
       FirebaseFirestore.instance.collection('users');
 
   final user = FirebaseAuth.instance.currentUser!;
+
+  Future indisponibilizar({
+    required int checkInTime,
+    required int checkOutTime,
+    required String spaceId,
+    required Timestamp selectedDate,
+  }) async {
+    try {
+      final user = await UserService().getCurrentUserModel();
+      Map<String, dynamic> newReservation = {
+        'client_id': '',
+        'locador_id': user!.uid,
+        'space_id': spaceId,
+        'hasReview': false,
+        'checkInTime': checkInTime,
+        'checkOutTime': checkOutTime,
+        'selectedDate': selectedDate,
+        'selectedFinalDate': Timestamp.now(),
+        'contratoHtml': '',
+        'cardId': '',
+        'reason': '',
+        'createdAt': Timestamp.now(),
+        'canceledAt': null,
+        'indisponibilizado': true,
+      };
+
+      await reservationCollection.add(newReservation);
+      log('Reserva feita com sucesso!');
+    } catch (e) {
+      log('Erro ao reservar espaço: $e');
+    }
+  }
+
   Future saveReservation({required ReservationModel reservationModel}) async {
     try {
       Map<String, dynamic> newReservation = {
