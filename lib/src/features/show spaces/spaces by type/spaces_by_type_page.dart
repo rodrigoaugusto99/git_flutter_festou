@@ -249,25 +249,18 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                             ],
                           ),
                           child: InkWell(
-                            onTap: () => Navigator.of(context).pop(),
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const NotificacoesPage(locador: true),
+                              ),
+                            ),
                             child: const Icon(
                               Icons.notifications_outlined,
                               color: Colors.black,
                             ),
                           ),
-                        ],
-                      ),
-                      child: InkWell(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const NotificacoesPage(locador: true),
-                          ),
-                        ),
-                        child: const Icon(
-                          Icons.notifications_outlined,
-                          color: Colors.black,
                         ),
                       ),
                     ],
