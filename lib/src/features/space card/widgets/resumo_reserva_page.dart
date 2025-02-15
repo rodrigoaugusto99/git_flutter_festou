@@ -195,10 +195,10 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
   String? principalPaymentMethod;
   @override
   void initState() {
-    init();
-    super.initState();
     isPix = widget.isPix;
     card = widget.card;
+    init();
+    super.initState();
   }
 
   Future<void> showLoading() async {
@@ -308,9 +308,13 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
 
   Future<void> init() async {
     await getUser();
+
     cards = await fetchCardsFromFirestore();
+
     await getPrincipalPaymentMethod();
-    setPrincipalPaymentMethod();
+    if (!isPix) {
+      setPrincipalPaymentMethod();
+    }
   }
 
   List<CardModel> cards = [];
@@ -1357,26 +1361,26 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                         'lib/assets/images/icon_card_color.png',
                         height: 23,
                       ),
-                      const SizedBox(
-                        width: 5,
-                      ),
+                      const SizedBox(width: 5),
                       Text(
                         "Cartão ${card!.number.substring(0, 4)}",
                         style: const TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.bold),
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ] else if (card == null && isPix) ...[
                       Image.asset(
                         'lib/assets/images/logo_pix.png',
                         height: 15,
                       ),
-                      const SizedBox(
-                        width: 5,
-                      ),
+                      const SizedBox(width: 5),
                       const Text(
                         "Pix",
                         style: TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.bold),
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ] else if (card == null && !isPix) ...[
                       const Text(
@@ -1402,7 +1406,8 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                         if (response == null) return;
                         if (response is CardModel) {
                           card = response;
-                        } else if (response is bool) {
+                          isPix = false;
+                        } else if (response is bool && response) {
                           isPix = true;
                           card = null;
                         }

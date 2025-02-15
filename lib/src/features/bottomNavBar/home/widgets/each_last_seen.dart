@@ -1,3 +1,4 @@
+import 'package:festou/src/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/features/space%20card/widgets/new_card_info.dart';
 import 'package:festou/src/models/space_model.dart';
@@ -18,6 +19,7 @@ class _EachLastSeenState extends State<EachLastSeen> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        UserService().updateLastSeen(widget.space.spaceId);
         Navigator.push(
           context,
           MaterialPageRoute(

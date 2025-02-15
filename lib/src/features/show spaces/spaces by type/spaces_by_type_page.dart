@@ -454,10 +454,15 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                                   itemBuilder: (context, index) {
                                     final space =
                                         spaceByTypeViewModel.getFiltered[index];
-                                    return NewSpaceCard(
-                                      hasHeart: true,
-                                      space: space,
-                                      isReview: false,
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                      ),
+                                      child: NewSpaceCard(
+                                        hasHeart: true,
+                                        space: space,
+                                        isReview: false,
+                                      ),
                                     );
                                   },
                                 )
@@ -468,10 +473,15 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                                   builderDelegate:
                                       PagedChildBuilderDelegate<SpaceModel>(
                                     itemBuilder: (context, item, index) {
-                                      return NewSpaceCard(
-                                        hasHeart: true,
-                                        space: item,
-                                        isReview: false,
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                        ),
+                                        child: NewSpaceCard(
+                                          hasHeart: true,
+                                          space: item,
+                                          isReview: false,
+                                        ),
                                       );
                                     },
                                     newPageProgressIndicatorBuilder:
