@@ -154,7 +154,7 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
 
   Future<bool> isMyFeedback(ReservationModel reservation) async {
     final user = await UserService().getCurrentUserModel();
-    return user!.uid == reservation.user!.uid;
+    return user!.uid == reservation.locadorId;
     // return now.isBefore(threeMonthLimit) && reservation.canceledAt == null;
   }
 
