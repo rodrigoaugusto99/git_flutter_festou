@@ -13,7 +13,6 @@ import 'package:festou/src/features/register/host%20feedback/host_feedback_regis
 import 'package:festou/src/features/register/posts/register_post_page.dart';
 import 'package:festou/src/features/space%20card/widgets/calendar_page.dart';
 import 'package:festou/src/features/space%20card/widgets/chat_page.dart';
-import 'package:festou/src/features/space%20card/widgets/new_feedback_widget_limited.dart';
 import 'package:festou/src/features/space%20card/widgets/show_new_map.dart';
 import 'package:festou/src/features/space%20card/widgets/show_map.dart';
 import 'package:festou/src/features/register/avaliacoes/avaliacoes_register_page.dart';
@@ -223,6 +222,7 @@ class _NewCardInfoState extends State<NewCardInfo>
         numeroEC.text = space!.numero;
         bairroEC.text = space!.bairro;
         cidadeEC.text = space!.cidade;
+        estadoEC.text = space!.estado;
         selectedServices = space!.selectedServices as List<String>;
       });
     });
@@ -282,6 +282,7 @@ class _NewCardInfoState extends State<NewCardInfo>
   TextEditingController numeroEC = TextEditingController();
   TextEditingController bairroEC = TextEditingController();
   TextEditingController cidadeEC = TextEditingController();
+  TextEditingController estadoEC = TextEditingController();
 
   //todo: verificacao da existencia do endereco.
 
@@ -290,8 +291,8 @@ class _NewCardInfoState extends State<NewCardInfo>
 
   Future<String?> validateForm() async {
     try {
-      final response = await calculateLatLng(
-          ruaEC.text, numeroEC.text, bairroEC.text, cidadeEC.text);
+      final response = await calculateLatLng(ruaEC.text, numeroEC.text,
+          bairroEC.text, cidadeEC.text, estadoEC.text);
       latitude = response.latitude;
       longitude = response.longitude;
       log(response.toString(), name: 'response do calculateLtn');
@@ -308,9 +309,10 @@ class _NewCardInfoState extends State<NewCardInfo>
     String numero,
     String bairro,
     String cidade,
+    String estado,
   ) async {
     try {
-      String fullAddress = '$logradouro, $numero, $bairro, $cidade';
+      String fullAddress = '$logradouro, $numero, $bairro, $cidade, $estado';
       List<Location> locations = await locationFromAddress(fullAddress);
 
       if (locations.isNotEmpty) {
@@ -328,8 +330,8 @@ class _NewCardInfoState extends State<NewCardInfo>
     }
   }
 
-  Future<void> toggleEditing() async {
-    if (isEditing) {
+  Future<void> toggleEditing({bool isSaved = true}) async {
+    if (isEditing && isSaved) {
       final x = validada();
       if (x != null) {
         Messages.showError(x, context);
@@ -367,6 +369,7 @@ class _NewCardInfoState extends State<NewCardInfo>
       'numero': numeroEC.text,
       'bairro': bairroEC.text,
       'cidade': cidadeEC.text,
+      'estado': estadoEC.text,
       'descricao': visaoGeralEC.text,
     };
 
@@ -452,6 +455,9 @@ class _NewCardInfoState extends State<NewCardInfo>
     }
     if (cidadeEC.text.isEmpty) {
       return 'O campo Cidade está vazio.';
+    }
+    if (estadoEC.text.isEmpty) {
+      return 'O campo Estado está vazio.';
     }
 
     return null;
@@ -930,7 +936,7 @@ class _NewCardInfoState extends State<NewCardInfo>
               Padding(
                 padding: const EdgeInsets.only(top: 2),
                 child: Text(
-                  '(${space!.videosUrl.length} ${space!.videosUrl.length == 1 ? 'vídeo' : 'vídeos)'}',
+                  '(${space!.videosUrl.length} ${space!.videosUrl.length == 1 ? 'vídeo)' : 'vídeos)'}',
                   style: const TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 12,
@@ -1222,6 +1228,13 @@ class _NewCardInfoState extends State<NewCardInfo>
                     height: 40,
                     hintText: 'Cidade',
                     controller: cidadeEC,
+                    fillColor: const Color(0xffF0F0F0),
+                  ),
+                  const SizedBox(height: 10),
+                  CustomTextformfield(
+                    height: 40,
+                    hintText: 'Estado',
+                    controller: estadoEC,
                     fillColor: const Color(0xffF0F0F0),
                   ),
                 ],
@@ -1551,7 +1564,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                                   height: 28),
                               const SizedBox(width: 4),
                               Text(
-                                '${space!.cidade}, Brasil',
+                                '${space!.cidade}, ${space!.estado}',
                                 style: const TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w400,
@@ -1711,10 +1724,9 @@ class _NewCardInfoState extends State<NewCardInfo>
                               ],
                             ),
                             const Spacer(),
-                            if (!isEditing)
-                              GestureDetector(
-                                //todo:  excluir
-                                onTap: () async {
+                            GestureDetector(
+                              onTap: () async {
+                                if (!isEditing) {
                                   await showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
@@ -1781,7 +1793,6 @@ class _NewCardInfoState extends State<NewCardInfo>
                                                   context,
                                                 );
                                               }
-                                              // Verifique se o valor digitado é válido e atualize o raio
                                             },
                                             child: const Text('Sim, excluir'),
                                           ),
@@ -1789,34 +1800,45 @@ class _NewCardInfoState extends State<NewCardInfo>
                                       );
                                     },
                                   );
+                                } else {
+                                  toggleEditing(isSaved: false);
+                                }
 
-                                  //pode deletar
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 30,
-                                    vertical: 8,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        Color(0xff9747FF),
-                                        Color(0xff4300B1),
-                                      ],
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                    ),
-                                    borderRadius: BorderRadius.circular(24),
-                                  ),
-                                  child: const Text(
-                                    'Excluir',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w700),
-                                    textAlign: TextAlign.center,
-                                  ),
+                                //pode deletar
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 30,
+                                  vertical: 8,
                                 ),
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xff9747FF),
+                                      Color(0xff4300B1),
+                                    ],
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                  ),
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                                child: isEditing
+                                    ? const Text(
+                                        'Cancelar',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700),
+                                        textAlign: TextAlign.center,
+                                      )
+                                    : const Text(
+                                        'Excluir',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700),
+                                        textAlign: TextAlign.center,
+                                      ),
                               ),
+                            ),
                             const SizedBox(
                               width: 10,
                             ),

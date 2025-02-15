@@ -7,6 +7,7 @@ import 'package:festou/src/features/register/space/space%20temporary/pages/new_s
 import 'package:festou/src/features/register/space/space%20temporary/pages/servicos_acomodacoes.dart';
 import 'package:festou/src/features/register/space/space%20temporary/pages/textfield.dart';
 import 'package:festou/src/helpers/keys.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:search_cep/search_cep.dart';
 
 class Localizacao extends ConsumerStatefulWidget {
@@ -27,6 +28,7 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
     cidadeEC.text = state.cidade;
     cepEC.text = state.cep;
     numeroEC.text = state.numero;
+    estadoEC.text = state.estado;
   }
 
   final formKey = GlobalKey<FormState>();
@@ -36,7 +38,7 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
   final numeroEC = TextEditingController();
   final bairroEC = TextEditingController();
   final cidadeEC = TextEditingController();
-  final cityEC = TextEditingController();
+  final estadoEC = TextEditingController();
 
   bool isCepAutoCompleted = false;
 
@@ -48,20 +50,28 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
     logradouroEC.dispose();
     bairroEC.dispose();
     numeroEC.dispose();
-    cityEC.dispose();
     cidadeEC.dispose();
+    estadoEC.dispose();
   }
 
   String? uf;
 
-  void onChangedCep(cep) async {
-    if (cep.isEmpty) {
+  final maskFormatter = MaskTextInputFormatter(
+    mask: '##.###-###',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
+
+  void onChangedCep(String cep) async {
+    String cleanedCep = maskFormatter.getUnmaskedText();
+
+    if (cleanedCep.isEmpty) {
       setState(() {
         isCepAutoCompleted = false;
       });
-    } else if (cep.length == 8) {
+    } else if (cleanedCep.length == 8) {
       final viaCepSearchCep = ViaCepSearchCep();
-      final infoCepJSON = await viaCepSearchCep.searchInfoByCep(cep: cep);
+      final infoCepJSON =
+          await viaCepSearchCep.searchInfoByCep(cep: cleanedCep);
       infoCepJSON.fold(
         (error) {
           log('Erro ao buscar informações do CEP: $error');
@@ -72,6 +82,7 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
             bairroEC.text = infoCepJSON.bairro ?? '';
             cidadeEC.text = infoCepJSON.localidade ?? '';
             uf = infoCepJSON.uf ?? '';
+            estadoEC.text = infoCepJSON.uf ?? '';
             isCepAutoCompleted = true;
           });
         },
@@ -158,8 +169,11 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
                       validator: spaceRegister.validateCEP(),
                       label: 'CEP',
                       controller: cepEC,
-                      onChanged: onChangedCep,
-                      //enable: isEditing,
+                      onlyNumber: true,
+                      inputFormatters: [maskFormatter],
+                      onChanged: (value) {
+                        onChangedCep(maskFormatter.getUnmaskedText());
+                      },
                     ),
                     const SizedBox(
                       height: 15,
@@ -199,6 +213,15 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
                     const SizedBox(
                       height: 15,
                     ),
+                    myRow(
+                      validator: spaceRegister.validateEstado(),
+                      label: 'Estado',
+                      controller: estadoEC,
+                      enabled: !isCepAutoCompleted,
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
                   ],
                 ),
               ),
@@ -222,7 +245,7 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
                   numeroEC,
                   bairroEC,
                   cidadeEC,
-                  uf,
+                  estadoEC,
                 );
                 if (stringResponse != null) {
                   Messages.showError(stringResponse, context);

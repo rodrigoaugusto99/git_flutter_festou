@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:festou/src/core/ui/helpers/messages.dart';
@@ -110,13 +111,11 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    'Cadastrar',
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: Text('Cadastrar',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      )),
                 ),
                 const SizedBox(
                   height: 20,
@@ -126,6 +125,7 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
                   child: InkWell(
                       key: Keys.kLocadorViewRegisterSpace,
                       onTap: () {
+                        ref.read(newSpaceRegisterVmProvider.notifier).reset();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -137,36 +137,27 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
                           Image.asset('lib/assets/images/banner_cadastre.png')),
                 ),
                 const SizedBox(
-                  height: 50,
+                  height: 30,
                 ),
                 const Row(
                   children: [
                     SizedBox(
                       width: 20,
                     ),
-                    Text(
-                      'Meus espaços ',
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    // Text(
-                    //   '(assim que os usuários verão o espaço)',
-                    //   style: TextStyle(
-                    //       color: Colors.grey,
-                    //       fontSize: 12,
-                    //       overflow: TextOverflow.ellipsis),
-                    // ),
+                    Text('Meus espaços ',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        )),
                   ],
                 ),
-                const SizedBox(
-                  height: 25,
-                ),
-                MySliverListToCardInfo(
-                  isLocadorFlow: true,
-                  spaces: data.spaces,
-                  x: false,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: MySliverListToCardInfo(
+                    isLocadorFlow: true,
+                    spaces: data.spaces,
+                    x: false,
+                  ),
                 ),
               ],
             ),

@@ -317,7 +317,7 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
                 TextSpan(
                   children: [
                     TextSpan(
-                      text: '(${spaceRegister.imageFiles.length} vídeos)',
+                      text: '(${spaceRegister.videos.length} vídeos)',
                       style: const TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 10,

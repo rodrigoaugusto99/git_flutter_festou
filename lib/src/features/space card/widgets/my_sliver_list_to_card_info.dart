@@ -33,7 +33,7 @@ class MySliverListToCardInfo extends StatelessWidget {
               ),
             ),
             child: Padding(
-              padding: EdgeInsets.only(top: y * 0.03),
+              padding: EdgeInsets.only(top: y * 0.01, bottom: y * 0.03),
               child: NewSpaceCard(
                 isLocadorFlow: isLocadorFlow,
                 hasHeart: x,

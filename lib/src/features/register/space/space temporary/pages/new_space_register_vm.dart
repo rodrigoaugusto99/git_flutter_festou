@@ -182,6 +182,10 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
     return Validatorless.required('Cidade obrigatório');
   }
 
+  FormFieldValidator<String> validateEstado() {
+    return Validatorless.required('Estado obrigatório');
+  }
+
   Future<String?> validateForm(
     BuildContext context,
     formKey,
@@ -190,12 +194,12 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
     numeroEC,
     bairroEC,
     cidadeEC,
-    uf,
+    estadoEC,
   ) async {
     if (formKey.currentState?.validate() == true) {
       try {
-        final response = await calculateLatLng(
-            logradouroEC.text, numeroEC.text, bairroEC.text, cidadeEC.text);
+        final response = await calculateLatLng(logradouroEC.text, numeroEC.text,
+            bairroEC.text, cidadeEC.text, estadoEC.text);
         log(response.toString(), name: 'response do calculateLtn');
       } on Exception catch (e) {
         log(e.toString());
@@ -210,7 +214,7 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
         numero: numeroEC.text,
         bairro: bairroEC.text,
         cidade: cidadeEC.text,
-        estado: uf,
+        estado: estadoEC.text,
       );
       log('----state atualizado----');
       log('${state.selectedTypes}');
@@ -228,33 +232,28 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
     }
   }
 
-  final List<File> imageFiles = [];
+  List<File> get imageFiles => state.imageFiles;
+  List<File> get videos => state.videoFiles;
+
   Future<int> pickImage() async {
     final imagePicker = ImagePicker();
     final List<XFile> images = await imagePicker.pickMultiImage();
-    for (XFile image in images) {
-      final imageFile = File(image.path);
-      imageFiles.add(imageFile);
-    }
+
+    final List<File> newImages = images.map((img) => File(img.path)).toList();
 
     state = state.copyWith(
-      imageFiles: imageFiles,
+      imageFiles: [
+        ...state.imageFiles,
+        ...newImages
+      ], // Mantendo as imagens adicionadas
       status: NewSpaceRegisterStateStatus.success,
     );
-    log('----state atualizado----');
-    log('${state.selectedTypes}');
-    log('${state.selectedServices}');
-    log(state.cep);
-    log(state.logradouro);
-    log(state.numero);
-    log(state.bairro);
-    log(state.cidade);
-    log('${state.imageFiles.length}');
+
+    log('📸 Imagens adicionadas: ${state.imageFiles.length}');
     return state.imageFiles.length;
   }
 
   final List<VideoPlayerController> localControllers = [];
-  final List<File> videos = [];
 
   Future<void> pickVideo() async {
     final videoPicker = ImagePicker();
@@ -262,12 +261,21 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
         await videoPicker.pickVideo(source: ImageSource.gallery);
 
     if (video != null) {
-      final videoFile = File(video.path);
+      final File videoFile = File(video.path);
 
       videos.add(videoFile);
-      VideoPlayerController controller = VideoPlayerController.file(videoFile)
-        ..initialize().then((_) {});
+
+      VideoPlayerController controller = VideoPlayerController.file(videoFile);
+      await controller.initialize();
+
       localControllers.add(controller);
+
+      state = state.copyWith(
+        videoFiles: [...videos],
+        status: NewSpaceRegisterStateStatus.success,
+      );
+
+      log('🎥 Vídeo adicionado! Total de vídeos: ${state.videoFiles.length}');
     }
   }
 
@@ -276,10 +284,10 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
     String numero,
     String bairro,
     String cidade,
-    // String estado, // ou UF, dependendo da sua modelagem
+    String estado, // ou UF, dependendo da sua modelagem
   ) async {
     try {
-      String fullAddress = '$logradouro, $numero, $bairro, $cidade';
+      String fullAddress = '$logradouro, $numero, $bairro, $cidade, $estado';
       List<Location> locations = await locationFromAddress(fullAddress);
 
       if (locations.isNotEmpty) {
@@ -295,6 +303,35 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
       log('Erro ao calcular LatLng: $e');
       rethrow;
     }
+  }
+
+  void reset() {
+    state = NewSpaceRegisterState.initial().copyWith(
+      selectedTypes: [],
+      selectedServices: [],
+      imageFiles: [],
+      videoFiles: [],
+      titulo: '',
+      descricao: '',
+      preco: '',
+      cep: '',
+      logradouro: '',
+      numero: '',
+      bairro: '',
+      cidade: '',
+      estado: '',
+      days: Days(
+        monday: null,
+        tuesday: null,
+        wednesday: null,
+        thursday: null,
+        friday: null,
+        saturday: null,
+        sunday: null,
+      ), // Resetando os horários
+    );
+
+    log('🔄 Estado resetado para um novo cadastro!');
   }
 
   Future<void> register() async {
@@ -329,7 +366,7 @@ class NewSpaceRegisterVm extends _$NewSpaceRegisterVm {
     // UserModel? userModel = await UserService().getCurrentUserModel();
 
     final LatLng latLng =
-        await calculateLatLng(logradouro, numero, bairro, cidade);
+        await calculateLatLng(logradouro, numero, bairro, cidade, estado);
 
     final spaceData = (
       spaceId: spaceId,
