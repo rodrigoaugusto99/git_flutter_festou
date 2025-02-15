@@ -262,12 +262,18 @@ class _CalendarPageState extends State<CalendarPage> {
     required int endHour,
     required List<int> unavailableHoursCurrentDay,
     required List<int> unavailableHoursNextDay,
+    required bool show24h,
   }) {
     bool reachedLimit = false;
 
     final itemCount = endHour > startHour
         ? endHour - startHour + 1
-        : (24 - startHour + endHour + 1);
+        : show24h
+            ? (24 - startHour + endHour + 1)
+            : endHour - startHour + 1;
+
+    log('itemCount: $itemCount');
+    log('show24h: $show24h');
 
     return SizedBox(
       height: 50,
@@ -343,34 +349,6 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
-  // Widget _buildTimeSelection() {
-  //   if (_selectedDate == null) return const SizedBox();
-
-  //   final dayHours = _getDayHours(_selectedDate!);
-  //   if (dayHours == null) return const SizedBox();
-
-  //   final startHour = int.parse(dayHours.from.split(':')[0]);
-  //   final endHour = int.parse(dayHours.to.split(':')[0]);
-  //   final unavailableHours = _getUnavailableHours();
-  //   final unavailableHoursCheckout = _getUnavailableCheckOutHours();
-
-  //   return Column(
-  //     children: [
-  //       _buildTimeSelectionRowCheckIn(
-  //         startHour: startHour,
-  //         endHour: endHour,
-  //         unavailableHours: unavailableHours,
-  //       ),
-  //       const SizedBox(height: 10),
-  //       if (checkInTime != null)
-  //         _buildTimeSelectionRowCheckOut(
-  //           startHour: (checkInTime! + 4) % 24,
-  //           endHour: (checkInTime! + 24) % 24,
-  //           unavailableHours: unavailableHoursCheckout,
-  //         ),
-  //     ],
-  //   );
-  // }
   Widget _buildTimeSelection() {
     if (_selectedDate == null) return const SizedBox();
 
@@ -381,6 +359,43 @@ class _CalendarPageState extends State<CalendarPage> {
     final endHour = int.parse(dayHours.to.split(':')[0]);
     final unavailableHours = _getUnavailableHours();
     final unavailableHoursCheckout = _getUnavailableCheckOutHours();
+    bool show24h = true;
+    int checkinEndHour = endHour;
+    int checkoutEndHour = endHour;
+    if (checkInTime != null) {
+      checkoutEndHour = (checkInTime! + 24) % 24;
+
+      if (endHour != 23) {
+        checkoutEndHour = endHour - 1;
+        show24h = false;
+      }
+    }
+
+    if (endHour != 23) {
+      checkinEndHour = endHour - 5;
+      if (checkinEndHour < 0) {
+        checkinEndHour = checkinEndHour + 24;
+      }
+    } else {
+      //se o horario final for 23, averiguar se pode mostrar o 23 mesmo
+      final nextDayHours =
+          _getDayHours(_selectedDate!.add(const Duration(days: 1)));
+      if (nextDayHours!.from != '00:00') {
+        checkinEndHour = endHour - 5;
+        if (checkinEndHour < 0) {
+          checkinEndHour = checkinEndHour + 24;
+        }
+        //e o checkoutEndTime deve ser 23
+        checkoutEndHour = endHour - 1;
+        show24h = false;
+      }
+    }
+
+    if (checkinEndHour == 23) {}
+    log('checkinEndHour: $checkinEndHour');
+    log('checkoutEndHour: $checkoutEndHour');
+
+    //if (endHour != 23) {}
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -394,7 +409,7 @@ class _CalendarPageState extends State<CalendarPage> {
         ),
         _buildTimeSelectionRowCheckIn(
           startHour: startHour,
-          endHour: endHour,
+          endHour: checkinEndHour,
           unavailableHours: unavailableHours,
         ),
         const SizedBox(height: 10),
@@ -407,8 +422,9 @@ class _CalendarPageState extends State<CalendarPage> {
             ),
           ),
           _buildTimeSelectionRowCheckOut(
+            show24h: show24h,
             startHour: (checkInTime! + 4) % 24,
-            endHour: (checkInTime! + 24) % 24,
+            endHour: checkoutEndHour,
             unavailableHoursCurrentDay: unavailableHoursCheckout['currentDay']!,
             unavailableHoursNextDay: unavailableHoursCheckout['nextDay']!,
           ),
