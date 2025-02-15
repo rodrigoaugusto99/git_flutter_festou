@@ -189,6 +189,7 @@ class _NewCardInfoState extends State<NewCardInfo>
   late SpaceService spaceService;
   late AvaliacoesService feedbackService;
   late ReservaService reservaService;
+  double averageRating = 0;
   Future<void> init() async {
     spaceService = SpaceService();
     feedbackService = AvaliacoesService();
@@ -196,6 +197,13 @@ class _NewCardInfoState extends State<NewCardInfo>
     space = await spaceService.getSpaceById(widget.spaceId);
     feedbacks = await feedbackService.getFeedbacksOrdered(widget.spaceId);
     feedbacks!.removeWhere((f) => f.deletedAt != null);
+    if (feedbacks!.isNotEmpty) {
+      int totalRating = 0;
+      for (final feedback in feedbacks!) {
+        totalRating += feedback.rating;
+      }
+      averageRating = totalRating / feedbacks!.length;
+    }
     final user = await UserService().getCurrentUserModel();
     if (user != null) {
       if (user.uid == space!.userId) {
@@ -1481,15 +1489,14 @@ class _NewCardInfoState extends State<NewCardInfo>
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
                                   color: _getColor(
-                                    double.parse(space!.averageRating),
+                                    averageRating,
                                   ),
                                 ),
                                 height: 26,
                                 width: 26,
                                 child: Center(
                                   child: Text(
-                                    double.parse(space!.averageRating)
-                                        .toStringAsFixed(1),
+                                    averageRating.toStringAsFixed(1),
                                     style: const TextStyle(
                                       fontSize: 12,
                                       color: Colors.white,

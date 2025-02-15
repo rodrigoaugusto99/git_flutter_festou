@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:festou/src/services/avaliacoes_service.dart';
 
 class Hours {
   Hours({
@@ -279,6 +280,18 @@ Future<SpaceModel> mapSpaceDocumentToModel2(
   );
 }
 
+/**
+ * 
+ * feedbacks = await feedbackService.getFeedbacksOrdered(widget.spaceId);
+    feedbacks!.removeWhere((f) => f.deletedAt != null);
+    if (feedbacks!.isNotEmpty) {
+      int totalRating = 0;
+      for (final feedback in feedbacks!) {
+        totalRating += feedback.rating;
+      }
+      averageRating = totalRating / feedbacks!.length;
+    }
+ */
 Future<SpaceModel> mapSpaceDocumentToModel(
   QueryDocumentSnapshot spaceDocument,
   bool isFavorited,
@@ -370,23 +383,17 @@ Future<SpaceModel> mapSpaceDocumentToModel(
 }
 
 Future<String> getAverageRating(String spaceId) async {
-  final spaceDocument = await FirebaseFirestore.instance
-      .collection('feedbacks')
-      .where('space_id', isEqualTo: spaceId)
-      .get();
-
-  if (spaceDocument.docs.isEmpty) {
-    //String averageRatingValue = spaceDocument.docs.first['average_rating'];
-    return '0';
+  double averageRating = 0;
+  final feedbacks = await AvaliacoesService().getFeedbacksOrdered(spaceId);
+  feedbacks.removeWhere((f) => f.deletedAt != null);
+  if (feedbacks.isNotEmpty) {
+    int totalRating = 0;
+    for (final feedback in feedbacks) {
+      totalRating += feedback.rating;
+    }
+    averageRating = totalRating / feedbacks.length;
   }
-
-  int allRating = 0;
-  for (final doc in spaceDocument.docs) {
-    allRating = allRating + doc['rating'] as int;
-  }
-
-  double averageRating = allRating / spaceDocument.docs.length;
-  return averageRating.toString();
+  return averageRating.toStringAsFixed(1);
 }
 
 Future<String> getNumComments(String spaceId) async {
