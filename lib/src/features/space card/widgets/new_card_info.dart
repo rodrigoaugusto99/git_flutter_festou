@@ -30,6 +30,7 @@ import 'package:festou/src/services/space_service.dart';
 import 'package:festou/src/services/user_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:social_share/social_share.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -1613,10 +1614,10 @@ class _NewCardInfoState extends State<NewCardInfo>
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1), // Sombra suave
+                    color: Colors.black.withOpacity(0.1),
                     blurRadius: 8,
                     spreadRadius: 2,
-                    offset: const Offset(0, -2), // Sombra na parte superior
+                    offset: const Offset(0, -2),
                   ),
                 ],
               ),
@@ -1632,13 +1633,41 @@ class _NewCardInfoState extends State<NewCardInfo>
                               GestureDetector(
                                 onTap: () async {
                                   if (!isEditing) {
-                                    await showDialog(
+                                    showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
-                                          title: const Text(
-                                              'Tem certeza que deseja excluir o espaço?'),
-                                          actions: [
+                                          content: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Center(
+                                                child: Lottie.asset(
+                                                  'lib/assets/animations/warning_exit.json',
+                                                  width: 100,
+                                                  height: 100,
+                                                  repeat: true,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 16),
+                                              const Center(
+                                                child: Text(
+                                                  'Exclusão do espaço',
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 12),
+                                              const Text(
+                                                'Tem certeza que deseja excluir o espaços?',
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ],
+                                          ),
+                                          actions: <Widget>[
                                             TextButton(
                                               onPressed: () {
                                                 Navigator.of(context).pop();
