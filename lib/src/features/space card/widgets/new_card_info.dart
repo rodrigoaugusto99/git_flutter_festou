@@ -58,21 +58,12 @@ class _NewCardInfoState extends State<NewCardInfo>
   List<ReservationModel> validReservations = <ReservationModel>[];
   bool isMySpace = false;
   bool canLeaveReview = false;
-  //late List<AvaliacoesModel> feedbacks;
 
   @override
   void initState() {
     super.initState();
     checkUserReservation();
     init();
-    //feedbacks = List.from(_getFeedbacks() as Iterable);
-  }
-
-  Future<List<AvaliacoesModel>> _getFeedbacks() async {
-    List<AvaliacoesModel> feedbacks = await AvaliacoesService()
-        .getMyFeedbacks(FirebaseAuth.instance.currentUser!.uid);
-
-    return feedbacks.where((feedback) => feedback.deletedAt == null).toList();
   }
 
   @override
@@ -179,7 +170,6 @@ class _NewCardInfoState extends State<NewCardInfo>
 
   UserModel? user;
 
-  //NewCardInfoEditVm? newCardInfoEditVm;
   List<String> selectedServices = [];
 
   double customHeight = 510;
@@ -212,8 +202,7 @@ class _NewCardInfoState extends State<NewCardInfo>
         });
       }
     }
-    // setState(() {});
-    // newCardInfoEditVm = NewCardInfoEditVm(spaceId: space!.spaceId);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         precoEC.text = space!.preco;
@@ -284,8 +273,6 @@ class _NewCardInfoState extends State<NewCardInfo>
   TextEditingController bairroEC = TextEditingController();
   TextEditingController cidadeEC = TextEditingController();
   TextEditingController estadoEC = TextEditingController();
-
-  //todo: verificacao da existencia do endereco.
 
   double? latitude;
   double? longitude;
@@ -523,17 +510,6 @@ class _NewCardInfoState extends State<NewCardInfo>
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            // void addOrRemoveService(String service) {
-            //   log(service);
-            //   if (selectedServices.contains(service)) {
-            //     selectedServices.remove(service);
-            //   } else {
-            //     selectedServices.add(service);
-            //   }
-            //   setState(() {}); // Atualiza o estado local do BottomSheet
-            //   log(selectedServices.toString());
-            // }
-
             return Container(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -674,7 +650,6 @@ class _NewCardInfoState extends State<NewCardInfo>
               ),
             ),
           const SizedBox(height: 17),
-          // if (feedbacks!.isNotEmpty)
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -696,11 +671,6 @@ class _NewCardInfoState extends State<NewCardInfo>
             ],
           ),
           const SizedBox(height: 12),
-          // if (space!.numComments != '0')
-          //   SpaceFeedbacksPageLimited(
-          //     x: 2,
-          //     space: space!,
-          //   ),
           if (feedbacks != null) ...[
             if (feedbacks!.isEmpty)
               const Center(
@@ -1096,11 +1066,9 @@ class _NewCardInfoState extends State<NewCardInfo>
                                     ),
                                 ],
                               ),
-
                               const SizedBox(
                                 width: 8,
                               ),
-                              // const Icon(Icons.align_vertical_top_sharp),
                               Text(space!.selectedServices[index]),
                               const SizedBox(
                                 width: 12,
@@ -1142,10 +1110,8 @@ class _NewCardInfoState extends State<NewCardInfo>
                   padding: const EdgeInsets.only(left: 8),
                   child: Text(
                     space!.descricao,
-                    maxLines: 3,
                     style: const TextStyle(
                       fontSize: 12,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),
@@ -1277,7 +1243,6 @@ class _NewCardInfoState extends State<NewCardInfo>
                   InkWell(
                     child: Container(
                       padding: const EdgeInsets.all(7),
-                      //alignment: Alignment.center,
                       decoration: const BoxDecoration(
                         color: Color(0xffF3F3F3),
                         shape: BoxShape.circle,
@@ -1336,7 +1301,6 @@ class _NewCardInfoState extends State<NewCardInfo>
                   padding: const EdgeInsets.only(right: 18.0),
                   child: Container(
                     padding: const EdgeInsets.all(8),
-                    // width: 40,
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.7),
                       shape: BoxShape.circle,
@@ -1354,7 +1318,6 @@ class _NewCardInfoState extends State<NewCardInfo>
                   padding: const EdgeInsets.only(right: 18.0),
                   child: Container(
                     padding: const EdgeInsets.all(8),
-                    //width: 40,
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.7),
                       shape: BoxShape.circle,
@@ -1458,7 +1421,6 @@ class _NewCardInfoState extends State<NewCardInfo>
                       ),
                     ],
                   ),
-
                   const SizedBox(
                     height: 10,
                   ),
@@ -1619,87 +1581,24 @@ class _NewCardInfoState extends State<NewCardInfo>
                         const SizedBox(height: 10),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: SizedBox(
-                            height: customHeight,
-                            child: TabBarView(
-                              controller: tabController,
-                              //physics: const NeverScrollableScrollPhysics(),
-                              children: [
-                                myFirstWidget(),
-                                mySecondWidget(),
-                                myThirdWidget(),
-                              ],
-                            ),
+                          child: Column(
+                            children: [
+                              Column(
+                                children: [
+                                  if (tabController.index == 0)
+                                    myFirstWidget(), // Sobre
+                                  if (tabController.index == 1)
+                                    mySecondWidget(), // Galeria
+                                  if (tabController.index == 2)
+                                    myThirdWidget(), // Avaliação
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-
-                        // const SizedBox(height: 10),
-                        // const Divider(thickness: 0.4, color: Colors.purple),
-                        // const SizedBox(height: 10),
-
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        //   children: [
-                        //     ElevatedButton(
-                        //       onPressed: () {
-                        //         _showBottomSheet(context);
-                        //       },
-                        //       child: const Text('Ver descrição'),
-                        //     ),
-                        //     const SizedBox(
-                        //       width: 10,
-                        //     ),
-                        //     ElevatedButton(
-                        //       onPressed: () {
-                        //         _showBottomSheet2(context);
-                        //       },
-                        //       child: const Text('Comodidades'),
-                        //     ),
-                        //   ],
-                        // ),
-
-                        // myFirstWidget(),
                       ],
                     ),
                   ),
-                  // const Align(
-                  //   alignment: Alignment.center,
-                  //   child: Text(
-                  //     'Avaliações dos hóspedes',
-                  //     style: TextStyle(fontSize: 23),
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 10),
-                  // SpaceFeedbacksPageLimited(
-                  //   x: 3,
-                  //   space: space!,
-                  // ),
-                  // InkWell(
-                  //   child: Align(
-                  //     alignment: Alignment.centerRight,
-                  //     child: Container(
-                  //       margin:
-                  //           const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                  //       child: const Text(
-                  //         'Ver tudo',
-                  //         style: TextStyle(
-                  //           decoration: TextDecoration.underline,
-                  //           fontWeight: FontWeight.bold,
-                  //           fontSize: 18,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  //   onTap: () {
-                  //     Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(
-                  //         builder: (context) =>
-                  //             SpaceFeedbacksPageAll(space: space!),
-                  //       ),
-                  //     );
-                  //   },
-                  // ),
                 ],
               ),
             ),
@@ -1810,7 +1709,6 @@ class _NewCardInfoState extends State<NewCardInfo>
                                 } else {
                                   toggleEditing(isSaved: false);
                                 }
-
                                 //pode deletar
                               },
                               child: Container(
@@ -1850,7 +1748,6 @@ class _NewCardInfoState extends State<NewCardInfo>
                               width: 10,
                             ),
                             GestureDetector(
-                              //todo:
                               onTap: toggleEditing,
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
@@ -1881,7 +1778,6 @@ class _NewCardInfoState extends State<NewCardInfo>
                           height: 14,
                         ),
                         GestureDetector(
-                          //todo:
                           onTap: () {
                             Navigator.push(
                               context,
