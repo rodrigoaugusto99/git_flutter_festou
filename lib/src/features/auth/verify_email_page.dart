@@ -158,21 +158,86 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
     } else {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Valide o Email'),
+          automaticallyImplyLeading: false,
+          centerTitle: true,
+          title: const Text(
+            'Valide o e-mail',
+            style: TextStyle(
+                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.white,
         ),
-        body: Column(
-          children: [
-            const Text(
-                'Um e-mail de validação foi enviado ao e-mail cadastrado.'),
-            ElevatedButton(
-              onPressed: canResendEmail ? sendVerificationEmail : null,
-              child: const Text('Reenviar e-mail'),
-            ),
-            ElevatedButton(
-              onPressed: () => FirebaseAuth.instance.signOut(),
-              child: const Text('Cancelar'),
-            ),
-          ],
+        body: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            children: [
+              const Text(
+                textAlign: TextAlign.center,
+                'Um e-mail de validação foi enviado ao e-mail cadastrado.',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(
+                height: 34,
+              ),
+              GestureDetector(
+                onTap: canResendEmail ? sendVerificationEmail : null,
+                child: Container(
+                    alignment: Alignment.center,
+                    height: 35,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xff9747FF),
+                          // ignore: use_full_hex_values_for_flutter_colors
+                          Color(0xff44300b1),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                    child: const Text(
+                      'Reenviar e-mail',
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white),
+                    )),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              GestureDetector(
+                onTap: () => FirebaseAuth.instance.signOut(),
+                child: Container(
+                    alignment: Alignment.center,
+                    height: 35,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xff9747FF),
+                          // ignore: use_full_hex_values_for_flutter_colors
+                          Color(0xff44300b1),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                    child: const Text(
+                      'Cancelar',
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white),
+                    )),
+              ),
+            ],
+          ),
         ),
       );
     }

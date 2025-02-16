@@ -58,6 +58,7 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         'name': userData.name,
         'cpf': userData.cpf,
         'telefone': '',
+        'seenPostsIds': [],
         'last_seen': [],
         'spaces_favorite': [],
         'user_address': {

@@ -1,4 +1,5 @@
-import 'dart:developer';
+import 'dart:developer' as dev;
+import 'dart:math';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:festou/src/core/ui/helpers/messages.dart';
@@ -270,12 +271,21 @@ class _CalendarPageState extends State<CalendarPage> {
     required int endHour,
     required List<int> unavailableHoursCurrentDay,
     required List<int> unavailableHoursNextDay,
+    required bool show24h,
+    required String checkoutStringEndHour,
   }) {
     bool reachedLimit = false;
 
     final itemCount = endHour > startHour
         ? endHour - startHour + 1
-        : (24 - startHour + endHour + 1);
+        : show24h
+            ? (24 - startHour + endHour + 1)
+            : endHour - startHour + 1;
+
+    dev.log('itemCount: $itemCount');
+    dev.log('show24h: $show24h');
+
+    bool stop = false;
 
     return SizedBox(
       height: 50,
@@ -286,7 +296,7 @@ class _CalendarPageState extends State<CalendarPage> {
               .asMap()
               .entries
               .map((entry) {
-            log(startHour.toString());
+            dev.log(startHour.toString());
             final int index = entry.key;
             final int hour = (startHour + index) % 24;
 
@@ -317,7 +327,14 @@ class _CalendarPageState extends State<CalendarPage> {
             // log('${hour.toString().padLeft(2, '0')}:59  index: $index');
             // Exibe "Dia seguinte" no início de cada hora do próximo dia
             bool showNextDayLabel = isNextDay && !isUnavailable;
+            String hourString = '${hour.toString().padLeft(2, '0')}:59';
 
+            if (hourString == checkoutStringEndHour) {
+              stop = true;
+            }
+            if (stop) {
+              return const SizedBox.shrink();
+            }
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
@@ -351,34 +368,6 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
-  // Widget _buildTimeSelection() {
-  //   if (_selectedDate == null) return const SizedBox();
-
-  //   final dayHours = _getDayHours(_selectedDate!);
-  //   if (dayHours == null) return const SizedBox();
-
-  //   final startHour = int.parse(dayHours.from.split(':')[0]);
-  //   final endHour = int.parse(dayHours.to.split(':')[0]);
-  //   final unavailableHours = _getUnavailableHours();
-  //   final unavailableHoursCheckout = _getUnavailableCheckOutHours();
-
-  //   return Column(
-  //     children: [
-  //       _buildTimeSelectionRowCheckIn(
-  //         startHour: startHour,
-  //         endHour: endHour,
-  //         unavailableHours: unavailableHours,
-  //       ),
-  //       const SizedBox(height: 10),
-  //       if (checkInTime != null)
-  //         _buildTimeSelectionRowCheckOut(
-  //           startHour: (checkInTime! + 4) % 24,
-  //           endHour: (checkInTime! + 24) % 24,
-  //           unavailableHours: unavailableHoursCheckout,
-  //         ),
-  //     ],
-  //   );
-  // }
   Widget _buildTimeSelection() {
     if (_selectedDate == null) return const SizedBox();
 
@@ -389,6 +378,61 @@ class _CalendarPageState extends State<CalendarPage> {
     final endHour = int.parse(dayHours.to.split(':')[0]);
     final unavailableHours = _getUnavailableHours();
     final unavailableHoursCheckout = _getUnavailableCheckOutHours();
+    bool show24h = true;
+    int checkinEndHour = endHour;
+    int checkoutEndHour = endHour;
+    if (checkInTime != null) {
+      checkoutEndHour = (checkInTime! + 24) % 24;
+
+      if (endHour != 23) {
+        checkoutEndHour = endHour - 1;
+        show24h = false;
+      }
+    }
+    String checkoutStringEndHour = '';
+    if (endHour != 23) {
+      checkinEndHour = endHour - 5;
+      if (checkinEndHour < 0) {
+        checkinEndHour = checkinEndHour + 24;
+      }
+    } else {
+      //se o horario final for 23, averiguar se pode mostrar o 23 mesmo
+      final nextDayHours =
+          _getDayHours(_selectedDate!.add(const Duration(days: 1)));
+      if (nextDayHours!.from != '00:00') {
+        checkinEndHour = endHour - 5;
+        if (checkinEndHour < 0) {
+          checkinEndHour = checkinEndHour + 24;
+        }
+        //e o checkoutEndTime deve ser 23
+        checkoutEndHour = endHour - 1;
+        show24h = false;
+      } else {
+        if (nextDayHours.to == '01:59') {
+          checkinEndHour = endHour - 4;
+        } else if (nextDayHours.to == '02:59') {
+          checkinEndHour = endHour - 3;
+        } else if (nextDayHours.to == '03:59') {
+          checkinEndHour = endHour - 2;
+        } else if (nextDayHours.to == '04:59') {
+          checkinEndHour = endHour - 1;
+        } else if (nextDayHours.to == '05:59') {
+          checkinEndHour = endHour;
+        } else {
+          // checkoutEndHour = endHour + 1;
+          //sera a ultima a ser mostrada la no checkouList
+          checkoutStringEndHour = nextDayHours.to;
+        }
+      }
+      dev.log('----------');
+      dev.log('$checkoutEndHour');
+    }
+
+    if (checkinEndHour == 23) {}
+    dev.log('checkinEndHour: $checkinEndHour');
+    dev.log('checkoutEndHour: $checkoutEndHour');
+
+    //if (endHour != 23) {}
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -402,7 +446,7 @@ class _CalendarPageState extends State<CalendarPage> {
         ),
         _buildTimeSelectionRowCheckIn(
           startHour: startHour,
-          endHour: endHour,
+          endHour: checkinEndHour,
           unavailableHours: unavailableHours,
         ),
         const SizedBox(height: 10),
@@ -415,8 +459,10 @@ class _CalendarPageState extends State<CalendarPage> {
             ),
           ),
           _buildTimeSelectionRowCheckOut(
+            checkoutStringEndHour: checkoutStringEndHour,
+            show24h: show24h,
             startHour: (checkInTime! + 4) % 24,
-            endHour: (checkInTime! + 24) % 24,
+            endHour: checkoutEndHour,
             unavailableHoursCurrentDay: unavailableHoursCheckout['currentDay']!,
             unavailableHoursNextDay: unavailableHoursCheckout['nextDay']!,
           ),
@@ -442,7 +488,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   Messages.showInfo(
                       'Você indisponibilizou este horário', context);
                 } on Exception catch (e) {
-                  log(e.toString());
+                  dev.log(e.toString());
                 }
               },
               child: Padding(
@@ -478,7 +524,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   if (_selectedDate == null ||
                       checkInTime == null ||
                       checkOutTime == null) {
-                    log('ha variaveis nulas');
+                    dev.log('ha variaveis nulas');
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text('Selecione uma data e horarios')));
                     return;
