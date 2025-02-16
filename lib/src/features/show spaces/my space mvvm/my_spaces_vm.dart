@@ -30,4 +30,29 @@ class MySpacesVm extends _$MySpacesVm {
       return MySpacesState(status: MySpacesStateStatus.loaded, spaces: []);
     }
   }
+
+  /// 🔹 Método para recarregar a lista de espaços
+  Future<void> fetchMySpaces() async {
+    final spaceRepository = ref.read(spaceFirestoreRepositoryProvider);
+    try {
+      final spacesResult = await spaceRepository.getMySpaces();
+
+      switch (spacesResult) {
+        case Success(value: final spacesData):
+          state = AsyncData(MySpacesState(
+              status: MySpacesStateStatus.loaded, spaces: spacesData));
+          break;
+
+        case Failure(exception: RepositoryException(:final message)):
+          errorMessage = message;
+          state = AsyncData(
+              MySpacesState(status: MySpacesStateStatus.error, spaces: []));
+          break;
+      }
+    } on Exception {
+      errorMessage = 'Erro desconhecido';
+      state = AsyncData(
+          MySpacesState(status: MySpacesStateStatus.loaded, spaces: []));
+    }
+  }
 }

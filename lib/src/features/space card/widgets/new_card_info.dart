@@ -4,10 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:festou/src/features/bottomNavBar/home/widgets/post_single_page.dart';
 import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/meus%20feedbacks/minhas_avaliacoes_widgets.dart';
 import 'package:festou/src/features/loading_indicator.dart';
+import 'package:festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_vm.dart';
 import 'package:festou/src/models/user_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:festou/src/core/ui/helpers/messages.dart';
 import 'package:festou/src/features/register/host%20feedback/host_feedback_register_page.dart';
@@ -59,6 +61,7 @@ class _NewCardInfoState extends State<NewCardInfo>
   List<ReservationModel> validReservations = <ReservationModel>[];
   bool isMySpace = false;
   bool canLeaveReview = false;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -450,6 +453,68 @@ class _NewCardInfoState extends State<NewCardInfo>
     }
 
     return null;
+  }
+
+  Future<void> excluirEspaco(
+      BuildContext context, BuildContext contextPopup) async {
+    final container = ProviderScope.containerOf(context, listen: false);
+    final mySpacesVm = container.read(mySpacesVmProvider.notifier);
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    Navigator.of(contextPopup).pop();
+
+    final now = DateTime.now();
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('reservations')
+        .where('space_id', isEqualTo: space!.spaceId)
+        .get();
+
+    for (var doc in querySnapshot.docs) {
+      bool canceledDate = false;
+      final selectedDate = (doc['selectedDate'] as Timestamp).toDate();
+
+      if (doc.data().containsKey('canceledAt') == true &&
+          doc['canceledAt'] != null) {
+        canceledDate = true;
+      }
+
+      if (selectedDate.isAfter(now) && !canceledDate) {
+        Messages.showError(
+            'Você não pode excluir esse espaço pois há reservas', context);
+        return;
+      }
+    }
+
+    try {
+      final spaceSnapshot = await FirebaseFirestore.instance
+          .collection('spaces')
+          .where('space_id', isEqualTo: space!.spaceId)
+          .where('deletedAt', isNull: true)
+          .get();
+
+      for (var doc in spaceSnapshot.docs) {
+        await doc.reference.update({
+          'deletedAt': Timestamp.now(),
+        });
+      }
+
+      Messages.showSuccess('O espaço foi excluído', context);
+
+      await mySpacesVm.fetchMySpaces();
+      Navigator.of(context).pop();
+    } on Exception catch (e) {
+      log(e.toString());
+      Messages.showError(
+          'Houve algum erro ao tentar excluir o espaço. Entre em contato conosco',
+          context);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
 //todo: estilizar bottom sheets
@@ -1315,6 +1380,14 @@ class _NewCardInfoState extends State<NewCardInfo>
       );
     }
 
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CustomLoadingIndicator(),
+        ),
+      );
+    }
+
     return space == null
         ? const Scaffold(
             body: Center(
@@ -1677,7 +1750,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                                   if (!isEditing) {
                                     showDialog(
                                       context: context,
-                                      builder: (BuildContext context) {
+                                      builder: (BuildContext contextPopup) {
                                         return AlertDialog(
                                           content: Column(
                                             crossAxisAlignment:
@@ -1712,79 +1785,15 @@ class _NewCardInfoState extends State<NewCardInfo>
                                           actions: <Widget>[
                                             TextButton(
                                               onPressed: () {
-                                                Navigator.of(context).pop();
+                                                Navigator.of(contextPopup)
+                                                    .pop();
                                               },
                                               child: const Text('Cancelar'),
                                             ),
                                             TextButton(
                                               onPressed: () async {
-                                                Navigator.of(context).pop();
-                                                final now = DateTime.now();
-                                                final querySnapshot =
-                                                    await FirebaseFirestore
-                                                        .instance
-                                                        .collection(
-                                                            'reservations')
-                                                        .where('space_id',
-                                                            isEqualTo:
-                                                                space!.spaceId)
-                                                        .get();
-
-                                                for (var doc
-                                                    in querySnapshot.docs) {
-                                                  bool canceledDate = false;
-                                                  final selectedDate =
-                                                      (doc['selectedDate']
-                                                              as Timestamp)
-                                                          .toDate();
-
-                                                  if (doc.data().containsKey(
-                                                              'canceledAt') ==
-                                                          true &&
-                                                      doc['canceledAt'] !=
-                                                          null) {
-                                                    canceledDate = true;
-                                                  }
-
-                                                  if (selectedDate
-                                                          .isAfter(now) &&
-                                                      !canceledDate) {
-                                                    Messages.showError(
-                                                        'Você não pode excluir esse espaço pois há reservas',
-                                                        context);
-                                                    return;
-                                                  }
-                                                }
-                                                try {
-                                                  final spaceSnapshot =
-                                                      await FirebaseFirestore
-                                                          .instance
-                                                          .collection('spaces')
-                                                          .where('space_id',
-                                                              isEqualTo: space!
-                                                                  .spaceId)
-                                                          .where('deletedAt',
-                                                              isNull: true)
-                                                          .get();
-
-                                                  for (var doc
-                                                      in spaceSnapshot.docs) {
-                                                    await doc.reference.update({
-                                                      'deletedAt':
-                                                          Timestamp.now(),
-                                                    });
-                                                  }
-                                                  Messages.showSuccess(
-                                                    'O espaço foi excluído',
-                                                    context,
-                                                  );
-                                                } on Exception catch (e) {
-                                                  log(e.toString());
-                                                  Messages.showError(
-                                                    'Houve algum erro ao tentar excluir o espaço. Entre em contato conosco',
-                                                    context,
-                                                  );
-                                                }
+                                                excluirEspaco(
+                                                    context, contextPopup);
                                               },
                                               child: const Text('Sim, excluir'),
                                             ),
