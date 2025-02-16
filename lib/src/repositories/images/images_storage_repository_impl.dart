@@ -22,7 +22,7 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
       {required List<File> imageFiles, required String spaceId}) async {
     try {
       // Crie um prefixo para as imagens com base no espaçoId
-      final prefix = 'espaços/$spaceId';
+      final prefix = 'espaços/$spaceId/images';
 
       // Faça o upload de cada imagem individualmente
       for (int i = 0; i < imageFiles.length; i++) {
@@ -49,7 +49,7 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
   }) async {
     try {
       // Crie um prefixo para os vídeos com base no espaçoId
-      final prefix = 'espaços/$spaceId';
+      final prefix = 'espaços/$spaceId/videos';
 
       // Faça o upload de cada vídeo individualmente
       for (int i = 0; i < videoFiles.length; i++) {
@@ -69,7 +69,7 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
   Future<List<String>> getSpaceVideos(String spaceId) async {
     try {
       // Crie um prefixo para os vídeos com base no spaceId
-      final prefix = 'espaços/$spaceId';
+      final prefix = 'espaços/$spaceId/videos';
 
       // Recupere a lista de itens no Firebase Storage com o prefixo
       final ListResult result = await storage.ref().child(prefix).listAll();
@@ -93,7 +93,7 @@ class ImagesStorageRepositoryImpl implements ImagesStorageRepository {
       String spaceId) async {
     try {
       // Crie um prefixo para as imagens com base no spaceId
-      final prefix = 'espaços/$spaceId';
+      final prefix = 'espaços/$spaceId/images';
 
       // Recupere a lista de itens no Firebase Storage com o prefixo
       final ListResult result = await storage.ref().child(prefix).listAll();
