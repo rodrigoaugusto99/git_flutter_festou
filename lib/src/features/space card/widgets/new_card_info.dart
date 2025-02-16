@@ -1602,296 +1602,321 @@ class _NewCardInfoState extends State<NewCardInfo>
                 ],
               ),
             ),
-            bottomNavigationBar: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-              child: widget.isLocadorFlow
-                  ? Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          children: [
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  style: const TextStyle(
-                                      color: Color(0xff9747FF),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w700),
-                                  "R\$ ${trocarPontoPorVirgula(space!.preco)}",
-                                ),
-                                const Text('Por hora'),
-                              ],
-                            ),
-                            const Spacer(),
-                            GestureDetector(
-                              onTap: () async {
-                                if (!isEditing) {
-                                  await showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text(
-                                            'Tem certeza que deseja excluir o espaço?'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: const Text('Cancelar'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () async {
-                                              Navigator.of(context).pop();
-                                              final now = DateTime.now();
-                                              final querySnapshot =
-                                                  await FirebaseFirestore
-                                                      .instance
-                                                      .collection(
-                                                          'reservations')
-                                                      .where('space_id',
-                                                          isEqualTo:
-                                                              space!.spaceId)
-                                                      .get();
-
-                                              for (var doc
-                                                  in querySnapshot.docs) {
-                                                bool canceledDate = false;
-                                                final selectedDate =
-                                                    (doc['selectedDate']
-                                                            as Timestamp)
-                                                        .toDate();
-
-                                                if (doc['canceledAt'] != null) {
-                                                  canceledDate = true;
-                                                }
-
-                                                if (selectedDate.isAfter(now) &&
-                                                    !canceledDate) {
-                                                  Messages.showError(
-                                                      'Você não pode excluir esse espaço pois há reservas',
-                                                      context);
-                                                  return;
-                                                }
-                                              }
-                                              try {
-                                                final spaceSnapshot =
+            bottomNavigationBar: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1), // Sombra suave
+                    blurRadius: 8,
+                    spreadRadius: 2,
+                    offset: const Offset(0, -2), // Sombra na parte superior
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                child: widget.isLocadorFlow
+                    ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () async {
+                                  if (!isEditing) {
+                                    await showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text(
+                                              'Tem certeza que deseja excluir o espaço?'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: const Text('Cancelar'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () async {
+                                                Navigator.of(context).pop();
+                                                final now = DateTime.now();
+                                                final querySnapshot =
                                                     await FirebaseFirestore
                                                         .instance
-                                                        .collection('spaces')
+                                                        .collection(
+                                                            'reservations')
                                                         .where('space_id',
                                                             isEqualTo:
                                                                 space!.spaceId)
                                                         .get();
 
                                                 for (var doc
-                                                    in spaceSnapshot.docs) {
-                                                  await doc.reference.delete();
+                                                    in querySnapshot.docs) {
+                                                  bool canceledDate = false;
+                                                  final selectedDate =
+                                                      (doc['selectedDate']
+                                                              as Timestamp)
+                                                          .toDate();
+
+                                                  if (doc['canceledAt'] !=
+                                                      null) {
+                                                    canceledDate = true;
+                                                  }
+
+                                                  if (selectedDate
+                                                          .isAfter(now) &&
+                                                      !canceledDate) {
+                                                    Messages.showError(
+                                                        'Você não pode excluir esse espaço pois há reservas',
+                                                        context);
+                                                    return;
+                                                  }
                                                 }
-                                                Messages.showSuccess(
-                                                  'O espaço foi excluído',
-                                                  context,
-                                                );
-                                              } on Exception catch (e) {
-                                                log(e.toString());
-                                                Messages.showError(
-                                                  'Houve algum erro ao tentar excluir o espaço. Entre em contato conosco',
-                                                  context,
-                                                );
-                                              }
-                                            },
-                                            child: const Text('Sim, excluir'),
+                                                try {
+                                                  final spaceSnapshot =
+                                                      await FirebaseFirestore
+                                                          .instance
+                                                          .collection('spaces')
+                                                          .where('space_id',
+                                                              isEqualTo: space!
+                                                                  .spaceId)
+                                                          .get();
+
+                                                  for (var doc
+                                                      in spaceSnapshot.docs) {
+                                                    await doc.reference
+                                                        .delete();
+                                                  }
+                                                  Messages.showSuccess(
+                                                    'O espaço foi excluído',
+                                                    context,
+                                                  );
+                                                } on Exception catch (e) {
+                                                  log(e.toString());
+                                                  Messages.showError(
+                                                    'Houve algum erro ao tentar excluir o espaço. Entre em contato conosco',
+                                                    context,
+                                                  );
+                                                }
+                                              },
+                                              child: const Text('Sim, excluir'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  } else {
+                                    toggleEditing(isSaved: false);
+                                  }
+                                  //pode deletar
+                                },
+                                child: Container(
+                                  width: 80,
+                                  height: 32,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    gradient: isEditing
+                                        ? const LinearGradient(
+                                            colors: [
+                                              Color(0xff9747FF),
+                                              Color(0xff4300B1),
+                                            ],
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                          )
+                                        : const LinearGradient(
+                                            colors: [
+                                              Color.fromARGB(255, 255, 0, 0),
+                                              Color.fromARGB(255, 255, 0, 0),
+                                            ],
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
                                           ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                } else {
-                                  toggleEditing(isSaved: false);
-                                }
-                                //pode deletar
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 30,
-                                  vertical: 8,
-                                ),
-                                decoration: BoxDecoration(
-                                  gradient: const LinearGradient(
-                                    colors: [
-                                      Color(0xff9747FF),
-                                      Color(0xff4300B1),
-                                    ],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
+                                    borderRadius: BorderRadius.circular(24),
                                   ),
-                                  borderRadius: BorderRadius.circular(24),
+                                  child: isEditing
+                                      ? const Text(
+                                          'Cancelar',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500),
+                                          textAlign: TextAlign.center,
+                                        )
+                                      : const Text(
+                                          'Excluir',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500),
+                                          textAlign: TextAlign.center,
+                                        ),
                                 ),
-                                child: isEditing
-                                    ? const Text(
-                                        'Cancelar',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w700),
-                                        textAlign: TextAlign.center,
-                                      )
-                                    : const Text(
-                                        'Excluir',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w700),
-                                        textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              GestureDetector(
+                                onTap: toggleEditing,
+                                child: Container(
+                                  width: 80,
+                                  height: 32,
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8),
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        Color(0xff9747FF),
+                                        Color(0xff4300B1),
+                                      ],
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                    ),
+                                    borderRadius: BorderRadius.circular(24),
+                                  ),
+                                  child: Text(
+                                    isEditing ? 'Salvar' : 'Editar',
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CalendarPage(
+                                          space: space!,
+                                          isIndisponibilizar: true,
+                                        ),
                                       ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            GestureDetector(
-                              onTap: toggleEditing,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 30, vertical: 8),
-                                decoration: BoxDecoration(
-                                  gradient: const LinearGradient(
-                                    colors: [
-                                      Color(0xff9747FF),
-                                      Color(0xff4300B1),
-                                    ],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
+                                    );
+                                  },
+                                  child: Container(
+                                    width: 170,
+                                    height: 32,
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 8),
+                                    decoration: BoxDecoration(
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Color(0xff9747FF),
+                                          Color(0xff4300B1),
+                                        ],
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                      ),
+                                      borderRadius: BorderRadius.circular(24),
+                                    ),
+                                    child: const Text(
+                                      'Indisponibilizar horário',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500),
+                                      textAlign: TextAlign.center,
+                                    ),
                                   ),
-                                  borderRadius: BorderRadius.circular(24),
-                                ),
-                                child: Text(
-                                  isEditing ? 'Salvar' : 'Editar',
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w700),
-                                  textAlign: TextAlign.center,
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 14,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CalendarPage(
-                                  space: space!,
-                                  isIndisponibilizar: true,
-                                ),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 8),
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xff9747FF),
-                                  Color(0xff4300B1),
-                                ],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                              ),
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                            child: const Text(
-                              'Indisponibilizar um horário',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700),
-                              textAlign: TextAlign.center,
-                            ),
+                            ],
                           ),
-                        ),
-                        const SizedBox(
-                          height: 14,
-                        ),
-                      ],
-                    )
-                  : isMySpace
-                      ? GestureDetector(
-                          onTap: () {
-                            if (isMySpace) return;
-                            if (user != null && user!.cpf.isEmpty) {
-                              Messages.showInfo(
-                                  'Você precisa de um CPF cadastrado para alugar um espaço',
-                                  context);
-                              return;
-                            }
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CalendarPage(
-                                  space: space!,
+                        ],
+                      )
+                    : isMySpace
+                        ? GestureDetector(
+                            onTap: () {
+                              if (isMySpace) return;
+                              if (user != null && user!.cpf.isEmpty) {
+                                Messages.showInfo(
+                                    'Você precisa de um CPF cadastrado para alugar um espaço',
+                                    context);
+                                return;
+                              }
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CalendarPage(
+                                    space: space!,
+                                  ),
                                 ),
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 8),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  color: Colors.grey),
+                              child: const Text(
+                                'Alugar',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700),
+                                textAlign: TextAlign.center,
                               ),
-                            );
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 8),
-                            decoration: BoxDecoration(
+                            ),
+                          )
+                        : GestureDetector(
+                            onTap: () {
+                              if (isMySpace) return;
+                              if (user != null && user!.cpf.isEmpty) {
+                                Messages.showInfo(
+                                    'Você precisa de um CPF cadastrado para alugar um espaço',
+                                    context);
+                                return;
+                              }
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CalendarPage(
+                                    space: space!,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 8),
+                              decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(50),
-                                color: Colors.grey),
-                            child: const Text(
-                              'Alugar',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        )
-                      : GestureDetector(
-                          onTap: () {
-                            if (isMySpace) return;
-                            if (user != null && user!.cpf.isEmpty) {
-                              Messages.showInfo(
-                                  'Você precisa de um CPF cadastrado para alugar um espaço',
-                                  context);
-                              return;
-                            }
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CalendarPage(
-                                  space: space!,
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xff9747FF),
+                                    Color(0xff44300b1),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
                                 ),
                               ),
-                            );
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 8),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xff9747FF),
-                                  Color(0xff44300b1),
-                                ],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
+                              child: const Text(
+                                'Alugar',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700),
+                                textAlign: TextAlign.center,
                               ),
                             ),
-                            child: const Text(
-                              'Alugar',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700),
-                              textAlign: TextAlign.center,
-                            ),
                           ),
-                        ),
+              ),
             ),
           );
   }
