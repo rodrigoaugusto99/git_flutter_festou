@@ -18,8 +18,10 @@ class SpaceService {
 
   Future<SpaceModel?> getSpaceById(String spaceId) async {
     try {
-      final mySpaceDocument =
-          await spacesCollection.where('space_id', isEqualTo: spaceId).get();
+      final mySpaceDocument = await spacesCollection
+          .where('space_id', isEqualTo: spaceId)
+          .where('deletedAt', isNull: true)
+          .get();
 
       if (mySpaceDocument.docs.isEmpty) return null;
       //favoritos do usuario
@@ -44,7 +46,9 @@ class SpaceService {
     String spaceId,
     void Function(SpaceModel space) onNewSnapshot,
   ) async {
-    final query = spacesCollection.where('space_id', isEqualTo: spaceId);
+    final query = spacesCollection
+        .where('space_id', isEqualTo: spaceId)
+        .where('deletedAt', isNull: true);
 
     spaceSubscription = query.snapshots().skip(1).listen((snapshot) async {
       if (snapshot.docs.isEmpty || snapshot.docs.first.data() == null) return;
@@ -97,10 +101,8 @@ class SpaceService {
     required String spaceId,
   }) async {
     QuerySnapshot querySnapshot = await spacesCollection
-        .where(
-          "space_id",
-          isEqualTo: spaceId,
-        )
+        .where("space_id", isEqualTo: spaceId)
+        .where('deletedAt', isNull: true)
         .get();
 
     if (querySnapshot.docs.length == 1) {
@@ -120,8 +122,10 @@ class SpaceService {
   Future<List<SpaceModel>?> getMySpaces() async {
     try {
       //espaços a serem buildado
-      final mySpaceDocuments =
-          await spacesCollection.where('user_id', isEqualTo: user.uid).get();
+      final mySpaceDocuments = await spacesCollection
+          .where('user_id', isEqualTo: user.uid)
+          .where('deletedAt', isNull: true)
+          .get();
 
       List<SpaceModel> spaceModels =
           await Future.wait(mySpaceDocuments.docs.map((spaceDocument) {
@@ -160,6 +164,7 @@ class SpaceService {
         // Busca o documento do espaço pelo space_id
         QuerySnapshot spaceSnapshot = await spacesCollection
             .where('space_id', isEqualTo: spaceId)
+            .where('deletedAt', isNull: true)
             .limit(1)
             .get();
 

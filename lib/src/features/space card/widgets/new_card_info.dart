@@ -1696,8 +1696,11 @@ class _NewCardInfoState extends State<NewCardInfo>
                                                               as Timestamp)
                                                           .toDate();
 
-                                                  if (doc['canceledAt'] !=
-                                                      null) {
+                                                  if (doc.data().containsKey(
+                                                              'canceledAt') ==
+                                                          true &&
+                                                      doc['canceledAt'] !=
+                                                          null) {
                                                     canceledDate = true;
                                                   }
 
@@ -1718,12 +1721,16 @@ class _NewCardInfoState extends State<NewCardInfo>
                                                           .where('space_id',
                                                               isEqualTo: space!
                                                                   .spaceId)
+                                                          .where('deletedAt',
+                                                              isNull: true)
                                                           .get();
 
                                                   for (var doc
                                                       in spaceSnapshot.docs) {
-                                                    await doc.reference
-                                                        .delete();
+                                                    await doc.reference.update({
+                                                      'deletedAt':
+                                                          Timestamp.now(),
+                                                    });
                                                   }
                                                   Messages.showSuccess(
                                                     'O espaço foi excluído',

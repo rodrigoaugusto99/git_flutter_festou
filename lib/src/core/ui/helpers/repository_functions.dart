@@ -12,10 +12,10 @@ class RepositoryFunctions {
 
   Future<DocumentSnapshot> getUserId() async {
     final userDocument =
-        await usersCollection.where('uid', isEqualTo: user.uid).get();
+        await usersCollection.where('uid', isEqualTo: user.uid).limit(1).get();
 
     if (userDocument.docs.isNotEmpty) {
-      return userDocument.docs[0];
+      return userDocument.docs.first;
     }
 
     // Trate o caso em que nenhum usuário foi encontrado.

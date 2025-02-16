@@ -40,6 +40,7 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
         String cep,
         String cidade,
         String logradouro,
+        String estado,
         String numero,
         List<String> selectedTypes,
         List<String> selectedServices,
@@ -50,8 +51,8 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
         double latitude,
         double longitude,
         Days days,
+        //String deletedAt,
         //String cnpjEmpresaLocadora,
-        String estado,
         // String locadorCpf,
         // String nomeEmpresaLocadora,
         // String locadorAssinatura,
@@ -61,6 +62,7 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
 
       // Consulte a coleção 'spaces' para verificar se um espaço com as mesmas informações já existe.
       final existingSpace = await spacesCollection
+          .where('deletedAt', isNull: true)
           .where('titulo', isEqualTo: spaceData.titulo)
           .where('cep', isEqualTo: spaceData.cep)
           .where('logradouro', isEqualTo: spaceData.logradouro)
@@ -121,6 +123,7 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
               'images_url': imagesData,
               'videos': spaceVideosUrls,
               'createdAt': FieldValue.serverTimestamp(),
+              'deletedAt': null,
             };
             await spacesCollection.add(newSpace);
 
@@ -145,7 +148,8 @@ class SpaceFirestoreRepositoryImpl implements SpaceFirestoreRepository {
   Future<Either<RepositoryException, List<SpaceModel>>> getAllSpaces() async {
     try {
       //pega todos os documentos dos espaços
-      final allSpaceDocuments = await spacesCollection.get();
+      final allSpaceDocuments =
+          await spacesCollection.where('deletedAt', isNull: true).get();
 
 //await pois retorna future
 //pega os favoritos do usuario
@@ -176,6 +180,7 @@ p decidir o isFavorited*/
     try {
       // Acesse sua coleção "spaces" no Firestore
       QuerySnapshot surroundingSpaces = await spacesCollection
+          .where('deletedAt', isNull: true)
           .where(
             'latitude', // Substitua 'latitude' pelo nome do campo correspondente no Firestore
             isGreaterThanOrEqualTo: visibleRegion.southwest.latitude,
@@ -184,6 +189,7 @@ p decidir o isFavorited*/
           .get();
 
       surroundingSpaces = await spacesCollection
+          .where('deletedAt', isNull: true)
           .where(
             'longitude', // Substitua 'longitude' pelo nome do campo correspondente no Firestore
             isGreaterThanOrEqualTo: visibleRegion.southwest.longitude,
@@ -214,8 +220,10 @@ p decidir o isFavorited*/
   Future<Either<RepositoryException, List<SpaceModel>>> getMySpaces() async {
     try {
       //espaços a serem buildado
-      final mySpaceDocuments =
-          await spacesCollection.where('user_id', isEqualTo: user.uid).get();
+      final mySpaceDocuments = await spacesCollection
+          .where('user_id', isEqualTo: user.uid)
+          .where('deletedAt', isNull: true)
+          .get();
 
 //favoritos do usuario
       final userSpacesFavorite = await getUserFavoriteSpaces();
@@ -254,6 +262,7 @@ p decidir o isFavorited*/
       if (userSpacesFavorite != null && userSpacesFavorite.isNotEmpty) {
         final favoriteSpaceDocuments = await spacesCollection
             .where('space_id', whereIn: userSpacesFavorite)
+            .where('deletedAt', isNull: true)
             .get();
 
 //pra percorrer tudo, precisamos ter a lista de favoritados pelo usuario
@@ -306,6 +315,7 @@ p decidir o isFavorited*/
         // Busca o documento do espaço pelo space_id
         QuerySnapshot spaceSnapshot = await spacesCollection
             .where('space_id', isEqualTo: spaceId)
+            .where('deletedAt', isNull: true)
             .limit(1)
             .get();
 
@@ -386,23 +396,8 @@ p decidir o isFavorited*/
         return null;
       }
     }
-
-    // Trate o caso em que nenhum documento foi encontrado.
     return null;
   }
-
-  // Future<String> getAverageRating(String spaceId) async {
-  //   final spaceDocument =
-  //       await spacesCollection.where('space_id', isEqualTo: spaceId).get();
-
-  //   if (spaceDocument.docs.isNotEmpty) {
-  //     String averageRatingValue = spaceDocument.docs.first['average_rating'];
-  //     return averageRatingValue;
-  //   }
-
-  //   // Trate o caso em que nenhum espaço foi encontrado.
-  //   throw Exception("Espaço não encontrado");
-  // }
 
   Future<String> getNumComments(String spaceId) async {
     final spaceDocument =
@@ -413,17 +408,15 @@ p decidir o isFavorited*/
       return numComments;
     }
 
-    // Trate o caso em que nenhum espaço foi encontrado.
     throw Exception("Espaço não encontrado");
   }
 
-//retorna o documento do usuario atual
   Future<DocumentSnapshot> getUserDocument() async {
     final userDocument =
-        await usersCollection.where('uid', isEqualTo: user.uid).get();
+        await usersCollection.where('uid', isEqualTo: user.uid).limit(1).get();
 
     if (userDocument.docs.isNotEmpty) {
-      return userDocument.docs[0]; // Retorna o primeiro documento encontrado.
+      return userDocument.docs.first;
     }
 
     // Trate o caso em que nenhum usuário foi encontrado.
@@ -454,6 +447,7 @@ p decidir o isFavorited*/
       // Consulta espaços onde o campo "selectedTypes" contenha pelo menos um dos tipos da lista.
       final spaceDocuments = await spacesCollection
           .where('selectedTypes', arrayContainsAny: types)
+          .where('deletedAt', isNull: true)
           .get();
 
       final userSpacesFavorite = await getUserFavoriteSpaces();
@@ -511,6 +505,7 @@ p decidir o isFavorited*/
       // Consulta espaços onde o campo "selectedTypes" contenha pelo menos um dos tipos da lista.
       final spaceDocuments = await spacesCollection
           .where('selectedTypes', arrayContainsAny: types)
+          .where('deletedAt', isNull: true)
           .get();
 
       // Mapeia os documentos de espaço para objetos SpaceModel.
@@ -539,13 +534,15 @@ p decidir o isFavorited*/
       Query query = spacesCollection;
 
       if (selectedTypes != null && selectedTypes.isNotEmpty) {
-        query = query.where('selectedTypes', arrayContainsAny: selectedTypes);
+        query = query
+            .where('selectedTypes', arrayContainsAny: selectedTypes)
+            .where('deletedAt', isNull: true);
       } else {
         // Se a lista  estiver vazia, retorne uma lista vazia diretamente.
         return Success([]);
       }
 
-      final spaceDocuments = await query.get();
+      final spaceDocuments = await query.where('deletedAt', isNull: true).get();
 
       // Mapeia os documentos de espaço para objetos SpaceModel.
       final spaceModels =
@@ -573,13 +570,15 @@ p decidir o isFavorited*/
       Query query = spacesCollection;
 
       if (availableDays != null && availableDays.isNotEmpty) {
-        query = query.where('availableDays', arrayContainsAny: availableDays);
+        query = query
+            .where('availableDays', arrayContainsAny: availableDays)
+            .where('deletedAt', isNull: true);
       } else {
         // Se a lista  estiver vazia, retorne uma lista vazia diretamente.
         return Success([]);
       }
 
-      final spaceDocuments = await query.get();
+      final spaceDocuments = await query.where('deletedAt', isNull: true).get();
 
       // Mapeia os documentos de espaço para objetos SpaceModel.
       final spaceModels =
@@ -608,14 +607,15 @@ p decidir o isFavorited*/
 
       if (selectedServices != null && selectedServices.isNotEmpty) {
         // Filtra espaços que contenham pelo menos um dos serviços selecionados
-        query =
-            query.where('selectedServices', arrayContainsAny: selectedServices);
+        query = query
+            .where('selectedServices', arrayContainsAny: selectedServices)
+            .where('deletedAt', isNull: true);
       } else {
         // Se a lista selectedServices estiver vazia, retorne uma lista vazia diretamente.
         return Success([]);
       }
 
-      final spaceDocuments = await query.get();
+      final spaceDocuments = await query.where('deletedAt', isNull: true).get();
 
       // Mapeia os documentos de espaço para objetos SpaceModel.
       final spaceModels =

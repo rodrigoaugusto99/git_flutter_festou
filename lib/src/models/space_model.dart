@@ -399,6 +399,7 @@ Future<String> getAverageRating(String spaceId) async {
 Future<String> getNumComments(String spaceId) async {
   final spaceDocument = await FirebaseFirestore.instance
       .collection('spaces')
+      .where('deletedAt', isNull: true)
       .where('space_id', isEqualTo: spaceId)
       .get();
 

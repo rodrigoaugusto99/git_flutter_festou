@@ -24,6 +24,7 @@ Future<List<SpaceModel>> getSpaceOnFirestore(String userId) async {
   final querySnapshot = await FirebaseFirestore.instance
       .collection('spaces')
       .where('user_id', isEqualTo: userId)
+      .where('deletedAt', isNull: true)
       .get();
   List<SpaceModel> spaces = [];
   for (final doc in querySnapshot.docs) {

@@ -18,10 +18,8 @@ class NewCardInfoEditVm {
     required List<File> videosToDownload,
   }) async {
     QuerySnapshot querySnapshot = await spacesCollection
-        .where(
-          "space_id",
-          isEqualTo: spaceId,
-        )
+        .where("space_id", isEqualTo: spaceId)
+        .where('deletedAt', isNull: true)
         .get();
 
     if (querySnapshot.docs.length == 1) {

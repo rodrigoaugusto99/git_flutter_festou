@@ -11,14 +11,6 @@ class UserService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
-  final CollectionReference spacesCollection =
-      FirebaseFirestore.instance.collection('spaces');
-
-  //todo: colocar o parametro "id" aqui.
-  //caso String id nao for null, entao esse ID
-  //que vais er usado para a pesquisa, e nao o id do current.User
-  //(sera usado p pegar user do feedback ou reserva etc.
-  //)
 
   Row getAvatar(UserModel userModel) {
     return userModel.avatarUrl.isNotEmpty

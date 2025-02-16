@@ -172,6 +172,7 @@ class _ProfileState extends ConsumerState<Profile> {
     final querySnapshot = await FirebaseFirestore.instance
         .collection('spaces')
         .where('user_id', isEqualTo: userId)
+        .where('deletedAt', isNull: true)
         .get();
 
     return querySnapshot.docs.isNotEmpty;

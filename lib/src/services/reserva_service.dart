@@ -10,9 +10,6 @@ class ReservaService {
   final CollectionReference reservationCollection =
       FirebaseFirestore.instance.collection('reservations');
 
-  final CollectionReference spacesCollection =
-      FirebaseFirestore.instance.collection('spaces');
-
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
 
