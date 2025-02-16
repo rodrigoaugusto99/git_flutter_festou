@@ -399,7 +399,7 @@ class _CalendarPageState extends State<CalendarPage> {
       //se o horario final for 23, averiguar se pode mostrar o 23 mesmo
       final nextDayHours =
           _getDayHours(_selectedDate!.add(const Duration(days: 1)));
-      if (nextDayHours!.from != '00:00') {
+      if (nextDayHours == null || nextDayHours.from != '00:00') {
         checkinEndHour = endHour - 5;
         if (checkinEndHour < 0) {
           checkinEndHour = checkinEndHour + 24;

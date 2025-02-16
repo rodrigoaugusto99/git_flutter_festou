@@ -49,11 +49,7 @@ class _ProfileState extends ConsumerState<Profile> {
       // final selectedFinalDate = data['selectedFinalDate'];
       final checkOutTime = data['checkOutTime'];
 
-      if (selectedFinalDate.isAfter(now) ||
-          selectedFinalDate.day == now.day &&
-              selectedFinalDate.month == now.month &&
-              selectedFinalDate.year == now.year &&
-              checkOutTime >= now.hour) {
+      if (selectedFinalDate.isAfter(now) && data['canceledAt'] == null) {
         return true;
       }
     }
