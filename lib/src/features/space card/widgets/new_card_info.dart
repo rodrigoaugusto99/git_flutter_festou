@@ -825,6 +825,8 @@ class _NewCardInfoState extends State<NewCardInfo>
                       ),
                       if (isEditing)
                         decContainer(
+                          radius: 10,
+                          height: 90,
                           color: Colors.black.withOpacity(0.5),
                         ),
                       if (isEditing)
