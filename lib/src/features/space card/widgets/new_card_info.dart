@@ -671,22 +671,61 @@ class _NewCardInfoState extends State<NewCardInfo>
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 24),
           if (feedbacks != null) ...[
             if (feedbacks!.isEmpty)
-              const Center(
-                child: Padding(
-                  padding: EdgeInsets.only(top: 54),
-                  child: Text(
-                    'Sem avaliações',
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 20),
+                  const Icon(
+                    Icons.forum_sharp,
+                    size: 60,
+                    color: Colors.grey,
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Ainda não há avaliações',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
+                      color: Colors.black87,
                     ),
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  if (!isEditing && canLeaveReview) ...[
+                    const Text(
+                      'Seja o primeiro a avaliar este espaço!',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        showRatingDialog(space!, validReservations.last);
+                      },
+                      icon: const Icon(Icons.star_border, color: Colors.white),
+                      label: const Text(
+                        'Avaliar agora',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 12),
+                        backgroundColor: const Color(0xff9747FF),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
-            if (feedbacks!.isNotEmpty)
+            if (feedbacks!.isNotEmpty) ...[
+              const SizedBox(height: 12),
               ListView.builder(
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
@@ -702,8 +741,10 @@ class _NewCardInfoState extends State<NewCardInfo>
                   );
                 },
               ),
+            ],
           ],
-          if (feedbacks != null && feedbacks!.length > 3)
+          if (feedbacks != null && feedbacks!.length > 3) ...[
+            const SizedBox(height: 12),
             InkWell(
               child: Align(
                 alignment: Alignment.centerRight,
@@ -745,6 +786,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                 );
               },
             ),
+          ],
         ],
       );
     }
