@@ -1408,7 +1408,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                                     child: const Text(
                                       'Postar feed',
                                       style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 12,
                                         color: Colors.white,
                                         fontWeight: FontWeight.w600,
                                       ),
