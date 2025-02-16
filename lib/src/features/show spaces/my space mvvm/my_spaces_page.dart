@@ -1,10 +1,5 @@
-import 'dart:async';
-import 'dart:developer';
-
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:festou/src/models/space_model.dart';
-import 'package:festou/src/services/space_service.dart';
+import 'package:festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:festou/src/core/ui/helpers/messages.dart';
@@ -29,56 +24,6 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
   UserService userService = UserService();
   UserModel? userModel;
 
-  List<SpaceModel>? spaces;
-  StreamSubscription? mySpacesSubscription;
-
-  void mountedSetState() {
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  Future<void> getMySpaces() async {
-    try {
-      //espaços a serem buildado
-      final mySpaceDocuments = await FirebaseFirestore.instance
-          .collection('spaces')
-          .where('user_id', isEqualTo: userModel!.uid)
-          .get();
-
-      final userSpacesFavorite = await SpaceService().getUserFavoriteSpaces();
-
-      List<SpaceModel> spaceModels =
-          await Future.wait(mySpaceDocuments.docs.map((spaceDocument) {
-        final isFavorited =
-            userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
-        return mapSpaceDocumentToModel(spaceDocument, isFavorited);
-      }).toList());
-
-      spaces = spaceModels;
-      mountedSetState();
-      mySpacesSubscription = FirebaseFirestore.instance
-          .collection('spaces')
-          .where('user_id', isEqualTo: userModel!.uid)
-          .snapshots()
-          .listen((snapshot) async {
-        final userSpacesFavorite = await SpaceService().getUserFavoriteSpaces();
-
-        List<SpaceModel> spaceModels =
-            await Future.wait(mySpaceDocuments.docs.map((spaceDocument) {
-          final isFavorited =
-              userSpacesFavorite?.contains(spaceDocument['space_id']) ?? false;
-          return mapSpaceDocumentToModel(spaceDocument, isFavorited);
-        }).toList());
-
-        spaces = spaceModels;
-        mountedSetState();
-      });
-    } catch (e) {
-      log('Erro ao recuperar meus espaços: $e');
-    }
-  }
-
   @override
   void initState() {
     getUserModel();
@@ -87,12 +32,14 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
 
   Future<void> getUserModel() async {
     userModel = await userService.getCurrentUserModel();
-    getMySpaces();
+    setState(() {});
   }
 
   int currentSlide = 0;
   @override
   Widget build(BuildContext context) {
+    final mySpaces = ref.watch(mySpacesVmProvider);
+
     final errorMessager = ref.watch(mySpacesVmProvider.notifier).errorMessage;
 
     Future.delayed(Duration.zero, () {
@@ -111,120 +58,156 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
       appBar: CustomAppBar(
         userModel: userModel,
       ),
-      body: spaces == null
-          ? const Center(child: CustomLoadingIndicator())
-          : SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    children: [
-                      CarouselSlider(
-                        items: images.map((imagePath) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 40),
-                            child: Image.asset(
-                              imagePath,
-                            ),
-                          );
-                        }).toList(),
-                        options: CarouselOptions(
-                          autoPlay: true,
-                          aspectRatio: 16 / 9,
-                          viewportFraction: 1,
-                          enableInfiniteScroll: true,
-                          onPageChanged: (index, reason) {
-                            setState(() {
-                              currentSlide = index;
-                            });
-                          },
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: images.map((url) {
-                          int index = images.indexOf(url);
-                          return Container(
-                            width: 8.0,
-                            height: 8.0,
-                            margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: currentSlide == index
-                                  ? const Color(0xff9747FF)
-                                  : Colors.grey.shade300,
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text(
-                      'Cadastrar',
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
+      body: mySpaces.when(
+        data: (MySpacesState data) {
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  children: [
+                    CarouselSlider(
+                      items: images.map((imagePath) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child: Image.asset(
+                            imagePath,
+                          ),
+                        );
+                      }).toList(),
+                      options: CarouselOptions(
+                        autoPlay: true,
+                        aspectRatio: 16 / 9,
+                        viewportFraction: 1,
+                        enableInfiniteScroll: true,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            currentSlide = index;
+                          });
+                        },
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 60),
-                    child: InkWell(
-                        key: Keys.kLocadorViewRegisterSpace,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const NewSpaceRegister(),
-                            ),
-                          );
-                        },
-                        child: Image.asset(
-                            'lib/assets/images/banner_cadastre.png')),
-                  ),
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  const Row(
-                    children: [
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Text(
-                        'Meus espaços ',
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: images.map((url) {
+                        int index = images.indexOf(url);
+                        return Container(
+                          width: 8.0,
+                          height: 8.0,
+                          margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: currentSlide == index
+                                ? const Color(0xff9747FF)
+                                : Colors.grey.shade300,
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Text('Cadastrar',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      )),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 60),
+                  child: InkWell(
+                      key: Keys.kLocadorViewRegisterSpace,
+                      onTap: () {
+                        ref.read(newSpaceRegisterVmProvider.notifier).reset();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const NewSpaceRegister(),
+                          ),
+                        );
+                      },
+                      child:
+                          Image.asset('lib/assets/images/banner_cadastre.png')),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                const Row(
+                  children: [
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Text('Meus espaços ',
                         style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        )),
+                  ],
+                ),
+                data.spaces.isNotEmpty
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: MySliverListToCardInfo(
+                          isLocadorFlow: true,
+                          spaces: data.spaces,
+                          x: false,
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24.0, vertical: 50),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.home_work_outlined, // Ícone de imóvel
+                              size: 80,
+                              color: Colors.grey.shade400,
+                            ),
+                            const SizedBox(height: 16),
+                            const Text(
+                              'Nenhum espaço cadastrado ainda',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Cadastre um espaço agora e comece a receber reservas.',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black54,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
                         ),
                       ),
-                      // Text(
-                      //   '(assim que os usuários verão o espaço)',
-                      //   style: TextStyle(
-                      //       color: Colors.grey,
-                      //       fontSize: 12,
-                      //       overflow: TextOverflow.ellipsis),
-                      // ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 25,
-                  ),
-                  MySliverListToCardInfo(
-                    isLocadorFlow: true,
-                    spaces: spaces!,
-                    x: false,
-                  ),
-                ],
-              ),
+              ],
             ),
+          );
+        },
+        error: (Object error, StackTrace stackTrace) {
+          return const Stack(children: [
+            Center(child: Icon(Icons.error)),
+          ]);
+        },
+        loading: () {
+          return const Stack(children: [
+            Center(child: CustomLoadingIndicator()),
+          ]);
+        },
+      ),
     );
   }
 }
