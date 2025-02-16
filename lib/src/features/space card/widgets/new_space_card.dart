@@ -353,7 +353,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                                               color: Color(0xff9747FF),
                                               fontSize: 12,
                                               fontWeight: FontWeight.w700),
-                                          "R\$${widget.space.preco},00/h",
+                                          "R\$${widget.space.preco}/h",
                                         ),
                                       ],
                                     ),

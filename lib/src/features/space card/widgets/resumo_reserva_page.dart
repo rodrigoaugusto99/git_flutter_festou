@@ -1306,8 +1306,8 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                           ),
                           Text(
                             cupomModel != null
-                                ? '- R\$ ${cupomModel!.valorDesconto},00'
-                                : '- R\$ ${widget.cupomModel!.valorDesconto},00',
+                                ? '- R\$ ${cupomModel!.valorDesconto}'
+                                : '- R\$ ${widget.cupomModel!.valorDesconto}',
                             style: const TextStyle(fontSize: 12),
                           ),
                         ],

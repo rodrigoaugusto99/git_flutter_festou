@@ -542,7 +542,7 @@ p decidir o isFavorited*/
                                                     fontSize: 10,
                                                     fontWeight:
                                                         FontWeight.w700),
-                                                "R\$${spaceShowing!.preco},00/h",
+                                                "R\$${spaceShowing!.preco}/h",
                                               ),
                                             ],
                                           ),

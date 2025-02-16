@@ -1718,7 +1718,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                                       color: Color(0xff9747FF),
                                       fontSize: 14,
                                       fontWeight: FontWeight.w700),
-                                  "R\$${space!.preco}",
+                                  "R\$ ${trocarPontoPorVirgula(space!.preco)}",
                                 ),
                                 const Text('Por hora'),
                               ],

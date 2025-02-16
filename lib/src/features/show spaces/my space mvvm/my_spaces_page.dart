@@ -151,14 +151,48 @@ class _MySpacesPageState extends ConsumerState<MySpacesPage> {
                         )),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: MySliverListToCardInfo(
-                    isLocadorFlow: true,
-                    spaces: data.spaces,
-                    x: false,
-                  ),
-                ),
+                data.spaces.isNotEmpty
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: MySliverListToCardInfo(
+                          isLocadorFlow: true,
+                          spaces: data.spaces,
+                          x: false,
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24.0, vertical: 50),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.home_work_outlined, // Ícone de imóvel
+                              size: 80,
+                              color: Colors.grey.shade400,
+                            ),
+                            const SizedBox(height: 16),
+                            const Text(
+                              'Nenhum espaço cadastrado ainda',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Cadastre um espaço agora e comece a receber reservas.',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black54,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
               ],
             ),
           );
