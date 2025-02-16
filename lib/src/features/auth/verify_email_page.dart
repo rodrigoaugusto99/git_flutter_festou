@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:festou/src/features/loading_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/features/bottomNavBar/bottom_navbar_locatario_page.dart';
@@ -142,15 +143,22 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
               builder: (context, termsSnapshot) {
                 if (privacySnapshot.data == true &&
                     termsSnapshot.data == true) {
-                  return userModel!.locador
-                      ? const BottomNavBarLocadorPage()
-                      : const BottomNavBarLocatarioPage();
+                  return Scaffold(
+                      backgroundColor: Colors.amber,
+                      body: userModel!.locador
+                          ? const BottomNavBarLocadorPage()
+                          : const BottomNavBarLocatarioPage());
                 } else if (privacySnapshot.data == false) {
-                  return const PrivacyPolicyPage(duringLogin: true);
+                  return const Scaffold(
+                      body: PrivacyPolicyPage(duringLogin: true));
                 } else if (termsSnapshot.data == false) {
-                  return const ServiceTermsPage(duringLogin: true);
+                  return const Scaffold(
+                      body: ServiceTermsPage(duringLogin: true));
                 } else {
-                  return const SizedBox.shrink();
+                  return const Scaffold(
+                    backgroundColor: Colors.white,
+                    body: CustomLoadingIndicator(),
+                  );
                 }
               },
             );
