@@ -160,7 +160,10 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
                     const Padding(
                       padding: EdgeInsets.only(left: 24),
                       child: Text(
-                          'Seu endereço só é confirmado com o locatário depois que a reserva é confirmada.'),
+                        'Seu endereço só é confirmado com o locatário depois que a reserva é confirmada.',
+                        style: TextStyle(
+                            fontSize: 13, fontWeight: FontWeight.bold),
+                      ),
                     ),
                     const SizedBox(
                       height: 22,

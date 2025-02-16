@@ -98,7 +98,7 @@ class _PrecoState extends ConsumerState<Preco> {
                     'Você poderá alterá-lo quando quiser, porém sendo mantido o valor que estava em vigor no momento dos contratos que já foram firmados.',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                      fontSize: 13,
                     ),
                   ),
                 ),

@@ -270,10 +270,8 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 27),
                 child: Text(
-                  'Você precisa de pelo menos cinco fotos para começar. Você pode adicionar outras imagens ou vídeos ou fazer alterações mais tarde.',
-                  style: TextStyle(
-                    fontSize: 12,
-                  ),
+                  'Você precisa de pelo menos três fotos para começar. Você pode adicionar outras imagens ou vídeos ou fazer alterações mais tarde.',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                 ),
               ),
               const SizedBox(

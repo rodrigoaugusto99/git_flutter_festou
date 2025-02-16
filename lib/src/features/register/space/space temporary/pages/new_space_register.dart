@@ -73,7 +73,7 @@ class _NewSpaceRegisterState extends State<NewSpaceRegister> {
                 text1: '1.',
                 text2: '\nDescreva sua\nacomodação',
                 text3:
-                    'Compartilhe algumas informacoes basicas, como a localizaçao e quantos hospedes podem ficar no local',
+                    'Compartilhe algumas informações básicas, como a localização e quantos convidados podem ficar no local',
               ),
               SizedBox(height: 28),
               NewWidget(
@@ -81,14 +81,14 @@ class _NewSpaceRegisterState extends State<NewSpaceRegister> {
                   text1: '2.',
                   text2: '\nFaça com que se\ndestaque',
                   text3:
-                      'Adicione cinco fotos ou mais, alem de um titulo e uma descrição. Nós ajudaremos você'),
+                      'Adicione três fotos ou mais, além de um título e uma boa descrição. Nós ajudaremos você'),
               SizedBox(height: 28),
               NewWidget(
                 iconData: Icons.people,
                 text1: '3.',
                 text2: 'Concluir e publicar',
                 text3:
-                    'Escolha se voce gostaria de começar com um hospede experiente, defina um preço inciial, publique seu anuncio',
+                    'Escolha os serviços que você disponibiliza no seu espaço, defina um preço inicial e publique seu espaço!',
               ),
             ],
           ),
@@ -220,8 +220,7 @@ class NewWidget extends StatelessWidget {
                     Text(
                       text3,
                       style: const TextStyle(
-                        fontSize: 12,
-                      ),
+                          fontSize: 12, fontWeight: FontWeight.w500),
                     ),
                     const SizedBox(
                       height: 9,

@@ -88,7 +88,7 @@ class _DescricaoState extends ConsumerState<Descricao> {
                     'Explique o que seu espaço tem de especial e encante os clientes',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                      fontSize: 13,
                     ),
                   ),
                 ),

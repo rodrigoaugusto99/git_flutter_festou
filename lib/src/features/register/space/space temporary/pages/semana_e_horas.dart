@@ -540,7 +540,7 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
                   'Você deve escolher os dias da semana e os horários que disponibilizará o espaço para alguel.Essas opções poderão ser alteradas posteriormente.',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 12,
+                    fontSize: 13,
                   ),
                 ),
               ),

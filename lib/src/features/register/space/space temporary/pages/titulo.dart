@@ -87,7 +87,7 @@ class _TituloState extends ConsumerState<Titulo> {
                     'Títulos curtos funcionam melhor. Mas não se preocupe, você pode fazer alterações depois.',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                      fontSize: 13,
                     ),
                   ),
                 ),
