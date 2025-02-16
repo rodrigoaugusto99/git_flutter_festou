@@ -123,7 +123,7 @@ class _TituloState extends ConsumerState<Titulo> {
                     ),
                   );
                 } else {
-                  Messages.showInfo('Escreva um título', context);
+                  Messages.showInfo('Defina um nome para o espaço!', context);
                 }
               },
               child: Container(

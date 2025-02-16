@@ -75,6 +75,9 @@ class _NewCardInfoState extends State<NewCardInfo>
     tabController.dispose();
     spaceService.cancelSpaceSubscription();
     reservaService.cancelReservationListener();
+    spaceService.cancelSpaceSubscription();
+    feedbackService.cancelSpaceSubscription();
+    reservaService.cancelReservationListener();
     super.dispose();
   }
 
@@ -122,8 +125,8 @@ class _NewCardInfoState extends State<NewCardInfo>
   }
 
   Future<void> checkUserReservation() async {
+    if (!mounted) return;
     validReservations = await getValidReservations();
-
     setState(() {
       canLeaveReview = validReservations.isNotEmpty;
     });
@@ -164,9 +167,9 @@ class _NewCardInfoState extends State<NewCardInfo>
   }
 
   Future<void> refreshFeedbacks() async {
+    if (!mounted) return;
     List<AvaliacoesModel> updatedFeedbacks = await AvaliacoesService()
         .getMyFeedbacks(FirebaseAuth.instance.currentUser!.uid);
-
     setState(() {
       feedbacks = updatedFeedbacks;
     });
@@ -185,6 +188,7 @@ class _NewCardInfoState extends State<NewCardInfo>
   late ReservaService reservaService;
   double averageRating = 0;
   Future<void> init() async {
+    if (!mounted) return;
     spaceService = SpaceService();
     feedbackService = AvaliacoesService();
     reservaService = ReservaService();
@@ -382,6 +386,7 @@ class _NewCardInfoState extends State<NewCardInfo>
   }
 
   void pickImage() async {
+    if (!mounted) return;
     final imagePicker = ImagePicker();
     final List<XFile> images = await imagePicker.pickMultiImage();
 
@@ -402,6 +407,7 @@ class _NewCardInfoState extends State<NewCardInfo>
   final List<VideoPlayerController> localControllers = [];
 
   void pickVideo() async {
+    if (!mounted) return;
     final videoPicker = ImagePicker();
     final XFile? video =
         await videoPicker.pickVideo(source: ImageSource.gallery);
@@ -457,6 +463,7 @@ class _NewCardInfoState extends State<NewCardInfo>
 
   Future<void> excluirEspaco(
       BuildContext context, BuildContext contextPopup) async {
+    if (!mounted) return;
     final container = ProviderScope.containerOf(context, listen: false);
     final mySpacesVm = container.read(mySpacesVmProvider.notifier);
 
@@ -601,6 +608,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                       return GestureDetector(
                         onTap: () {
                           addOrRemoveService(entry.key);
+                          if (!mounted) return;
                           setState(
                               () {}); // Atualiza o estado local do BottomSheet
                         },
@@ -666,6 +674,7 @@ class _NewCardInfoState extends State<NewCardInfo>
   @override
   Widget build(BuildContext context) {
     void toggle() {
+      if (!mounted) return;
       setState(() {
         space!.isFavorited = !space!.isFavorited;
       });
@@ -940,6 +949,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                       if (isEditing)
                         GestureDetector(
                           onTap: () {
+                            if (!mounted) return;
                             setState(() {
                               networkImagesToDelete
                                   .add(space!.imagesUrl[index].toString());
@@ -973,6 +983,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                       if (isEditing)
                         GestureDetector(
                           onTap: () {
+                            if (!mounted) return;
                             setState(() {
                               imageFilesToDownload.removeAt(localIndex);
                             });
@@ -1060,6 +1071,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                       if (isEditing)
                         GestureDetector(
                           onTap: () {
+                            if (!mounted) return;
                             setState(() {
                               networkVideosToDelete
                                   .add(space!.videosUrl[index]);
@@ -1093,6 +1105,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                       if (isEditing)
                         GestureDetector(
                           onTap: () {
+                            if (!mounted) return;
                             setState(() {
                               videosToDownload.removeAt(localIndex);
                               localControllers[localIndex].dispose();
@@ -1468,6 +1481,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                       VisibilityDetector(
                         key: const Key('my-widget-key'),
                         onVisibilityChanged: (VisibilityInfo info) {
+                          if (!mounted) return;
                           setState(() {
                             isCarouselVisible = info.visibleFraction > 0.0;
                           });
@@ -1486,6 +1500,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                                 viewportFraction: 1.0,
                                 enableInfiniteScroll: true,
                                 onPageChanged: (index, reason) {
+                                  if (!mounted) return;
                                   setState(() {
                                     _currentSlide = index;
                                   });

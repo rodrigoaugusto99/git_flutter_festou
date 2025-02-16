@@ -144,7 +144,7 @@ class _PrecoState extends ConsumerState<Preco> {
                     ),
                   );
                 } else {
-                  Messages.showInfo('Escolha um preço', context);
+                  Messages.showInfo('Defina o preço por hora!', context);
                 }
               },
               child: Container(

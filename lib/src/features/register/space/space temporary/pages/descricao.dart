@@ -147,7 +147,7 @@ class _DescricaoState extends ConsumerState<Descricao> {
                     ),
                   );
                 } else {
-                  Messages.showInfo('Escreva uma descrição', context);
+                  Messages.showInfo('Descreva seu espaço!', context);
                 }
               },
               child: Container(

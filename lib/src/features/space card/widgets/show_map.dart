@@ -63,14 +63,14 @@ class _ShowMapState extends State<ShowMap> {
       if (logradouro != null) {
         fullAddress += '$logradouro, ';
       }
+      if (numero != null) {
+        fullAddress += '$numero, ';
+      }
       if (bairro != null) {
         fullAddress += '$bairro, ';
       }
       if (cidade != null) {
         fullAddress += cidade;
-      }
-      if (numero != null) {
-        fullAddress += '$numero, ';
       }
 
       // Obter coordenadas geográficas a partir do endereço completo
