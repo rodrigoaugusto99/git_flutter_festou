@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:festou/src/features/register/space/space%20temporary/pages/new_space_register.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/features/space%20card/widgets/notificacoes_page.dart';
 import 'package:festou/src/features/space%20card/widgets/chat_page.dart';
@@ -183,10 +184,64 @@ class _CalendarioState extends State<Calendario> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : mySpaces != null && mySpaces!.isEmpty
-              ? const Center(
-                  child: Text(
-                    'Você não tem espaços',
-                    style: TextStyle(fontSize: 17),
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.home_work_outlined,
+                        size: 80,
+                        color: Colors.grey[400],
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Você ainda não cadastrou nenhum espaço!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      const Text(
+                        'Cadastre um espaço agora e comece a receber reservas.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.black45,
+                        ),
+                      ),
+                      const SizedBox(height: 25),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          // Navegar para tela de cadastro
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const NewSpaceRegister(),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.add, color: Colors.white),
+                        label: const Text('Cadastrar meu espaço'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.deepPurple,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 12),
+                          textStyle: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 )
               : Padding(

@@ -1760,7 +1760,12 @@ class _NewCardInfoState extends State<NewCardInfo>
                                                     (doc['selectedDate']
                                                             as Timestamp)
                                                         .toDate();
-                                                if (selectedDate.isAfter(now)) {
+                                                final canceledDate =
+                                                    (doc['canceledAt']
+                                                            as Timestamp)
+                                                        .toDate();
+                                                if (selectedDate.isAfter(now) &&
+                                                    canceledDate == null) {
                                                   //nao pode
                                                   Messages.showError(
                                                       'Você não pode excluir esse espaço pois há reservas',
