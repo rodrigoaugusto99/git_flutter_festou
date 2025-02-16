@@ -8,6 +8,7 @@ import 'package:festou/src/features/space%20card/widgets/summary_data.dart';
 import 'package:festou/src/models/reservation_model.dart';
 import 'package:festou/src/models/space_model.dart';
 import 'package:festou/src/services/reserva_service.dart';
+import 'package:lottie/lottie.dart';
 
 class CalendarPage extends StatefulWidget {
   final SpaceModel space;
@@ -30,11 +31,18 @@ class _CalendarPageState extends State<CalendarPage> {
   int? checkOutTime;
   bool showWarning = false;
   List<ReservationModel> reservasDoEspaco = [];
+  bool _showAnimation = true;
 
   @override
   void initState() {
     fetchReservas();
     super.initState();
+
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        _showAnimation = false;
+      });
+    });
   }
 
   void fetchReservas() async {
@@ -580,46 +588,61 @@ class _CalendarPageState extends State<CalendarPage> {
         backgroundColor: Colors.white,
       ),
       backgroundColor: Colors.grey[100],
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: 30,
-                  left: 30,
-                  right: 30,
-                  bottom: 10,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Selecione uma data',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: 30,
+                      left: 30,
+                      right: 30,
+                      bottom: 10,
                     ),
-                    const SizedBox(height: 20),
-                    _buildCalendarPicker(),
-                    const SizedBox(height: 47),
-                    _buildTimeSelectionHeader(),
-                    // if (_selectedDate != null)
-                    //   Text(
-                    //     '      No dia ${DateFormat('d \'de\' MMMM \'de\' y', 'pt_BR').format(_selectedDate!)}:',
-                    //     style: const TextStyle(fontWeight: FontWeight.w500),
-                    //   ),
-                    const SizedBox(height: 8),
-                  ],
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Selecione uma data',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 20),
+                        _buildCalendarPicker(),
+                        const SizedBox(height: 47),
+                        _buildTimeSelectionHeader(),
+                        // if (_selectedDate != null)
+                        //   Text(
+                        //     '      No dia ${DateFormat('d \'de\' MMMM \'de\' y', 'pt_BR').format(_selectedDate!)}:',
+                        //     style: const TextStyle(fontWeight: FontWeight.w500),
+                        //   ),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
+                  ),
+                  _buildTimeSelection(),
+                  if (checkInTime != null && checkOutTime != null)
+                    //_buildSelectedTimeDisplay(),
+                    _buildReminderText(),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ),
+          ),
+          if (_showAnimation)
+            Positioned.fill(
+              child: Center(
+                child: Lottie.asset(
+                  'lib/assets/animations/confetti_explosion.json',
+                  width: 500,
+                  height: 500,
+                  repeat: false,
                 ),
               ),
-              _buildTimeSelection(),
-              if (checkInTime != null && checkOutTime != null)
-                //_buildSelectedTimeDisplay(),
-                _buildReminderText(),
-              const SizedBox(height: 20),
-            ],
-          ),
-        ),
+            ),
+        ],
       ),
     );
   }

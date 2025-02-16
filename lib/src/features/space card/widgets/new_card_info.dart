@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:festou/src/features/bottomNavBar/home/widgets/post_single_page.dart';
 import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/meus%20feedbacks/minhas_avaliacoes_widgets.dart';
+import 'package:festou/src/features/loading_indicator.dart';
 import 'package:festou/src/models/user_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -1307,7 +1308,7 @@ class _NewCardInfoState extends State<NewCardInfo>
     return space == null
         ? const Scaffold(
             body: Center(
-              child: CircularProgressIndicator(),
+              child: CustomLoadingIndicator(),
             ),
           )
         : Scaffold(
@@ -1756,17 +1757,18 @@ class _NewCardInfoState extends State<NewCardInfo>
 
                                               for (var doc
                                                   in querySnapshot.docs) {
+                                                bool canceledDate = false;
                                                 final selectedDate =
                                                     (doc['selectedDate']
                                                             as Timestamp)
                                                         .toDate();
-                                                final canceledDate =
-                                                    (doc['canceledAt']
-                                                            as Timestamp)
-                                                        .toDate();
+
+                                                if (doc['canceledAt'] != null) {
+                                                  canceledDate = true;
+                                                }
+
                                                 if (selectedDate.isAfter(now) &&
-                                                    canceledDate == null) {
-                                                  //nao pode
+                                                    !canceledDate) {
                                                   Messages.showError(
                                                       'Você não pode excluir esse espaço pois há reservas',
                                                       context);
