@@ -74,18 +74,21 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   bool _isDateSelectable(DateTime day) {
-    bool hasAnyDayRestriction = widget.space.days.monday != null ||
-        widget.space.days.tuesday != null ||
-        widget.space.days.wednesday != null ||
-        widget.space.days.thursday != null ||
-        widget.space.days.friday != null ||
-        widget.space.days.saturday != null ||
-        widget.space.days.sunday != null;
+    // Verifica se todos os dias da semana estão como null
+    bool allDaysAreNull = widget.space.days.monday == null &&
+        widget.space.days.tuesday == null &&
+        widget.space.days.wednesday == null &&
+        widget.space.days.thursday == null &&
+        widget.space.days.friday == null &&
+        widget.space.days.saturday == null &&
+        widget.space.days.sunday == null;
 
-    if (!hasAnyDayRestriction) {
-      return !day.difference(DateTime.now()).isNegative;
+    // Se todos os dias forem null, nenhum dia é selecionável
+    if (allDaysAreNull) {
+      return false;
     }
 
+    // Verifica se o dia específico tem horários disponíveis
     Hours? dayHours = _getDayHours(day);
     return dayHours != null && !day.difference(DateTime.now()).isNegative;
   }
