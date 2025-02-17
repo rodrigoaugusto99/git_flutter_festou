@@ -73,7 +73,7 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
         onTapOutside: (v) {
           focusNode.unfocus(); // Primeiro desfoca o campo
 
-          Future.delayed(const Duration(milliseconds: 50), () {
+          Future.delayed(const Duration(milliseconds: 200), () {
             filteredQuestions.clear(); // Limpa a lista após o desfocar
             setState(() {}); // Atualiza a interface uma única vez
           });
