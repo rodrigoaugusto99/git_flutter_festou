@@ -144,7 +144,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                 if (privacySnapshot.data == true &&
                     termsSnapshot.data == true) {
                   return Scaffold(
-                      backgroundColor: Colors.amber,
+                      backgroundColor: Colors.white,
                       body: userModel!.locador
                           ? const BottomNavBarLocadorPage()
                           : const BottomNavBarLocatarioPage());

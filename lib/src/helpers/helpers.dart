@@ -1,3 +1,4 @@
+import 'package:festou/src/features/loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -80,6 +81,24 @@ String trocarPontoPorVirgula(String valor) {
   }
 
   return formatado;
+}
+
+Future<void> showLoading(BuildContext context) async {
+  showDialog(
+    context: context,
+    barrierDismissible: false, // Impede que o usuário feche tocando fora
+    builder: (context) => const Dialog(
+      backgroundColor: Colors.transparent, // Deixa apenas a animação visível
+      elevation: 0,
+      child: CustomLoadingIndicator(),
+    ),
+  );
+}
+
+void dismissLoading(BuildContext context) {
+  if (Navigator.canPop(context)) {
+    Navigator.pop(context);
+  }
 }
 
 Widget decContainer({
