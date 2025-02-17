@@ -104,6 +104,10 @@ class _CalendarPageState extends State<CalendarPage> {
           if (selectedTime < adjustedCheckInTime) {
             selectedTime += 24;
           }
+          if (widget.isIndisponibilizar) {
+            checkOutTime = selectedTime % 24;
+            return;
+          }
           if (selectedTime >= adjustedCheckInTime + 3) {
             checkOutTime = selectedTime % 24;
           }
@@ -464,7 +468,9 @@ class _CalendarPageState extends State<CalendarPage> {
           _buildTimeSelectionRowCheckOut(
             checkoutStringEndHour: checkoutStringEndHour,
             show24h: show24h,
-            startHour: (checkInTime! + 3) % 24,
+            startHour: widget.isIndisponibilizar
+                ? checkInTime! % 24
+                : (checkInTime! + 3) % 24,
             endHour: checkoutEndHour,
             unavailableHoursCurrentDay: unavailableHoursCheckout['currentDay']!,
             unavailableHoursNextDay: unavailableHoursCheckout['nextDay']!,
@@ -761,29 +767,36 @@ class _CalendarPageState extends State<CalendarPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Selecione o horário',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        if (widget.isIndisponibilizar)
+          const Text(
+            'Selecione o horário para indisponibilizar',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        if (!widget.isIndisponibilizar)
+          const Text(
+            'Selecione o horário',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
         const SizedBox(height: 14),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (showWarning)
-              const Icon(Icons.warning, color: Colors.red, size: 22),
-            const SizedBox(width: 5),
-            Text(
-              'Tempo mínimo de locação: 4h',
-              style: TextStyle(
-                fontSize: 12,
-                color: !showWarning ? Colors.black : Colors.red,
+        if (!widget.isIndisponibilizar)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (showWarning)
+                const Icon(Icons.warning, color: Colors.red, size: 22),
+              const SizedBox(width: 5),
+              Text(
+                'Tempo mínimo de locação: 4h',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: !showWarning ? Colors.black : Colors.red,
+                ),
               ),
-            ),
-            const SizedBox(width: 5),
-            if (showWarning)
-              const Icon(Icons.warning, color: Colors.red, size: 22),
-          ],
-        ),
+              const SizedBox(width: 5),
+              if (showWarning)
+                const Icon(Icons.warning, color: Colors.red, size: 22),
+            ],
+          ),
         const SizedBox(height: 14),
       ],
     );
