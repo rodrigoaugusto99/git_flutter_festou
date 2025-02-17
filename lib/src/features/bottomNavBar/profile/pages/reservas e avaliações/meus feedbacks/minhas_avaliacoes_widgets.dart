@@ -144,7 +144,7 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
         setState(() async {
           reservation = latestValidReservation;
           canShowButtons = _validateReservation(latestValidReservation!);
-          canShowButtons = await isMyFeedback(latestValidReservation);
+          canShowButtons = await isMyFeedback();
         });
       }
     } catch (e) {
@@ -152,9 +152,9 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
     }
   }
 
-  Future<bool> isMyFeedback(ReservationModel reservation) async {
+  Future<bool> isMyFeedback() async {
     final user = await UserService().getCurrentUserModel();
-    return user!.uid == reservation.clientId;
+    return user!.uid == widget.feedback.userId;
     // return now.isBefore(threeMonthLimit) && reservation.canceledAt == null;
   }
 
