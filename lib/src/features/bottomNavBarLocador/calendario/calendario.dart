@@ -1,5 +1,9 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/minhas%20reservas/cancel_reservation_dialog.dart';
+import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/minhas%20reservas/minhas_reservas_widget.dart';
+import 'package:festou/src/features/loading_indicator.dart';
 import 'package:festou/src/features/register/space/space%20temporary/pages/new_space_register.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/features/space%20card/widgets/notificacoes_page.dart';
@@ -59,8 +63,10 @@ class _CalendarioState extends State<Calendario> {
     isLoading = true;
     // selectedSpaceReservations =
     //     await ReservaService().getReservationsBySpaceId(spaceId);
-    selectedSpaceReservations =
-        minhasReservas!.where((r) => r.spaceId == spaceId).toList();
+    selectedSpaceReservations = minhasReservas!
+        .where((r) => r.spaceId == spaceId)
+        .toList()
+      ..sort((a, b) => a.selectedDate.compareTo(b.selectedDate));
     if (selectedSpaceReservations == null) {
       log('selectedSpaceReservations null');
       return;
@@ -113,13 +119,13 @@ class _CalendarioState extends State<Calendario> {
     DateTime dayAfterTomorrow = today.add(const Duration(days: 2));
 
     return reservations.where((reservation) {
-      DateTime selectedDate =
-          reservation.selectedDate.toDate(); // Converte Timestamp para DateTime
+      if (reservation.canceledAt != null) return false;
+      DateTime selectedDate = reservation.selectedDate.toDate();
       DateTime selectedDateOnly = DateTime(
         selectedDate.year,
         selectedDate.month,
         selectedDate.day,
-      ); // Remove horas, minutos e segundos
+      );
 
       return selectedDateOnly.isAtSameMomentAs(today) ||
           selectedDateOnly.isAtSameMomentAs(tomorrow) ||
@@ -182,7 +188,7 @@ class _CalendarioState extends State<Calendario> {
         backgroundColor: const Color(0xfff8f8f8),
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CustomLoadingIndicator())
           : mySpaces != null && mySpaces!.isEmpty
               ? Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -254,6 +260,7 @@ class _CalendarioState extends State<Calendario> {
                         // padding: const EdgeInsets.all(20),
                         children: [
                           if (mySpaces != null && mySpaces!.isNotEmpty) ...[
+                            const SizedBox(height: 20),
                             const Text('Escolha o espaço'),
                             const SizedBox(height: 20),
                             ...mySpaces!.map((space) {
@@ -269,26 +276,31 @@ class _CalendarioState extends State<Calendario> {
                                 ],
                               );
                             }),
-                            const SizedBox(height: 30),
+                            const SizedBox(height: 20),
                             const Text('Calendário de reservas'),
+                            const SizedBox(height: 20),
+                            const Center(
+                              child: Text(
+                                'Reservas referentes ao espaço selecionado',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ),
                             if (selectedSpaceReservations != null) ...[
                               const SizedBox(height: 20),
                               CalendarioExpansioWidget(
                                 minhasReservas: selectedSpaceReservations!,
-                                title: 'Todas as reservas desse espaço',
+                                title: 'Reservas desse espaço',
                               ),
                             ],
-                            const SizedBox(height: 14),
-                            CalendarioExpansioWidget(
-                              minhasReservas: minhasReservas!,
-                              title: 'Todas as reservas',
-                            ),
                             const SizedBox(height: 14),
                             CalendarioExpansioWidget(
                               minhasReservas: minhasReservasProximas!,
                               title: 'Próximas reservas',
                               isNear: true,
                             ),
+                            const SizedBox(height: 50),
                           ]
                         ],
                       ),
@@ -439,6 +451,8 @@ class CalendarioExpansioWidget extends StatefulWidget {
 }
 
 class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
+  late List<SpaceWithReservation> reservationSpaces;
+
   String formatTime(int hour) {
     String hourStr = hour.toString().padLeft(2, '0');
     return '$hourStr:00h';
@@ -446,7 +460,7 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
 
   String formatDateTimestamp(Timestamp timestamp) {
     DateTime date = timestamp.toDate();
-    DateFormat formatter = DateFormat('d \'de\' MMMM \'de\' yyyy', 'pt_BR');
+    DateFormat formatter = DateFormat("d 'de' MMM. yyyy", 'pt_BR');
     return formatter.format(date);
   }
 
@@ -482,349 +496,456 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
     );
   }
 
-  // bool isDateInFuture(String dateStr) {
-  //   DateTime date = DateTime.parse(dateStr);
-  //   DateTime now = DateTime.now();
-  //   return date.isAfter(now);
-  // }
-
   bool isDateInFuture(Timestamp timestamp) {
-    DateTime date = timestamp.toDate(); // Converte o Timestamp para DateTime
+    DateTime date = timestamp.toDate();
     DateTime now = DateTime.now();
     return date.isAfter(now);
   }
 
+  Future<void> getMyReservations() async {
+    final reservas = await ReservaService().getReservationsByClientId();
+
+    List<SpaceWithReservation> updatedReservationSpaces = [];
+
+    for (final reserva in reservas) {
+      final space = await SpaceService().getSpaceById(reserva.spaceId);
+      if (space == null) continue;
+
+      updatedReservationSpaces
+          .add(SpaceWithReservation(space: space, reserva: reserva));
+    }
+
+    setState(() {
+      reservationSpaces = updatedReservationSpaces;
+    });
+  }
+
+  Future<void> cancelReservation(
+      ReservationModel reserva, String reason) async {
+    try {
+      // Atualiza a reserva para refletir o cancelamento
+      if (!mounted) return;
+      setState(() {
+        reserva.canceledAt = Timestamp.now();
+        reserva.reason = reason;
+      });
+
+      Messages.showSuccess('Reserva cancelada com sucesso!', context);
+    } catch (e) {
+      Messages.showError('Erro ao cancelar reserva: $e', context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 21),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: ExpansionTile(
-          collapsedBackgroundColor: Colors.white,
-          backgroundColor: Colors.white,
-          // clipBehavior: Clip.hardEdge,
-          collapsedShape: const RoundedRectangleBorder(
-            side: BorderSide.none,
-          ),
-          shape: const RoundedRectangleBorder(
-            side: BorderSide.none,
-          ),
-          childrenPadding: const EdgeInsets.symmetric(vertical: 10),
-          title: Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.center,
-            children: [
-              if (widget.isNear)
-                Positioned(
-                  left: 5,
-                  child: Image.asset(
-                    'lib/assets/images/icon_calendario_hora.png',
-                    height: 25,
-                  ),
-                ),
-              if (!widget.isNear)
-                Positioned(
-                  left: 2,
-                  child: Image.asset(
-                    'lib/assets/images/icon_calendar.png',
-                    height: 25,
-                  ),
-                ),
-              const SizedBox(width: 10),
-              Positioned(
-                left: 40,
-                child: Text(
-                  widget.title,
-                  style: const TextStyle(fontSize: 12, color: Colors.black),
-                ),
+    return Stack(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 21),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: ExpansionTile(
+              collapsedBackgroundColor: Colors.white,
+              backgroundColor: Colors.white,
+              // clipBehavior: Clip.hardEdge,
+              collapsedShape: const RoundedRectangleBorder(
+                side: BorderSide.none,
               ),
-            ],
-          ),
-          //todo:  pra prsquisar reservas, pesqquisar com base no nome do espaco, do cliente, e mais.
-          //todo: botao cancelar; check/close icon
-          children: widget.minhasReservas.map((reserva) {
-            bool eventInFuture = isDateInFuture(reserva.selectedFinalDate);
-            //getUserById(reserva.clientId);
-            final user = reserva.user;
-
-            return Container(
-              decoration: BoxDecoration(
-                color: eventInFuture ? null : const Color(0xffD4D4D4),
+              shape: const RoundedRectangleBorder(
+                side: BorderSide.none,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+              childrenPadding: const EdgeInsets.symmetric(vertical: 10),
+              title: Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.center,
                 children: [
-                  Container(
-                    color: Colors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 23, top: 11),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            formatTimestamp(reserva.createdAt)!,
-                            style: const TextStyle(
-                              color: Color(0xff4300B1),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 11,
-                          ),
-                        ],
+                  if (widget.isNear)
+                    Positioned(
+                      left: 5,
+                      child: Image.asset(
+                        'lib/assets/images/icon_calendario_hora.png',
+                        height: 25,
                       ),
                     ),
-                  ),
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Image.asset('lib/assets/images/background_confete.png'),
-                      if (reserva.canceledAt != null)
-                        Image.asset(
-                          'lib/assets/images/imagem_cancelado.png',
-                          height: getResponsiveWidth(context, 108),
-                        ),
-                      if (reserva.canceledAt == null)
-                        Image.asset(
-                          'lib/assets/images/imagem_confirmado.png',
-                          height: getResponsiveWidth(context, 90),
-                        ),
-                      decContainer(
-                        topPadding: 5,
-                        bottomPadding: 9,
-                        leftPadding: 23,
-                        rightPadding: 24,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                if (user != null && user.avatarUrl != '')
-                                  CircleAvatar(
-                                    backgroundImage: Image.network(
-                                      user.avatarUrl,
-                                      fit: BoxFit.cover,
-                                    ).image,
-                                    radius: 20,
-                                  ),
-                                if (user != null && user.avatarUrl.isEmpty)
-                                  CircleAvatar(
-                                    radius: 20,
-                                    child: user.name.isNotEmpty
-                                        ? Text(
-                                            user.name[0].toUpperCase(),
-                                            style:
-                                                const TextStyle(fontSize: 25),
-                                          )
-                                        : const Icon(
-                                            Icons.person,
-                                            size: 40,
-                                          ),
-                                  ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  user != null ? user.name : '',
-                                  style: const TextStyle(
-                                    fontSize: 11,
-                                  ),
-                                ),
-                                const Spacer(),
-                                if (reserva.canceledAt != null) ...[
-                                  GestureDetector(
-                                    onTap: () => showCancellationReasonDialog(
-                                        context, reserva.reason!),
-                                    child: Icon(
-                                      Icons.info,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 7,
-                                  ),
-                                ],
-                                decContainer(
-                                  onTap: eventInFuture
-                                      ? () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => ChatPage(
-                                                receiverID: reserva.locadorId,
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                      : null,
-                                  allPadding: 4,
-                                  radius: 100,
-                                  color: eventInFuture
-                                      ? const Color(0xffF3F3F3)
-                                      : const Color(0xff979797),
-                                  child: Icon(
-                                    Icons.chat_bubble,
-                                    size: 12,
-                                    color: eventInFuture
-                                        ? const Color(0xff4300B1)
-                                        : const Color(0xffD4D4D4),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 9,
-                            ),
-                            Text(
-                              'O evento ${eventInFuture ? "acontecerá" : "aconteceu"} em:',
-                              style: const TextStyle(
-                                fontSize: 11,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 9,
-                            ),
-                            Row(
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text.rich(
-                                      TextSpan(
-                                        text: 'Início às ',
-                                        style: const TextStyle(
-                                          fontSize: 10.5,
-                                        ),
-                                        children: [
-                                          TextSpan(
-                                            text:
-                                                formatTime(reserva.checkInTime),
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          const TextSpan(text: ' do dia '),
-                                          TextSpan(
-                                            text: formatDateTimestamp(
-                                                reserva.selectedDate),
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          const TextSpan(text: '.'),
-                                        ],
-                                      ),
-                                    ),
-                                    Text.rich(
-                                      TextSpan(
-                                        text: 'Término às ',
-                                        style: const TextStyle(
-                                          fontSize: 10.5,
-                                        ),
-                                        children: [
-                                          TextSpan(
-                                            text: formatTime(
-                                                reserva.checkOutTime),
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          const TextSpan(text: ' do dia '),
-                                          TextSpan(
-                                            text: formatDateTimestamp(
-                                                reserva.selectedFinalDate),
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          const TextSpan(text: '.'),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const Spacer(),
-                              ],
-                            )
-                          ],
-                        ),
+                  if (!widget.isNear)
+                    Positioned(
+                      left: 2,
+                      child: Image.asset(
+                        'lib/assets/images/icon_calendar.png',
+                        height: 25,
                       ),
-                      Positioned(
-                        right: 24,
-                        bottom: 9,
-                        child: Column(
-                          children: [
-                            if (eventInFuture)
-                              decContainer(
-                                topPadding: 5,
-                                bottomPadding: 5,
-                                leftPadding: 15,
-                                rightPadding: 15,
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Color(0xff9747FF),
-                                    Color(0xff4300B1),
-                                  ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                ),
-                                radius: 50,
-                                child: const Text(
-                                  'Cancelar',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 8,
-                                  ),
-                                ),
-                              ),
-                            const SizedBox(
-                              height: 4,
-                            ),
-                            decContainer(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ContratoAssinadoPage(
-                                      summaryData: null,
-                                      cupomModel: null,
-                                      html: reserva.contratoHtml,
-                                    ),
-                                  ),
-                                );
-                              },
-                              topPadding: 5,
-                              bottomPadding: 5,
-                              leftPadding: 15,
-                              rightPadding: 15,
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xff9747FF),
-                                  Color(0xff4300B1),
-                                ],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                              ),
-                              radius: 50,
-                              child: const Text(
-                                'Contrato',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 8,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                    ),
+                  const SizedBox(width: 10),
+                  Positioned(
+                    left: 40,
+                    child: Text(
+                      widget.title,
+                      style: const TextStyle(fontSize: 12, color: Colors.black),
+                    ),
                   ),
                 ],
               ),
-            );
-          }).toList(),
+              children: widget.minhasReservas.isEmpty
+                  ? [
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Center(
+                          child: Text(
+                            widget.isNear
+                                ? "Nenhuma reserva nos próximos 3 dias!"
+                                : "Sem reservas para esse espaço",
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ]
+                  : widget.minhasReservas.map((reserva) {
+                      bool eventInFuture =
+                          isDateInFuture(reserva.selectedFinalDate);
+                      final user = reserva.user;
+
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: eventInFuture && reserva.canceledAt == null
+                              ? null
+                              : const Color(0xffD4D4D4),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Container(
+                              color: Colors.white,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 8, top: 16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      formatTimestamp(reserva.createdAt)!,
+                                      style: const TextStyle(
+                                        color: Color(0xff4300B1),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 6,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Image.asset(
+                                    'lib/assets/images/background_confete.png'),
+                                if (reserva.canceledAt != null)
+                                  Image.asset(
+                                    'lib/assets/images/imagem_cancelado.png',
+                                    height: getResponsiveWidth(context, 115),
+                                  ),
+                                if (reserva.canceledAt == null)
+                                  Image.asset(
+                                    'lib/assets/images/imagem_confirmado.png',
+                                    height: getResponsiveWidth(context, 90),
+                                  ),
+                                decContainer(
+                                  topPadding: 10,
+                                  bottomPadding: 16,
+                                  leftPadding: 10,
+                                  rightPadding: 10,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          if (user != null &&
+                                              user.avatarUrl != '')
+                                            CircleAvatar(
+                                              backgroundImage: Image.network(
+                                                user.avatarUrl,
+                                                fit: BoxFit.cover,
+                                              ).image,
+                                              radius: 20,
+                                            ),
+                                          if (user != null &&
+                                              user.avatarUrl.isEmpty)
+                                            CircleAvatar(
+                                              radius: 20,
+                                              child: user.name.isNotEmpty
+                                                  ? Text(
+                                                      user.name[0]
+                                                          .toUpperCase(),
+                                                      style: const TextStyle(
+                                                          fontSize: 25),
+                                                    )
+                                                  : const Icon(
+                                                      Icons.person,
+                                                      size: 40,
+                                                    ),
+                                            ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(
+                                            user != null
+                                                ? (user.name.length > 28
+                                                    ? '${user.name.substring(0, 28)}...'
+                                                    : user.name)
+                                                : '',
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const Spacer(),
+                                          if (reserva.canceledAt != null) ...[
+                                            GestureDetector(
+                                              onTap: () =>
+                                                  showCancellationReasonDialog(
+                                                      context, reserva.reason!),
+                                              child: const Icon(
+                                                Icons.info,
+                                                size: 34,
+                                                color: Color.fromARGB(
+                                                    255, 43, 128, 255),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 7,
+                                            ),
+                                          ],
+                                          decContainer(
+                                            onTap: eventInFuture &&
+                                                    reserva.canceledAt == null
+                                                ? () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ChatPage(
+                                                          receiverID:
+                                                              reserva.locadorId,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
+                                                : null,
+                                            allPadding: 4,
+                                            radius: 100,
+                                            color: eventInFuture &&
+                                                    reserva.canceledAt == null
+                                                ? const Color(0xff4300B1)
+                                                : Colors.grey[600],
+                                            child: Icon(
+                                              Icons.chat_bubble,
+                                              size: 20,
+                                              color: eventInFuture &&
+                                                      reserva.canceledAt == null
+                                                  ? const Color(0XFFFFFFFF)
+                                                  : const Color(0xffD4D4D4),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 9,
+                                      ),
+                                      Text.rich(
+                                        TextSpan(
+                                          text:
+                                              'O evento ${reserva.canceledAt == null ? (eventInFuture ? "acontecerá" : "aconteceu") : "aconteceria"} em:',
+                                          style: const TextStyle(
+                                            fontSize: 11,
+                                          ),
+                                          children: [
+                                            TextSpan(
+                                              text: formatDateTimestamp(
+                                                  reserva.selectedFinalDate),
+                                              style: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 4,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const Text(
+                                                'Início às ',
+                                                style: TextStyle(
+                                                  fontSize: 11,
+                                                ),
+                                              ),
+                                              Text.rich(
+                                                TextSpan(
+                                                  text: formatTime(
+                                                      reserva.checkInTime),
+                                                  style: const TextStyle(
+                                                      fontSize: 11,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                  children: [
+                                                    const TextSpan(
+                                                        text: ' do dia '),
+                                                    TextSpan(
+                                                      text: formatDateTimestamp(
+                                                          reserva.selectedDate),
+                                                      style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    const TextSpan(text: '.'),
+                                                  ],
+                                                ),
+                                              ),
+                                              const Text(
+                                                'Término às ',
+                                                style: TextStyle(
+                                                  fontSize: 11,
+                                                ),
+                                              ),
+                                              Text.rich(
+                                                TextSpan(
+                                                  text: formatTime(
+                                                      reserva.checkOutTime),
+                                                  style: const TextStyle(
+                                                      fontSize: 11,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                  children: [
+                                                    const TextSpan(
+                                                        text: ' do dia '),
+                                                    TextSpan(
+                                                      text: formatDateTimestamp(
+                                                          reserva
+                                                              .selectedFinalDate),
+                                                      style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    const TextSpan(text: '.'),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const Spacer(),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Positioned(
+                                  right: 24,
+                                  bottom: 9,
+                                  child: Column(
+                                    children: [
+                                      if (eventInFuture &&
+                                          reserva.canceledAt == null)
+                                        decContainer(
+                                          onTap: eventInFuture &&
+                                                  reserva.canceledAt == null
+                                              ? () async {
+                                                  final reason =
+                                                      await showDialog<String?>(
+                                                    context: context,
+                                                    barrierDismissible:
+                                                        false, // Impede que o usuário feche sem escolher
+                                                    builder: (context) =>
+                                                        CancelReservationDialog(
+                                                      reservation: reserva,
+                                                    ),
+                                                  );
+
+                                                  if (reason != null) {
+                                                    await cancelReservation(
+                                                        reserva, reason);
+                                                  }
+                                                }
+                                              : null,
+                                          topPadding: 8,
+                                          bottomPadding: 8,
+                                          leftPadding: 16,
+                                          rightPadding: 16,
+                                          color: Colors.red,
+                                          radius: 50,
+                                          child: const Text(
+                                            'Cancelar',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 11,
+                                            ),
+                                          ),
+                                        ),
+                                      const SizedBox(
+                                        height: 4,
+                                      ),
+                                      decContainer(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ContratoAssinadoPage(
+                                                summaryData: null,
+                                                cupomModel: null,
+                                                html: reserva.contratoHtml,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        topPadding: 8,
+                                        bottomPadding: 8,
+                                        leftPadding: 16,
+                                        rightPadding: 16,
+                                        gradient: const LinearGradient(
+                                          colors: [
+                                            Color(0xff9747FF),
+                                            Color(0xff4300B1),
+                                          ],
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                        ),
+                                        radius: 50,
+                                        child: const Text(
+                                          'Contrato',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 11,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }
