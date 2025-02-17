@@ -1,25 +1,36 @@
+import 'package:festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/features/register/space/space%20temporary/pages/tipo_espaco.dart';
 import 'package:festou/src/helpers/helpers.dart';
 import 'package:festou/src/helpers/keys.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class NewSpaceRegister extends StatefulWidget {
+class NewSpaceRegister extends ConsumerStatefulWidget {
   const NewSpaceRegister({super.key});
 
   @override
-  State<NewSpaceRegister> createState() => _NewSpaceRegisterState();
+  ConsumerState<NewSpaceRegister> createState() => _NewSpaceRegisterState();
 }
 
-class _NewSpaceRegisterState extends State<NewSpaceRegister> {
+class _NewSpaceRegisterState extends ConsumerState<NewSpaceRegister> {
+  @override
+  void initState() {
+    super.initState();
+    final vm = ref.read(newSpaceRegisterVmProvider.notifier);
+    // ignore: unused_local_variable
+    final state = vm.getState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
+    final newSpaceRegister = ref.watch(newSpaceRegisterVmProvider.notifier);
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
           padding: const EdgeInsets.only(left: 18.0),
           child: Container(
             decoration: BoxDecoration(
-              //color: Colors.white.withOpacity(0.7),
               color: Colors.white,
               shape: BoxShape.circle,
               boxShadow: [
@@ -93,7 +104,7 @@ class _NewSpaceRegisterState extends State<NewSpaceRegister> {
             ],
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 69, vertical: 40),
+            padding: const EdgeInsets.symmetric(horizontal: 38.0, vertical: 20),
             child: InkWell(
               onTap: () => Navigator.push(
                 context,

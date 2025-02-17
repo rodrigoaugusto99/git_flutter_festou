@@ -339,7 +339,7 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                               ),
                               child: Center(
                                 child: Padding(
-                                  padding: const EdgeInsets.all(7.0),
+                                  padding: const EdgeInsets.all(4.0),
                                   child: Text(
                                     double.parse(
                                             widget.feedback.rating.toString())
@@ -347,7 +347,7 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 10,
+                                      fontSize: 12,
                                     ),
                                   ),
                                 ),

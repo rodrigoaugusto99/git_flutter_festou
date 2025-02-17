@@ -309,7 +309,16 @@ class _RevisaoState extends ConsumerState<Revisao> {
                   const SizedBox(
                     height: 30,
                   ),
-
+                ],
+              ),
+            ),
+          ),
+          bottomNavigationBar: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 38.0, vertical: 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
                   GestureDetector(
                     key: Keys.k10ScreenButton,
                     onTap: () async {
@@ -393,13 +402,8 @@ class _RevisaoState extends ConsumerState<Revisao> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 30,
-                  ),
                 ],
-              ),
-            ),
-          ),
+              )),
         ),
         if (isRegistering)
           decContainer(
