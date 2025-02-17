@@ -104,7 +104,7 @@ class _CalendarPageState extends State<CalendarPage> {
           if (selectedTime < adjustedCheckInTime) {
             selectedTime += 24;
           }
-          if (selectedTime >= adjustedCheckInTime + 4) {
+          if (selectedTime >= adjustedCheckInTime + 3) {
             checkOutTime = selectedTime % 24;
           }
         }
@@ -464,7 +464,7 @@ class _CalendarPageState extends State<CalendarPage> {
           _buildTimeSelectionRowCheckOut(
             checkoutStringEndHour: checkoutStringEndHour,
             show24h: show24h,
-            startHour: (checkInTime! + 4) % 24,
+            startHour: (checkInTime! + 3) % 24,
             endHour: checkoutEndHour,
             unavailableHoursCurrentDay: unavailableHoursCheckout['currentDay']!,
             unavailableHoursNextDay: unavailableHoursCheckout['nextDay']!,
@@ -535,11 +535,11 @@ class _CalendarPageState extends State<CalendarPage> {
 
                   // Verificação com ajuste temporário para checkOutTime
                   int adjustedCheckOutTime = checkOutTime!;
-                  if (checkOutTime! >= 0 && checkOutTime! <= 4) {
-                    adjustedCheckOutTime += 24;
-                  }
+                  //if (checkOutTime! >= 0 && checkOutTime! <= 4) {
+                  adjustedCheckOutTime += 24;
+                  //}
 
-                  if ((adjustedCheckOutTime - checkInTime!) < 4) {
+                  if ((adjustedCheckOutTime - checkInTime!) < 3) {
                     setState(() {
                       showWarning = true;
                     });
