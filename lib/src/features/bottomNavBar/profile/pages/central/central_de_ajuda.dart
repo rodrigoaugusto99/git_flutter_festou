@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:festou/src/helpers/helpers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -183,6 +184,7 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
         );
         return;
       }
+      await showLoading(context);
 
       // Obtém o próximo ID do ticket
       String ticketId = await _generateTicketId();
@@ -221,9 +223,12 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
         _images = [];
       });
     } catch (e) {
+      setState(() {});
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro ao enviar chamado: $e')),
       );
+    } finally {
+      dismissLoading(context);
     }
   }
 
