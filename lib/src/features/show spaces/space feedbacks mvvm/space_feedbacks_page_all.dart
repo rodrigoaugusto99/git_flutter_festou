@@ -28,83 +28,63 @@ var selectedOptionName = 'Mais recentes';
 class _SpaceFeedbacksPageAllState extends ConsumerState<SpaceFeedbacksPageAll> {
   @override
   Widget build(BuildContext context) {
-    final spaceFeedbacks =
-        ref.watch(spaceFeedbacksVmProvider(widget.space, selectedOption));
-
-    return spaceFeedbacks.when(
-      data: (SpaceFeedbacksState data) {
-        if (widget.feedbacks.isEmpty) {
-          return const SizedBox();
-        }
-        return Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            foregroundColor: Colors.black,
-            backgroundColor: Colors.white,
-            elevation: 0,
-          ),
-          body: Column(
-            children: [
-              Container(
-                margin: const EdgeInsets.all(10.0),
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '${widget.feedbacks.length} comentários',
-                      style: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10.0, vertical: 2),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: InkWell(
-                        onTap: () {
-                          _showSortOptionsDialog();
-                        },
-                        child: Row(
-                          children: [
-                            Text(
-                              selectedOptionName,
-                              style: const TextStyle(fontSize: 12),
-                            ),
-                            const Icon(
-                              Icons.arrow_drop_down,
-                              size: 16,
-                            ),
-                          ],
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        foregroundColor: Colors.black,
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
+      body: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '${widget.feedbacks.length} comentários',
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10.0, vertical: 2),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      _showSortOptionsDialog();
+                    },
+                    child: Row(
+                      children: [
+                        Text(
+                          selectedOptionName,
+                          style: const TextStyle(fontSize: 12),
                         ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              Expanded(
-                child: NewFeedbackWidgetAll(
-                  data: data,
-                  spaces: spaceFeedbacks,
-                  feedbacks: widget.feedbacks,
-                ),
-              ),
-            ],
+                        const Icon(
+                          Icons.arrow_drop_down,
+                          size: 16,
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
-        );
-      },
-      error: (Object error, StackTrace stackTrace) {
-        return const Stack(children: [
-          Center(child: Icon(Icons.error)),
-        ]);
-      },
-      loading: () {
-        return const Stack(children: [
-          Center(child: CustomLoadingIndicator()),
-        ]);
-      },
+          Expanded(
+            child: NewFeedbackWidgetAll(
+              //data: data,
+
+              feedbacks: widget.feedbacks,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
