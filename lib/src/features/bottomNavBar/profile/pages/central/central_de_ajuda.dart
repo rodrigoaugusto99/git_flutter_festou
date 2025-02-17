@@ -73,7 +73,7 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
         onTapOutside: (v) {
           focusNode.unfocus(); // Primeiro desfoca o campo
 
-          Future.delayed(const Duration(milliseconds: 200), () {
+          Future.delayed(const Duration(milliseconds: 300), () {
             filteredQuestions.clear(); // Limpa a lista após o desfocar
             setState(() {}); // Atualiza a interface uma única vez
           });
@@ -1198,10 +1198,11 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                     FutureBuilder<List<Map<String, dynamic>>>(
                       future: fetchUserTickets(),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(child: CustomLoadingIndicator());
-                        } else if (snapshot.hasError) {
+                        // if (snapshot.connectionState ==
+                        //     ConnectionState.waiting) {
+                        //   return const Center(child: CustomLoadingIndicator());
+                        // }
+                        if (snapshot.hasError) {
                           return const Center(
                               child: Text('Erro ao carregar os tickets.'));
                         } else if (!snapshot.hasData ||
