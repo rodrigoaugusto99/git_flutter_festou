@@ -73,10 +73,8 @@ class _FeedNoticiasState extends State<FeedNoticias> {
               itemCount: posts.length,
               itemBuilder: (context, index) {
                 final post = posts[index];
-                log(index.toString(), name: 'index');
-                log(posts.length.toString(), name: 'posts.lentgth');
+
                 if (index == posts.length - 1 /*&& posts.length >= 10*/) {
-                  log('entroui');
                   return Row(
                     children: [
                       SizedBox(

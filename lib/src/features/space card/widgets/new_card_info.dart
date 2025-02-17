@@ -159,6 +159,11 @@ class _NewCardInfoState extends State<NewCardInfo>
         // Verificar se estamos dentro dos 90 dias ou se a reserva não foi cancelada
         return now.isBefore(threeMonthLimit) && reservation.canceledAt == null;
       }).toList();
+      log('getValidReservations');
+      for (final reservation in validReservations) {
+        log('reservation.id: ${reservation.id}', level: 1000);
+        log('reservation.hasReview: ${reservation.hasReview}');
+      }
 
       return validReservations;
     } catch (e) {
@@ -179,7 +184,7 @@ class _NewCardInfoState extends State<NewCardInfo>
 
   List<String> selectedServices = [];
 
-  double customHeight = 510;
+  //double customHeight = 510;
 
   SpaceModel? space;
   List<AvaliacoesModel>? feedbacks;
@@ -226,16 +231,16 @@ class _NewCardInfoState extends State<NewCardInfo>
     });
     tabController = TabController(length: 3, vsync: this);
     tabController.addListener(() {
-      log(tabController.index.toString());
-      if (tabController.index == 2) {
-        if (feedbacks!.length == 2) {
-          customHeight = 660;
-        } else if (feedbacks!.length == 3) {
-          customHeight = 900;
-        }
-      } else {
-        customHeight = 510;
-      }
+      // log(tabController.index.toString());
+      // if (tabController.index == 2) {
+      //   if (feedbacks!.length == 2) {
+      //     customHeight = 660;
+      //   } else if (feedbacks!.length == 3) {
+      //     customHeight = 900;
+      //   }
+      // } else {
+      //   customHeight = 510;
+      // }
       setState(() {});
     });
     for (var video in space!.videosUrl) {
@@ -254,26 +259,37 @@ class _NewCardInfoState extends State<NewCardInfo>
     await feedbackService.setSpaceFeedbacksListener(widget.spaceId,
         (newFeedbacks) async {
       if (!mounted) return;
-      for (var feedback in newFeedbacks) {
-        log('feedback.id: ${feedback.id}');
+      log('feedbacks crus');
+      for (var feedback in feedbacks!) {
+        log('feedback.id: ${feedback.content}');
       }
+
+      await Future.delayed(const Duration(milliseconds: 700));
       await checkUserReservation();
       // feedbacks = newFeedbacks;
       // feedbacks!.removeWhere((f) => f.deletedAt != null);
       feedbacks = await feedbackService.getFeedbacksOrdered(widget.spaceId);
       feedbacks!.removeWhere((f) => f.deletedAt != null);
       setState(() {});
+      log('feedbacks aai papi');
+      for (var feedback in feedbacks!) {
+        log('feedback.id: ${feedback.content}');
+      }
+      // await checkUserReservation();
+      // feedbacks = feedbacks;
+      // if (!mounted) return;
+      // setState(() {});
     });
-    await reservaService.setReservationListener(
-      widget.spaceId,
-      FirebaseAuth.instance.currentUser!.uid,
-      (reservation) {
-        if (!mounted) return;
-        setState(() {
-          canLeaveReview = reservation != null; // Atualiza UI dinamicamente
-        });
-      },
-    );
+    // await reservaService.setReservationListener(
+    //   widget.spaceId,
+    //   FirebaseAuth.instance.currentUser!.uid,
+    //   (reservation) {
+    //     if (!mounted) return;
+    //     setState(() {
+    //       canLeaveReview = reservation != null; // Atualiza UI dinamicamente
+    //     });
+    //   },
+    // );
   }
 
   bool isEditing = false;
@@ -816,6 +832,10 @@ class _NewCardInfoState extends State<NewCardInfo>
                     feedback: feedback,
                     onDelete: () async {
                       // await refreshFeedbacks();
+                      feedbacks = await feedbackService
+                          .getFeedbacksOrdered(widget.spaceId);
+                      feedbacks!.removeWhere((f) => f.deletedAt != null);
+                      setState(() {});
                     },
                   );
                 },

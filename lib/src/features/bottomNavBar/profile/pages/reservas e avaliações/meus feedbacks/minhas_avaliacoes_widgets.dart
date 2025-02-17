@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:festou/src/services/user_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -128,6 +130,28 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
   late AvaliacoesService feedbackService;
 
   Future<void> _loadReservation() async {
+    // try {
+    //   final reservations = await ReservaService()
+    //       .getReservationsBySpaceId(widget.feedback.spaceId);
+
+    //   ReservationModel? latestValidReservation;
+
+    //   for (var reservation in reservations) {
+    //     if (reservation.canceledAt == null && reservation.hasReview == false) {
+    //       latestValidReservation = reservation;
+    //     }
+    //   }
+
+    //   if (latestValidReservation != null) {
+    //     setState(() async {
+    //       reservation = latestValidReservation;
+    //       canShowButtons = _validateReservation(latestValidReservation!);
+    //       canShowButtons = await isMyFeedback();
+    //     });
+    //   }
+    // } catch (e) {
+    //   return;
+    // }
     try {
       final reservations = await ReservaService()
           .getReservationsBySpaceId(widget.feedback.spaceId);
@@ -141,43 +165,49 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
       }
 
       if (latestValidReservation != null) {
-        setState(() async {
-          reservation = latestValidReservation;
-          canShowButtons = _validateReservation(latestValidReservation!);
-          canShowButtons = await isMyFeedback();
-        });
+        reservation = latestValidReservation;
       }
     } catch (e) {
       return;
     }
+
+    canShowButtons = await isMyFeedback();
+    setState(() {});
   }
 
   Future<bool> isMyFeedback() async {
     final user = await UserService().getCurrentUserModel();
-    return user!.uid == widget.feedback.userId;
+    log("user!.uid == widget.feedback.userId: ${user!.uid == widget.feedback.userId}");
+
+    return user.uid == widget.feedback.userId;
     // return now.isBefore(threeMonthLimit) && reservation.canceledAt == null;
   }
 
-  bool _validateReservation(ReservationModel reservation) {
-    final DateTime now = DateTime.now();
-    final DateTime threeMonthLimit;
+  // bool _validateReservation(ReservationModel reservation) {
+  //   final DateTime now = DateTime.now();
+  //   final DateTime threeMonthLimit;
 
-    DateTime selectedFinalDate;
+  //   DateTime selectedFinalDate;
 
-    selectedFinalDate = (reservation.selectedFinalDate).toDate();
-    threeMonthLimit = selectedFinalDate.add(const Duration(days: 90));
+  //   selectedFinalDate = (reservation.selectedFinalDate).toDate();
+  //   threeMonthLimit = selectedFinalDate.add(const Duration(days: 90));
 
-    return now.isBefore(threeMonthLimit) && reservation.canceledAt == null;
-  }
+  //   return now.isBefore(threeMonthLimit) && reservation.canceledAt == null;
+  // }
 
   @override
   void initState() {
     super.initState();
     feedbackService = AvaliacoesService();
     myFeedback = widget.feedback;
-    _checkUserReaction();
-    _loadReservation();
-    getSpace();
+    init();
+  }
+
+  void init() async {
+    await _checkUserReaction();
+    await _loadReservation();
+    await getSpace();
+    setState(() {});
   }
 
   SpaceModel? space;
@@ -197,10 +227,10 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
     });
   }
 
-  updateFeedback() async {
-    myFeedback = await AvaliacoesService().getFeedbackById(widget.feedback.id);
-    _checkUserReaction();
-  }
+  // updateFeedback() async {
+  //   myFeedback = await AvaliacoesService().getFeedbackById(widget.feedback.id);
+
+  // }
 
   Future<void> showDeleteConfirmationDialog(
       BuildContext context, Function onConfirm) async {
@@ -233,7 +263,9 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
 
   @override
   Widget build(BuildContext context) {
-    return space == null || myFeedback == null
+    log('myFeedback!.content: ${myFeedback!.content}');
+    log('widget.feedback.content: ${widget.feedback.content}');
+    return space == null
         ? const SizedBox()
         : Column(
             children: [
@@ -260,15 +292,15 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (myFeedback!.avatar == '')
+                          if (widget.feedback.avatar == '')
                             const CircleAvatar(
                               radius: 23,
                               child: Icon(Icons.person),
                             ),
-                          if (myFeedback!.avatar != '')
+                          if (widget.feedback.avatar != '')
                             CircleAvatar(
                               backgroundImage: Image.network(
-                                myFeedback!.avatar,
+                                widget.feedback.avatar,
                                 fit: BoxFit.cover,
                               ).image,
                               radius: 23,
@@ -278,7 +310,7 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                myFeedback!.userName,
+                                widget.feedback.userName,
                                 style: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
@@ -286,7 +318,7 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                                 ),
                               ),
                               Text(
-                                myFeedback!.date,
+                                widget.feedback.date,
                                 style: const TextStyle(
                                   fontSize: 10,
                                   color: Color(0xff5E5E5E),
@@ -301,15 +333,16 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
                                 color: _getColor(
-                                  double.parse(
-                                      myFeedback!.rating.toStringAsFixed(1)),
+                                  double.parse(widget.feedback.rating
+                                      .toStringAsFixed(1)),
                                 ),
                               ),
                               child: Center(
                                 child: Padding(
                                   padding: const EdgeInsets.all(7.0),
                                   child: Text(
-                                    double.parse(myFeedback!.rating.toString())
+                                    double.parse(
+                                            widget.feedback.rating.toString())
                                         .toStringAsFixed(1),
                                     style: const TextStyle(
                                       color: Colors.white,
@@ -346,15 +379,16 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                           ),
                         ),
                       const SizedBox(height: 17),
-                      Text(myFeedback!.content.toString()),
+                      Text(widget.feedback.content.toString()),
                       const SizedBox(height: 17),
                       Row(
                         children: [
                           GestureDetector(
                             onTap: () async {
                               await feedbackService
-                                  .toggleLikeFeedback(myFeedback!.id);
-                              updateFeedback();
+                                  .toggleLikeFeedback(widget.feedback.id);
+                              // updateFeedback();
+                              _checkUserReaction();
                             },
                             child: Image.asset(
                               'lib/assets/images/icon_like.png',
@@ -363,13 +397,14 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                             ),
                           ),
                           const SizedBox(width: 3),
-                          Text('(${myFeedback!.likes.length})'),
+                          Text('(${widget.feedback.likes.length})'),
                           const SizedBox(width: 20),
                           GestureDetector(
                             onTap: () async {
                               await feedbackService
-                                  .toggleDislikeFeedback(myFeedback!.id);
-                              updateFeedback();
+                                  .toggleDislikeFeedback(widget.feedback.id);
+                              // updateFeedback();
+                              _checkUserReaction();
                             },
                             child: Image.asset(
                               'lib/assets/images/icon_dislike.png',
@@ -378,7 +413,7 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                             ),
                           ),
                           const SizedBox(width: 3),
-                          Text('(${myFeedback!.dislikes.length})'),
+                          Text('(${widget.feedback.dislikes.length})'),
                           const Spacer(),
                           if (canShowButtons)
                             GestureDetector(
@@ -390,8 +425,8 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                                     return Dialog(
                                       child: AvaliacoesPage(
                                         space: space!,
-                                        feedback:
-                                            myFeedback, // Passando a avaliação existente
+                                        feedback: widget
+                                            .feedback, // Passando a avaliação existente
                                       ),
                                     );
                                   },

@@ -150,30 +150,30 @@ class _RatingViewState extends ConsumerState<AvaliacoesPage> {
                 onPressed: _canConfirm
                     ? () async {
                         AvaliacoesModel updatedFeedback;
-                        User? user = FirebaseAuth.instance.currentUser;
-                        String? reservationId = await getReservationDocumentId(
-                          widget.space.spaceId,
-                          user!.uid,
-                        );
+                        // User? user = FirebaseAuth.instance.currentUser;
+                        // String? reservationId = await getReservationDocumentId(
+                        //   widget.space.spaceId,
+                        //   user!.uid,
+                        // );
 
                         if (widget.feedback == null) {
                           // Criando novo feedback
                           await feedbackRegisterVm.register(
                             spaceId: widget.space.spaceId,
-                            reservationId: reservationId!,
+                            reservationId: widget.reservation!.id!,
                             rating: starRatingIndex,
                             content: contentController.text,
                           );
 
                           await ReservaService()
-                              .updateHasReview(reservationId, true);
+                              .updateHasReview(widget.reservation!.id!, true);
 
                           updatedFeedback = AvaliacoesModel(
                             id: '', // O ID será gerado pelo Firestore
                             spaceId: widget.space.spaceId,
                             userId:
                                 '', // O ID do usuário pode ser recuperado dentro do ViewModel
-                            reservationId: reservationId,
+                            reservationId: widget.reservation!.id!,
                             rating: starRatingIndex,
                             content: contentController.text,
                             userName:
@@ -186,11 +186,16 @@ class _RatingViewState extends ConsumerState<AvaliacoesPage> {
                             deletedAt: null,
                           );
                         } else {
+                          // final docSnapshot = await FirebaseFirestore.instance
+                          //     .collection('reservations')
+                          //     .doc(widget.feedback!.reservationId)
+                          //     .get();
+
                           // Atualizando feedback existente
                           await feedbackRegisterVm.updateFeedback(
                             feedbackId: widget.feedback!.id,
                             spaceId: widget.space.spaceId,
-                            reservationId: reservationId!,
+                            reservationId: widget.feedback!.reservationId,
                             rating: starRatingIndex,
                             content: contentController.text,
                           );
