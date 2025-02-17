@@ -5,14 +5,10 @@ import 'package:festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space
 import 'package:intl/intl.dart';
 
 class NewFeedbackWidgetAll extends StatefulWidget {
-  final SpaceFeedbacksState data;
-  final AsyncValue spaces;
   final List<AvaliacoesModel> feedbacks;
 
   const NewFeedbackWidgetAll({
     super.key,
-    required this.data,
-    required this.spaces,
     required this.feedbacks,
   });
 

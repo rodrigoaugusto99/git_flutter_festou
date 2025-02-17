@@ -58,7 +58,7 @@ class _ContratoAssinadoPageState extends State<ContratoAssinadoPage> {
         ),
         centerTitle: true,
         title: const Text(
-          'Contrato assinado',
+          'Contrato',
           style: TextStyle(
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),

@@ -220,7 +220,10 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                 height: 8,
               ),
               GestureDetector(
-                onTap: () => FirebaseAuth.instance.signOut(),
+                onTap: () async {
+                  await FirebaseAuth.instance.signOut();
+                  Navigator.pushReplacementNamed(context, '/login');
+                },
                 child: Container(
                     alignment: Alignment.center,
                     height: 35,

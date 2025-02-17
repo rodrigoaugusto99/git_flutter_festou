@@ -341,17 +341,18 @@ class AllPostsWidget extends StatelessWidget {
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
+          color: Colors.red,
           borderRadius: BorderRadius.circular(10),
         ),
-        width: 174,
-        height: 110,
+        //width: 174,
+        // height: 110,
         child: Stack(
+          fit: StackFit.expand,
           children: [
             ClipRRect(
               //clipBehavior: Clip.none,
               borderRadius: BorderRadius.circular(10),
               child: Image.network(
-                height: 250,
                 postModel.coverPhoto,
                 fit: BoxFit.cover,
               ),

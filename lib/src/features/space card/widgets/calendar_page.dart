@@ -74,18 +74,21 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   bool _isDateSelectable(DateTime day) {
-    bool hasAnyDayRestriction = widget.space.days.monday != null ||
-        widget.space.days.tuesday != null ||
-        widget.space.days.wednesday != null ||
-        widget.space.days.thursday != null ||
-        widget.space.days.friday != null ||
-        widget.space.days.saturday != null ||
-        widget.space.days.sunday != null;
+    // Verifica se todos os dias da semana estão como null
+    bool allDaysAreNull = widget.space.days.monday == null &&
+        widget.space.days.tuesday == null &&
+        widget.space.days.wednesday == null &&
+        widget.space.days.thursday == null &&
+        widget.space.days.friday == null &&
+        widget.space.days.saturday == null &&
+        widget.space.days.sunday == null;
 
-    if (!hasAnyDayRestriction) {
-      return !day.difference(DateTime.now()).isNegative;
+    // Se todos os dias forem null, nenhum dia é selecionável
+    if (allDaysAreNull) {
+      return false;
     }
 
+    // Verifica se o dia específico tem horários disponíveis
     Hours? dayHours = _getDayHours(day);
     return dayHours != null && !day.difference(DateTime.now()).isNegative;
   }
@@ -101,7 +104,11 @@ class _CalendarPageState extends State<CalendarPage> {
           if (selectedTime < adjustedCheckInTime) {
             selectedTime += 24;
           }
-          if (selectedTime >= adjustedCheckInTime + 4) {
+          if (widget.isIndisponibilizar) {
+            checkOutTime = selectedTime % 24;
+            return;
+          }
+          if (selectedTime >= adjustedCheckInTime + 3) {
             checkOutTime = selectedTime % 24;
           }
         }
@@ -461,7 +468,9 @@ class _CalendarPageState extends State<CalendarPage> {
           _buildTimeSelectionRowCheckOut(
             checkoutStringEndHour: checkoutStringEndHour,
             show24h: show24h,
-            startHour: (checkInTime! + 4) % 24,
+            startHour: widget.isIndisponibilizar
+                ? checkInTime! % 24
+                : (checkInTime! + 3) % 24,
             endHour: checkoutEndHour,
             unavailableHoursCurrentDay: unavailableHoursCheckout['currentDay']!,
             unavailableHoursNextDay: unavailableHoursCheckout['nextDay']!,
@@ -532,11 +541,11 @@ class _CalendarPageState extends State<CalendarPage> {
 
                   // Verificação com ajuste temporário para checkOutTime
                   int adjustedCheckOutTime = checkOutTime!;
-                  if (checkOutTime! >= 0 && checkOutTime! <= 4) {
-                    adjustedCheckOutTime += 24;
-                  }
+                  //if (checkOutTime! >= 0 && checkOutTime! <= 4) {
+                  adjustedCheckOutTime += 24;
+                  //}
 
-                  if ((adjustedCheckOutTime - checkInTime!) < 4) {
+                  if ((adjustedCheckOutTime - checkInTime!) < 3) {
                     setState(() {
                       showWarning = true;
                     });
@@ -679,12 +688,14 @@ class _CalendarPageState extends State<CalendarPage> {
           ),
           if (_showAnimation)
             Positioned.fill(
-              child: Center(
-                child: Lottie.asset(
-                  'lib/assets/animations/confetti_explosion.json',
-                  width: 500,
-                  height: 500,
-                  repeat: false,
+              child: IgnorePointer(
+                child: Center(
+                  child: Lottie.asset(
+                    'lib/assets/animations/confetti_explosion.json',
+                    width: 500,
+                    height: 500,
+                    repeat: false,
+                  ),
                 ),
               ),
             ),
@@ -756,29 +767,36 @@ class _CalendarPageState extends State<CalendarPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Selecione o horário',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        if (widget.isIndisponibilizar)
+          const Text(
+            'Selecione o horário para indisponibilizar',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        if (!widget.isIndisponibilizar)
+          const Text(
+            'Selecione o horário',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
         const SizedBox(height: 14),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (showWarning)
-              const Icon(Icons.warning, color: Colors.red, size: 22),
-            const SizedBox(width: 5),
-            Text(
-              'Tempo mínimo de locação: 4h',
-              style: TextStyle(
-                fontSize: 12,
-                color: !showWarning ? Colors.black : Colors.red,
+        if (!widget.isIndisponibilizar)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (showWarning)
+                const Icon(Icons.warning, color: Colors.red, size: 22),
+              const SizedBox(width: 5),
+              Text(
+                'Tempo mínimo de locação: 4h',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: !showWarning ? Colors.black : Colors.red,
+                ),
               ),
-            ),
-            const SizedBox(width: 5),
-            if (showWarning)
-              const Icon(Icons.warning, color: Colors.red, size: 22),
-          ],
-        ),
+              const SizedBox(width: 5),
+              if (showWarning)
+                const Icon(Icons.warning, color: Colors.red, size: 22),
+            ],
+          ),
         const SizedBox(height: 14),
       ],
     );

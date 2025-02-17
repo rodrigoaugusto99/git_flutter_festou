@@ -73,7 +73,7 @@ class _MyFavoriteSpacePageState extends State<MyFavoriteSpacePage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              const NotificacoesPage(locador: true),
+                              const NotificacoesPage(locador: false),
                         ),
                       ),
                       child: const Icon(

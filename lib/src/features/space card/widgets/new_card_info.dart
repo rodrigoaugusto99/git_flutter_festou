@@ -166,14 +166,14 @@ class _NewCardInfoState extends State<NewCardInfo>
     }
   }
 
-  Future<void> refreshFeedbacks() async {
-    if (!mounted) return;
-    List<AvaliacoesModel> updatedFeedbacks = await AvaliacoesService()
-        .getMyFeedbacks(FirebaseAuth.instance.currentUser!.uid);
-    setState(() {
-      feedbacks = updatedFeedbacks;
-    });
-  }
+  // Future<void> refreshFeedbacks() async {
+  //   if (!mounted) return;
+  //   List<AvaliacoesModel> updatedFeedbacks = await AvaliacoesService()
+  //       .getMyFeedbacks(FirebaseAuth.instance.currentUser!.uid);
+  //   setState(() {
+  //     feedbacks = updatedFeedbacks;
+  //   });
+  // }
 
   UserModel? user;
 
@@ -252,12 +252,17 @@ class _NewCardInfoState extends State<NewCardInfo>
       });
     });
     await feedbackService.setSpaceFeedbacksListener(widget.spaceId,
-        (newFeedbacks) {
+        (newFeedbacks) async {
       if (!mounted) return;
-      setState(() {
-        feedbacks = newFeedbacks;
-        feedbacks!.removeWhere((f) => f.deletedAt != null);
-      });
+      for (var feedback in newFeedbacks) {
+        log('feedback.id: ${feedback.id}');
+      }
+      await checkUserReservation();
+      // feedbacks = newFeedbacks;
+      // feedbacks!.removeWhere((f) => f.deletedAt != null);
+      feedbacks = await feedbackService.getFeedbacksOrdered(widget.spaceId);
+      feedbacks!.removeWhere((f) => f.deletedAt != null);
+      setState(() {});
     });
     await reservaService.setReservationListener(
       widget.spaceId,
@@ -810,7 +815,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                   return AvaliacoesItem(
                     feedback: feedback,
                     onDelete: () async {
-                      await refreshFeedbacks();
+                      // await refreshFeedbacks();
                     },
                   );
                 },

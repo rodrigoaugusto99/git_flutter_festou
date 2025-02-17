@@ -1520,7 +1520,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Contrato assinado',
+                              'Contrato',
                               style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
