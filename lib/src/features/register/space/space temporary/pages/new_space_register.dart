@@ -1,25 +1,36 @@
+import 'package:festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/features/register/space/space%20temporary/pages/tipo_espaco.dart';
 import 'package:festou/src/helpers/helpers.dart';
 import 'package:festou/src/helpers/keys.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class NewSpaceRegister extends StatefulWidget {
+class NewSpaceRegister extends ConsumerStatefulWidget {
   const NewSpaceRegister({super.key});
 
   @override
-  State<NewSpaceRegister> createState() => _NewSpaceRegisterState();
+  ConsumerState<NewSpaceRegister> createState() => _NewSpaceRegisterState();
 }
 
-class _NewSpaceRegisterState extends State<NewSpaceRegister> {
+class _NewSpaceRegisterState extends ConsumerState<NewSpaceRegister> {
+  @override
+  void initState() {
+    super.initState();
+    final vm = ref.read(newSpaceRegisterVmProvider.notifier);
+    // ignore: unused_local_variable
+    final state = vm.getState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
+    final newSpaceRegister = ref.watch(newSpaceRegisterVmProvider.notifier);
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
           padding: const EdgeInsets.only(left: 18.0),
           child: Container(
             decoration: BoxDecoration(
-              //color: Colors.white.withOpacity(0.7),
               color: Colors.white,
               shape: BoxShape.circle,
               boxShadow: [
@@ -73,7 +84,7 @@ class _NewSpaceRegisterState extends State<NewSpaceRegister> {
                 text1: '1.',
                 text2: '\nDescreva sua\nacomodação',
                 text3:
-                    'Compartilhe algumas informacoes basicas, como a localizaçao e quantos hospedes podem ficar no local',
+                    'Compartilhe algumas informações básicas, como a localização e quantos convidados podem ficar no local',
               ),
               SizedBox(height: 28),
               NewWidget(
@@ -81,19 +92,19 @@ class _NewSpaceRegisterState extends State<NewSpaceRegister> {
                   text1: '2.',
                   text2: '\nFaça com que se\ndestaque',
                   text3:
-                      'Adicione cinco fotos ou mais, alem de um titulo e uma descrição. Nós ajudaremos você'),
+                      'Adicione três fotos ou mais, além de um título e uma boa descrição. Nós ajudaremos você'),
               SizedBox(height: 28),
               NewWidget(
                 iconData: Icons.people,
                 text1: '3.',
                 text2: 'Concluir e publicar',
                 text3:
-                    'Escolha se voce gostaria de começar com um hospede experiente, defina um preço inciial, publique seu anuncio',
+                    'Escolha os serviços que você disponibiliza no seu espaço, defina um preço inicial e publique seu espaço!',
               ),
             ],
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 69, vertical: 40),
+            padding: const EdgeInsets.symmetric(horizontal: 38.0, vertical: 20),
             child: InkWell(
               onTap: () => Navigator.push(
                 context,
@@ -220,8 +231,7 @@ class NewWidget extends StatelessWidget {
                     Text(
                       text3,
                       style: const TextStyle(
-                        fontSize: 12,
-                      ),
+                          fontSize: 12, fontWeight: FontWeight.w500),
                     ),
                     const SizedBox(
                       height: 9,

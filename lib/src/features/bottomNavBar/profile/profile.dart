@@ -49,11 +49,7 @@ class _ProfileState extends ConsumerState<Profile> {
       // final selectedFinalDate = data['selectedFinalDate'];
       final checkOutTime = data['checkOutTime'];
 
-      if (selectedFinalDate.isAfter(now) ||
-          selectedFinalDate.day == now.day &&
-              selectedFinalDate.month == now.month &&
-              selectedFinalDate.year == now.year &&
-              checkOutTime >= now.hour) {
+      if (selectedFinalDate.isAfter(now) && data['canceledAt'] == null) {
         return true;
       }
     }
@@ -172,6 +168,7 @@ class _ProfileState extends ConsumerState<Profile> {
     final querySnapshot = await FirebaseFirestore.instance
         .collection('spaces')
         .where('user_id', isEqualTo: userId)
+        .where('deletedAt', isNull: true)
         .get();
 
     return querySnapshot.docs.isNotEmpty;
@@ -334,6 +331,7 @@ class _ProfileState extends ConsumerState<Profile> {
                               Text(
                                 updatedUserModel.name,
                                 style: const TextStyle(
+                                    overflow: TextOverflow.ellipsis,
                                     fontSize: 22,
                                     fontWeight: FontWeight.w800,
                                     height: 1.2),

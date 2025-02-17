@@ -74,6 +74,7 @@ class SpacesByTypeVm extends ChangeNotifier {
 
       final searchSpaceDocuments = await spacesCollection
           .where('selectedTypes', arrayContainsAny: types)
+          .where('deletedAt', isNull: true)
           .orderBy('createdAt', descending: true)
           .get();
 
@@ -104,6 +105,7 @@ class SpacesByTypeVm extends ChangeNotifier {
     try {
       final spaceDocuments = await spacesCollection
           .where('selectedTypes', arrayContainsAny: types)
+          .where('deletedAt', isNull: true)
           .get();
 
       final userSpacesFavorite = await getUserFavoriteSpaces();
@@ -130,6 +132,7 @@ class SpacesByTypeVm extends ChangeNotifier {
     try {
       final spaceDocuments = await spacesCollection
           .where('selectedTypes', arrayContainsAny: types)
+          .where('deletedAt', isNull: true)
           .orderBy('createdAt', descending: true)
           .limit(pageSize)
           .get();
@@ -174,7 +177,8 @@ class SpacesByTypeVm extends ChangeNotifier {
 
     try {
       Query query = spacesCollection
-          .where('selectedTypes', arrayContainsAny: types) // Filtra por tipo
+          .where('selectedTypes', arrayContainsAny: types)
+          .where('deletedAt', isNull: true)
           .orderBy('createdAt', descending: true)
           .limit(pageSize);
 

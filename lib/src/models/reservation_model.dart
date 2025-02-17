@@ -14,8 +14,8 @@ class ReservationModel {
   final Timestamp selectedFinalDate;
   final String contratoHtml;
   final String? cardId;
-  final String? reason;
-  final Timestamp? canceledAt;
+  String? reason;
+  Timestamp? canceledAt;
   UserModel? user;
 
   ReservationModel({

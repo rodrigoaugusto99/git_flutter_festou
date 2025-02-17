@@ -68,7 +68,8 @@ class _SurroundingSpacesPageState extends ConsumerState<SurroundingSpacesPage> {
   Future<List<SpaceModel>> getAllSpaces() async {
     try {
       //pega todos os documentos dos espaços
-      final allSpaceDocuments = await spacesCollection.get();
+      final allSpaceDocuments =
+          await spacesCollection.where('deletedAt', isNull: true).get();
 
 //await pois retorna future
 //pega os favoritos do usuario
@@ -542,7 +543,7 @@ p decidir o isFavorited*/
                                                     fontSize: 10,
                                                     fontWeight:
                                                         FontWeight.w700),
-                                                "R\$${spaceShowing!.preco},00/h",
+                                                "R\$${spaceShowing!.preco}/h",
                                               ),
                                             ],
                                           ),

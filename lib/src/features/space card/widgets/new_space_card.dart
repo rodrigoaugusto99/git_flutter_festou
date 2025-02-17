@@ -162,7 +162,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: _currentIndex == index
-                          ? const Color(0xff9747FF)
+                          ? const Color(0XFF44300B1)
                           : Colors.grey.shade300,
                     ),
                   );
@@ -286,7 +286,7 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                                   const EdgeInsets.only(left: 25, right: 25),
                               child: const Divider(
                                 thickness: 0.8,
-                                color: Color(0xff9747FF),
+                                color: Color(0XFF44300B1),
                               ),
                             ),
                             Padding(
@@ -337,7 +337,14 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(5),
-                                            color: const Color(0xff9747FF),
+                                            gradient: const LinearGradient(
+                                              colors: [
+                                                Color(0xff9747FF),
+                                                Color(0xff44300b1),
+                                              ],
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                            ),
                                           ),
                                           width: 20,
                                           height: 20,
@@ -350,10 +357,10 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                                         const SizedBox(width: 2),
                                         Text(
                                           style: const TextStyle(
-                                              color: Color(0xff9747FF),
+                                              color: Color(0XFF44300B1),
                                               fontSize: 12,
                                               fontWeight: FontWeight.w700),
-                                          "R\$${widget.space.preco},00/h",
+                                          "R\$${widget.space.preco}/h",
                                         ),
                                       ],
                                     ),
@@ -363,15 +370,27 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                                         left: 20, right: 0),
                                     child: Row(
                                       children: [
-                                        const Icon(
-                                          Icons.favorite,
-                                          size: 20,
-                                          color: Color(0xff9747FF),
+                                        ShaderMask(
+                                          shaderCallback: (Rect bounds) {
+                                            return const LinearGradient(
+                                              colors: [
+                                                Color(0xff9747FF),
+                                                Color(0xff4300b1),
+                                              ],
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                            ).createShader(bounds);
+                                          },
+                                          child: const Icon(
+                                            Icons.favorite,
+                                            size: 20,
+                                            color: Colors.white,
+                                          ),
                                         ),
                                         const SizedBox(width: 5),
                                         Text(
                                             style: const TextStyle(
-                                              color: Color(0xff5E5E5E),
+                                              color: Color(0XFF44300B1),
                                             ),
                                             widget.space.numLikes.toString()),
                                       ],

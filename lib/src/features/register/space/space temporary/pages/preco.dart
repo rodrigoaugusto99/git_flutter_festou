@@ -98,7 +98,7 @@ class _PrecoState extends ConsumerState<Preco> {
                     'Você poderá alterá-lo quando quiser, porém sendo mantido o valor que estava em vigor no momento dos contratos que já foram firmados.',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                      fontSize: 13,
                     ),
                   ),
                 ),
@@ -124,7 +124,7 @@ class _PrecoState extends ConsumerState<Preco> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 69, vertical: 40),
+        padding: const EdgeInsets.symmetric(horizontal: 38.0, vertical: 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -144,7 +144,7 @@ class _PrecoState extends ConsumerState<Preco> {
                     ),
                   );
                 } else {
-                  Messages.showInfo('Escolha um preço', context);
+                  Messages.showInfo('Defina o preço por hora!', context);
                 }
               },
               child: Container(

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:festou/src/features/loading_indicator.dart';
 import 'package:festou/src/features/space%20card/widgets/chat_page.dart';
 import 'package:festou/src/models/user_model.dart';
+import 'package:lottie/lottie.dart';
 import 'package:rxdart/rxdart.dart';
 
 class Mensagens extends StatefulWidget {
@@ -417,8 +418,39 @@ class _MensagensState extends State<Mensagens> {
                         return const CustomLoadingIndicator();
                       } else if (filteredDocs.isEmpty ||
                           !snapshotMessage.data!) {
-                        return const Center(
-                            child: Text('Não há conversas no momento!'));
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Lottie.asset(
+                                'lib/assets/animations/no_messages.json',
+                                width: 100,
+                                height: 100,
+                                repeat: true,
+                              ),
+                              const SizedBox(height: 20),
+                              const Text(
+                                'Nenhuma conversa disponível!',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 8),
+                              const Text(
+                                'Assim que alguém entrar em contato, sua conversa aparecerá aqui.',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black54,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        );
                       }
 
                       return buildChatRoomList(snapshot.data!);

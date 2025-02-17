@@ -32,7 +32,7 @@ class _SpaceFeedbacksPageLimitedState
         if (data.feedbacks.isEmpty) {
           return const Center(
             child: Text(
-              'Sem avaliações(ainda)',
+              'Sem avaliações',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,

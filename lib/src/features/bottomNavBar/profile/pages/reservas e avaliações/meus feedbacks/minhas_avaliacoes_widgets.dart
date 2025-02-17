@@ -1,3 +1,4 @@
+import 'package:festou/src/services/user_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/features/register/avaliacoes/avaliacoes_register_page.dart';
@@ -140,14 +141,21 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
       }
 
       if (latestValidReservation != null) {
-        setState(() {
+        setState(() async {
           reservation = latestValidReservation;
           canShowButtons = _validateReservation(latestValidReservation!);
+          canShowButtons = await isMyFeedback();
         });
       }
     } catch (e) {
       return;
     }
+  }
+
+  Future<bool> isMyFeedback() async {
+    final user = await UserService().getCurrentUserModel();
+    return user!.uid == widget.feedback.userId;
+    // return now.isBefore(threeMonthLimit) && reservation.canceledAt == null;
   }
 
   bool _validateReservation(ReservationModel reservation) {
@@ -299,14 +307,14 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                               ),
                               child: Center(
                                 child: Padding(
-                                  padding: const EdgeInsets.all(7.0),
+                                  padding: const EdgeInsets.all(4.0),
                                   child: Text(
                                     double.parse(myFeedback!.rating.toString())
                                         .toStringAsFixed(1),
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 10,
+                                      fontSize: 12,
                                     ),
                                   ),
                                 ),

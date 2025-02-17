@@ -172,6 +172,7 @@ class FeedbackFirestoreRepositoryImpl implements FeedbackFirestoreRepository {
 
       await spacesCollection
           .where('space_id', isEqualTo: spaceId)
+          .where('deletedAt', isNull: true)
           .get()
           .then((querySnapshot) {
         if (querySnapshot.docs.isNotEmpty) {

@@ -87,7 +87,7 @@ class _TituloState extends ConsumerState<Titulo> {
                     'Títulos curtos funcionam melhor. Mas não se preocupe, você pode fazer alterações depois.',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                      fontSize: 13,
                     ),
                   ),
                 ),
@@ -105,7 +105,7 @@ class _TituloState extends ConsumerState<Titulo> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 69, vertical: 40),
+        padding: const EdgeInsets.symmetric(horizontal: 38.0, vertical: 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -123,7 +123,7 @@ class _TituloState extends ConsumerState<Titulo> {
                     ),
                   );
                 } else {
-                  Messages.showInfo('Escreva um título', context);
+                  Messages.showInfo('Defina um nome para o espaço!', context);
                 }
               },
               child: Container(

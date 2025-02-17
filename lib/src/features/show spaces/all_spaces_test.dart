@@ -54,6 +54,7 @@ class _AllPostsState extends State<AllPosts> {
     QuerySnapshot querySnapshot = await _firestore
         .collection('spaces')
         .startAfterDocument(_lastDocument!)
+        .where('deletedAt', isNull: true)
         .limit(_spacesPerPage)
         .get();
 

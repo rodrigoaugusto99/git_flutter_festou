@@ -3,17 +3,19 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:festou/src/features/bottomNavBar/home/widgets/post_single_page.dart';
 import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/meus%20feedbacks/minhas_avaliacoes_widgets.dart';
+import 'package:festou/src/features/loading_indicator.dart';
+import 'package:festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_vm.dart';
 import 'package:festou/src/models/user_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:festou/src/core/ui/helpers/messages.dart';
 import 'package:festou/src/features/register/host%20feedback/host_feedback_register_page.dart';
 import 'package:festou/src/features/register/posts/register_post_page.dart';
 import 'package:festou/src/features/space%20card/widgets/calendar_page.dart';
 import 'package:festou/src/features/space%20card/widgets/chat_page.dart';
-import 'package:festou/src/features/space%20card/widgets/new_feedback_widget_limited.dart';
 import 'package:festou/src/features/space%20card/widgets/show_new_map.dart';
 import 'package:festou/src/features/space%20card/widgets/show_map.dart';
 import 'package:festou/src/features/register/avaliacoes/avaliacoes_register_page.dart';
@@ -30,6 +32,7 @@ import 'package:festou/src/services/space_service.dart';
 import 'package:festou/src/services/user_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:social_share/social_share.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -58,27 +61,22 @@ class _NewCardInfoState extends State<NewCardInfo>
   List<ReservationModel> validReservations = <ReservationModel>[];
   bool isMySpace = false;
   bool canLeaveReview = false;
-  //late List<AvaliacoesModel> feedbacks;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     checkUserReservation();
     init();
-    //feedbacks = List.from(_getFeedbacks() as Iterable);
-  }
-
-  Future<List<AvaliacoesModel>> _getFeedbacks() async {
-    List<AvaliacoesModel> feedbacks = await AvaliacoesService()
-        .getMyFeedbacks(FirebaseAuth.instance.currentUser!.uid);
-
-    return feedbacks.where((feedback) => feedback.deletedAt == null).toList();
   }
 
   @override
   void dispose() {
     tabController.dispose();
     spaceService.cancelSpaceSubscription();
+    reservaService.cancelReservationListener();
+    spaceService.cancelSpaceSubscription();
+    feedbackService.cancelSpaceSubscription();
     reservaService.cancelReservationListener();
     super.dispose();
   }
@@ -127,8 +125,8 @@ class _NewCardInfoState extends State<NewCardInfo>
   }
 
   Future<void> checkUserReservation() async {
+    if (!mounted) return;
     validReservations = await getValidReservations();
-
     setState(() {
       canLeaveReview = validReservations.isNotEmpty;
     });
@@ -168,32 +166,42 @@ class _NewCardInfoState extends State<NewCardInfo>
     }
   }
 
-  Future<void> refreshFeedbacks() async {
-    List<AvaliacoesModel> updatedFeedbacks = await AvaliacoesService()
-        .getMyFeedbacks(FirebaseAuth.instance.currentUser!.uid);
-
-    setState(() {
-      feedbacks = updatedFeedbacks;
-    });
-  }
+  // Future<void> refreshFeedbacks() async {
+  //   if (!mounted) return;
+  //   List<AvaliacoesModel> updatedFeedbacks = await AvaliacoesService()
+  //       .getMyFeedbacks(FirebaseAuth.instance.currentUser!.uid);
+  //   setState(() {
+  //     feedbacks = updatedFeedbacks;
+  //   });
+  // }
 
   UserModel? user;
 
-  //NewCardInfoEditVm? newCardInfoEditVm;
   List<String> selectedServices = [];
+
+  double customHeight = 510;
 
   SpaceModel? space;
   List<AvaliacoesModel>? feedbacks;
   late SpaceService spaceService;
   late AvaliacoesService feedbackService;
   late ReservaService reservaService;
+  double averageRating = 0;
   Future<void> init() async {
+    if (!mounted) return;
     spaceService = SpaceService();
     feedbackService = AvaliacoesService();
     reservaService = ReservaService();
     space = await spaceService.getSpaceById(widget.spaceId);
     feedbacks = await feedbackService.getFeedbacksOrdered(widget.spaceId);
     feedbacks!.removeWhere((f) => f.deletedAt != null);
+    if (feedbacks!.isNotEmpty) {
+      int totalRating = 0;
+      for (final feedback in feedbacks!) {
+        totalRating += feedback.rating;
+      }
+      averageRating = totalRating / feedbacks!.length;
+    }
     final user = await UserService().getCurrentUserModel();
     if (user != null) {
       if (user.uid == space!.userId) {
@@ -202,8 +210,7 @@ class _NewCardInfoState extends State<NewCardInfo>
         });
       }
     }
-    // setState(() {});
-    // newCardInfoEditVm = NewCardInfoEditVm(spaceId: space!.spaceId);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         precoEC.text = space!.preco;
@@ -213,10 +220,24 @@ class _NewCardInfoState extends State<NewCardInfo>
         numeroEC.text = space!.numero;
         bairroEC.text = space!.bairro;
         cidadeEC.text = space!.cidade;
+        estadoEC.text = space!.estado;
         selectedServices = space!.selectedServices as List<String>;
       });
     });
     tabController = TabController(length: 3, vsync: this);
+    tabController.addListener(() {
+      log(tabController.index.toString());
+      if (tabController.index == 2) {
+        if (feedbacks!.length == 2) {
+          customHeight = 660;
+        } else if (feedbacks!.length == 3) {
+          customHeight = 900;
+        }
+      } else {
+        customHeight = 510;
+      }
+      setState(() {});
+    });
     for (var video in space!.videosUrl) {
       VideoPlayerController controller = VideoPlayerController.network(video)
         ..initialize().then((_) {
@@ -231,12 +252,17 @@ class _NewCardInfoState extends State<NewCardInfo>
       });
     });
     await feedbackService.setSpaceFeedbacksListener(widget.spaceId,
-        (newFeedbacks) {
+        (newFeedbacks) async {
       if (!mounted) return;
-      setState(() {
-        feedbacks = newFeedbacks;
-        feedbacks!.removeWhere((f) => f.deletedAt != null);
-      });
+      for (var feedback in newFeedbacks) {
+        log('feedback.id: ${feedback.id}');
+      }
+      await checkUserReservation();
+      // feedbacks = newFeedbacks;
+      // feedbacks!.removeWhere((f) => f.deletedAt != null);
+      feedbacks = await feedbackService.getFeedbacksOrdered(widget.spaceId);
+      feedbacks!.removeWhere((f) => f.deletedAt != null);
+      setState(() {});
     });
     await reservaService.setReservationListener(
       widget.spaceId,
@@ -259,16 +285,15 @@ class _NewCardInfoState extends State<NewCardInfo>
   TextEditingController numeroEC = TextEditingController();
   TextEditingController bairroEC = TextEditingController();
   TextEditingController cidadeEC = TextEditingController();
-
-  //todo: verificacao da existencia do endereco.
+  TextEditingController estadoEC = TextEditingController();
 
   double? latitude;
   double? longitude;
 
   Future<String?> validateForm() async {
     try {
-      final response = await calculateLatLng(
-          ruaEC.text, numeroEC.text, bairroEC.text, cidadeEC.text);
+      final response = await calculateLatLng(ruaEC.text, numeroEC.text,
+          bairroEC.text, cidadeEC.text, estadoEC.text);
       latitude = response.latitude;
       longitude = response.longitude;
       log(response.toString(), name: 'response do calculateLtn');
@@ -285,9 +310,10 @@ class _NewCardInfoState extends State<NewCardInfo>
     String numero,
     String bairro,
     String cidade,
+    String estado,
   ) async {
     try {
-      String fullAddress = '$logradouro, $numero, $bairro, $cidade';
+      String fullAddress = '$logradouro, $numero, $bairro, $cidade, $estado';
       List<Location> locations = await locationFromAddress(fullAddress);
 
       if (locations.isNotEmpty) {
@@ -305,8 +331,8 @@ class _NewCardInfoState extends State<NewCardInfo>
     }
   }
 
-  Future<void> toggleEditing() async {
-    if (isEditing) {
+  Future<void> toggleEditing({bool isSaved = true}) async {
+    if (isEditing && isSaved) {
       final x = validada();
       if (x != null) {
         Messages.showError(x, context);
@@ -344,6 +370,7 @@ class _NewCardInfoState extends State<NewCardInfo>
       'numero': numeroEC.text,
       'bairro': bairroEC.text,
       'cidade': cidadeEC.text,
+      'estado': estadoEC.text,
       'descricao': visaoGeralEC.text,
     };
 
@@ -364,6 +391,7 @@ class _NewCardInfoState extends State<NewCardInfo>
   }
 
   void pickImage() async {
+    if (!mounted) return;
     final imagePicker = ImagePicker();
     final List<XFile> images = await imagePicker.pickMultiImage();
 
@@ -384,6 +412,7 @@ class _NewCardInfoState extends State<NewCardInfo>
   final List<VideoPlayerController> localControllers = [];
 
   void pickVideo() async {
+    if (!mounted) return;
     final videoPicker = ImagePicker();
     final XFile? video =
         await videoPicker.pickVideo(source: ImageSource.gallery);
@@ -430,8 +459,74 @@ class _NewCardInfoState extends State<NewCardInfo>
     if (cidadeEC.text.isEmpty) {
       return 'O campo Cidade está vazio.';
     }
+    if (estadoEC.text.isEmpty) {
+      return 'O campo Estado está vazio.';
+    }
 
     return null;
+  }
+
+  Future<void> excluirEspaco(
+      BuildContext context, BuildContext contextPopup) async {
+    if (!mounted) return;
+    final container = ProviderScope.containerOf(context, listen: false);
+    final mySpacesVm = container.read(mySpacesVmProvider.notifier);
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    Navigator.of(contextPopup).pop();
+
+    final now = DateTime.now();
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('reservations')
+        .where('space_id', isEqualTo: space!.spaceId)
+        .get();
+
+    for (var doc in querySnapshot.docs) {
+      bool canceledDate = false;
+      final selectedDate = (doc['selectedDate'] as Timestamp).toDate();
+
+      if (doc.data().containsKey('canceledAt') == true &&
+          doc['canceledAt'] != null) {
+        canceledDate = true;
+      }
+
+      if (selectedDate.isAfter(now) && !canceledDate) {
+        Messages.showError(
+            'Você não pode excluir esse espaço pois há reservas', context);
+        return;
+      }
+    }
+
+    try {
+      final spaceSnapshot = await FirebaseFirestore.instance
+          .collection('spaces')
+          .where('space_id', isEqualTo: space!.spaceId)
+          .where('deletedAt', isNull: true)
+          .get();
+
+      for (var doc in spaceSnapshot.docs) {
+        await doc.reference.update({
+          'deletedAt': Timestamp.now(),
+        });
+      }
+
+      Messages.showSuccess('O espaço foi excluído', context);
+
+      await mySpacesVm.fetchMySpaces();
+      Navigator.of(context).pop();
+    } on Exception catch (e) {
+      log(e.toString());
+      Messages.showError(
+          'Houve algum erro ao tentar excluir o espaço. Entre em contato conosco',
+          context);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
 //todo: estilizar bottom sheets
@@ -493,17 +588,6 @@ class _NewCardInfoState extends State<NewCardInfo>
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            // void addOrRemoveService(String service) {
-            //   log(service);
-            //   if (selectedServices.contains(service)) {
-            //     selectedServices.remove(service);
-            //   } else {
-            //     selectedServices.add(service);
-            //   }
-            //   setState(() {}); // Atualiza o estado local do BottomSheet
-            //   log(selectedServices.toString());
-            // }
-
             return Container(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -529,6 +613,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                       return GestureDetector(
                         onTap: () {
                           addOrRemoveService(entry.key);
+                          if (!mounted) return;
                           setState(
                               () {}); // Atualiza o estado local do BottomSheet
                         },
@@ -594,6 +679,7 @@ class _NewCardInfoState extends State<NewCardInfo>
   @override
   Widget build(BuildContext context) {
     void toggle() {
+      if (!mounted) return;
       setState(() {
         space!.isFavorited = !space!.isFavorited;
       });
@@ -644,7 +730,6 @@ class _NewCardInfoState extends State<NewCardInfo>
               ),
             ),
           const SizedBox(height: 17),
-          // if (feedbacks!.isNotEmpty)
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -665,27 +750,61 @@ class _NewCardInfoState extends State<NewCardInfo>
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          // if (space!.numComments != '0')
-          //   SpaceFeedbacksPageLimited(
-          //     x: 2,
-          //     space: space!,
-          //   ),
+          const SizedBox(height: 24),
           if (feedbacks != null) ...[
             if (feedbacks!.isEmpty)
-              const Center(
-                child: Padding(
-                  padding: EdgeInsets.only(top: 54),
-                  child: Text(
-                    'Sem avaliações',
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 20),
+                  const Icon(
+                    Icons.forum_sharp,
+                    size: 60,
+                    color: Colors.grey,
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Ainda não há avaliações',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
+                      color: Colors.black87,
                     ),
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  if (!isEditing && canLeaveReview) ...[
+                    const Text(
+                      'Seja o primeiro a avaliar este espaço!',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        showRatingDialog(space!, validReservations.last);
+                      },
+                      icon: const Icon(Icons.star_border, color: Colors.white),
+                      label: const Text(
+                        'Avaliar agora',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 12),
+                        backgroundColor: const Color(0xff9747FF),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
-            if (feedbacks!.isNotEmpty)
+            if (feedbacks!.isNotEmpty) ...[
+              const SizedBox(height: 12),
               ListView.builder(
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
@@ -696,13 +815,15 @@ class _NewCardInfoState extends State<NewCardInfo>
                   return AvaliacoesItem(
                     feedback: feedback,
                     onDelete: () async {
-                      await refreshFeedbacks();
+                      // await refreshFeedbacks();
                     },
                   );
                 },
               ),
+            ],
           ],
-          if (feedbacks != null && feedbacks!.length > 3)
+          if (feedbacks != null && feedbacks!.length > 3) ...[
+            const SizedBox(height: 12),
             InkWell(
               child: Align(
                 alignment: Alignment.centerRight,
@@ -744,6 +865,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                 );
               },
             ),
+          ],
         ],
       );
     }
@@ -825,11 +947,14 @@ class _NewCardInfoState extends State<NewCardInfo>
                       ),
                       if (isEditing)
                         decContainer(
+                          radius: 10,
+                          height: 90,
                           color: Colors.black.withOpacity(0.5),
                         ),
                       if (isEditing)
                         GestureDetector(
                           onTap: () {
+                            if (!mounted) return;
                             setState(() {
                               networkImagesToDelete
                                   .add(space!.imagesUrl[index].toString());
@@ -863,6 +988,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                       if (isEditing)
                         GestureDetector(
                           onTap: () {
+                            if (!mounted) return;
                             setState(() {
                               imageFilesToDownload.removeAt(localIndex);
                             });
@@ -907,7 +1033,7 @@ class _NewCardInfoState extends State<NewCardInfo>
               Padding(
                 padding: const EdgeInsets.only(top: 2),
                 child: Text(
-                  '(${space!.videosUrl.length} ${space!.videosUrl.length == 1 ? 'vídeo' : 'vídeos)'}',
+                  '(${space!.videosUrl.length} ${space!.videosUrl.length == 1 ? 'vídeo)' : 'vídeos)'}',
                   style: const TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 12,
@@ -950,6 +1076,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                       if (isEditing)
                         GestureDetector(
                           onTap: () {
+                            if (!mounted) return;
                             setState(() {
                               networkVideosToDelete
                                   .add(space!.videosUrl[index]);
@@ -983,6 +1110,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                       if (isEditing)
                         GestureDetector(
                           onTap: () {
+                            if (!mounted) return;
                             setState(() {
                               videosToDownload.removeAt(localIndex);
                               localControllers[localIndex].dispose();
@@ -1066,11 +1194,9 @@ class _NewCardInfoState extends State<NewCardInfo>
                                     ),
                                 ],
                               ),
-
                               const SizedBox(
                                 width: 8,
                               ),
-                              // const Icon(Icons.align_vertical_top_sharp),
                               Text(space!.selectedServices[index]),
                               const SizedBox(
                                 width: 12,
@@ -1112,10 +1238,8 @@ class _NewCardInfoState extends State<NewCardInfo>
                   padding: const EdgeInsets.only(left: 8),
                   child: Text(
                     space!.descricao,
-                    maxLines: 3,
                     style: const TextStyle(
                       fontSize: 12,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),
@@ -1201,6 +1325,13 @@ class _NewCardInfoState extends State<NewCardInfo>
                     controller: cidadeEC,
                     fillColor: const Color(0xffF0F0F0),
                   ),
+                  const SizedBox(height: 10),
+                  CustomTextformfield(
+                    height: 40,
+                    hintText: 'Estado',
+                    controller: estadoEC,
+                    fillColor: const Color(0xffF0F0F0),
+                  ),
                 ],
               ),
             const SizedBox(height: 24),
@@ -1240,7 +1371,6 @@ class _NewCardInfoState extends State<NewCardInfo>
                   InkWell(
                     child: Container(
                       padding: const EdgeInsets.all(7),
-                      //alignment: Alignment.center,
                       decoration: const BoxDecoration(
                         color: Color(0xffF3F3F3),
                         shape: BoxShape.circle,
@@ -1268,10 +1398,18 @@ class _NewCardInfoState extends State<NewCardInfo>
       );
     }
 
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CustomLoadingIndicator(),
+        ),
+      );
+    }
+
     return space == null
         ? const Scaffold(
             body: Center(
-              child: CircularProgressIndicator(),
+              child: CustomLoadingIndicator(),
             ),
           )
         : Scaffold(
@@ -1299,7 +1437,6 @@ class _NewCardInfoState extends State<NewCardInfo>
                   padding: const EdgeInsets.only(right: 18.0),
                   child: Container(
                     padding: const EdgeInsets.all(8),
-                    // width: 40,
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.7),
                       shape: BoxShape.circle,
@@ -1317,7 +1454,6 @@ class _NewCardInfoState extends State<NewCardInfo>
                   padding: const EdgeInsets.only(right: 18.0),
                   child: Container(
                     padding: const EdgeInsets.all(8),
-                    //width: 40,
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.7),
                       shape: BoxShape.circle,
@@ -1350,6 +1486,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                       VisibilityDetector(
                         key: const Key('my-widget-key'),
                         onVisibilityChanged: (VisibilityInfo info) {
+                          if (!mounted) return;
                           setState(() {
                             isCarouselVisible = info.visibleFraction > 0.0;
                           });
@@ -1368,6 +1505,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                                 viewportFraction: 1.0,
                                 enableInfiniteScroll: true,
                                 onPageChanged: (index, reason) {
+                                  if (!mounted) return;
                                   setState(() {
                                     _currentSlide = index;
                                   });
@@ -1408,7 +1546,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                                     child: const Text(
                                       'Postar feed',
                                       style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 12,
                                         color: Colors.white,
                                         fontWeight: FontWeight.w600,
                                       ),
@@ -1421,7 +1559,6 @@ class _NewCardInfoState extends State<NewCardInfo>
                       ),
                     ],
                   ),
-
                   const SizedBox(
                     height: 10,
                   ),
@@ -1466,15 +1603,14 @@ class _NewCardInfoState extends State<NewCardInfo>
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
                                   color: _getColor(
-                                    double.parse(space!.averageRating),
+                                    averageRating,
                                   ),
                                 ),
                                 height: 26,
                                 width: 26,
                                 child: Center(
                                   child: Text(
-                                    double.parse(space!.averageRating)
-                                        .toStringAsFixed(1),
+                                    averageRating.toStringAsFixed(1),
                                     style: const TextStyle(
                                       fontSize: 12,
                                       color: Colors.white,
@@ -1529,7 +1665,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                                   height: 28),
                               const SizedBox(width: 4),
                               Text(
-                                '${space!.cidade}, Brasil',
+                                '${space!.cidade}, ${space!.estado}',
                                 style: const TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w400,
@@ -1583,198 +1719,168 @@ class _NewCardInfoState extends State<NewCardInfo>
                         const SizedBox(height: 10),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: SizedBox(
-                            height: 510,
-                            child: TabBarView(
-                              controller: tabController,
-                              //physics: const NeverScrollableScrollPhysics(),
-                              children: [
-                                myFirstWidget(),
-                                mySecondWidget(),
-                                myThirdWidget(),
-                              ],
-                            ),
+                          child: Column(
+                            children: [
+                              Column(
+                                children: [
+                                  if (tabController.index == 0)
+                                    myFirstWidget(), // Sobre
+                                  if (tabController.index == 1)
+                                    mySecondWidget(), // Galeria
+                                  if (tabController.index == 2)
+                                    myThirdWidget(), // Avaliação
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-
-                        // const SizedBox(height: 10),
-                        // const Divider(thickness: 0.4, color: Colors.purple),
-                        // const SizedBox(height: 10),
-
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        //   children: [
-                        //     ElevatedButton(
-                        //       onPressed: () {
-                        //         _showBottomSheet(context);
-                        //       },
-                        //       child: const Text('Ver descrição'),
-                        //     ),
-                        //     const SizedBox(
-                        //       width: 10,
-                        //     ),
-                        //     ElevatedButton(
-                        //       onPressed: () {
-                        //         _showBottomSheet2(context);
-                        //       },
-                        //       child: const Text('Comodidades'),
-                        //     ),
-                        //   ],
-                        // ),
-
-                        // myFirstWidget(),
                       ],
                     ),
                   ),
-                  // const Align(
-                  //   alignment: Alignment.center,
-                  //   child: Text(
-                  //     'Avaliações dos hóspedes',
-                  //     style: TextStyle(fontSize: 23),
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 10),
-                  // SpaceFeedbacksPageLimited(
-                  //   x: 3,
-                  //   space: space!,
-                  // ),
-                  // InkWell(
-                  //   child: Align(
-                  //     alignment: Alignment.centerRight,
-                  //     child: Container(
-                  //       margin:
-                  //           const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                  //       child: const Text(
-                  //         'Ver tudo',
-                  //         style: TextStyle(
-                  //           decoration: TextDecoration.underline,
-                  //           fontWeight: FontWeight.bold,
-                  //           fontSize: 18,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  //   onTap: () {
-                  //     Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(
-                  //         builder: (context) =>
-                  //             SpaceFeedbacksPageAll(space: space!),
-                  //       ),
-                  //     );
-                  //   },
-                  // ),
                 ],
               ),
             ),
-            bottomNavigationBar: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-              child: widget.isLocadorFlow
-                  ? Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          children: [
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  style: const TextStyle(
-                                      color: Color(0xff9747FF),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w700),
-                                  "R\$${space!.preco}",
-                                ),
-                                const Text('Por hora'),
-                              ],
-                            ),
-                            const Spacer(),
-                            if (!isEditing)
+            bottomNavigationBar: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 8,
+                    spreadRadius: 2,
+                    offset: const Offset(0, -2),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                child: widget.isLocadorFlow
+                    ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            children: [
                               GestureDetector(
-                                //todo:  excluir
                                 onTap: () async {
-                                  await showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text(
-                                            'Tem certeza que deseja excluir o espaço?'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: const Text('Cancelar'),
+                                  if (!isEditing) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext contextPopup) {
+                                        return AlertDialog(
+                                          content: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Center(
+                                                child: Lottie.asset(
+                                                  'lib/assets/animations/warning_exit.json',
+                                                  width: 100,
+                                                  height: 100,
+                                                  repeat: true,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 16),
+                                              const Center(
+                                                child: Text(
+                                                  'Exclusão do espaço',
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 12),
+                                              const Text(
+                                                'Tem certeza que deseja excluir o espaços?',
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ],
                                           ),
-                                          TextButton(
-                                            onPressed: () async {
-                                              Navigator.of(context).pop();
-                                              final now = DateTime.now();
-                                              final querySnapshot =
-                                                  await FirebaseFirestore
-                                                      .instance
-                                                      .collection(
-                                                          'reservations')
-                                                      .where('space_id',
-                                                          isEqualTo:
-                                                              space!.spaceId)
-                                                      .get();
-
-                                              for (var doc
-                                                  in querySnapshot.docs) {
-                                                final selectedDate =
-                                                    (doc['selectedDate']
-                                                            as Timestamp)
-                                                        .toDate();
-                                                if (selectedDate.isAfter(now)) {
-                                                  //nao pode
-                                                  Messages.showError(
-                                                      'Você não pode excluir esse espaço pois há reservas',
-                                                      context);
-                                                  return;
-                                                }
-                                              }
-                                              try {
-                                                final spaceSnapshot =
-                                                    await FirebaseFirestore
-                                                        .instance
-                                                        .collection('spaces')
-                                                        .where('space_id',
-                                                            isEqualTo:
-                                                                space!.spaceId)
-                                                        .get();
-
-                                                for (var doc
-                                                    in spaceSnapshot.docs) {
-                                                  await doc.reference.delete();
-                                                }
-                                                Messages.showSuccess(
-                                                  'O espaço foi excluído',
-                                                  context,
-                                                );
-                                              } on Exception catch (e) {
-                                                log(e.toString());
-                                                Messages.showError(
-                                                  'Houve algum erro ao tentar excluir o espaço. Entre em contato conosco',
-                                                  context,
-                                                );
-                                              }
-                                              // Verifique se o valor digitado é válido e atualize o raio
-                                            },
-                                            child: const Text('Sim, excluir'),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(contextPopup)
+                                                    .pop();
+                                              },
+                                              child: const Text('Cancelar'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () async {
+                                                excluirEspaco(
+                                                    context, contextPopup);
+                                              },
+                                              child: const Text('Sim, excluir'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  } else {
+                                    toggleEditing(isSaved: false);
+                                  }
                                   //pode deletar
                                 },
                                 child: Container(
+                                  width: 80,
+                                  height: 32,
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: 30,
                                     vertical: 8,
                                   ),
+                                  decoration: BoxDecoration(
+                                    gradient: isEditing
+                                        ? const LinearGradient(
+                                            colors: [
+                                              Color(0xff9747FF),
+                                              Color(0xff4300B1),
+                                            ],
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                          )
+                                        : const LinearGradient(
+                                            colors: [
+                                              Color.fromARGB(255, 255, 0, 0),
+                                              Color.fromARGB(255, 255, 0, 0),
+                                            ],
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                          ),
+                                    borderRadius: BorderRadius.circular(24),
+                                  ),
+                                  child: isEditing
+                                      ? const Text(
+                                          'Cancelar',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500),
+                                          textAlign: TextAlign.center,
+                                        )
+                                      : const Text(
+                                          'Excluir',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              GestureDetector(
+                                onTap: toggleEditing,
+                                child: Container(
+                                  width: 80,
+                                  height: 32,
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8),
                                   decoration: BoxDecoration(
                                     gradient: const LinearGradient(
                                       colors: [
@@ -1786,165 +1892,140 @@ class _NewCardInfoState extends State<NewCardInfo>
                                     ),
                                     borderRadius: BorderRadius.circular(24),
                                   ),
-                                  child: const Text(
-                                    'Excluir',
-                                    style: TextStyle(
+                                  child: Text(
+                                    isEditing ? 'Salvar' : 'Editar',
+                                    style: const TextStyle(
                                         color: Colors.white,
-                                        fontWeight: FontWeight.w700),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
                               ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            GestureDetector(
-                              //todo:
-                              onTap: toggleEditing,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 30, vertical: 8),
-                                decoration: BoxDecoration(
-                                  gradient: const LinearGradient(
-                                    colors: [
-                                      Color(0xff9747FF),
-                                      Color(0xff4300B1),
-                                    ],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CalendarPage(
+                                          space: space!,
+                                          isIndisponibilizar: true,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    width: 170,
+                                    height: 32,
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 8),
+                                    decoration: BoxDecoration(
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Color(0xff9747FF),
+                                          Color(0xff4300B1),
+                                        ],
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                      ),
+                                      borderRadius: BorderRadius.circular(24),
+                                    ),
+                                    child: const Text(
+                                      'Indisponibilizar horário',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500),
+                                      textAlign: TextAlign.center,
+                                    ),
                                   ),
-                                  borderRadius: BorderRadius.circular(24),
-                                ),
-                                child: Text(
-                                  isEditing ? 'Salvar' : 'Editar',
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w700),
-                                  textAlign: TextAlign.center,
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 14,
-                        ),
-                        GestureDetector(
-                          //todo:
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CalendarPage(
-                                  space: space!,
-                                  isIndisponibilizar: true,
-                                ),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 8),
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xff9747FF),
-                                  Color(0xff4300B1),
-                                ],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                              ),
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                            child: const Text(
-                              'Indisponibilizar um horário',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700),
-                              textAlign: TextAlign.center,
-                            ),
+                            ],
                           ),
-                        ),
-                        const SizedBox(
-                          height: 14,
-                        ),
-                      ],
-                    )
-                  : isMySpace
-                      ? GestureDetector(
-                          onTap: () {
-                            if (isMySpace) return;
-                            if (user != null && user!.cpf.isEmpty) {
-                              Messages.showInfo(
-                                  'Você precisa de um CPF cadastrado para alugar um espaço',
-                                  context);
-                              return;
-                            }
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CalendarPage(
-                                  space: space!,
+                        ],
+                      )
+                    : isMySpace
+                        ? GestureDetector(
+                            onTap: () {
+                              if (isMySpace) return;
+                              if (user != null && user!.cpf.isEmpty) {
+                                Messages.showInfo(
+                                    'Você precisa de um CPF cadastrado para alugar um espaço',
+                                    context);
+                                return;
+                              }
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CalendarPage(
+                                    space: space!,
+                                  ),
                                 ),
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 8),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  color: Colors.grey),
+                              child: const Text(
+                                'Alugar',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700),
+                                textAlign: TextAlign.center,
                               ),
-                            );
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 8),
-                            decoration: BoxDecoration(
+                            ),
+                          )
+                        : GestureDetector(
+                            onTap: () {
+                              if (isMySpace) return;
+                              if (user != null && user!.cpf.isEmpty) {
+                                Messages.showInfo(
+                                    'Você precisa de um CPF cadastrado para alugar um espaço',
+                                    context);
+                                return;
+                              }
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CalendarPage(
+                                    space: space!,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 8),
+                              decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(50),
-                                color: Colors.grey),
-                            child: const Text(
-                              'Alugar',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        )
-                      : GestureDetector(
-                          onTap: () {
-                            if (isMySpace) return;
-                            if (user != null && user!.cpf.isEmpty) {
-                              Messages.showInfo(
-                                  'Você precisa de um CPF cadastrado para alugar um espaço',
-                                  context);
-                              return;
-                            }
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CalendarPage(
-                                  space: space!,
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xff9747FF),
+                                    Color(0xff44300b1),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
                                 ),
                               ),
-                            );
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 8),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xff9747FF),
-                                  Color(0xff44300b1),
-                                ],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
+                              child: const Text(
+                                'Alugar',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700),
+                                textAlign: TextAlign.center,
                               ),
                             ),
-                            child: const Text(
-                              'Alugar',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700),
-                              textAlign: TextAlign.center,
-                            ),
                           ),
-                        ),
+              ),
             ),
           );
   }

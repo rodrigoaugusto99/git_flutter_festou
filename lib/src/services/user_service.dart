@@ -11,14 +11,6 @@ class UserService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
-  final CollectionReference spacesCollection =
-      FirebaseFirestore.instance.collection('spaces');
-
-  //todo: colocar o parametro "id" aqui.
-  //caso String id nao for null, entao esse ID
-  //que vais er usado para a pesquisa, e nao o id do current.User
-  //(sera usado p pegar user do feedback ou reserva etc.
-  //)
 
   Row getAvatar(UserModel userModel) {
     return userModel.avatarUrl.isNotEmpty
@@ -155,7 +147,7 @@ class UserService {
     }
   }
 
-  Future<List<SpaceModel>?> getLastSeenSpaces() async {
+  Future<List<SpaceModel>> getLastSeenSpaces() async {
     final user = await getCurrentUserModel();
     if (user != null) {
       QuerySnapshot userSnapshot = await FirebaseFirestore.instance
@@ -173,27 +165,37 @@ class UserService {
 
       final userSpacesFavorite = await getUserFavoriteSpaces(user.uid);
 
-      List<Future<SpaceModel>> futures = lastSeenIds.map((id) async {
-        QuerySnapshot spaceQuerySnapshot = await FirebaseFirestore.instance
-            .collection('spaces')
-            .where('space_id', isEqualTo: id)
-            .limit(1)
-            .get();
+      List<Future<SpaceModel?>> futures = lastSeenIds.map((id) async {
+        try {
+          QuerySnapshot spaceQuerySnapshot = await FirebaseFirestore.instance
+              .collection('spaces')
+              .where('space_id', isEqualTo: id)
+              .where('deletedAt', isNull: true)
+              .limit(1)
+              .get();
 
-        if (spaceQuerySnapshot.docs.isEmpty) {
-          throw Exception("Space does not exist!");
+          if (spaceQuerySnapshot.docs.isEmpty) {
+            return null; // Se o espaço foi deletado, apenas retorna null
+          }
+
+          QueryDocumentSnapshot spaceDoc = spaceQuerySnapshot.docs.first;
+          bool isFavorited =
+              userSpacesFavorite?.contains(spaceDoc['space_id']) ?? false;
+
+          return mapSpaceDocumentToModel(spaceDoc, isFavorited);
+        } catch (e) {
+          log('Erro ao recuperar o espaço: $e');
+          return null;
         }
-
-        QueryDocumentSnapshot spaceDoc = spaceQuerySnapshot.docs.first;
-        bool isFavorited =
-            userSpacesFavorite?.contains(spaceDoc['space_id']) ?? false;
-        return mapSpaceDocumentToModel(spaceDoc, isFavorited);
       }).toList();
 
-      return await Future.wait(futures);
+      List<SpaceModel> spaces =
+          (await Future.wait(futures)).whereType<SpaceModel>().toList();
+
+      return spaces;
     }
 
-    return null;
+    return [];
   }
 
   Future<DocumentSnapshot> getUserDocument(String userId) async {

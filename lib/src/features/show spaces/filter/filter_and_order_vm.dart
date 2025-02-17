@@ -111,7 +111,9 @@ class FilterAndOrderVm extends _$FilterAndOrderVm {
       :selectedNotes
     ) = state;
 
-    Query query = FirebaseFirestore.instance.collection('spaces');
+    Query query = FirebaseFirestore.instance
+        .collection('spaces')
+        .where('deletedAt', isNull: true);
 
     List<DocumentSnapshot> filteredByDays = [];
 

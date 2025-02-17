@@ -1186,6 +1186,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                           .collection('spaces')
                                           .where('user_id',
                                               isEqualTo: userModel.uid)
+                                          .where('deletedAt', isNull: true)
                                           .limit(1)
                                           .get(); // Limita para apenas verificar se existe um espacço cadastrado
 

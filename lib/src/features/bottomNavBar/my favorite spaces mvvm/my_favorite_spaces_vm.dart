@@ -26,6 +26,7 @@ class MyFavoriteSpacesVm extends ChangeNotifier {
       if (userSpacesFavorite != null && userSpacesFavorite.isNotEmpty) {
         final favoriteSpaceDocuments = await spacesCollection
             .where('space_id', whereIn: userSpacesFavorite)
+            .where('deletedAt', isNull: true)
             .get();
 
         List<SpaceModel> spaceModels = await Future.wait(

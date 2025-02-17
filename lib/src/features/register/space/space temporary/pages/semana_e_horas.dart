@@ -368,6 +368,8 @@ class SemanaEHoras extends ConsumerStatefulWidget {
 }
 
 class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
+  bool _canProceed = false;
+
   @override
   void initState() {
     super.initState();
@@ -404,6 +406,8 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
       hoursMap['saturday'] = days.saturday!;
       selectedDays.add('Sáb');
     }
+
+    _canProceed = selectedDays.isNotEmpty;
   }
 
   final Map<String, Hours?> hoursMap = {};
@@ -417,6 +421,8 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
       // for (final day in hoursMap.entries) {
       //   log('$day: ${day.value}');
       // }
+
+      _canProceed = selectedDays.isNotEmpty;
     });
   }
 
@@ -467,6 +473,8 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
         _onSetHours(dayy, "00:00", "23:59"); // Define os horários padrão
       }
     });
+
+    _canProceed = selectedDays.isNotEmpty;
   }
 
   @override
@@ -540,7 +548,7 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
                   'Você deve escolher os dias da semana e os horários que disponibilizará o espaço para alguel.Essas opções poderão ser alteradas posteriormente.',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 12,
+                    fontSize: 13,
                   ),
                 ),
               ),
@@ -654,12 +662,19 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
               const SizedBox(
                 height: 31,
               ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  GestureDetector(
-                    key: Keys.k9ScreenButton,
-                    onTap: () {
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 38.0, vertical: 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              key: Keys.k9ScreenButton,
+              onTap: _canProceed
+                  ? () {
                       final days = _createDaysObject();
 
                       final result = spaceRegister.validateDiaEHoras(
@@ -679,68 +694,68 @@ class _SemanaEHorasState extends ConsumerState<SemanaEHoras> {
                         Messages.showError(
                             'Erro ao cadastrar calendário', context);
                       }
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 9),
-                      alignment: Alignment.center,
-                      height: 35,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color(0xff9747FF),
-                            Color(0xff44300b1),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                      ),
-                      child: const Text(
-                        'Avançar',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                    }
+                  : null,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                alignment: Alignment.center,
+                height: 35,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  gradient: LinearGradient(
+                    colors: _canProceed
+                        ? [
+                            const Color(0xff9747FF),
+                            const Color(0xff44300b1)
+                          ] // Ativo
+                        : [Colors.grey, Colors.grey], // Desabilitado
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   ),
-                  const SizedBox(
-                    height: 9,
+                ),
+                child: const Text(
+                  'Avançar',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 9),
-                      alignment: Alignment.center,
-                      height: 35,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color(0xff9747FF),
-                            Color(0xff44300b1),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                      ),
-                      child: const Text(
-                        'Voltar',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ],
-          ),
+            ),
+            const SizedBox(
+              height: 9,
+            ),
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                alignment: Alignment.center,
+                height: 35,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xff9747FF),
+                      Color(0xff44300b1),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+                child: const Text(
+                  'Voltar',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

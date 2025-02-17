@@ -42,7 +42,8 @@ class SearchViewModel extends ChangeNotifier {
   Future<void> getAllSpaces() async {
     if (_allSpaces.isEmpty) {
       try {
-        final allSpaceDocuments = await spacesCollection.get();
+        final allSpaceDocuments =
+            await spacesCollection.where('deletedAt', isNull: true).get();
         final userSpacesFavorite = await getUserFavoriteSpaces();
 
         List<SpaceModel> spaceModels =
@@ -91,7 +92,10 @@ class SearchViewModel extends ChangeNotifier {
   Future<List<SpaceModel>> getPaginatedSpaces(
       int pageKey, int pageSize, String query) async {
     try {
-      Query queryBuilder = spacesCollection.orderBy('titulo').limit(pageSize);
+      Query queryBuilder = spacesCollection
+          .where('deletedAt', isNull: true)
+          .orderBy('titulo')
+          .limit(pageSize);
 
       if (query.isNotEmpty) {
         String lowerCaseQuery = query.toLowerCase();
@@ -102,6 +106,7 @@ class SearchViewModel extends ChangeNotifier {
 
       if (pageKey > 0) {
         final lastDocSnapshot = await spacesCollection
+            .where('deletedAt', isNull: true)
             .orderBy('titulo')
             .limit(pageKey)
             .get()

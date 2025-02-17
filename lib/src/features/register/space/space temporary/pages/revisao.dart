@@ -1,4 +1,7 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:festou/src/features/bottomNavBarLocador/bottom_navbar_locador_page.dart';
+import 'package:festou/src/features/loading_indicator.dart';
+import 'package:festou/src/features/show%20spaces/my%20space%20mvvm/my_spaces_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:festou/src/core/ui/helpers/messages.dart';
@@ -52,18 +55,72 @@ class _RevisaoState extends ConsumerState<Revisao> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text("Sucesso"),
-            content:
-                const Text("O espaço do locador foi cadastrado com sucesso!"),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text("OK"),
+          return ZoomIn(
+            duration: const Duration(milliseconds: 500),
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
-            ],
+              backgroundColor: Colors.white,
+              title: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  BounceInDown(
+                    duration: const Duration(milliseconds: 600),
+                    child: const Icon(
+                      Icons.check_circle,
+                      color: Color(0xff4CAF50),
+                      size: 80,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    "Cadastrado!",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+              content: const Text(
+                "Seu espaço foi cadastrado com sucesso!",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black54,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              actionsAlignment: MainAxisAlignment.center,
+              actions: [
+                FadeInUp(
+                  duration: const Duration(milliseconds: 300),
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
+                      backgroundColor: const Color.fromARGB(255, 68, 0, 177),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      "OK",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           );
         },
       );
@@ -127,7 +184,7 @@ class _RevisaoState extends ConsumerState<Revisao> {
                     ),
                   ),
                   const SizedBox(
-                    height: 41,
+                    height: 20,
                   ),
                   const Text(
                     'Categorias:',
@@ -252,7 +309,16 @@ class _RevisaoState extends ConsumerState<Revisao> {
                   const SizedBox(
                     height: 30,
                   ),
-
+                ],
+              ),
+            ),
+          ),
+          bottomNavigationBar: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 38.0, vertical: 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
                   GestureDetector(
                     key: Keys.k10ScreenButton,
                     onTap: () async {
@@ -262,6 +328,11 @@ class _RevisaoState extends ConsumerState<Revisao> {
                         await newSpaceRegister.register();
                         isRegistering = false;
                         setState(() {});
+
+                        // 🚀 Atualiza automaticamente a lista de espaços
+                        ref.invalidate(mySpacesVmProvider);
+
+                        // Redireciona o usuário após o cadastro
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -331,18 +402,13 @@ class _RevisaoState extends ConsumerState<Revisao> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 30,
-                  ),
                 ],
-              ),
-            ),
-          ),
+              )),
         ),
         if (isRegistering)
           decContainer(
               color: Colors.black.withOpacity(0.5),
-              child: const Center(child: CircularProgressIndicator()))
+              child: const Center(child: CustomLoadingIndicator()))
       ],
     );
   }

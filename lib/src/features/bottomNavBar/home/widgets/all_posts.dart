@@ -20,7 +20,7 @@ class _AllPostsState extends State<AllPosts> {
   bool loadingMorePosts = false;
   bool hasMorePosts = true;
   Map<String, DocumentSnapshot?> lastDocuments = {};
-  final int postsPerPage = 10;
+  final int postsPerPage = 2;
   User? user;
   DocumentSnapshot? userDoc;
   bool hideVerMaisButton = false;
@@ -116,6 +116,16 @@ class _AllPostsState extends State<AllPosts> {
       }
     }
 
+    // Adiciona o post da coleção "festou"
+    QuerySnapshot festouSnapshot = await _firestore
+        .collection('posts')
+        .doc('festou')
+        .collection('posts')
+        .limit(1)
+        .get();
+
+    postDocuments.addAll(festouSnapshot.docs);
+
     setState(() {
       posts = postDocuments;
       loadingPosts = false;
@@ -124,8 +134,6 @@ class _AllPostsState extends State<AllPosts> {
         hasMorePosts = false;
       }
     });
-
-    // Adding final log to check the state of h
   }
 
   Future<void> _getMorePosts() async {
@@ -257,11 +265,35 @@ class _AllPostsState extends State<AllPosts> {
               itemBuilder: (context, index) {
                 if (index == posts.length) {
                   return hasMorePosts && !loadingPosts && !hideVerMaisButton
-                      ? ElevatedButton(
-                          onPressed: _getMorePosts,
-                          child: loadingMorePosts
-                              ? const CustomLoadingIndicator()
-                              : const Text('Ver mais'),
+                      ? GestureDetector(
+                          onTap: _getMorePosts,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 9),
+                            alignment: Alignment.center,
+                            height: 35,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color(0xff9747FF),
+                                  Color(0xff44300b1),
+                                ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                              ),
+                            ),
+                            child: loadingMorePosts
+                                ? const CustomLoadingIndicator()
+                                : const Text(
+                                    'Ver mais',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                          ),
                         )
                       : const SizedBox.shrink();
                 }
@@ -309,17 +341,18 @@ class AllPostsWidget extends StatelessWidget {
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
+          color: Colors.red,
           borderRadius: BorderRadius.circular(10),
         ),
-        width: 174,
-        height: 110,
+        //width: 174,
+        // height: 110,
         child: Stack(
+          fit: StackFit.expand,
           children: [
             ClipRRect(
               //clipBehavior: Clip.none,
               borderRadius: BorderRadius.circular(10),
               child: Image.network(
-                height: 250,
                 postModel.coverPhoto,
                 fit: BoxFit.cover,
               ),

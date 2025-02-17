@@ -88,7 +88,7 @@ class _DescricaoState extends ConsumerState<Descricao> {
                     'Explique o que seu espaço tem de especial e encante os clientes',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                      fontSize: 13,
                     ),
                   ),
                 ),
@@ -129,7 +129,7 @@ class _DescricaoState extends ConsumerState<Descricao> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 69, vertical: 40),
+        padding: const EdgeInsets.symmetric(horizontal: 38.0, vertical: 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -147,7 +147,7 @@ class _DescricaoState extends ConsumerState<Descricao> {
                     ),
                   );
                 } else {
-                  Messages.showInfo('Escreva uma descrição', context);
+                  Messages.showInfo('Descreva seu espaço!', context);
                 }
               },
               child: Container(

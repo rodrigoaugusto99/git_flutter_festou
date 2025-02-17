@@ -199,73 +199,59 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             width: emailFieldWidth,
                             height: emailFieldHeight,
                             decoration: BoxDecoration(
-                              color: Colors.white, // Cor de fundo branca
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(50.0),
                             ),
                             child: TextFormField(
                               style: const TextStyle(fontSize: 14.0),
-                              //validator: (v) => validateEmail(emailEC.text),
                               controller: emailEC,
                               onTapOutside: (_) =>
                                   FocusScope.of(context).unfocus(),
                               decoration: const InputDecoration(
-                                hintText: 'Email',
-                                contentPadding: EdgeInsets.only(top: 12),
-                                hintStyle: TextStyle(fontSize: 14, height: 1.4),
+                                hintText: 'E-mail',
+                                hintStyle: TextStyle(fontSize: 14),
                                 border: InputBorder.none,
-                                enabledBorder: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                                errorBorder: InputBorder.none,
-                                disabledBorder: InputBorder.none,
-                                prefixIcon: Icon(
-                                  // Ícone à esquerda
-                                  Icons.email,
-                                  color: Colors.grey, // Cor do ícone
-                                ),
+                                contentPadding: EdgeInsetsDirectional.all(11),
+                                prefixIcon:
+                                    Icon(Icons.email, color: Colors.grey),
+                                alignLabelWithHint:
+                                    true, // Mantém alinhamento do hint
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: screenHeight * 0.02,
-                          ),
+                          SizedBox(height: screenHeight * 0.02),
                           Container(
                             width: passwordFieldWidth,
                             height: passwordFieldHeight,
                             decoration: BoxDecoration(
-                              color: Colors.white, // Cor de fundo branca
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(50.0),
                             ),
                             child: TextFormField(
                               style: const TextStyle(fontSize: 14.0),
-                              //validator: loginVM.validatePassword(),
-                              obscureText: isVisible ? false : true,
+                              obscureText: !isVisible,
                               controller: passwordEC,
                               decoration: InputDecoration(
-                                //errorText: ,
-                                contentPadding: const EdgeInsets.only(top: 12),
-                                hintText: 'Password',
-                                hintStyle:
-                                    const TextStyle(fontSize: 14, height: 1.4),
-                                border:
-                                    InputBorder.none, // Remove a borda padrão
-                                prefixIcon: const Icon(
-                                  // Ícone à esquerda
-                                  Icons.lock,
-                                  color: Colors.grey, // Cor do ícone
-                                ),
+                                hintText: 'Senha',
+                                hintStyle: const TextStyle(fontSize: 14),
+                                border: InputBorder.none,
+                                contentPadding:
+                                    const EdgeInsetsDirectional.all(11),
+                                prefixIcon:
+                                    const Icon(Icons.lock, color: Colors.grey),
                                 suffixIcon: GestureDetector(
-                                  onTap: () => setState(
-                                    () {
-                                      isVisible = !isVisible;
-                                    },
-                                  ),
-                                  child: isVisible
-                                      ? const Icon(Icons.visibility)
-                                      : const Icon(Icons.visibility_off),
+                                  onTap: () =>
+                                      setState(() => isVisible = !isVisible),
+                                  child: Icon(isVisible
+                                      ? Icons.visibility
+                                      : Icons.visibility_off),
                                 ),
+                                alignLabelWithHint:
+                                    true, // Mantém alinhamento do hint
                               ),
                             ),
                           ),
+
                           SizedBox(
                             height: screenHeight * 0.02,
                           ),
