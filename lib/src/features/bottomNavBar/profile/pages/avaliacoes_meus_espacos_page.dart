@@ -199,34 +199,6 @@ class _AvaliacoesMeusEspacosPageState extends State<AvaliacoesMeusEspacosPage> {
                       style: TextStyle(color: Colors.grey),
                     ),
                   ],
-                  if (selectedSpaceFeedbacks != null &&
-                      selectedSpaceFeedbacks!.isNotEmpty) ...[
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: selectedSpaceFeedbacks!.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final feedback = selectedSpaceFeedbacks![index];
-                        if (feedback.content == '' ||
-                            feedback.deletedAt != null) {
-                          return const SizedBox.shrink();
-                        }
-                        return AvaliacoesItem(
-                          hideThings: true,
-                          feedback: feedback,
-                          onDelete: () {
-                            selectedSpaceFeedbacks!.removeAt(index);
-                          },
-                        );
-                      },
-                    ),
-                  ] else ...[
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Nenhuma avaliação',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  ],
                 ],
               ),
             ),
@@ -256,25 +228,21 @@ class SpaceWidget extends StatelessWidget {
           children: [
             decContainer(
               radius: 8,
-              color: Colors.blue,
-              width: screenWidth(context) / 1.5,
-              height: 61,
+              color: const Color.fromARGB(255, 255, 255, 255),
+              width: screenWidth(context) * 0.7,
+              height: screenHeight(context) * 0.09,
               child: Stack(
                 children: [
-                  if (space.imagesUrl.isNotEmpty)
-                    Image.network(
-                      space.imagesUrl[0],
-                      width: screenWidth(context) / 2,
-                      height: 61,
-                      // color: Colors.green,
+                  Image.network(
+                    space.imagesUrl.isNotEmpty
+                        ? space.imagesUrl[0]
+                        : 'URL de uma imagem padrão ou vazia',
+                    width: screenWidth(context) * 0.7,
+                    height: screenHeight(context) * 0.09,
+                    // color: Colors.green,
 
-                      fit: BoxFit.cover,
-                    ),
-                  if (space.imagesUrl.isEmpty)
-                    Container(
-                      height: 61,
-                      color: Colors.grey,
-                    ),
+                    fit: BoxFit.cover,
+                  ),
                   Positioned(
                     bottom: 0,
                     left: 0,
@@ -284,23 +252,28 @@ class SpaceWidget extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            children: [
-                              Text(
-                                space.titulo,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 2.0, horizontal: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  space.titulo,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                '${space.bairro}, ${space.cidade}',
-                                style: const TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w400,
-                                    color: Color(0xff5E5E5E)),
-                              ),
-                            ],
+                                Text(
+                                  '${space.bairro}, ${space.cidade}',
+                                  style: const TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w400,
+                                      color: Color.fromARGB(255, 66, 66, 66)),
+                                ),
+                              ],
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(right: 15),
@@ -311,7 +284,9 @@ class SpaceWidget extends StatelessWidget {
                                   double.parse(space.averageRating),
                                 ),
                               ),
-                              child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 2.0, vertical: 4.0),
                                 child: Text(
                                   double.parse(space.averageRating)
                                       .toStringAsFixed(1),

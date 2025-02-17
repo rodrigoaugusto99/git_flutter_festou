@@ -6,7 +6,7 @@ import 'package:festou/src/models/space_model.dart';
 class MySliverListToCardInfo extends StatelessWidget {
   final List<SpaceModel> spaces;
   final bool x;
-  bool isLocadorFlow;
+  final bool isLocadorFlow;
 
   MySliverListToCardInfo({
     super.key,
@@ -21,33 +21,29 @@ class MySliverListToCardInfo extends StatelessWidget {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) {
-        if (index >= 0 && index < spaces.length) {
-          // Verifique se o índice é válido antes de acessar a lista
-          return InkWell(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    NewCardInfo(spaceId: spaces[index].spaceId),
-              ),
-            ),
-            child: Padding(
-              padding: EdgeInsets.only(top: y * 0.01, bottom: y * 0.03),
-              child: NewSpaceCard(
-                isLocadorFlow: isLocadorFlow,
-                hasHeart: x,
-                space: spaces[index],
-                isReview: false,
-              ),
-            ),
-          );
-        } else {
-          // Índice inválido, retorne um widget vazio ou de carregamento, conforme necessário
-          return Container();
-        }
-      },
       itemCount: spaces.length,
+      itemBuilder: (context, index) {
+        bool isLastItem = index == spaces.length - 1;
+        double bottomPadding = isLastItem ? y * 0.04 : 0;
+
+        return InkWell(
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NewCardInfo(spaceId: spaces[index].spaceId),
+            ),
+          ),
+          child: Padding(
+            padding: EdgeInsets.only(top: y * 0.01, bottom: bottomPadding),
+            child: NewSpaceCard(
+              isLocadorFlow: isLocadorFlow,
+              hasHeart: x,
+              space: spaces[index],
+              isReview: false,
+            ),
+          ),
+        );
+      },
     );
   }
 }

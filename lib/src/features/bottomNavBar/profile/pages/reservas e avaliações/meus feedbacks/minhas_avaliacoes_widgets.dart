@@ -307,14 +307,14 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                               ),
                               child: Center(
                                 child: Padding(
-                                  padding: const EdgeInsets.all(7.0),
+                                  padding: const EdgeInsets.all(4.0),
                                   child: Text(
                                     double.parse(myFeedback!.rating.toString())
                                         .toStringAsFixed(1),
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 10,
+                                      fontSize: 12,
                                     ),
                                   ),
                                 ),

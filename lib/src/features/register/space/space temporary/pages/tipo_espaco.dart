@@ -14,12 +14,16 @@ class TipoEspaco extends ConsumerStatefulWidget {
 }
 
 class _TipoEspacoState extends ConsumerState<TipoEspaco> {
+  bool _canProceed = false;
+
   @override
   void initState() {
     super.initState();
     final vm = ref.read(newSpaceRegisterVmProvider.notifier);
     final state = vm.getState();
     selectedTypes = state.selectedTypes;
+
+    _canProceed = selectedTypes.isNotEmpty;
   }
 
   List<String> selectedTypes = [];
@@ -82,6 +86,12 @@ class _TipoEspacoState extends ConsumerState<TipoEspaco> {
                   onTypePressed: (value) {
                     log('onTypePressed: $value');
                     newSpaceRegister.addOrRemoveType(value);
+
+                    if (!mounted) return;
+                    setState(() {
+                      _canProceed =
+                          newSpaceRegister.getState().selectedTypes.isNotEmpty;
+                    });
                   },
                   selectedTypes: selectedTypes,
                 ),
@@ -91,18 +101,22 @@ class _TipoEspacoState extends ConsumerState<TipoEspaco> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 69, vertical: 40),
+        padding: const EdgeInsets.symmetric(horizontal: 38.0, vertical: 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
-              key: Keys.kSecondScreenButton,
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const Localizacao(),
-                ),
-              ),
+              key: Keys.k5creenButton,
+              onTap: _canProceed
+                  ? () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Localizacao(),
+                        ),
+                      );
+                    }
+                  : null,
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
@@ -110,11 +124,13 @@ class _TipoEspacoState extends ConsumerState<TipoEspaco> {
                 height: 35,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(50),
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xff9747FF),
-                      Color(0xff44300b1),
-                    ],
+                  gradient: LinearGradient(
+                    colors: _canProceed
+                        ? [
+                            const Color(0xff9747FF),
+                            const Color(0xff44300b1)
+                          ] // Ativo
+                        : [Colors.grey, Colors.grey], // Desabilitado
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                   ),
@@ -122,10 +138,9 @@ class _TipoEspacoState extends ConsumerState<TipoEspaco> {
                 child: const Text(
                   'Avançar',
                   style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                 ),
               ),
             ),

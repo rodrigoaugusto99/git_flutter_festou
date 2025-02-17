@@ -197,7 +197,7 @@ class _CancelReservationDialogState extends State<CancelReservationDialog> {
 
             try {
               await validateInput();
-              Navigator.of(context).pop();
+              Navigator.of(context).pop(reason);
               await ReservaService()
                   .cancelReservation(widget.reservation.id!, reason);
 
