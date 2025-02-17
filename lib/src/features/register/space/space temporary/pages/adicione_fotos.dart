@@ -18,15 +18,17 @@ class AdicioneFotos extends ConsumerStatefulWidget {
 
 class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
   Timer? _timer;
+  bool _canProceed = false;
 
   @override
   void initState() {
     super.initState();
-    // final vm = ref.read(newSpaceRegisterVmProvider.notifier);
-    // final state = vm.getState();
-    // selectedTypes = state.selectedTypes;
+    final spaceRegister = ref.read(newSpaceRegisterVmProvider.notifier);
+    _canProceed = spaceRegister.imageFiles.length >= 3;
+
     // Cria um Timer que atualiza o estado a cada 5 segundos
     _timer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
+      if (!mounted) return;
       setState(() {});
     });
   }
@@ -68,6 +70,7 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
             return GestureDetector(
               onTap: () {
                 selectedVideoIndex = index;
+                if (!mounted) return;
                 setState(() {});
               },
               child: ClipRRect(
@@ -87,18 +90,15 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
                     ),
                     if (selectedVideoIndex == index)
                       Container(
-                        decoration: BoxDecoration(
-                            color: Colors.black
-                                .withOpacity(0.5) // Fundo preto opaco
-
-                            ),
+                        decoration:
+                            BoxDecoration(color: Colors.black.withOpacity(0.5)),
                       ),
                     if (selectedVideoIndex == index)
                       Positioned(
                         child: GestureDetector(
                           onTap: () {
+                            if (!mounted) return;
                             setState(() {
-                              // Aqui você pode implementar a lógica para excluir a imagem
                               onDelete(index);
                             });
                           },
@@ -148,6 +148,7 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
             return GestureDetector(
               onTap: () {
                 selectedPhotoIndex = index;
+                if (!mounted) return;
                 setState(() {});
               },
               child: ClipRRect(
@@ -180,8 +181,8 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
                       Positioned(
                         child: GestureDetector(
                           onTap: () {
+                            if (!mounted) return;
                             setState(() {
-                              // Aqui você pode implementar a lógica para excluir a imagem
                               onDelete(index);
                             });
                           },
@@ -301,11 +302,18 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
               customGrid(
                 onDelete: (index) {
                   spaceRegister.imageFiles.removeAt(index);
+                  if (!mounted) return;
+                  setState(() {
+                    _canProceed = spaceRegister.imageFiles.length >= 3;
+                  });
                 },
                 imageFiles: spaceRegister.imageFiles,
                 onAddPressed: () async {
                   photosLength = await spaceRegister.pickImage();
-                  setState(() {});
+                  if (!mounted) return;
+                  setState(() {
+                    _canProceed = spaceRegister.imageFiles.length >= 3;
+                  });
                 },
               ),
               const SizedBox(
@@ -336,12 +344,13 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
                 onDelete: (index) {
                   spaceRegister.videos.removeAt(index);
                   spaceRegister.localControllers.removeAt(index);
+                  if (!mounted) return;
                   setState(() {});
                 },
                 videoFiles: spaceRegister.videos,
                 onAddPressed: () async {
                   await spaceRegister.pickVideo();
-                  // await Future.delayed(const Duration(seconds: 1));
+                  if (!mounted) return;
                   setState(() {});
                 },
                 controllers: spaceRegister.localControllers,
@@ -349,96 +358,89 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
               const SizedBox(
                 height: 50,
               ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  GestureDetector(
-                    key: Keys.k5creenButton,
-                    onTap: () {
-                      // if (spaceRegister.imageFiles.isEmpty) {
-                      //   Messages.showInfo(
-                      //       'Adicione pelo menos uma foto', context);
-                      //   return;
-                      // }
-
+              const SizedBox(
+                height: 20,
+              ),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 38.0, vertical: 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              key: Keys.k5creenButton,
+              onTap: _canProceed
+                  ? () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const Titulo(),
                         ),
                       );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 9),
-                      alignment: Alignment.center,
-                      height: 35,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color(0xff9747FF),
-                            Color(0xff44300b1),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                      ),
-                      child: const Text(
-                        'Avançar',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                    }
+                  : null,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                alignment: Alignment.center,
+                height: 35,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  gradient: LinearGradient(
+                    colors: _canProceed
+                        ? [
+                            const Color(0xff9747FF),
+                            const Color(0xff44300b1)
+                          ] // Ativo
+                        : [Colors.grey, Colors.grey], // Desabilitado
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   ),
-                  const SizedBox(
-                    height: 9,
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 9),
-                      alignment: Alignment.center,
-                      height: 35,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color(0xff9747FF),
-                            Color(0xff44300b1),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                      ),
-                      child: const Text(
-                        'Voltar',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
+                child: const Text(
+                  'Avançar',
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
               ),
-              // ElevatedButton(
-              //   onPressed: () async {
-              //     photosLength = await spaceRegister.pickImage();
-              //     setState(() {});
-              //   },
-              //   child: const Text('Adicionar fotos'),
-              // ),
-              const SizedBox(
-                height: 20,
+            ),
+            const SizedBox(
+              height: 9,
+            ),
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                alignment: Alignment.center,
+                height: 35,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xff9747FF),
+                      Color(0xff44300b1),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+                child: const Text(
+                  'Voltar',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:festou/src/core/ui/helpers/messages.dart';
 import 'package:festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
-import 'package:festou/src/features/register/space/space%20temporary/pages/servicos_acomodacoes.dart';
+import 'package:festou/src/features/register/space/space%20temporary/pages/servicos_comodidades.dart';
 import 'package:festou/src/features/register/space/space%20temporary/pages/textfield.dart';
 import 'package:festou/src/helpers/keys.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -233,7 +233,7 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 69, vertical: 40),
+        padding: const EdgeInsets.symmetric(horizontal: 38.0, vertical: 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -256,7 +256,7 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ServicosAcomodacoes(),
+                      builder: (context) => const ServicosComodidades(),
                     ),
                   );
                 }
