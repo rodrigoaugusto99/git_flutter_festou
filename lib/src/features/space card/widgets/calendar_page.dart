@@ -682,12 +682,14 @@ class _CalendarPageState extends State<CalendarPage> {
           ),
           if (_showAnimation)
             Positioned.fill(
-              child: Center(
-                child: Lottie.asset(
-                  'lib/assets/animations/confetti_explosion.json',
-                  width: 500,
-                  height: 500,
-                  repeat: false,
+              child: IgnorePointer(
+                child: Center(
+                  child: Lottie.asset(
+                    'lib/assets/animations/confetti_explosion.json',
+                    width: 500,
+                    height: 500,
+                    repeat: false,
+                  ),
                 ),
               ),
             ),
