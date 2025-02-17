@@ -137,13 +137,13 @@ class _CalendarioState extends State<Calendario> {
     return Scaffold(
       backgroundColor: const Color(0xffF8F8F8),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 18.0),
             child: Container(
               padding: const EdgeInsets.all(7),
               decoration: BoxDecoration(
-                //color: Colors.white.withOpacity(0.7),
                 color: Colors.white,
                 shape: BoxShape.circle,
                 boxShadow: [
@@ -151,7 +151,7 @@ class _CalendarioState extends State<Calendario> {
                     color: Colors.grey.withOpacity(0.5),
                     spreadRadius: 2,
                     blurRadius: 5,
-                    offset: const Offset(0, 2), // changes position of shadow
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
@@ -321,17 +321,17 @@ class SpaceWidget extends StatelessWidget {
           children: [
             decContainer(
               radius: 8,
-              color: Colors.blue,
-              width: screenWidth(context) / 2,
-              height: 61,
+              color: const Color.fromARGB(255, 255, 255, 255),
+              width: screenWidth(context) * 0.7,
+              height: screenHeight(context) * 0.09,
               child: Stack(
                 children: [
                   Image.network(
                     space.imagesUrl.isNotEmpty
                         ? space.imagesUrl[0]
                         : 'URL de uma imagem padrão ou vazia',
-                    width: screenWidth(context) / 2,
-                    height: 61,
+                    width: screenWidth(context) * 0.7,
+                    height: screenHeight(context) * 0.09,
                     // color: Colors.green,
 
                     fit: BoxFit.cover,
@@ -345,23 +345,28 @@ class SpaceWidget extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            children: [
-                              Text(
-                                space.titulo,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 2.0, horizontal: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  space.titulo,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                '${space.bairro}, ${space.cidade}',
-                                style: const TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w400,
-                                    color: Color(0xff5E5E5E)),
-                              ),
-                            ],
+                                Text(
+                                  '${space.bairro}, ${space.cidade}',
+                                  style: const TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w400,
+                                      color: Color.fromARGB(255, 66, 66, 66)),
+                                ),
+                              ],
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(right: 15),
@@ -372,7 +377,9 @@ class SpaceWidget extends StatelessWidget {
                                   double.parse(space.averageRating),
                                 ),
                               ),
-                              child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 2.0, vertical: 4.0),
                                 child: Text(
                                   double.parse(space.averageRating)
                                       .toStringAsFixed(1),
@@ -432,26 +439,13 @@ class CalendarioExpansioWidget extends StatefulWidget {
 }
 
 class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
-  //UserModel? user;
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   getUserById();
-  // }
-
   String formatTime(int hour) {
     String hourStr = hour.toString().padLeft(2, '0');
     return '$hourStr:00h';
   }
 
-  // String formatDateString(String dateStr) {
-  //   DateTime date = DateTime.parse(dateStr);
-  //   DateFormat formatter = DateFormat('d \'de\' MMMM \'de\' yyyy', 'pt_BR');
-  //   return formatter.format(date);
-  // }
-
   String formatDateTimestamp(Timestamp timestamp) {
-    DateTime date = timestamp.toDate(); // Converte o Timestamp para DateTime
+    DateTime date = timestamp.toDate();
     DateFormat formatter = DateFormat('d \'de\' MMMM \'de\' yyyy', 'pt_BR');
     return formatter.format(date);
   }
@@ -478,7 +472,7 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Fecha o diálogo
+                Navigator.of(context).pop();
               },
               child: const Text('Fechar'),
             ),
