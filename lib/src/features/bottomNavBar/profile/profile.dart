@@ -331,6 +331,7 @@ class _ProfileState extends ConsumerState<Profile> {
                               Text(
                                 updatedUserModel.name,
                                 style: const TextStyle(
+                                    overflow: TextOverflow.ellipsis,
                                     fontSize: 22,
                                     fontWeight: FontWeight.w800,
                                     height: 1.2),
