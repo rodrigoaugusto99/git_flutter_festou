@@ -1566,14 +1566,6 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
               return;
             }
 
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const PixPage2(),
-              ),
-            );
-            return;
-
             if (widget.assinado && widget.html != null && userModel != null) {
               //todo: pode reservar
 
@@ -1587,6 +1579,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                     builder: (context) => const PixPage2(),
                   ),
                 );
+                return;
               }
 
               // await showReservationLottieDialog();
