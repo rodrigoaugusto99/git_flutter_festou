@@ -1365,7 +1365,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                       ),
                       const SizedBox(width: 5),
                       Text(
-                        "Cartão ${card!.number.substring(0, 4)}",
+                        "Cartão ${card!.cardName}",
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
