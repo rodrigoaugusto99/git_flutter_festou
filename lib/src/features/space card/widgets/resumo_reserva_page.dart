@@ -1568,37 +1568,48 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
 
             if (widget.assinado && widget.html != null && userModel != null) {
               //todo: pode reservar
+              final reservationModel = ReservationModel(
+                spaceId: widget.summaryData.spaceModel.spaceId,
+                locadorId: widget.summaryData.spaceModel.userId,
+                clientId: userModel!.uid,
+                checkInTime: widget.summaryData.checkInTime,
+                checkOutTime: widget.summaryData.checkOutTime,
+                hasReview: false,
+                selectedDate:
+                    Timestamp.fromDate(widget.summaryData.selectedDate),
+                selectedFinalDate:
+                    Timestamp.fromDate(widget.summaryData.selectedFinalDate!),
+                contratoHtml: widget.html!,
+                cardId: card?.id,
+              );
 
               await showLoading();
               if (card != null) {
                 await showPaymentLottieDialog();
               } else if (isPix) {
-                Navigator.push(
+                await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const PixPage2(),
                   ),
                 );
+                await ReservaService()
+                    .saveReservation(reservationModel: reservationModel);
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.pop(context);
+
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ReservasAvaliacoesPage(userId: userModel!.uid)));
+                Messages.showSuccess('Reserva concluída com sucesso', context);
                 return;
               }
 
               // await showReservationLottieDialog();
               try {
-                final reservationModel = ReservationModel(
-                  spaceId: widget.summaryData.spaceModel.spaceId,
-                  locadorId: widget.summaryData.spaceModel.userId,
-                  clientId: userModel!.uid,
-                  checkInTime: widget.summaryData.checkInTime,
-                  checkOutTime: widget.summaryData.checkOutTime,
-                  hasReview: false,
-                  selectedDate:
-                      Timestamp.fromDate(widget.summaryData.selectedDate),
-                  selectedFinalDate:
-                      Timestamp.fromDate(widget.summaryData.selectedFinalDate!),
-                  contratoHtml: widget.html!,
-                  cardId: card?.id,
-                );
-
                 dev.log('Pode reservar.');
                 await ReservaService()
                     .saveReservation(reservationModel: reservationModel);
