@@ -8,13 +8,13 @@ class SearchViewModel extends ChangeNotifier {
   final CollectionReference spacesCollection =
       FirebaseFirestore.instance.collection('spaces');
 
-  List<SpaceModel> _filteredList = [];
+  List<SpaceModel>? _filteredList;
   final List<String> _searchHistory = [];
 
   bool _isShowing = false;
 
   bool getIsShowingBool() => _isShowing;
-  List<SpaceModel> getSpaces() => _filteredList;
+  List<SpaceModel>? getSpaces() => _filteredList;
   List<String> getHistoric() => _searchHistory;
 
   List<SpaceModel> _allSpaces = [];
@@ -27,7 +27,7 @@ class SearchViewModel extends ChangeNotifier {
   void onChangedSearch(String value) {
     if (value.trim().isEmpty) {
       _isShowing = false;
-      _filteredList = [];
+      _filteredList = null;
     } else {
       _isShowing = true;
       String searchValue = value.toLowerCase();

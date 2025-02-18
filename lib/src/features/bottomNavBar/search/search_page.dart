@@ -103,30 +103,36 @@ class _SearchPageState extends State<SearchPage> {
                           ],
                         ),
                       ),
-                      searchViewModel.getSpaces().isNotEmpty
+                      searchViewModel.getSpaces() != null &&
+                              searchViewModel.getSpaces()!.isNotEmpty
                           ? Expanded(
                               child: ListView.builder(
                                 padding: const EdgeInsets.all(10),
-                                itemCount: searchViewModel.getSpaces().length,
+                                itemCount: searchViewModel.getSpaces()!.length,
                                 itemBuilder: (context, index) {
                                   return NewSpaceCard(
                                     hasHeart: true,
-                                    space: searchViewModel.getSpaces()[index],
+                                    space: searchViewModel.getSpaces()![index],
                                     isReview: false,
                                   );
                                 },
                               ),
                             )
-                          : Column(children: [
-                              Lottie.asset(
-                                'lib/assets/animations/searchAnimation.json',
-                                height: y * 0.42,
-                              ),
-                              const Text(
-                                'Busque pelos melhores espaços disponíveis para o seu Festou!',
-                                textAlign: TextAlign.center,
-                              ),
-                            ]),
+                          : searchViewModel.getSpaces() != null &&
+                                  searchViewModel.getSpaces()!.isEmpty
+                              ? const Center(
+                                  child: Text("Não foram encontrados espaços"),
+                                )
+                              : Column(children: [
+                                  Lottie.asset(
+                                    'lib/assets/animations/searchAnimation.json',
+                                    height: y * 0.42,
+                                  ),
+                                  const Text(
+                                    'Busque pelos melhores espaços disponíveis para o seu Festou!',
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ]),
                     ],
                   ),
                 ),
