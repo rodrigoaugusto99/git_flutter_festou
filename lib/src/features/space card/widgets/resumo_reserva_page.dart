@@ -10,6 +10,7 @@ import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20av
 import 'package:festou/src/features/loading_indicator.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:festou/src/features/space%20card/widgets/pix_page2.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/core/ui/helpers/messages.dart';
 import 'package:festou/src/features/bottomNavBar/profile/pages/pagamentos/pagamentos.dart';
@@ -1559,12 +1560,35 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
           onTap: () async {
             //dev.log(widget.html.toString());
             dev.log(widget.summaryData.selectedFinalDate.toString());
+            if (!isPix && card == null) {
+              Messages.showInfo(
+                  'Selecione um método de pagamento para continuar', context);
+              return;
+            }
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const PixPage2(),
+              ),
+            );
+            return;
 
             if (widget.assinado && widget.html != null && userModel != null) {
               //todo: pode reservar
 
               await showLoading();
-              await showPaymentLottieDialog();
+              if (card != null) {
+                await showPaymentLottieDialog();
+              } else if (isPix) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const PixPage2(),
+                  ),
+                );
+              }
+
               // await showReservationLottieDialog();
               try {
                 final reservationModel = ReservationModel(

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class PixPage2 extends StatefulWidget {
@@ -87,7 +88,10 @@ class _PixPage2State extends State<PixPage2> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Align(
-                  child: Image.asset('lib/assets/images/Pix Imagepix (1).png')),
+                  child: Image.asset(
+                'lib/assets/images/logo_pix.png',
+                width: 70,
+              )),
               const SizedBox(height: 10),
               const Align(
                 child: Text(
@@ -159,7 +163,9 @@ class _PixPage2State extends State<PixPage2> {
                               BorderRadius.circular(20), // Bordas arredondadas
                         ),
                       ),
-                      onPressed: () {
+                      onPressed: () async {
+                        await Clipboard.setData(const ClipboardData(
+                            text: 'ghsg6sdg6sg67d6g7s6hg79sdg67sd6gh'));
                         // Navigator.push(
                         //   context,
                         //   MaterialPageRoute(
