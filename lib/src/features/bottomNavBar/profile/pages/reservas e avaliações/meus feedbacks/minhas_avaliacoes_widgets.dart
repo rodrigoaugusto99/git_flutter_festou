@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:festou/src/services/user_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -24,22 +26,73 @@ class MinhasAvaliacoesWidget extends StatefulWidget {
 }
 
 class _MinhasAvaliacoesWidgetState extends State<MinhasAvaliacoesWidget> {
+  AvaliacoesModel mapFeedbackDocumentToModel(
+      QueryDocumentSnapshot feedbackDocument) {
+    List<String> likes = List<String>.from(feedbackDocument['likes'] ?? []);
+    List<String> dislikes =
+        List<String>.from(feedbackDocument['dislikes'] ?? []);
+    return AvaliacoesModel(
+      spaceId: feedbackDocument['space_id'] ?? '',
+      userId: feedbackDocument['user_id'] ?? '',
+      reservationId: feedbackDocument['reservationId'] ?? '',
+      deletedAt: feedbackDocument['deletedAt'],
+      rating: feedbackDocument['rating'] ?? 0,
+      content: feedbackDocument['content'] ?? '',
+      userName: feedbackDocument['user_name'] ?? '',
+      date: feedbackDocument['date'] ?? '',
+      avatar: feedbackDocument['avatar'] ?? '',
+      likes: likes,
+      dislikes: dislikes,
+      id: feedbackDocument['id'] ?? '',
+    );
+  }
+
   late List<AvaliacoesModel> feedbacks;
 
   @override
   void initState() {
     super.initState();
     feedbacks = List.from(widget.initialFeedbacks);
+    setMyFeedbacksListener();
   }
 
-  Future<void> refreshFeedbacks() async {
-    List<AvaliacoesModel> updatedFeedbacks = await AvaliacoesService()
-        .getMyFeedbacks(FirebaseAuth.instance.currentUser!.uid);
-
-    setState(() {
-      feedbacks = updatedFeedbacks;
-    });
+  @override
+  void dispose() {
+    subscription?.cancel();
+    super.dispose();
   }
+
+  StreamSubscription? subscription;
+  Future<void> setMyFeedbacksListener() async {
+    try {
+      subscription = FirebaseFirestore.instance
+          .collection('feedbacks')
+          .where('user_id', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+          .snapshots()
+          .skip(1)
+          .listen((snapshot) {
+        List<AvaliacoesModel> feedbackModels =
+            snapshot.docs.map((feedbackDocument) {
+          return mapFeedbackDocumentToModel(feedbackDocument);
+        }).toList();
+
+        feedbacks = feedbackModels;
+        feedbacks.removeWhere((f) => f.deletedAt != null);
+        setState(() {});
+      });
+    } catch (e) {
+      log('Erro ao recuperar os meus feeedbacks do firestore: $e');
+    }
+  }
+
+  // Future<void> refreshFeedbacks() async {
+  //   List<AvaliacoesModel> updatedFeedbacks = await AvaliacoesService()
+  //       .getMyFeedbacks(FirebaseAuth.instance.currentUser!.uid);
+
+  //   setState(() {
+  //     feedbacks = updatedFeedbacks;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +147,7 @@ class _MinhasAvaliacoesWidgetState extends State<MinhasAvaliacoesWidget> {
                       return AvaliacoesItem(
                         feedback: feedback,
                         onDelete: () async {
-                          await refreshFeedbacks();
+                          // await refreshFeedbacks();
                         },
                       );
                     },
