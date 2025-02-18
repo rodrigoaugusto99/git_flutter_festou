@@ -253,7 +253,7 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    const NotificacoesPage(locador: true),
+                                    const NotificacoesPage(locador: false),
                               ),
                             ),
                             child: const Icon(
