@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:festou/src/services/user_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:festou/src/core/ui/helpers/messages.dart';
@@ -300,7 +301,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                     myRow(
                       label: 'CPF / CNPJ',
                       controller: cpfEC,
-                      enable: false,
+                      enable: isGoogleProvider(),
                     ),
                     myRow(
                       label: 'E-mail',
@@ -480,6 +481,18 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
               ),
             ),
     );
+  }
+
+  bool isGoogleProvider() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      for (var provider in user.providerData) {
+        if (provider.providerId == 'google.com') {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   Widget myRow({
