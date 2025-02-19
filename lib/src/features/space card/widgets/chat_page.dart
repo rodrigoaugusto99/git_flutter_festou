@@ -52,8 +52,8 @@ class _ChatPageState extends State<ChatPage> {
 
   void sendMessage() async {
     if (messageEC.text.isNotEmpty) {
+      _chatServices.sendMessage(widget.receiverID, messageEC.text);
       messageEC.clear();
-      await _chatServices.sendMessage(widget.receiverID, messageEC.text);
     }
   }
 
