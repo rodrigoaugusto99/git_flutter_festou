@@ -92,17 +92,19 @@ class _MinhasReservasWidgetState extends State<MinhasReservasWidget> {
           ),
           children: reservationSpaces.isEmpty
               ? [
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text(
-                          'Nenhuma reserva encontrada.',
-                          style: TextStyle(fontSize: 14, color: Colors.black54),
+                  const Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Center(
+                      child: Text(
+                        'Nenhuma reserva encontrada',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black54,
                         ),
+                        textAlign: TextAlign.center,
                       ),
-                    ],
+                    ),
                   ),
                 ]
               : [
