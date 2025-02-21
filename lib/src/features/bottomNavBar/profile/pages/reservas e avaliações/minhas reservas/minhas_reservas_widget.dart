@@ -182,43 +182,71 @@ String formatDateTime(DateTime date, int startHour, int endHour) {
 void showCancellationReasonDialog(BuildContext context, String reason) {
   showDialog(
     context: context,
+    barrierDismissible: false, // Impede que o popup feche ao clicar fora
     builder: (BuildContext context) {
-      return AlertDialog(
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Lottie.asset(
-              'lib/assets/animations/info.json',
-              width: 100,
-              height: 100,
-              repeat: false,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(bottom: 16.0),
-              child: Text(
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Lottie.asset(
+                'lib/assets/animations/info.json',
+                width: 100,
+                height: 100,
+                repeat: false,
+              ),
+              const SizedBox(height: 16),
+              const Text(
                 'Motivo do cancelamento',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
+                  color: Colors.black87,
                 ),
               ),
-            ),
-            Text(
-              reason.isNotEmpty
-                  ? reason
-                  : 'Nenhum motivo foi fornecido para este cancelamento.',
-              style: const TextStyle(fontSize: 16),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Fecha o diálogo
-            },
-            child: const Text('Fechar'),
+              const SizedBox(height: 12),
+              Text(
+                reason.isNotEmpty
+                    ? reason
+                    : 'Nenhum motivo foi fornecido para este cancelamento.',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.black54,
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 40),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Fecha o diálogo
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  child: const Text(
+                    'Fechar',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       );
     },
   );
