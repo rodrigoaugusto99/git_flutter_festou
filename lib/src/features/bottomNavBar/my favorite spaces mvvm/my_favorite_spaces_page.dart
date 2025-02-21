@@ -1,3 +1,4 @@
+import 'package:festou/src/features/bottomNavBar/search/search_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:festou/src/features/bottomNavBar/my%20favorite%20spaces%20mvvm/my_favorite_spaces_vm.dart';
@@ -6,6 +7,7 @@ import 'package:festou/src/features/loading_indicator.dart';
 import 'package:festou/src/features/space%20card/widgets/new_card_info.dart';
 import 'package:festou/src/features/space%20card/widgets/new_space_card.dart';
 import 'package:festou/src/features/space%20card/widgets/notificacoes_page.dart';
+import 'package:lottie/lottie.dart';
 
 class MyFavoriteSpacePage extends StatefulWidget {
   const MyFavoriteSpacePage({super.key});
@@ -97,9 +99,82 @@ class _MyFavoriteSpacePageState extends State<MyFavoriteSpacePage> {
               backgroundColor: Colors.transparent,
             ),
             body: !viewModel.isLoading
-                ? viewModel.allSpaces == null
-                    ? const Center(
-                        child: Text('Você não tem espaços favoritos'),
+                ? viewModel.allSpaces == null || viewModel.allSpaces!.isEmpty
+                    ? Center(
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.85,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 30),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 3,
+                                blurRadius: 7,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Lottie.asset(
+                                'lib/assets/animations/heart_break.json',
+                                width: 150,
+                                height: 150,
+                                repeat: false,
+                              ),
+                              const SizedBox(height: 20),
+                              const Text(
+                                'Você ainda não possui espaços favoritos!',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              const Text(
+                                'Explore os espaços disponíveis e marque seus favoritos para acessá-los facilmente.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black45,
+                                ),
+                              ),
+                              const SizedBox(height: 25),
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const SearchPage(),
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(Icons.search,
+                                    color: Colors.white),
+                                label: const Text('Explorar Espaços'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.deepPurple,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 12),
+                                  textStyle: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       )
                     : SizedBox(
                         height: 1000,

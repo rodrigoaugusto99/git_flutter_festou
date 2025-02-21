@@ -57,7 +57,7 @@ class _LocalizacaoState extends ConsumerState<Localizacao> {
   String? uf;
 
   final maskFormatter = MaskTextInputFormatter(
-    mask: '##.###-###',
+    mask: '#####-###',
     filter: {"#": RegExp(r'[0-9]')},
   );
 
