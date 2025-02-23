@@ -14,6 +14,7 @@ class ReservationModel {
   final Timestamp selectedFinalDate;
   final String contratoHtml;
   final String? cardId;
+  bool? indisponibilizado;
   String? reason;
   Timestamp? canceledAt;
   UserModel? user;
@@ -28,6 +29,7 @@ class ReservationModel {
     required this.hasReview,
     required this.selectedDate,
     required this.selectedFinalDate,
+    this.indisponibilizado,
     this.reason,
     this.createdAt,
     required this.contratoHtml,
@@ -51,6 +53,7 @@ class ReservationModel {
       selectedFinalDate: data['selectedFinalDate'] ?? Timestamp.now(),
       contratoHtml: data['contratoHtml'] ?? '',
       cardId: data['cardId'] ?? '',
+      indisponibilizado: data['indisponibilizado'] ?? false,
       reason: data['reason'] ?? '',
     );
   }
@@ -69,6 +72,7 @@ class ReservationModel {
       selectedFinalDate: map['selectedFinalDate'],
       contratoHtml: map['contratoHtml'],
       cardId: map['cardId'],
+      indisponibilizado: map['indisponibilizado'],
       reason: map['reason'],
     );
   }

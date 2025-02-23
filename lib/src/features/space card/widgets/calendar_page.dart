@@ -47,8 +47,8 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   void fetchReservas() async {
-    reservasDoEspaco =
-        await ReservaService().getReservationsBySpaceId(widget.space.spaceId);
+    reservasDoEspaco = await ReservaService()
+        .getReservationsBySpaceIdForCalendar(widget.space.spaceId);
     setState(() {});
   }
 
@@ -116,16 +116,16 @@ class _CalendarPageState extends State<CalendarPage> {
     });
   }
 
-  List<int> _getUnavailableHours() {
+  // Função auxiliar para obter a data em string no mesmo formato das reservas
+  String getDateString(DateTime date) {
+    final data = date.toString();
+    return data;
+  }
+
+  List<int> _getUnavailableHours({bool isUnavailable = false}) {
     if (_selectedDate == null) return [];
 
     final List<int> unavailableHours = [];
-
-    // Função auxiliar para obter a data em string no mesmo formato das reservas
-    String getDateString(DateTime date) {
-      final data = date.toString();
-      return data;
-    }
 
     // Obtém as datas adjacentes
     final previousDate = _selectedDate!.subtract(const Duration(days: 1));
@@ -133,13 +133,10 @@ class _CalendarPageState extends State<CalendarPage> {
 
     // Verifica reservas do dia anterior
     for (var reservation in reservasDoEspaco) {
-      // log(reservation.selectedDate.toDate().toString());
-      // log(getDateString(previousDate));
-      // log('aaaa');
       if (reservation.selectedDate.toDate().toString() ==
           getDateString(previousDate)) {
         // Se a reserva termina tarde no dia anterior, afeta o início do dia atual
-        if (reservation.checkOutTime >= 20) {
+        if (reservation.checkOutTime >= 21) {
           // termina após 20:00
           // Adiciona hora de limpeza (primeira hora do dia atual)
           unavailableHours.add(0);
@@ -151,23 +148,36 @@ class _CalendarPageState extends State<CalendarPage> {
     for (var reservation in reservasDoEspaco) {
       if (reservation.selectedDate.toDate().toString() ==
           getDateString(_selectedDate!)) {
-        // Adiciona o horário de limpeza antes da reserva
-        unavailableHours.add((reservation.checkInTime - 1) % 24);
-
         // Adiciona os horários da reserva
         for (int i = reservation.checkInTime;
-            i < reservation.checkOutTime;
+            i <= reservation.checkOutTime;
             i++) {
           unavailableHours.add(i % 24);
         }
 
-        // Adiciona o horário de limpeza depois da reserva
-        unavailableHours.add(reservation.checkOutTime % 24);
+        if (reservation.checkOutTime < 23 &&
+            (reservation.indisponibilizado == null ||
+                reservation.indisponibilizado == false)) {
+          // Adiciona o horário de limpeza depois da reserva
+          unavailableHours.add(reservation.checkOutTime + 1 % 24);
+        }
 
-        // Adiciona horários indisponíveis devido à regra das 4 horas mínimas
-        // Para horários antes da reserva
-        for (int i = 1; i <= 4; i++) {
-          unavailableHours.add((reservation.checkInTime - 1 - i) % 24);
+        // Adiciona horários indisponíveis devido à regra das 4h mínimas e 1h limpeza
+        if (reservation.checkInTime != 0 &&
+            reservation.indisponibilizado == null &&
+            reservation.indisponibilizado == false) {
+          if (reservation.checkInTime <= 3) {
+            // Indisponibiliza todas as horas anteriores do dia
+            for (int hour = 0; hour <= reservation.checkInTime - 1; hour++) {
+              unavailableHours.add(hour);
+            }
+          } else {
+            // Indisponibiliza apenas as 5 horas anteriores
+            for (int i = 1; i <= 4; i++) {
+              int hour = (reservation.checkInTime - i) % 24;
+              unavailableHours.add(hour);
+            }
+          }
         }
       }
     }
@@ -176,15 +186,13 @@ class _CalendarPageState extends State<CalendarPage> {
     for (var reservation in reservasDoEspaco) {
       if (reservation.selectedDate.toDate().toString() ==
           getDateString(nextDate)) {
-        // Se a reserva começa cedo no dia seguinte, afeta o fim do dia atual
-        if (reservation.checkInTime <= 4) {
-          // começa antes das 4:00
-          // Adiciona hora de limpeza (última hora do dia atual)
-          unavailableHours.add(23);
+        if (reservation.checkInTime <= 4 &&
+            reservation.indisponibilizado == null &&
+            reservation.indisponibilizado == false) {
+          int value = 4 - (reservation.checkInTime % 24);
 
-          // Adiciona as 4 horas mínimas antes da limpeza
-          for (int i = 1; i <= 4; i++) {
-            unavailableHours.add(23 - i);
+          for (int i = 1; i <= value; i++) {
+            unavailableHours.add(24 - i);
           }
         }
       }
@@ -204,19 +212,42 @@ class _CalendarPageState extends State<CalendarPage> {
 
     final nextDate = _selectedDate!.add(const Duration(days: 1));
 
+    // Verifica reservas do dia atual
     for (var reservation in reservasDoEspaco) {
       if (reservation.selectedDate.toDate().toString() ==
           getDateString(_selectedDate!)) {
+        // Adiciona os horários da reserva
         for (int i = reservation.checkInTime;
-            i < reservation.checkOutTime;
+            i <= reservation.checkOutTime;
             i++) {
           unavailableCurrentDayHours.add(i % 24);
         }
+
+        // Adiciona o horário de limpeza depois da reserva
+        if (reservation.indisponibilizado == null &&
+            reservation.indisponibilizado == false) {
+          unavailableCurrentDayHours.add(reservation.checkOutTime + 1 % 24);
+
+          // Adiciona horários indisponíveis devido à regra das 4h mínimas e 1h anterior
+          if (reservation.checkInTime != 0) {
+            int hour = reservation.checkInTime - 1;
+            unavailableCurrentDayHours.add(hour % 24);
+          }
+        }
       }
+    }
+
+    // Verifica reservas do dia seguinte
+    for (var reservation in reservasDoEspaco) {
       if (reservation.selectedDate.toDate().toString() ==
           getDateString(nextDate)) {
+        if (reservation.checkInTime == 0 &&
+            reservation.indisponibilizado == null &&
+            reservation.indisponibilizado == false) {
+          unavailableNextDayHours.add(23);
+        }
         for (int i = reservation.checkInTime;
-            i < reservation.checkOutTime;
+            i <= reservation.checkOutTime;
             i++) {
           unavailableNextDayHours.add(i % 24);
         }
@@ -295,78 +326,79 @@ class _CalendarPageState extends State<CalendarPage> {
     bool stop = false;
 
     return SizedBox(
-      height: 50,
+      height: 65,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
-          children: List.generate(itemCount, (index) => index)
-              .asMap()
-              .entries
-              .map((entry) {
-            dev.log(startHour.toString());
-            final int index = entry.key;
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: List.generate(itemCount, (index) {
             final int hour = (startHour + index) % 24;
+            final bool isNextDay = (startHour + index) >= 24;
 
-            // Corrigida a lógica para identificar "dia seguinte"
-            final bool isNextDay;
-            if (startHour >= 0 && startHour <= 3) {
-              // Para startHour de 0 a 3, considera como "Dia seguinte" se hour < startHour
-              isNextDay = true;
-            } else {
-              // Lógica padrão para outros horários
-              isNextDay = (startHour + index) >= 24;
-            }
-
-            // Determina a lista de indisponibilidade com base no dia
+            // Define se o horário é indisponível, considerando o dia atual ou o seguinte
             final bool isUnavailable = reachedLimit ||
                 (isNextDay
                     ? unavailableHoursNextDay.contains(hour)
                     : unavailableHoursCurrentDay.contains(hour));
 
-            // Marca como indisponível se já tiver atingido o limite
+            // Se o horário for indisponível, marque para não continuar exibindo
             if (isUnavailable) {
               reachedLimit = true;
             }
-            if (index == 20) {
-              // log('tchauuuu');
-              return const SizedBox.shrink();
-            }
-            // log('${hour.toString().padLeft(2, '0')}:59  index: $index');
-            // Exibe "Dia seguinte" no início de cada hora do próximo dia
-            bool showNextDayLabel = isNextDay && !isUnavailable;
+
+            // Exibe a tag "Dia seguinte" apenas se o horário realmente pertence ao próximo dia
+            bool showNextDayLabel = isNextDay && hour >= 0;
+
+            // Formata a string do horário
             String hourString = '${hour.toString().padLeft(2, '0')}:59';
 
-            if (hourString == checkoutStringEndHour) {
-              stop = true;
-            }
-            if (stop) {
-              return const SizedBox.shrink();
-            }
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if (showNextDayLabel)
-                    const Text(
-                      'Dia seguinte',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
+              child: SizedBox(
+                width: 75,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    SizedBox(
+                      height: 17,
+                      child: (!isUnavailable && showNextDayLabel)
+                          ? const Text(
+                              'Dia seguinte',
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.grey),
+                              textAlign: TextAlign.center,
+                            )
+                          : (isUnavailable
+                              ? const Text(
+                                  'Indisponível',
+                                  style: TextStyle(
+                                      fontSize: 12, color: Colors.red),
+                                  textAlign: TextAlign.center,
+                                )
+                              : const SizedBox.shrink()),
                     ),
-                  if (isUnavailable)
-                    const Text(
-                      'Indisponível',
-                      style: TextStyle(fontSize: 12, color: Colors.red),
+                    GestureDetector(
+                      onTap: isUnavailable
+                          ? null
+                          : () => onSelectTime(hour, isCheckIn: false),
+                      child: CalendarWidget(
+                        hour: '${hour.toString().padLeft(2, '0')}:59',
+                        isSelected: hour == checkOutTime,
+                      ),
                     ),
-                  GestureDetector(
-                    onTap: isUnavailable
-                        ? null
-                        : () => onSelectTime(hour, isCheckIn: false),
-                    child: CalendarWidget(
-                      hour: '${hour.toString().padLeft(2, '0')}:59',
-                      isSelected: hour == checkOutTime,
+                    SizedBox(
+                      height: 16,
+                      child: (isUnavailable && showNextDayLabel)
+                          ? const Text(
+                              'Dia seguinte',
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.grey),
+                              textAlign: TextAlign.center,
+                            )
+                          : const SizedBox.shrink(),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           }).toList(),
@@ -415,21 +447,7 @@ class _CalendarPageState extends State<CalendarPage> {
         checkoutEndHour = endHour - 1;
         show24h = false;
       } else {
-        if (nextDayHours.to == '01:59') {
-          checkinEndHour = endHour - 4;
-        } else if (nextDayHours.to == '02:59') {
-          checkinEndHour = endHour - 3;
-        } else if (nextDayHours.to == '03:59') {
-          checkinEndHour = endHour - 2;
-        } else if (nextDayHours.to == '04:59') {
-          checkinEndHour = endHour - 1;
-        } else if (nextDayHours.to == '05:59') {
-          checkinEndHour = endHour;
-        } else {
-          // checkoutEndHour = endHour + 1;
-          //sera a ultima a ser mostrada la no checkouList
-          checkoutStringEndHour = nextDayHours.to;
-        }
+        checkoutEndHour = checkoutEndHour - 1;
       }
       dev.log('----------');
       dev.log('$checkoutEndHour');
@@ -518,7 +536,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       ),
                     ),
                     child: const Text(
-                      'Indiponibilizar',
+                      'Indisponibilizar',
                       style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
