@@ -39,7 +39,10 @@ class _AvaliacoesMeusEspacosPageState extends State<AvaliacoesMeusEspacosPage> {
     isLoading = true;
     userModel = await userService.getCurrentUserModel();
     await fetchSpaces();
-    selectSpace(mySpaces!.first);
+    if (mySpaces != null && mySpaces!.isNotEmpty) {
+      selectSpace(mySpaces!.first);
+    }
+
     await fetchFeedbacksDoEspaco();
 
     if (mySpaces != null) {}
@@ -122,86 +125,97 @@ class _AvaliacoesMeusEspacosPageState extends State<AvaliacoesMeusEspacosPage> {
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                //clipBehavior: Clip.none,
-                // padding: const EdgeInsets.all(20),
-                children: [
-                  const SizedBox(
-                    height: 24,
-                  ),
-                  const Text(
-                    'Escolha o espaço',
+          : selectedSpaceFeedbacks == null
+              ? const Center(
+                  child: Text(
+                    'Você não tem espaços',
                     style: TextStyle(
-                      fontSize: 17,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  ...mySpaces!.map((space) {
-                    return Column(
-                      children: [
-                        SpaceWidget(
-                          isSelected: selectedSpace!.spaceId == space.spaceId,
-                          space: space,
-                          onTap: () => selectSpace(space),
-                        ),
-                        const SizedBox(height: 17),
-                      ],
-                    );
-                  }),
-                  const SizedBox(height: 30),
-                  Row(
+                )
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    //clipBehavior: Clip.none,
+                    // padding: const EdgeInsets.all(20),
                     children: [
+                      const SizedBox(
+                        height: 24,
+                      ),
                       const Text(
-                        'Avaliações ',
+                        'Escolha o espaço',
                         style: TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(
-                        '(${selectedSpaceFeedbacks!.length} avaliações)',
-                        style: const TextStyle(
-                          fontSize: 11,
-                          color: Color(0xff5E5E5E),
-                        ),
+                      const SizedBox(height: 20),
+                      ...mySpaces!.map((space) {
+                        return Column(
+                          children: [
+                            SpaceWidget(
+                              isSelected:
+                                  selectedSpace!.spaceId == space.spaceId,
+                              space: space,
+                              onTap: () => selectSpace(space),
+                            ),
+                            const SizedBox(height: 17),
+                          ],
+                        );
+                      }),
+                      const SizedBox(height: 30),
+                      Row(
+                        children: [
+                          const Text(
+                            'Avaliações ',
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            '(${selectedSpaceFeedbacks!.length} avaliações)',
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: Color(0xff5E5E5E),
+                            ),
+                          ),
+                        ],
                       ),
+                      if (selectedSpaceFeedbacks != null &&
+                          selectedSpaceFeedbacks!.isNotEmpty) ...[
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: selectedSpaceFeedbacks!.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final feedback = selectedSpaceFeedbacks![index];
+                            if (feedback.content == '' ||
+                                feedback.deletedAt != null) {
+                              return const SizedBox.shrink();
+                            }
+                            return AvaliacoesItem(
+                              hideThings: true,
+                              feedback: feedback,
+                              onDelete: () {
+                                selectedSpaceFeedbacks!.removeAt(index);
+                              },
+                            );
+                          },
+                        ),
+                      ] else ...[
+                        const SizedBox(height: 20),
+                        const Text(
+                          'Nenhuma avaliação',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ],
                     ],
                   ),
-                  if (selectedSpaceFeedbacks != null &&
-                      selectedSpaceFeedbacks!.isNotEmpty) ...[
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: selectedSpaceFeedbacks!.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final feedback = selectedSpaceFeedbacks![index];
-                        if (feedback.content == '' ||
-                            feedback.deletedAt != null) {
-                          return const SizedBox.shrink();
-                        }
-                        return AvaliacoesItem(
-                          hideThings: true,
-                          feedback: feedback,
-                          onDelete: () {
-                            selectedSpaceFeedbacks!.removeAt(index);
-                          },
-                        );
-                      },
-                    ),
-                  ] else ...[
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Nenhuma avaliação',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  ],
-                ],
-              ),
-            ),
+                ),
     );
   }
 }

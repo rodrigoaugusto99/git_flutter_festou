@@ -75,19 +75,16 @@ class _SearchPageState extends State<SearchPage> {
     final x = MediaQuery.of(context).size.width;
     final y = MediaQuery.of(context).size.height;
     return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
+      onWillPop: () async => false,
       child: SafeArea(
         child: AnimatedBuilder(
             animation: searchViewModel,
             builder: (context, child) {
               return Scaffold(
-                resizeToAvoidBottomInset: false,
+                resizeToAvoidBottomInset: true,
                 backgroundColor: Colors.white,
-                body: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                body: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
                   child: Column(
                     children: [
                       FadeInUp(
@@ -103,35 +100,155 @@ class _SearchPageState extends State<SearchPage> {
                           ],
                         ),
                       ),
-                      searchViewModel.getSpaces().isNotEmpty
-                          ? Expanded(
-                              child: ListView.builder(
-                                padding: const EdgeInsets.all(10),
-                                itemCount: searchViewModel.getSpaces().length,
-                                itemBuilder: (context, index) {
-                                  return NewSpaceCard(
-                                    hasHeart: true,
-                                    space: searchViewModel.getSpaces()[index],
-                                    isReview: false,
-                                  );
-                                },
-                              ),
-                            )
-                          : Column(children: [
-                              Lottie.asset(
-                                'lib/assets/animations/searchAnimation.json',
-                                height: y * 0.42,
-                              ),
-                              const Text(
-                                'Busque pelos melhores espaços disponíveis para o seu Festou!',
-                                textAlign: TextAlign.center,
-                              ),
-                            ]),
+                      SizedBox(
+                        height: y * 0.7,
+                        child: Center(
+                          child: searchViewModel.getSpaces() != null &&
+                                  searchViewModel.getSpaces()!.isNotEmpty
+                              ? ListView.builder(
+                                  padding: const EdgeInsets.all(10),
+                                  itemCount:
+                                      searchViewModel.getSpaces()!.length,
+                                  itemBuilder: (context, index) {
+                                    return NewSpaceCard(
+                                      hasHeart: true,
+                                      space:
+                                          searchViewModel.getSpaces()![index],
+                                      isReview: false,
+                                    );
+                                  },
+                                )
+                              : searchViewModel.getSpaces() != null &&
+                                      searchViewModel.getSpaces()!.isEmpty
+                                  ? Center(
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.85,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 30),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.3),
+                                              spreadRadius: 3,
+                                              blurRadius: 7,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Lottie.asset(
+                                              'lib/assets/animations/not_found.json',
+                                              width: 200,
+                                              height: 200,
+                                              repeat: true,
+                                            ),
+                                            const SizedBox(height: 20),
+                                            const Text(
+                                              'Nenhum espaço encontrado!',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.black54,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 12),
+                                            const Text(
+                                              'Tente ajustar sua busca para encontrar os melhores espaços disponíveis.',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.black45,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 25),
+                                            ElevatedButton.icon(
+                                              onPressed: () {
+                                                _controller.clear();
+                                                searchViewModel
+                                                    .onChangedSearch('');
+                                                FocusScope.of(context)
+                                                    .unfocus();
+                                              },
+                                              icon: const Icon(Icons.refresh,
+                                                  color: Colors.white),
+                                              label: const Text(
+                                                  'Tentar Novamente'),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    Colors.deepPurple,
+                                                foregroundColor: Colors.white,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 20,
+                                                        vertical: 12),
+                                                textStyle: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  : _buildSearchAnimation(y),
+                        ),
+                      ),
                     ],
                   ),
                 ),
               );
             }),
+      ),
+    );
+  }
+
+  Widget _buildSearchAnimation(double y) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Lottie.asset(
+            'lib/assets/animations/searchAnimation.json',
+            width: 220, // Maior para melhor visualização
+            height: y * 0.3,
+            repeat: true,
+          ),
+          const SizedBox(
+              height: 24), // Maior espaçamento entre animação e texto
+          const Text(
+            'Explore os melhores espaços para o seu Festou!',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 18, // Fonte maior e mais legível
+              fontWeight: FontWeight.bold,
+              color: Colors.black87, // Tom mais escuro para melhor contraste
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Use a barra de busca acima para encontrar espaços perfeitos para o seu evento.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.black54,
+            ),
+          ),
+        ],
       ),
     );
   }

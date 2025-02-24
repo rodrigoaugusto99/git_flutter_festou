@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:festou/src/core/providers/application_providers.dart';
 import 'package:festou/src/core/ui/helpers/messages.dart';
 import 'package:festou/src/features/login/login_page.dart';
+import 'package:lottie/lottie.dart';
 
 class ServiceTermsPage extends ConsumerStatefulWidget {
   final bool duringLogin;
@@ -87,6 +88,108 @@ class _ServiceTermsPageState extends ConsumerState<ServiceTermsPage> {
     }
   }
 
+  Future<bool?> showLogoutTermsDialog(
+      BuildContext context, WidgetRef ref) async {
+    return await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Lottie.asset(
+                  'lib/assets/animations/warning.json',
+                  width: 80,
+                  height: 80,
+                  repeat: false,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Sair do Festou',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Não aceitar os Termos de Serviço resultará no seu logout. Deseja continuar?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black54,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[300],
+                          foregroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        child: const Text(
+                          'Cancelar',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                          ref.invalidate(userFirestoreRepositoryProvider);
+                          ref.invalidate(userAuthRepositoryProvider);
+                          ref.read(logoutProvider.future);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.deepPurple,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        child: const Text(
+                          'Confirmar',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   void _updateServiceTermsAcceptance(BuildContext context) async {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
@@ -110,33 +213,7 @@ class _ServiceTermsPageState extends ConsumerState<ServiceTermsPage> {
             Messages.showError('Erro ao salvar, tente novamente: $e', context);
           }
         } else {
-          bool? confirmLogout = await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('Sair do Festou'),
-                content: const Text(
-                    'Não aceitar os Termos de Serviço resultará no seu logout. Deseja continuar?'),
-                actions: <Widget>[
-                  TextButton(
-                    child: const Text('Cancelar'),
-                    onPressed: () {
-                      Navigator.of(context).pop(false);
-                    },
-                  ),
-                  TextButton(
-                    child: const Text('Confirmar'),
-                    onPressed: () {
-                      Navigator.of(context).pop(true);
-                      ref.invalidate(userFirestoreRepositoryProvider);
-                      ref.invalidate(userAuthRepositoryProvider);
-                      ref.read(logoutProvider.future);
-                    },
-                  ),
-                ],
-              );
-            },
-          );
+          bool? confirmLogout = await showLogoutTermsDialog(context, ref);
 
           if (confirmLogout == true) {
             await userDocRef.set(

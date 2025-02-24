@@ -3,6 +3,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:festou/src/helpers/keys.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -251,7 +252,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
               children: [
                 Center(
                   child: Lottie.asset(
-                    'lib/assets/animations/warning_exit.json',
+                    'lib/assets/animations/warning.json',
                     width: 100,
                     height: 100,
                     repeat: true,
@@ -1017,6 +1018,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                       await Future.delayed(Duration.zero);
                       await showDialog(
                         context: context,
+                        barrierDismissible: false,
                         builder: (BuildContext context) {
                           final BuildContext context2 =
                               Navigator.of(context).context;
@@ -1027,370 +1029,461 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                           TextEditingController passwordController =
                               TextEditingController();
 
-                          return AlertDialog(
-                            content: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Center(
-                                  child: Lottie.asset(
-                                    'lib/assets/animations/warning_exit.json',
-                                    width: 100,
-                                    height: 100,
-                                    repeat: true,
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-                                const Center(
-                                  child: Text(
-                                    'Exclusão de Conta',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
+                          return Dialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.0),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 24.0, horizontal: 16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Center(
+                                    child: Lottie.asset(
+                                      'lib/assets/animations/warning.json',
+                                      width: 80,
+                                      height: 80,
+                                      repeat: true,
                                     ),
                                   ),
-                                ),
-                                const SizedBox(height: 8),
-                                const Text(
-                                  'Sua conta será excluída e todos os seus dados serão perdidos, '
-                                  'sem possibilidade de recuperação. Deseja continuar?',
-                                ),
-                              ],
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('Cancelar'),
-                              ),
-                              TextButton(
-                                onPressed: () async {
-                                  Navigator.of(context).pop();
-
-                                  if (!providers.contains("password")) {
-                                    await showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          contentPadding:
-                                              const EdgeInsets.all(16.0),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(16.0),
+                                  const SizedBox(height: 16),
+                                  const Center(
+                                    child: Text(
+                                      'Exclusão de Conta',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  const Text(
+                                    'Sua conta será excluída e todos os seus dados serão perdidos, '
+                                    'sem possibilidade de recuperação. Deseja continuar?',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black54,
+                                      height: 1.5,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 30),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.grey[300],
+                                            foregroundColor: Colors.black,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 12),
                                           ),
-                                          content: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Lottie.asset(
-                                                    'lib/assets/animations/info.json',
-                                                    width: 100,
-                                                    height: 100,
-                                                    repeat: false,
-                                                  ),
-                                                  const Text(
-                                                    'Ops...',
-                                                    style: TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                          child: const Text(
+                                            'Cancelar',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          key: Keys.kDialogConfirm,
+                                          onPressed: () async {
+                                            Navigator.of(context).pop();
+
+                                            if (!providers
+                                                .contains("password")) {
+                                              await showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return AlertDialog(
+                                                    contentPadding:
+                                                        const EdgeInsets.all(
+                                                            16.0),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              16.0),
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 8),
-                                              const Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 16.0),
-                                                child: Text(
-                                                    'É necessário possuir uma senha cadastrada para prosseguir com exclusão de conta!'),
-                                              )
-                                            ],
-                                          ),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: const Text('Ok'),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                    return;
-                                  }
-
-                                  //Primeiro validar se não há contrato ativo ou espaço cadastrado
-                                  final userModel =
-                                      await UserService().getCurrentUserModel();
-
-                                  final queryReservationsSnapshot =
-                                      await FirebaseFirestore.instance
-                                          .collection('reservations')
-                                          .where('client_id',
-                                              isEqualTo: userModel!.uid)
-                                          .where('selectedFinalDate',
-                                              isGreaterThan: DateTime.now())
-                                          .limit(1)
-                                          .get(); // Limita para apenas verificar se existe um contrato ativo
-                                  if (queryReservationsSnapshot
-                                      .docs.isNotEmpty) {
-                                    await showDialog(
-                                      context: context2,
-                                      builder: (BuildContext context2) {
-                                        return AlertDialog(
-                                          content: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Row(children: [
-                                                Lottie.asset(
-                                                  'lib/assets/animations/info.json',
-                                                  width: 100,
-                                                  height: 100,
-                                                  repeat: true,
-                                                ),
-                                                const SizedBox(height: 16),
-                                                const Text(
-                                                  'Não permitido!',
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ]),
-                                              const Text(
-                                                  'O usuário possui reservas em aberto.'),
-                                            ],
-                                          ),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context2).pop();
-                                              },
-                                              child: const Text('Ok'),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                    return;
-                                  }
-
-                                  final querySpacesSnapshot =
-                                      await FirebaseFirestore.instance
-                                          .collection('spaces')
-                                          .where('user_id',
-                                              isEqualTo: userModel.uid)
-                                          .where('deletedAt', isNull: true)
-                                          .limit(1)
-                                          .get(); // Limita para apenas verificar se existe um espacço cadastrado
-
-                                  if (querySpacesSnapshot.docs.isNotEmpty) {
-                                    await showDialog(
-                                      context: context2,
-                                      builder: (BuildContext context2) {
-                                        return AlertDialog(
-                                          contentPadding:
-                                              const EdgeInsets.all(16.0),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(16.0),
-                                          ),
-                                          content: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Lottie.asset(
-                                                    'lib/assets/animations/info.json',
-                                                    width: 100,
-                                                    height: 100,
-                                                    repeat: false,
-                                                  ),
-                                                  const Text(
-                                                    'Ops...',
-                                                    style: TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 8),
-                                              const Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 16.0),
-                                                child: Text(
-                                                    'O usuário possui espaço cadastrado!'),
-                                              )
-                                            ],
-                                          ),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context2).pop();
-                                              },
-                                              child: const Text('Ok'),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                    return;
-                                  }
-
-                                  await showDialog(
-                                      context: context3,
-                                      builder: (BuildContext context3) {
-                                        return AlertDialog(
-                                          title:
-                                              const Text('Exclusão de Conta'),
-                                          content: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const Text(
-                                                  'Confirme sua senha para prosseguir'),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 16.0),
-                                                child: PasswordField(
-                                                  controller:
-                                                      passwordController,
-                                                  label: 'Senha',
-                                                  padding: 0,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context3).pop();
-                                              },
-                                              child: const Text('Cancelar'),
-                                            ),
-                                            TextButton(
-                                              onPressed: () async {
-                                                Navigator.of(context3).pop();
-
-                                                try {
-                                                  // Reautentica o usuário antes de excluir a conta
-                                                  AuthCredential credential =
-                                                      EmailAuthProvider
-                                                          .credential(
-                                                    email: userModel.email,
-                                                    password:
-                                                        passwordController.text,
-                                                  );
-                                                  await user
-                                                      .reauthenticateWithCredential(
-                                                          credential);
-
-                                                  // Exclua a conta do usuário após a reautenticação
-                                                  await user.delete();
-
-                                                  // Redirecione o usuário para a tela de login ou execute outras ações necessárias
-                                                  await ref
-                                                      .read(
-                                                          userFirestoreRepositoryProvider)
-                                                      .deleteUserDocument(user);
-                                                  ref.read(
-                                                      logoutProvider.future);
-                                                  log('Conta excluída com sucesso.');
-                                                } on FirebaseAuthException catch (e) {
-                                                  if (e.code ==
-                                                      'invalid-credential') {
-                                                    await showDialog(
-                                                        context: context4,
-                                                        builder: (BuildContext
-                                                            context) {
-                                                          return AlertDialog(
-                                                            contentPadding:
-                                                                const EdgeInsets
-                                                                    .all(16.0),
-                                                            shape:
-                                                                RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          16.0),
+                                                    content: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Lottie.asset(
+                                                              'lib/assets/animations/info.json',
+                                                              width: 100,
+                                                              height: 100,
+                                                              repeat: false,
                                                             ),
-                                                            content: Column(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min,
-                                                              children: [
-                                                                Row(
-                                                                  children: [
-                                                                    Lottie
-                                                                        .asset(
-                                                                      'lib/assets/animations/info.json',
-                                                                      width:
-                                                                          100,
-                                                                      height:
-                                                                          100,
-                                                                      repeat:
-                                                                          false,
-                                                                    ),
-                                                                    const Text(
-                                                                      'Ops...',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            20,
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                const SizedBox(
-                                                                    height: 8),
-                                                                const Padding(
-                                                                  padding: EdgeInsets
-                                                                      .symmetric(
-                                                                          horizontal:
-                                                                              16.0),
-                                                                  child: Text(
-                                                                      'Senha atual inválida!'),
-                                                                )
-                                                              ],
-                                                            ),
-                                                            actions: [
-                                                              TextButton(
-                                                                onPressed: () =>
-                                                                    Navigator.of(
-                                                                            context4)
-                                                                        .pop(),
-                                                                child: const Text(
-                                                                    'Fechar'),
+                                                            const Text(
+                                                              'Ops...',
+                                                              style: TextStyle(
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
                                                               ),
-                                                            ],
-                                                          );
-                                                        });
-                                                  }
-                                                  log('Erro ao excluir a conta: ${e.code}, ${e.message}');
-                                                } catch (e) {
-                                                  log('Erro desconhecido ao excluir a conta: $e');
-                                                }
-                                              },
-                                              child: const Text('Confirmar'),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 8),
+                                                        const Padding(
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      16.0),
+                                                          child: Text(
+                                                              'É necessário possuir uma senha cadastrada para prosseguir com exclusão de conta!'),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    actions: <Widget>[
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                        child: const Text('Ok'),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                              return;
+                                            }
+
+                                            //Primeiro validar se não há contrato ativo ou espaço cadastrado
+                                            final userModel =
+                                                await UserService()
+                                                    .getCurrentUserModel();
+
+                                            final queryReservationsSnapshot =
+                                                await FirebaseFirestore.instance
+                                                    .collection('reservations')
+                                                    .where('client_id',
+                                                        isEqualTo:
+                                                            userModel!.uid)
+                                                    .where('selectedFinalDate',
+                                                        isGreaterThan:
+                                                            DateTime.now())
+                                                    .limit(1)
+                                                    .get(); // Limita para apenas verificar se existe um contrato ativo
+                                            if (queryReservationsSnapshot
+                                                .docs.isNotEmpty) {
+                                              await showDialog(
+                                                context: context2,
+                                                builder:
+                                                    (BuildContext context2) {
+                                                  return AlertDialog(
+                                                    content: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Row(children: [
+                                                          Lottie.asset(
+                                                            'lib/assets/animations/info.json',
+                                                            width: 100,
+                                                            height: 100,
+                                                            repeat: true,
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 16),
+                                                          const Text(
+                                                            'Não permitido!',
+                                                            style: TextStyle(
+                                                              fontSize: 20,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ]),
+                                                        const Text(
+                                                            'O usuário possui reservas em aberto.'),
+                                                      ],
+                                                    ),
+                                                    actions: <Widget>[
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context2)
+                                                              .pop();
+                                                        },
+                                                        child: const Text('Ok'),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                              return;
+                                            }
+
+                                            final querySpacesSnapshot =
+                                                await FirebaseFirestore.instance
+                                                    .collection('spaces')
+                                                    .where('user_id',
+                                                        isEqualTo:
+                                                            userModel.uid)
+                                                    .where('deletedAt',
+                                                        isNull: true)
+                                                    .limit(1)
+                                                    .get(); // Limita para apenas verificar se existe um espacço cadastrado
+
+                                            if (querySpacesSnapshot
+                                                .docs.isNotEmpty) {
+                                              await showDialog(
+                                                context: context2,
+                                                builder:
+                                                    (BuildContext context2) {
+                                                  return AlertDialog(
+                                                    contentPadding:
+                                                        const EdgeInsets.all(
+                                                            16.0),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              16.0),
+                                                    ),
+                                                    content: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Lottie.asset(
+                                                              'lib/assets/animations/info.json',
+                                                              width: 100,
+                                                              height: 100,
+                                                              repeat: false,
+                                                            ),
+                                                            const Text(
+                                                              'Ops...',
+                                                              style: TextStyle(
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 8),
+                                                        const Padding(
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      16.0),
+                                                          child: Text(
+                                                              'O usuário possui espaço cadastrado!'),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    actions: <Widget>[
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context2)
+                                                              .pop();
+                                                        },
+                                                        child: const Text('Ok'),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                              return;
+                                            }
+
+                                            await showDialog(
+                                                context: context3,
+                                                builder:
+                                                    (BuildContext context3) {
+                                                  return AlertDialog(
+                                                    title: const Text(
+                                                        'Exclusão de Conta'),
+                                                    content: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        const Text(
+                                                            'Confirme sua senha para prosseguir'),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  top: 16.0),
+                                                          child: PasswordField(
+                                                            controller:
+                                                                passwordController,
+                                                            label: 'Senha',
+                                                            padding: 0,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    actions: <Widget>[
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context3)
+                                                              .pop();
+                                                        },
+                                                        child: const Text(
+                                                            'Cancelar'),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () async {
+                                                          Navigator.of(context3)
+                                                              .pop();
+
+                                                          try {
+                                                            // Reautentica o usuário antes de excluir a conta
+                                                            AuthCredential
+                                                                credential =
+                                                                EmailAuthProvider
+                                                                    .credential(
+                                                              email: userModel
+                                                                  .email,
+                                                              password:
+                                                                  passwordController
+                                                                      .text,
+                                                            );
+                                                            await user
+                                                                .reauthenticateWithCredential(
+                                                                    credential);
+
+                                                            // Exclua a conta do usuário após a reautenticação
+                                                            await user.delete();
+
+                                                            // Redirecione o usuário para a tela de login ou execute outras ações necessárias
+                                                            await ref
+                                                                .read(
+                                                                    userFirestoreRepositoryProvider)
+                                                                .deleteUserDocument(
+                                                                    user);
+                                                            ref.read(
+                                                                logoutProvider
+                                                                    .future);
+                                                            log('Conta excluída com sucesso.');
+                                                          } on FirebaseAuthException catch (e) {
+                                                            if (e.code ==
+                                                                'invalid-credential') {
+                                                              await showDialog(
+                                                                  context:
+                                                                      context4,
+                                                                  builder:
+                                                                      (BuildContext
+                                                                          context) {
+                                                                    return AlertDialog(
+                                                                      contentPadding: const EdgeInsets
+                                                                          .all(
+                                                                          16.0),
+                                                                      shape:
+                                                                          RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(16.0),
+                                                                      ),
+                                                                      content:
+                                                                          Column(
+                                                                        mainAxisSize:
+                                                                            MainAxisSize.min,
+                                                                        children: [
+                                                                          Row(
+                                                                            children: [
+                                                                              Lottie.asset(
+                                                                                'lib/assets/animations/info.json',
+                                                                                width: 100,
+                                                                                height: 100,
+                                                                                repeat: false,
+                                                                              ),
+                                                                              const Text(
+                                                                                'Ops...',
+                                                                                style: TextStyle(
+                                                                                  fontSize: 20,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                          const SizedBox(
+                                                                              height: 8),
+                                                                          const Padding(
+                                                                            padding:
+                                                                                EdgeInsets.symmetric(horizontal: 16.0),
+                                                                            child:
+                                                                                Text('Senha atual inválida!'),
+                                                                          )
+                                                                        ],
+                                                                      ),
+                                                                      actions: [
+                                                                        TextButton(
+                                                                          onPressed: () =>
+                                                                              Navigator.of(context4).pop(),
+                                                                          child:
+                                                                              const Text('Fechar'),
+                                                                        ),
+                                                                      ],
+                                                                    );
+                                                                  });
+                                                            }
+                                                            log('Erro ao excluir a conta: ${e.code}, ${e.message}');
+                                                          } catch (e) {
+                                                            log('Erro desconhecido ao excluir a conta: $e');
+                                                          }
+                                                        },
+                                                        child: const Text(
+                                                            'Confirmar'),
+                                                      ),
+                                                    ],
+                                                  );
+                                                });
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.deepPurple,
+                                            foregroundColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
                                             ),
-                                          ],
-                                        );
-                                      });
-                                },
-                                child: const Text('Confirmar'),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 12),
+                                          ),
+                                          child: const Text(
+                                            'Confirmar',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           );
                         },
                       );

@@ -14,6 +14,7 @@ import 'package:festou/src/helpers/keys.dart';
 import 'package:festou/src/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:festou/src/services/user_service.dart';
+import 'package:lottie/lottie.dart';
 
 class Profile extends ConsumerStatefulWidget {
   const Profile({super.key});
@@ -65,44 +66,173 @@ class _ProfileState extends ConsumerState<Profile> {
       if (hasSpaces) {
         showDialog(
           context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Espaços cadastrados'),
-            content: const Text(
-                'Você possui espaços cadastrados, por isso não é possível alterar o tipo de conta para locatário.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('OK'),
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0),
               ),
-            ],
-          ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 24.0, horizontal: 16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Lottie.asset(
+                      'lib/assets/animations/warning.json',
+                      width: 80,
+                      height: 80,
+                      repeat: false,
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Espaços cadastrados',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Você possui espaços cadastrados, por isso não é possível alterar o tipo de conta para locatário.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black54,
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.deepPurple,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 24),
+                      ),
+                      child: const Text(
+                        'OK',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
         );
       } else {
         showDialog(
           context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Confirmação de Mudança'),
-            content: const Text(
-                'Você não poderá mais disponibilizar espaços a partir da mudança, podendo apenas alugar. Deseja continuar?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancelar'),
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0),
               ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const BottomNavBarLocatarioPage(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 24.0, horizontal: 16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Lottie.asset(
+                      'lib/assets/animations/warning.json',
+                      width: 80,
+                      height: 80,
+                      repeat: false,
                     ),
-                  );
-                },
-                child: const Text('Confirmar'),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Confirmação de Mudança',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Você não poderá mais disponibilizar espaços a partir da mudança, podendo apenas alugar. Deseja continuar?',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black54,
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey[300],
+                              foregroundColor: Colors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                            ),
+                            child: const Text(
+                              'Cancelar',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const BottomNavBarLocatarioPage(),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.deepPurple,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                            ),
+                            child: const Text(
+                              'Confirmar',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
+            );
+          },
         );
       }
     } else {
@@ -111,54 +241,183 @@ class _ProfileState extends ConsumerState<Profile> {
       if (hasContract) {
         showDialog(
           context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Contrato de Locação Ativo'),
-            content: const Text(
-                'Você possui um contrato de locação ativo e não pode mudar para locador.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('OK'),
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0),
               ),
-            ],
-          ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 24.0, horizontal: 16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Lottie.asset(
+                      'lib/assets/animations/info.json',
+                      width: 120,
+                      height: 120,
+                      repeat: false,
+                    ),
+                    const Text(
+                      'Contrato de Locação Ativo',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Você possui um contrato de locação ativo e não pode mudar para locador.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black54,
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.deepPurple,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 24),
+                      ),
+                      child: const Text(
+                        'OK',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
         );
       } else {
-        showDialog(
+        await showDialog(
           context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Confirmação de Mudança'),
-            content: const Text(
-                'Você não poderá mais alugar espaços a partir da mudança, podendo apenas disponibilizar. Deseja continuar?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancelar'),
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0),
               ),
-              TextButton(
-                key: Keys.kDialogConfirm,
-                onPressed: () async {
-                  final response = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const RegisterSignature(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 24.0, horizontal: 16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Lottie.asset(
+                      'lib/assets/animations/warning.json',
+                      width: 80,
+                      height: 80,
+                      repeat: false,
                     ),
-                  );
-                  if (response == null) return;
-                  if (response) {
-                    Navigator.of(context).pop();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const BottomNavBarLocadorPage(),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Confirmação de Mudança',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
                       ),
-                    );
-                  }
-                },
-                child: const Text('Confirmar'),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Você não poderá mais alugar espaços a partir da mudança, podendo apenas disponibilizar. Deseja continuar?',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black54,
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey[300],
+                              foregroundColor: Colors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                            ),
+                            child: const Text(
+                              'Cancelar',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton(
+                            key: Keys.kDialogConfirm,
+                            onPressed: () async {
+                              final response = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const RegisterSignature(),
+                                ),
+                              );
+                              if (response == null) return;
+                              if (response) {
+                                Navigator.of(context).pop();
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const BottomNavBarLocadorPage(),
+                                  ),
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.deepPurple,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                            ),
+                            child: const Text(
+                              'Confirmar',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
+            );
+          },
         );
       }
     }

@@ -545,7 +545,114 @@ class _NewCardInfoState extends State<NewCardInfo>
     }
   }
 
-//todo: estilizar bottom sheets
+  void validateUserData(UserModel user, BuildContext context) {
+    List<String> missingFields = [];
+
+    // Valida Nome
+    if (user.name.isEmpty) {
+      missingFields.add('Nome');
+    }
+
+    // Valida CPF
+    if (user.cpf.isEmpty) {
+      missingFields.add('CPF');
+    }
+
+    // Valida Endereço Completo
+    if (user.cep.isEmpty ||
+        user.logradouro.isEmpty ||
+        user.numero.isEmpty ||
+        user.bairro.isEmpty ||
+        user.cidade.isEmpty) {
+      missingFields.add('Endereço completo');
+    }
+
+    // Exibe o popup se houver campos ausentes
+    if (missingFields.isNotEmpty) {
+      String fields = missingFields.join(', ');
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Lottie.asset(
+                    'lib/assets/animations/info.json',
+                    width: 120,
+                    height: 120,
+                    repeat: false,
+                  ),
+                  const Text(
+                    'Campos obrigatórios',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Você deve cadastrar: $fields.',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.black54,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.deepPurple,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                          child: const Text(
+                            'OK',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      // Se não houver campos ausentes, prossegue com o aluguel
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CalendarPage(space: space!),
+        ),
+      );
+    }
+  }
+
+  //todo: estilizar bottom sheets
   void showBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -1799,7 +1906,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                                             children: [
                                               Center(
                                                 child: Lottie.asset(
-                                                  'lib/assets/animations/warning_exit.json',
+                                                  'lib/assets/animations/warning.json',
                                                   width: 100,
                                                   height: 100,
                                                   repeat: true,
@@ -1974,20 +2081,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                         ? GestureDetector(
                             onTap: () {
                               if (isMySpace) return;
-                              if (user != null && user!.cpf.isEmpty) {
-                                Messages.showInfo(
-                                    'Você precisa de um CPF cadastrado para alugar um espaço',
-                                    context);
-                                return;
-                              }
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CalendarPage(
-                                    space: space!,
-                                  ),
-                                ),
-                              );
+                              validateUserData(user!, context);
                             },
                             child: Container(
                               padding: const EdgeInsets.symmetric(
@@ -2005,22 +2099,11 @@ class _NewCardInfoState extends State<NewCardInfo>
                             ),
                           )
                         : GestureDetector(
-                            onTap: () {
+                            onTap: () async {
                               if (isMySpace) return;
-                              if (user != null && user!.cpf.isEmpty) {
-                                Messages.showInfo(
-                                    'Você precisa de um CPF cadastrado para alugar um espaço',
-                                    context);
-                                return;
-                              }
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CalendarPage(
-                                    space: space!,
-                                  ),
-                                ),
-                              );
+                              UserModel? currentUser =
+                                  await UserService().getCurrentUserModel();
+                              validateUserData(currentUser!, context);
                             },
                             child: Container(
                               padding: const EdgeInsets.symmetric(

@@ -74,9 +74,10 @@ class _ReservasAvaliacoesPageState extends State<ReservasAvaliacoesPage> {
               const Text(
                 'Histórico de avaliações',
                 style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
               const SizedBox(
                 height: 10,

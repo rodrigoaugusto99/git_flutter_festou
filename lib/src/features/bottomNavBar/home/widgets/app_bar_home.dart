@@ -30,6 +30,7 @@ class _AppBarMenuSpaceTypesState extends ConsumerState<AppBarHome> {
   Widget build(BuildContext context) {
     final x = MediaQuery.of(context).size.width;
     return SliverAppBar(
+      automaticallyImplyLeading: false,
       flexibleSpace: FlexibleSpaceBar(
         background: Padding(
           padding: EdgeInsets.symmetric(horizontal: x * 0.03),

@@ -47,30 +47,8 @@ class _PixPage2State extends State<PixPage2> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 18.0),
-          child: Container(
-            decoration: BoxDecoration(
-              //color: Colors.white.withOpacity(0.7),
-              color: Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 2,
-                  blurRadius: 5,
-                  offset: const Offset(0, 2), // changes position of shadow
-                ),
-              ],
-            ),
-            child: InkWell(
-              onTap: () => Navigator.of(context).pop(),
-              child: const Icon(
-                Icons.arrow_back,
-                color: Colors.black,
-              ),
-            ),
-          ),
+        leading: const Padding(
+          padding: EdgeInsets.only(left: 18.0),
         ),
         centerTitle: true,
         title: const Text(
@@ -138,44 +116,53 @@ class _PixPage2State extends State<PixPage2> {
                     const SizedBox(
                       height: 10,
                     ),
-                    const Row(
+                    Row(
                       //mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
+                        const Text(
                           '000020101021226850014br.gov.bcb2580qrco...',
                           style: TextStyle(fontSize: 11),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 5,
                         ),
-                        Icon(Icons.copy)
+                        GestureDetector(
+                            onTap: () async {
+                              await Clipboard.setData(const ClipboardData(
+                                  text: 'ghsg6sdg6sg67d6g7s6hg79sdg67sd6gh'));
+                            },
+                            child: const Icon(Icons.copy))
                       ],
                     ),
                     const SizedBox(
                       height: 20,
                     ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.purple, // Cor do botão
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(20), // Bordas arredondadas
-                        ),
-                      ),
-                      onPressed: () async {
+                    GestureDetector(
+                      onTap: () async {
                         await Clipboard.setData(const ClipboardData(
                             text: 'ghsg6sdg6sg67d6g7s6hg79sdg67sd6gh'));
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => ResumoReservaPage(
-                        //       spaceModel: widget.spaceModel,
-                        //     ),
-                        //   ),
-                        // );
                       },
-                      child: const Text('Pix Copia e Cola'),
+                      child: Container(
+                          alignment: Alignment.center,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            gradient: const LinearGradient(
+                              colors: [
+                                Color(0xff9747FF),
+                                Color(0xff44300b1),
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
+                          ),
+                          child: const Text(
+                            'Pix Copia e Cola',
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white),
+                          )),
                     ),
                   ],
                 ),
@@ -222,6 +209,31 @@ class _PixPage2State extends State<PixPage2> {
                 "7. Em caso de expiração do prazo, sem ter concluído o pagamento, será necessário realizar uma nova reserva.",
                 style: TextStyle(fontSize: 12),
               ),
+              const SizedBox(height: 36),
+              GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
+                child: Container(
+                    alignment: Alignment.center,
+                    height: 35,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xff9747FF),
+                          Color(0xff44300b1),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                    child: const Text(
+                      'Sair',
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white),
+                    )),
+              )
             ],
           ),
         ),
