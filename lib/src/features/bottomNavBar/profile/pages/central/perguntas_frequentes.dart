@@ -27,7 +27,7 @@ class _PerguntasFrequentesState extends State<PerguntasFrequentes> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xffF8F8F8),
       appBar: AppBar(
         leading: Padding(
           padding: const EdgeInsets.only(left: 18.0),

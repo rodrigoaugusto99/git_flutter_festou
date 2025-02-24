@@ -209,7 +209,7 @@ class _PixPage2State extends State<PixPage2> {
                 "7. Em caso de expiração do prazo, sem ter concluído o pagamento, será necessário realizar uma nova reserva.",
                 style: TextStyle(fontSize: 12),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 36),
               GestureDetector(
                 onTap: () => Navigator.of(context).pop(),
                 child: Container(

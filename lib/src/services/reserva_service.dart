@@ -63,6 +63,7 @@ class ReservaService {
         'reason': reservationModel.reason,
         'createdAt': Timestamp.now(),
         'canceledAt': null,
+        'indisponibilizado': false,
       };
 
       await reservationCollection.add(newReservation);
@@ -101,6 +102,7 @@ class ReservaService {
       createdAt: reservationDocument['createdAt'] ?? '',
       contratoHtml: reservationDocument['contratoHtml'] ?? '',
       reason: reservationDocument['reason'] ?? '',
+      indisponibilizado: reservationDocument['indisponibilizado'] ?? false,
     );
   }
 
@@ -125,6 +127,26 @@ class ReservaService {
       return reservationModels;
     } catch (e) {
       // Em caso de erro, lançar a exceção
+      throw Exception(e);
+    }
+  }
+
+  Future<List<ReservationModel>> getReservationsBySpaceIdForCalendar(
+      String spaceId) async {
+    try {
+      final allReservationsDocuments = await reservationCollection
+          .where('space_id', isEqualTo: spaceId)
+          .where('canceledAt', isEqualTo: null)
+          .get();
+
+      List<ReservationModel> reservationModels = allReservationsDocuments.docs
+          .map((reservationModels) =>
+              mapReservationDocumentToModel(reservationModels))
+          .where((reservation) => reservation.canceledAt == null)
+          .toList();
+      return reservationModels;
+    } catch (e) {
+      log('Erro ao recuperar as reservas do firestore: $e');
       throw Exception(e);
     }
   }
