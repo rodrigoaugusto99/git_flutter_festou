@@ -21,7 +21,7 @@ class LogoutDialog {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Lottie.asset(
-                  'lib/assets/animations/warning_exit.json',
+                  'lib/assets/animations/warning.json',
                   width: 80,
                   height: 80,
                   repeat: false,
