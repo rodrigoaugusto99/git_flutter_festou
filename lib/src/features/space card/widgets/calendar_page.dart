@@ -122,7 +122,7 @@ class _CalendarPageState extends State<CalendarPage> {
     return data;
   }
 
-  List<int> _getUnavailableHours({bool isUnavailable = false}) {
+  List<int> _getUnavailableHours(isIndisponibilizar) {
     if (_selectedDate == null) return [];
 
     final List<int> unavailableHours = [];
@@ -163,9 +163,7 @@ class _CalendarPageState extends State<CalendarPage> {
         }
 
         // Adiciona horários indisponíveis devido à regra das 4h mínimas e 1h limpeza
-        if (reservation.checkInTime != 0 &&
-            reservation.indisponibilizado == null &&
-            reservation.indisponibilizado == false) {
+        if (reservation.checkInTime != 0 && !isIndisponibilizar) {
           if (reservation.checkInTime <= 3) {
             // Indisponibiliza todas as horas anteriores do dia
             for (int hour = 0; hour <= reservation.checkInTime - 1; hour++) {
@@ -186,9 +184,7 @@ class _CalendarPageState extends State<CalendarPage> {
     for (var reservation in reservasDoEspaco) {
       if (reservation.selectedDate.toDate().toString() ==
           getDateString(nextDate)) {
-        if (reservation.checkInTime <= 4 &&
-            reservation.indisponibilizado == null &&
-            reservation.indisponibilizado == false) {
+        if (reservation.checkInTime <= 4 && !isIndisponibilizar) {
           int value = 4 - (reservation.checkInTime % 24);
 
           for (int i = 1; i <= value; i++) {
@@ -202,7 +198,7 @@ class _CalendarPageState extends State<CalendarPage> {
     return unavailableHours.toSet().toList()..sort();
   }
 
-  Map<String, List<int>> _getUnavailableCheckOutHours() {
+  Map<String, List<int>> _getUnavailableCheckOutHours(isIndisponibilizar) {
     if (_selectedDate == null) return {'currentDay': [], 'nextDay': []};
 
     final List<int> unavailableCurrentDayHours = [];
@@ -223,16 +219,10 @@ class _CalendarPageState extends State<CalendarPage> {
           unavailableCurrentDayHours.add(i % 24);
         }
 
-        // Adiciona o horário de limpeza depois da reserva
-        if (reservation.indisponibilizado == null &&
-            reservation.indisponibilizado == false) {
-          unavailableCurrentDayHours.add(reservation.checkOutTime + 1 % 24);
-
-          // Adiciona horários indisponíveis devido à regra das 4h mínimas e 1h anterior
-          if (reservation.checkInTime != 0) {
-            int hour = reservation.checkInTime - 1;
-            unavailableCurrentDayHours.add(hour % 24);
-          }
+        // Adiciona horários indisponíveis devido à regra de 1h anterior
+        if (reservation.checkInTime != 0 && !isIndisponibilizar) {
+          int hour = reservation.checkInTime - 1;
+          unavailableCurrentDayHours.add(hour % 24);
         }
       }
     }
@@ -241,10 +231,8 @@ class _CalendarPageState extends State<CalendarPage> {
     for (var reservation in reservasDoEspaco) {
       if (reservation.selectedDate.toDate().toString() ==
           getDateString(nextDate)) {
-        if (reservation.checkInTime == 0 &&
-            reservation.indisponibilizado == null &&
-            reservation.indisponibilizado == false) {
-          unavailableNextDayHours.add(23);
+        if (reservation.checkInTime == 0 && !isIndisponibilizar) {
+          unavailableCurrentDayHours.add(23);
         }
         for (int i = reservation.checkInTime;
             i <= reservation.checkOutTime;
@@ -333,7 +321,9 @@ class _CalendarPageState extends State<CalendarPage> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: List.generate(itemCount, (index) {
             final int hour = (startHour + index) % 24;
-            final bool isNextDay = (startHour + index) >= 24;
+
+            final bool isNextDay = hour < checkInTime!;
+            //final bool isNextDay = (startHour + index) >= 24;
 
             // Define se o horário é indisponível, considerando o dia atual ou o seguinte
             final bool isUnavailable = reachedLimit ||
@@ -415,8 +405,9 @@ class _CalendarPageState extends State<CalendarPage> {
 
     final startHour = int.parse(dayHours.from.split(':')[0]);
     final endHour = int.parse(dayHours.to.split(':')[0]);
-    final unavailableHours = _getUnavailableHours();
-    final unavailableHoursCheckout = _getUnavailableCheckOutHours();
+    final unavailableHours = _getUnavailableHours(widget.isIndisponibilizar);
+    final unavailableHoursCheckout =
+        _getUnavailableCheckOutHours(widget.isIndisponibilizar);
     bool show24h = true;
     int checkinEndHour = endHour;
     int checkoutEndHour = endHour;
@@ -453,7 +444,6 @@ class _CalendarPageState extends State<CalendarPage> {
       dev.log('$checkoutEndHour');
     }
 
-    if (checkinEndHour == 23) {}
     dev.log('checkinEndHour: $checkinEndHour');
     dev.log('checkoutEndHour: $checkoutEndHour');
 
