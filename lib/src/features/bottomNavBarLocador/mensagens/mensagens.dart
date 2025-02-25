@@ -603,8 +603,10 @@ class _MensagensState extends State<Mensagens> {
                                     : name != ''
                                         ? Text(
                                             name[0].toUpperCase(),
-                                            style:
-                                                const TextStyle(fontSize: 30),
+                                            style: const TextStyle(
+                                              fontSize: 30,
+                                              fontWeight: FontWeight.w600,
+                                            ),
                                           )
                                         : null,
                               ),
@@ -618,11 +620,17 @@ class _MensagensState extends State<Mensagens> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
-                                          name,
-                                          style: const TextStyle(
+                                        Flexible(
+                                          child: Text(
+                                            name,
+                                            style: const TextStyle(
                                               fontSize: 14,
-                                              fontWeight: FontWeight.bold),
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                            overflow: TextOverflow
+                                                .ellipsis, // ✅ Trunca o texto com reticências
+                                            textAlign: TextAlign.center,
+                                          ),
                                         ),
                                         if (lastMessageTime != null)
                                           Text(

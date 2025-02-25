@@ -185,28 +185,6 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
   late AvaliacoesService feedbackService;
 
   Future<void> _loadReservation() async {
-    // try {
-    //   final reservations = await ReservaService()
-    //       .getReservationsBySpaceId(widget.feedback.spaceId);
-
-    //   ReservationModel? latestValidReservation;
-
-    //   for (var reservation in reservations) {
-    //     if (reservation.canceledAt == null && reservation.hasReview == false) {
-    //       latestValidReservation = reservation;
-    //     }
-    //   }
-
-    //   if (latestValidReservation != null) {
-    //     setState(() async {
-    //       reservation = latestValidReservation;
-    //       canShowButtons = _validateReservation(latestValidReservation!);
-    //       canShowButtons = await isMyFeedback();
-    //     });
-    //   }
-    // } catch (e) {
-    //   return;
-    // }
     try {
       final reservations = await ReservaService()
           .getReservationsBySpaceId(widget.feedback.spaceId);
@@ -235,20 +213,7 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
     log("user!.uid == widget.feedback.userId: ${user!.uid == widget.feedback.userId}");
 
     return user.uid == widget.feedback.userId;
-    // return now.isBefore(threeMonthLimit) && reservation.canceledAt == null;
   }
-
-  // bool _validateReservation(ReservationModel reservation) {
-  //   final DateTime now = DateTime.now();
-  //   final DateTime threeMonthLimit;
-
-  //   DateTime selectedFinalDate;
-
-  //   selectedFinalDate = (reservation.selectedFinalDate).toDate();
-  //   threeMonthLimit = selectedFinalDate.add(const Duration(days: 90));
-
-  //   return now.isBefore(threeMonthLimit) && reservation.canceledAt == null;
-  // }
 
   @override
   void initState() {
@@ -281,11 +246,6 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
       isDisliked = reaction == "isDisliked";
     });
   }
-
-  // updateFeedback() async {
-  //   myFeedback = await AvaliacoesService().getFeedbackById(widget.feedback.id);
-
-  // }
 
   Future<void> showDeleteConfirmationDialog(
       BuildContext context, Function onConfirm) async {
@@ -371,6 +331,7 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                                   fontWeight: FontWeight.bold,
                                   color: Color(0xff000000),
                                 ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                               Text(
                                 widget.feedback.date,
