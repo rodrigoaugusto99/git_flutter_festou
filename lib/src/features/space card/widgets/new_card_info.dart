@@ -374,7 +374,7 @@ class _NewCardInfoState extends State<NewCardInfo>
   List<File> imageFilesToDownload = [];
   List<File> videosToDownload = [];
 
-  void saveChanges() {
+  Future<void> saveChanges() async {
     log(selectedServices.toString(), name: 'selectedServices');
     Map<String, dynamic> newSpaceInfos = {
       'latitude': latitude,
@@ -396,7 +396,7 @@ class _NewCardInfoState extends State<NewCardInfo>
     log(networkVideosToDelete.toString(), name: 'networkVideosToDelete');
     log(imageFilesToDownload.length.toString(), name: 'imageFilesToDownload');
     log(videosToDownload.length.toString(), name: 'videosToDownload');
-    spaceService.updateSpace(
+    await spaceService.updateSpace(
       spaceId: widget.spaceId,
       newSpaceInfos: newSpaceInfos,
       networkImagesToDelete: networkImagesToDelete,
@@ -404,6 +404,9 @@ class _NewCardInfoState extends State<NewCardInfo>
       imageFilesToDownload: imageFilesToDownload,
       videosToDownload: videosToDownload,
     );
+    imageFilesToDownload.clear();
+    videosToDownload.clear();
+    setState(() {});
   }
 
   void pickImage() async {
