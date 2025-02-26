@@ -1957,6 +1957,18 @@ class _NewCardInfoState extends State<NewCardInfo>
                                     );
                                   } else {
                                     toggleEditing(isSaved: false);
+                                    setState(() {
+                                      precoEC.text = space!.preco;
+                                      visaoGeralEC.text = space!.descricao;
+                                      cepEC.text = space!.cep;
+                                      ruaEC.text = space!.logradouro;
+                                      numeroEC.text = space!.numero;
+                                      bairroEC.text = space!.bairro;
+                                      cidadeEC.text = space!.cidade;
+                                      estadoEC.text = space!.estado;
+                                      selectedServices = space!.selectedServices
+                                          as List<String>;
+                                    });
                                   }
                                   //pode deletar
                                 },
