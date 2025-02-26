@@ -1049,6 +1049,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Stack(
+                    fit: StackFit.expand,
                     alignment: Alignment.center,
                     children: [
                       ClipRRect(
@@ -1105,6 +1106,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Stack(
+                    fit: StackFit.expand,
                     alignment: Alignment.center,
                     children: [
                       Image.file(
@@ -1196,6 +1198,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Stack(
+                    fit: StackFit.expand,
                     alignment: Alignment.center,
                     children: [
                       buildVideoPlayer(index, controllers, context),
@@ -1229,6 +1232,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Stack(
+                    fit: StackFit.expand,
                     alignment: Alignment.center,
                     children: [
                       buildVideoPlayerFromFile(
