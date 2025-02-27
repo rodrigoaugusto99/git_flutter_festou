@@ -733,7 +733,7 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
                                                         builder: (context) =>
                                                             ChatPage(
                                                           receiverID:
-                                                              reserva.locadorId,
+                                                              reserva.clientId,
                                                         ),
                                                       ),
                                                     );
