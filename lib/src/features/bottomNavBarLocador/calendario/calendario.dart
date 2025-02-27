@@ -627,7 +627,9 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      formatTimestamp(reserva.createdAt)!,
+                                      //formatTimestamp(reserva.createdAt)!,
+                                      formatTimestamp(
+                                          reserva.selectedFinalDate)!,
                                       style: const TextStyle(
                                         color: Color(0xff4300B1),
                                         fontWeight: FontWeight.bold,
