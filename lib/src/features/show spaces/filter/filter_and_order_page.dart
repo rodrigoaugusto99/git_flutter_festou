@@ -51,7 +51,12 @@ class _FilterAndOrderPageState extends ConsumerState<FilterAndOrderPage> {
               ],
             ),
             child: InkWell(
-              onTap: () => Navigator.of(context).pop(),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NotificacoesPage(locador: true),
+                ),
+              ),
               child: const Icon(
                 Icons.notifications_outlined,
                 color: Colors.black,
@@ -77,12 +82,7 @@ class _FilterAndOrderPageState extends ConsumerState<FilterAndOrderPage> {
             ],
           ),
           child: InkWell(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const NotificacoesPage(locador: true),
-              ),
-            ),
+            onTap: () => Navigator.of(context).pop(),
             child: const Icon(
               Icons.arrow_back,
               color: Colors.black,

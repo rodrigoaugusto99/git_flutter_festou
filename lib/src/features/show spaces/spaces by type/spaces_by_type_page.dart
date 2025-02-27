@@ -212,104 +212,103 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
       child: AnimatedBuilder(
           animation: spaceByTypeViewModel,
           builder: (context, child) {
-            return Stack(
-              // alignment: Alignment.center,
-              fit: StackFit.expand,
-              children: [
-                Image.asset(
-                  cds[widget.type[0]]!,
-                  fit: BoxFit.cover,
-                ),
-                Scaffold(
-                  backgroundColor: Colors.transparent,
-                  extendBodyBehindAppBar: true,
-                  appBar: PreferredSize(
-                    preferredSize: const Size.fromHeight(kToolbarHeight),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Color(0xffFFFFFF),
-                            Color.fromARGB(209, 255, 255, 255),
-                            Color.fromARGB(178, 255, 255, 255),
-                            Color.fromARGB(0, 255, 255, 255),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                      ),
-                      child: AppBar(
-                        backgroundColor: Colors.transparent,
-                        actions: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 18.0),
-                            child: Container(
-                              padding: const EdgeInsets.all(7),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 2,
-                                    blurRadius: 5,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: InkWell(
-                                onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const NotificacoesPage(locador: false),
-                                  ),
-                                ),
-                                child: const Icon(
-                                  Icons.notifications_outlined,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                        leading: Padding(
-                          padding: const EdgeInsets.only(left: 18.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: InkWell(
-                              onTap: () => Navigator.of(context).pop(),
-                              child: const Icon(
-                                Icons.arrow_back,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                        centerTitle: true,
-                        title: Text(
-                          widget.type[0],
-                          style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black),
-                        ),
-                        elevation: 0,
-                      ),
+            return Scaffold(
+              // backgroundColor: Colors.transparent,
+              extendBodyBehindAppBar: true,
+              appBar: PreferredSize(
+                preferredSize: const Size.fromHeight(kToolbarHeight),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color(0xffFFFFFF),
+                        Color.fromARGB(209, 255, 255, 255),
+                        Color.fromARGB(178, 255, 255, 255),
+                        Color.fromARGB(0, 255, 255, 255),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
                     ),
                   ),
-                  body: Column(
+                  child: AppBar(
+                    backgroundColor: Colors.transparent,
+                    actions: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 18.0),
+                        child: Container(
+                          padding: const EdgeInsets.all(7),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: InkWell(
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const NotificacoesPage(locador: false),
+                              ),
+                            ),
+                            child: const Icon(
+                              Icons.notifications_outlined,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                    leading: Padding(
+                      padding: const EdgeInsets.only(left: 18.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: InkWell(
+                          onTap: () => Navigator.of(context).pop(),
+                          child: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                    centerTitle: true,
+                    title: Text(
+                      widget.type[0],
+                      style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
+                    elevation: 0,
+                  ),
+                ),
+              ),
+              body: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.asset(
+                    cds[widget.type[0]]!,
+                    fit: BoxFit.cover,
+                  ),
+                  Column(
                     children: [
                       const SizedBox(
                         height: 120,
@@ -554,8 +553,8 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
                       ),
                     ],
                   ),
-                ),
-              ],
+                ],
+              ),
             );
           }),
     );

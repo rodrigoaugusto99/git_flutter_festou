@@ -281,7 +281,7 @@ class _MinhasReservasTileState extends State<MinhasReservasTile> {
                               ),
                               child: Image.network(
                                 imageUrl,
-                                fit: BoxFit.fill,
+                                fit: BoxFit.cover,
                                 width: double.infinity,
                                 height: double.infinity,
                               ),
@@ -292,7 +292,7 @@ class _MinhasReservasTileState extends State<MinhasReservasTile> {
                           .map(
                             (imageUrl) => Image.network(
                               imageUrl,
-                              fit: BoxFit.fill,
+                              fit: BoxFit.cover,
                               width: double.infinity,
                               height: double.infinity,
                             ),
