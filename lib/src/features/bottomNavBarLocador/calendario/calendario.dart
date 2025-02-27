@@ -697,18 +697,25 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
                                           const SizedBox(
                                             width: 5,
                                           ),
-                                          Text(
-                                            user != null
-                                                ? (user.name.length > 28
-                                                    ? '${user.name.substring(0, 28)}...'
-                                                    : user.name)
-                                                : '',
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
+                                          const Expanded(
+                                            child: Text(
+                                              // user != null
+                                              //     ? (user.name.length > 28
+                                              //         ? '${user.name.substring(0, 28)}...'
+                                              //         : user.name)
+                                              //     : '',
+                                              "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold,
+                                                  overflow:
+                                                      TextOverflow.ellipsis),
                                             ),
                                           ),
-                                          const Spacer(),
+                                          const SizedBox(
+                                            width: 25,
+                                          ),
+                                          // const Spacer(),
                                           if (reserva.canceledAt != null) ...[
                                             GestureDetector(
                                               onTap: () =>
