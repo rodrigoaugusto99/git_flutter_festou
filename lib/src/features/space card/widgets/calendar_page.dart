@@ -136,7 +136,8 @@ class _CalendarPageState extends State<CalendarPage> {
       if (reservation.selectedDate.toDate().toString() ==
           getDateString(previousDate)) {
         // Caso 1: Contrato termina exatamente às 23:59 do dia anterior
-        if (reservation.checkOutTime == 23) {
+        if (reservation.checkOutTime == 23 &&
+            reservation.indisponibilizado == false) {
           unavailableHours
               .add(0); // Adiciona a primeira hora do dia atual (00:00 - 00:59)
         }
@@ -355,11 +356,7 @@ class _CalendarPageState extends State<CalendarPage> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: List.generate(itemCount, (index) {
             final int hour = (startHour + index) % 24;
-
             final bool isNextDay = hour < checkInTime!;
-            //final bool isNextDay = (startHour + index) >= 24;
-
-            // Define se o horário é indisponível, considerando o dia atual ou o seguinte
             final bool isUnavailable = reachedLimit ||
                 (isNextDay
                     ? unavailableHoursNextDay.contains(hour)
@@ -458,9 +455,9 @@ class _CalendarPageState extends State<CalendarPage> {
     if (checkInTime != null) {
       // Se o horário de check-out ultrapassa o dia atual, usa o horário do próximo dia
       if (nextDayHours != null && (checkInTime! >= endHour)) {
-        checkoutEndHour = int.parse(nextDayHours.to.split(':')[0]);
+        checkoutEndHour = int.parse(nextDayHours.to.split(':')[0]) - 1;
       } else {
-        checkoutEndHour = (checkInTime! + 24) % 24;
+        checkoutEndHour = (checkInTime! + 23) % 24;
       }
 
       if (endHour != 23) {
@@ -472,13 +469,11 @@ class _CalendarPageState extends State<CalendarPage> {
     String checkoutStringEndHour = '';
 
     if (endHour != 23) {
-      checkinEndHour = endHour - 3;
+      checkinEndHour = endHour;
       if (checkinEndHour < 0) {
         checkinEndHour = checkinEndHour + 24;
       }
     } else {
-      //se o horario final for 23, averiguar se pode mostrar o 23 mesmo
-      //final nextDayHours = _getDayHours(_selectedDate!.add(const Duration(days: 1)));
       if (nextDayHours == null || nextDayHours.from != '00:00') {
         checkinEndHour = endHour - 3;
         if (checkinEndHour < 0) {
