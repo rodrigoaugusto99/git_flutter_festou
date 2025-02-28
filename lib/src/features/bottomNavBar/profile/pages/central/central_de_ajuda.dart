@@ -1235,7 +1235,7 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                                   ),
                                   SizedBox(height: 8),
                                   Text(
-                                    'Você ainda não abriu nenhum ticket.\nToque no botão "Abrir ticket" para criar um.',
+                                    'Você ainda não abriu nenhum ticket.\nAbra o seu em "Iniciar um chamado".',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontSize: 14,

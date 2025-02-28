@@ -218,37 +218,40 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildSearchAnimation(double y) {
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Lottie.asset(
-            'lib/assets/animations/searchAnimation.json',
-            width: 220, // Maior para melhor visualização
-            height: y * 0.3,
-            repeat: true,
-          ),
-          const SizedBox(
-              height: 24), // Maior espaçamento entre animação e texto
-          const Text(
-            'Explore os melhores espaços para o seu Festou!',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 18, // Fonte maior e mais legível
-              fontWeight: FontWeight.bold,
-              color: Colors.black87, // Tom mais escuro para melhor contraste
+      child: Padding(
+        padding: const EdgeInsets.all(40.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Lottie.asset(
+              'lib/assets/animations/searchAnimation.json',
+              width: 220, // Maior para melhor visualização
+              height: y * 0.3,
+              repeat: true,
             ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Use a barra de busca acima para encontrar espaços perfeitos para o seu evento.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.black54,
+            const SizedBox(
+                height: 24), // Maior espaçamento entre animação e texto
+            const Text(
+              'Explore os melhores espaços para o seu Festou!',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 18, // Fonte maior e mais legível
+                fontWeight: FontWeight.bold,
+                color: Colors.black87, // Tom mais escuro para melhor contraste
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 8),
+            const Text(
+              'Use a barra de busca acima para encontrar espaços perfeitos para o seu evento.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

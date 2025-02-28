@@ -253,8 +253,8 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                 Center(
                   child: Lottie.asset(
                     'lib/assets/animations/warning.json',
-                    width: 100,
-                    height: 100,
+                    width: 80,
+                    height: 80,
                     repeat: true,
                   ),
                 ),
@@ -268,308 +268,401 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                     ),
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 onlyGoogle
                     ? const Text(
-                        'O Google é seu único provedor. Se você desvincular, precisará configurar uma senha para continuar acessando sua conta.')
+                        'O Google é seu único provedor. Se você desvincular, precisará configurar uma senha para continuar acessando sua conta.',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.black54,
+                          height: 1.5,
+                        ),
+                      )
                     : const Text(
-                        'Tem certeza de que deseja desvincular o Google? O login só poderá ser realizado via e-mail e senha.'),
+                        'Tem certeza de que deseja desvincular o Google? O login só poderá ser realizado via e-mail e senha.',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.black54,
+                          height: 1.5,
+                        ),
+                      ),
+                const SizedBox(height: 30),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[300],
+                          foregroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        child: const Text(
+                          'Cancelar',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: ElevatedButton(
+                        key: Keys.kDialogConfirm,
+                        onPressed: () async {
+                          await reauthentication(user, '');
+
+                          // Abre o pop-up para cadastrar nova senha
+                          if (onlyGoogle) {
+                            final BuildContext contextPassword =
+                                Navigator.of(context).context;
+                            Navigator.of(context)
+                                .pop(); // Fecha o diálogo de confirmação
+                            await showDialog(
+                              context: contextPassword,
+                              builder: (BuildContext contextPassword) {
+                                final newPasswordController =
+                                    TextEditingController();
+                                final confirmPasswordController =
+                                    TextEditingController();
+
+                                return AlertDialog(
+                                  title: const Center(
+                                    child: Text(
+                                      'Cadastrar senha',
+                                    ),
+                                  ),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.only(bottom: 20),
+                                        child: Text(
+                                          "Agora você deve cadastrar uma senha para login com e-mail:",
+                                          style: TextStyle(fontSize: 14),
+                                        ),
+                                      ),
+                                      PasswordField(
+                                        controller: newPasswordController,
+                                        label: 'Nova senha',
+                                      ),
+                                      const SizedBox(height: 16),
+                                      PasswordField(
+                                        controller: confirmPasswordController,
+                                        label: 'Confirmar senha',
+                                      ),
+                                    ],
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(contextPassword).pop(),
+                                      child: const Text('Cancelar'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        final newPassword =
+                                            newPasswordController.text.trim();
+                                        final confirmPassword =
+                                            confirmPasswordController.text
+                                                .trim();
+
+                                        if (newPassword.isEmpty ||
+                                            confirmPassword.isEmpty) {
+                                          final BuildContext contextEmpty =
+                                              Navigator.of(contextPassword)
+                                                  .context;
+                                          await showDialog(
+                                              context: contextEmpty,
+                                              builder:
+                                                  (BuildContext contextEmpty) {
+                                                return AlertDialog(
+                                                    contentPadding:
+                                                        const EdgeInsets.all(
+                                                            16.0),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              16.0),
+                                                    ),
+                                                    content: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Lottie.asset(
+                                                              'lib/assets/animations/info.json',
+                                                              width: 100,
+                                                              height: 100,
+                                                              repeat: false,
+                                                            ),
+                                                            const Text(
+                                                              'Ops...',
+                                                              style: TextStyle(
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 8),
+                                                        const Padding(
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      16.0),
+                                                          child: Text(
+                                                              'Os campos não podem estar vazios!'),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.of(
+                                                                    contextEmpty)
+                                                                .pop(),
+                                                        child: const Text(
+                                                            'Fechar'),
+                                                      ),
+                                                    ]);
+                                              });
+                                          return;
+                                        }
+
+                                        if (newPassword.length < 6) {
+                                          final BuildContext
+                                              contextLessThanSix =
+                                              Navigator.of(contextPassword)
+                                                  .context;
+                                          await showDialog(
+                                              context: contextLessThanSix,
+                                              builder: (BuildContext
+                                                  contextLessThanSix) {
+                                                return AlertDialog(
+                                                    contentPadding:
+                                                        const EdgeInsets.all(
+                                                            16.0),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              16.0),
+                                                    ),
+                                                    content: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Lottie.asset(
+                                                              'lib/assets/animations/info.json',
+                                                              width: 100,
+                                                              height: 100,
+                                                              repeat: false,
+                                                            ),
+                                                            const Text(
+                                                              'Ops...',
+                                                              style: TextStyle(
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 8),
+                                                        const Padding(
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      16.0),
+                                                          child: Text(
+                                                              'A senha deve conter no mínimo 6 caracteres!'),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.of(
+                                                                    contextLessThanSix)
+                                                                .pop(),
+                                                        child: const Text(
+                                                            'Fechar'),
+                                                      ),
+                                                    ]);
+                                              });
+                                          return;
+                                        }
+
+                                        if (newPassword != confirmPassword) {
+                                          final BuildContext
+                                              contextWrongPassword =
+                                              Navigator.of(contextPassword)
+                                                  .context;
+                                          await showDialog(
+                                              context: contextWrongPassword,
+                                              builder: (BuildContext
+                                                  contextWrongPassword) {
+                                                return AlertDialog(
+                                                    contentPadding:
+                                                        const EdgeInsets.all(
+                                                            16.0),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              16.0),
+                                                    ),
+                                                    content: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Lottie.asset(
+                                                              'lib/assets/animations/info.json',
+                                                              width: 100,
+                                                              height: 100,
+                                                              repeat: false,
+                                                            ),
+                                                            const Text(
+                                                              'Ops...',
+                                                              style: TextStyle(
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 8),
+                                                        const Padding(
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      16.0),
+                                                          child: Text(
+                                                              'As senhas não coincidem!'),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.of(
+                                                                    contextWrongPassword)
+                                                                .pop(),
+                                                        child: const Text(
+                                                            'Fechar'),
+                                                      ),
+                                                    ]);
+                                              });
+                                          return;
+                                        }
+
+                                        try {
+                                          // Atualiza a senha do usuário
+                                          await user
+                                              .updatePassword(newPassword);
+                                          await user.unlink("google.com");
+
+                                          setState(() {
+                                            displayAuthProviderList();
+                                          });
+
+                                          Navigator.of(contextPassword).pop();
+
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                  'Senha cadastrada e Google desvinculado com sucesso!'),
+                                            ),
+                                          );
+                                        } on FirebaseAuthException catch (e) {
+                                          log('Erro ao cadastrar senha: ${e.code}, ${e.message}');
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Erro ao cadastrar senha: ${e.message}',
+                                              ),
+                                            ),
+                                          );
+                                        } catch (e) {
+                                          log('Erro desconhecido ao cadastrar senha: $e');
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                  'Erro desconhecido ao cadastrar senha.'),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      child: const Text('Cadastrar'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            Navigator.of(context)
+                                .pop(); // Fecha o diálogo de confirmação
+                            await user.unlink("google.com");
+
+                            setState(() {
+                              displayAuthProviderList();
+                            });
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'Conta do Google desvinculada com sucesso!'),
+                              ),
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.deepPurple,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        child: const Text(
+                          'Confirmar',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ],
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancelar'),
-              ),
-              TextButton(
-                onPressed: () async {
-                  //
-
-                  await reauthentication(user, '');
-
-                  // Abre o pop-up para cadastrar nova senha
-                  if (onlyGoogle) {
-                    final BuildContext contextPassword =
-                        Navigator.of(context).context;
-                    Navigator.of(context)
-                        .pop(); // Fecha o diálogo de confirmação
-                    await showDialog(
-                      context: contextPassword,
-                      builder: (BuildContext contextPassword) {
-                        final newPasswordController = TextEditingController();
-                        final confirmPasswordController =
-                            TextEditingController();
-
-                        return AlertDialog(
-                          title: const Center(
-                            child: Text(
-                              'Cadastrar senha',
-                            ),
-                          ),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.only(bottom: 20),
-                                child: Text(
-                                  "Agora você deve cadastrar uma senha para login com e-mail:",
-                                  style: TextStyle(fontSize: 14),
-                                ),
-                              ),
-                              PasswordField(
-                                controller: newPasswordController,
-                                label: 'Nova senha',
-                              ),
-                              const SizedBox(height: 16),
-                              PasswordField(
-                                controller: confirmPasswordController,
-                                label: 'Confirmar senha',
-                              ),
-                            ],
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () =>
-                                  Navigator.of(contextPassword).pop(),
-                              child: const Text('Cancelar'),
-                            ),
-                            TextButton(
-                              onPressed: () async {
-                                final newPassword =
-                                    newPasswordController.text.trim();
-                                final confirmPassword =
-                                    confirmPasswordController.text.trim();
-
-                                if (newPassword.isEmpty ||
-                                    confirmPassword.isEmpty) {
-                                  final BuildContext contextEmpty =
-                                      Navigator.of(contextPassword).context;
-                                  await showDialog(
-                                      context: contextEmpty,
-                                      builder: (BuildContext contextEmpty) {
-                                        return AlertDialog(
-                                            contentPadding:
-                                                const EdgeInsets.all(16.0),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(16.0),
-                                            ),
-                                            content: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Lottie.asset(
-                                                      'lib/assets/animations/info.json',
-                                                      width: 100,
-                                                      height: 100,
-                                                      repeat: false,
-                                                    ),
-                                                    const Text(
-                                                      'Ops...',
-                                                      style: TextStyle(
-                                                        fontSize: 20,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(height: 8),
-                                                const Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 16.0),
-                                                  child: Text(
-                                                      'Os campos não podem estar vazios!'),
-                                                )
-                                              ],
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () =>
-                                                    Navigator.of(contextEmpty)
-                                                        .pop(),
-                                                child: const Text('Fechar'),
-                                              ),
-                                            ]);
-                                      });
-                                  return;
-                                }
-
-                                if (newPassword.length < 6) {
-                                  final BuildContext contextLessThanSix =
-                                      Navigator.of(contextPassword).context;
-                                  await showDialog(
-                                      context: contextLessThanSix,
-                                      builder:
-                                          (BuildContext contextLessThanSix) {
-                                        return AlertDialog(
-                                            contentPadding:
-                                                const EdgeInsets.all(16.0),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(16.0),
-                                            ),
-                                            content: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Lottie.asset(
-                                                      'lib/assets/animations/info.json',
-                                                      width: 100,
-                                                      height: 100,
-                                                      repeat: false,
-                                                    ),
-                                                    const Text(
-                                                      'Ops...',
-                                                      style: TextStyle(
-                                                        fontSize: 20,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(height: 8),
-                                                const Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 16.0),
-                                                  child: Text(
-                                                      'A senha deve conter no mínimo 6 caracteres!'),
-                                                )
-                                              ],
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () => Navigator.of(
-                                                        contextLessThanSix)
-                                                    .pop(),
-                                                child: const Text('Fechar'),
-                                              ),
-                                            ]);
-                                      });
-                                  return;
-                                }
-
-                                if (newPassword != confirmPassword) {
-                                  final BuildContext contextWrongPassword =
-                                      Navigator.of(contextPassword).context;
-                                  await showDialog(
-                                      context: contextWrongPassword,
-                                      builder:
-                                          (BuildContext contextWrongPassword) {
-                                        return AlertDialog(
-                                            contentPadding:
-                                                const EdgeInsets.all(16.0),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(16.0),
-                                            ),
-                                            content: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Lottie.asset(
-                                                      'lib/assets/animations/info.json',
-                                                      width: 100,
-                                                      height: 100,
-                                                      repeat: false,
-                                                    ),
-                                                    const Text(
-                                                      'Ops...',
-                                                      style: TextStyle(
-                                                        fontSize: 20,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(height: 8),
-                                                const Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 16.0),
-                                                  child: Text(
-                                                      'As senhas não coincidem!'),
-                                                )
-                                              ],
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () => Navigator.of(
-                                                        contextWrongPassword)
-                                                    .pop(),
-                                                child: const Text('Fechar'),
-                                              ),
-                                            ]);
-                                      });
-                                  return;
-                                }
-
-                                try {
-                                  // Atualiza a senha do usuário
-                                  await user.updatePassword(newPassword);
-                                  await user.unlink("google.com");
-
-                                  setState(() {
-                                    displayAuthProviderList();
-                                  });
-
-                                  Navigator.of(contextPassword).pop();
-
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                          'Senha cadastrada e Google desvinculado com sucesso!'),
-                                    ),
-                                  );
-                                } on FirebaseAuthException catch (e) {
-                                  log('Erro ao cadastrar senha: ${e.code}, ${e.message}');
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'Erro ao cadastrar senha: ${e.message}',
-                                      ),
-                                    ),
-                                  );
-                                } catch (e) {
-                                  log('Erro desconhecido ao cadastrar senha: $e');
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                          'Erro desconhecido ao cadastrar senha.'),
-                                    ),
-                                  );
-                                }
-                              },
-                              child: const Text('Cadastrar'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  } else {
-                    Navigator.of(context)
-                        .pop(); // Fecha o diálogo de confirmação
-                    await user.unlink("google.com");
-
-                    setState(() {
-                      displayAuthProviderList();
-                    });
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content:
-                            Text('Conta do Google desvinculada com sucesso!'),
-                      ),
-                    );
-                  }
-                },
-                child: const Text('Confirmar'),
-              ),
-            ],
           );
         },
       );
@@ -1034,7 +1127,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                               borderRadius: BorderRadius.circular(16.0),
                             ),
                             child: Padding(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                   vertical: 24.0, horizontal: 16.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,

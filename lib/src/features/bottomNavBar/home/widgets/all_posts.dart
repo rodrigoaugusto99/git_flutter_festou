@@ -216,114 +216,107 @@ class _AllPostsState extends State<AllPosts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 18.0),
-          child: Container(
-            decoration: BoxDecoration(
-              //color: Colors.white.withOpacity(0.7),
-              color: Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 2,
-                  blurRadius: 5,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: InkWell(
-              onTap: () => Navigator.of(context).pop(),
-              child: const Icon(
-                Icons.arrow_back,
-                color: Colors.black,
-              ),
-            ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xfff8f8f8), // Cor roxa no topo
+              Color(0xff4300B1), // Fundo claro abaixo
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
-        centerTitle: true,
-        title: const Text(
-          'Posts',
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-      ),
-      body: loadingPosts
-          ? const CustomLoadingIndicator()
-          : GridView.builder(
-              padding: const EdgeInsets.all(10),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-                childAspectRatio: 1 / 1.28,
+        child: Column(
+          children: [
+            const SizedBox(height: 50), // Espaço para a AppBar
+
+            // AppBar customizada
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Botão de voltar estilizado
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 5,
+                          spreadRadius: 2,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.black),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ),
+
+                  // Título centralizado
+                  const Text(
+                    'Posts',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black, // Deixa o título mais visível
+                    ),
+                  ),
+
+                  // Espaço para alinhar corretamente
+                  const SizedBox(width: 40),
+                ],
               ),
-              itemCount: hasMorePosts ? posts.length + 1 : posts.length,
-              itemBuilder: (context, index) {
-                if (index == posts.length) {
-                  return hasMorePosts && !loadingPosts && !hideVerMaisButton
-                      ? GestureDetector(
-                          onTap: _getMorePosts,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 9),
-                            alignment: Alignment.center,
-                            height: 35,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xff9747FF),
-                                  Color(0xff44300b1),
-                                ],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                              ),
-                            ),
-                            child: loadingMorePosts
-                                ? const CustomLoadingIndicator()
-                                : const Text(
-                                    'Ver mais',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                          ),
-                        )
-                      : const SizedBox.shrink();
-                }
-
-                Map<String, dynamic> post =
-                    posts[index].data() as Map<String, dynamic>;
-
-                final postModel = PostModel(
-                  title: post['titulo'],
-                  createdAt: post['createdAt'],
-                  description: post['descricao'],
-                  imagens: List<String>.from(post['imagens'] ?? []),
-                  coverPhoto: post['coverPhoto'],
-                );
-
-                return AllPostsWidget(
-                  postModel: postModel,
-                );
-              },
             ),
+
+            const SizedBox(height: 16),
+
+            // Lista de posts
+            Expanded(
+              child: loadingPosts
+                  ? const Center(child: CustomLoadingIndicator())
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          childAspectRatio: 1 / 1.28,
+                        ),
+                        itemCount: posts.length,
+                        itemBuilder: (context, index) {
+                          Map<String, dynamic> post =
+                              posts[index].data() as Map<String, dynamic>;
+
+                          final postModel = PostModel(
+                            title: post['titulo'],
+                            createdAt: post['createdAt'],
+                            description: post['descricao'],
+                            imagens: List<String>.from(post['imagens'] ?? []),
+                            coverPhoto: post['coverPhoto'],
+                          );
+
+                          return AllPostsWidget(postModel: postModel);
+                        },
+                      ),
+                    ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
 
 class AllPostsWidget extends StatelessWidget {
   final PostModel postModel;
-  const AllPostsWidget({
-    super.key,
-    required this.postModel,
-  });
+  const AllPostsWidget({super.key, required this.postModel});
 
   @override
   Widget build(BuildContext context) {
@@ -339,73 +332,92 @@ class AllPostsWidget extends StatelessWidget {
         );
       },
       child: Container(
-        clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
-          color: Colors.red,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        //width: 174,
-        // height: 110,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            ClipRRect(
-              //clipBehavior: Clip.none,
-              borderRadius: BorderRadius.circular(10),
-              child: Image.network(
-                postModel.coverPhoto,
-                fit: BoxFit.cover,
-              ),
+          borderRadius: BorderRadius.circular(16), // Bordas arredondadas
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2), // Sombra suave
+              blurRadius: 8,
+              spreadRadius: 2,
+              offset: const Offset(0, 3),
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: 120,
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(24)),
-                  color: const Color(0xff4300B1).withOpacity(0.5),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16), // Mantém bordas arredondadas
+          child: Stack(
+            children: [
+              // Imagem de fundo do post
+              Positioned.fill(
+                child: Image.network(
+                  postModel.coverPhoto,
+                  fit: BoxFit.cover,
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: Stack(
-                        children: [
-                          Text(
-                            postModel.title,
-                            style: const TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
+              ),
+
+              // Gradiente para melhorar a legibilidade do texto
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.black.withOpacity(0.6),
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.7),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
                     ),
-                    const SizedBox(height: 7),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        maxLines: 5,
-                        postModel.description,
-                        style: const TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
+                  ),
+                ),
+              ),
+
+              // Texto do post
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(12)),
+                    color: Colors.black.withOpacity(0.6),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Título do post
+                      Center(
+                        child: Text(
+                          postModel.title,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 4),
+
+                      // Descrição do post
+                      Text(
+                        postModel.description,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.white70,
+                        ),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            )
-          ],
+            ],
+          ),
         ),
       ),
     );

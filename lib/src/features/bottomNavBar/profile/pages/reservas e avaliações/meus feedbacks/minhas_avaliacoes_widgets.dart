@@ -324,14 +324,17 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                widget.feedback.userName,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xff000000),
+                              SizedBox(
+                                width: 200,
+                                child: Text(
+                                  widget.feedback.userName,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff000000),
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                overflow: TextOverflow.ellipsis,
                               ),
                               Text(
                                 widget.feedback.date,

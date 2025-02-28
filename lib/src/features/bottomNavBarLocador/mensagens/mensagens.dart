@@ -356,25 +356,116 @@ class _MensagensState extends State<Mensagens> {
                         onPressed: () async {
                           bool? confirmDeletion = await showDialog<bool>(
                             context: context,
+                            barrierDismissible:
+                                false, // Impede que o usuário feche tocando fora
                             builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text('Confirmar Exclusão'),
-                                content: const Text(
-                                    'Tem certeza que deseja apagar as conversas selecionadas?'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: const Text('Cancelar'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop(false);
-                                    },
+                              return Dialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16.0),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 24.0, horizontal: 16.0),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      // Ícone animado de alerta
+                                      Lottie.asset(
+                                        'lib/assets/animations/warning.json',
+                                        width: 80,
+                                        height: 80,
+                                        repeat: false,
+                                      ),
+                                      const SizedBox(height: 16),
+
+                                      // Título
+                                      const Text(
+                                        'Confirmar Exclusão',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 12),
+
+                                      // Mensagem de confirmação
+                                      const Text(
+                                        'Tem certeza que deseja apagar as conversas selecionadas?',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.black54,
+                                          height: 1.5,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 30),
+
+                                      // Botões
+                                      Row(
+                                        children: [
+                                          // Botão Cancelar
+                                          Expanded(
+                                            child: ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.of(context)
+                                                    .pop(false);
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    Colors.grey[300],
+                                                foregroundColor: Colors.black,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 12),
+                                              ),
+                                              child: const Text(
+                                                'Cancelar',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+
+                                          // Botão Confirmar
+                                          Expanded(
+                                            child: ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop(true);
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    Colors.deepPurple,
+                                                foregroundColor: Colors.white,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 12),
+                                              ),
+                                              child: const Text(
+                                                'Confirmar',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
-                                  TextButton(
-                                    child: const Text('Confirmar'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop(true);
-                                    },
-                                  ),
-                                ],
+                                ),
                               );
                             },
                           );
