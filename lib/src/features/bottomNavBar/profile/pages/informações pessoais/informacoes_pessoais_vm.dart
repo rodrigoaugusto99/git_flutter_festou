@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:festou/src/core/exceptions/repository_exception.dart';
 import 'package:festou/src/core/fp/either.dart';
@@ -6,6 +7,7 @@ import 'package:festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:search_cep/search_cep.dart';
 
 part 'informacoes_pessoais_vm.g.dart';
 
@@ -24,6 +26,7 @@ class InformacoesPessoaisVM extends _$InformacoesPessoaisVM {
     required String logradouro,
     required String numero,
     required String bairro,
+    required String cpf,
   }) async {
     final usersRepository = ref.watch(userFirestoreRepositoryProvider);
 
@@ -37,6 +40,7 @@ class InformacoesPessoaisVM extends _$InformacoesPessoaisVM {
     await usersRepository.updatetUser('logradouro', logradouro);
     await usersRepository.updatetUser('numero', numero);
     await usersRepository.updatetUser('bairro', bairro);
+    await usersRepository.updatetUser('cpf', cpf);
 
     switch (a) {
       case Success():

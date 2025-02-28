@@ -69,6 +69,8 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                           ))
                       .toList(),
                   options: CarouselOptions(
+                    disableCenter: true,
+                    // enlargeStrategy: CenterPageEnlargeStrategy.scale,
                     autoPlay: true,
                     aspectRatio: 16 / 12,
                     viewportFraction: 1.0,

@@ -374,7 +374,7 @@ class _NewCardInfoState extends State<NewCardInfo>
   List<File> imageFilesToDownload = [];
   List<File> videosToDownload = [];
 
-  void saveChanges() {
+  Future<void> saveChanges() async {
     log(selectedServices.toString(), name: 'selectedServices');
     Map<String, dynamic> newSpaceInfos = {
       'latitude': latitude,
@@ -396,7 +396,7 @@ class _NewCardInfoState extends State<NewCardInfo>
     log(networkVideosToDelete.toString(), name: 'networkVideosToDelete');
     log(imageFilesToDownload.length.toString(), name: 'imageFilesToDownload');
     log(videosToDownload.length.toString(), name: 'videosToDownload');
-    spaceService.updateSpace(
+    await spaceService.updateSpace(
       spaceId: widget.spaceId,
       newSpaceInfos: newSpaceInfos,
       networkImagesToDelete: networkImagesToDelete,
@@ -404,6 +404,9 @@ class _NewCardInfoState extends State<NewCardInfo>
       imageFilesToDownload: imageFilesToDownload,
       videosToDownload: videosToDownload,
     );
+    imageFilesToDownload.clear();
+    videosToDownload.clear();
+    setState(() {});
   }
 
   void pickImage() async {
@@ -1046,6 +1049,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Stack(
+                    fit: StackFit.expand,
                     alignment: Alignment.center,
                     children: [
                       ClipRRect(
@@ -1102,6 +1106,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Stack(
+                    fit: StackFit.expand,
                     alignment: Alignment.center,
                     children: [
                       Image.file(
@@ -1193,6 +1198,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Stack(
+                    fit: StackFit.expand,
                     alignment: Alignment.center,
                     children: [
                       buildVideoPlayer(index, controllers, context),
@@ -1226,6 +1232,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Stack(
+                    fit: StackFit.expand,
                     alignment: Alignment.center,
                     children: [
                       buildVideoPlayerFromFile(
@@ -2008,6 +2015,18 @@ class _NewCardInfoState extends State<NewCardInfo>
                                     );
                                   } else {
                                     toggleEditing(isSaved: false);
+                                    setState(() {
+                                      precoEC.text = space!.preco;
+                                      visaoGeralEC.text = space!.descricao;
+                                      cepEC.text = space!.cep;
+                                      ruaEC.text = space!.logradouro;
+                                      numeroEC.text = space!.numero;
+                                      bairroEC.text = space!.bairro;
+                                      cidadeEC.text = space!.cidade;
+                                      estadoEC.text = space!.estado;
+                                      selectedServices = space!.selectedServices
+                                          as List<String>;
+                                    });
                                   }
                                   //pode deletar
                                 },

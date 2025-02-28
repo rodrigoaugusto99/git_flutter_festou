@@ -318,6 +318,11 @@ class UserFirestoreRepositoryImpl implements UserFirestoreRepository {
         await userDocument.reference.update({
           'user_address.numero': newText,
         });
+      } else if (text == 'cpf') {
+        // Lógica para outros campos, se necessário
+        await userDocument.reference.update({
+          'cpf': newText,
+        });
       }
 
       // Retorna sucesso (Nil) se a atualização for bem-sucedida

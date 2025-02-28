@@ -62,8 +62,6 @@ class _CalendarioState extends State<Calendario> {
       return;
     }
     isLoading = true;
-    // selectedSpaceReservations =
-    //     await ReservaService().getReservationsBySpaceId(spaceId);
     selectedSpaceReservations = minhasReservas!
         .where((r) => r.spaceId == spaceId)
         .toList()
@@ -688,7 +686,7 @@ class _CalendarioExpansioWidgetState extends State<CalendarioExpansioWidget> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    formatTimestamp(reserva.createdAt)!,
+                                    formatTimestamp(reserva.selectedFinalDate)!,
                                     style: const TextStyle(
                                       color: Color(0xff4300B1),
                                       fontWeight: FontWeight.bold,

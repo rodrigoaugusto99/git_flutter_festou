@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:festou/src/services/storage_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:festou/src/core/exceptions/repository_exception.dart';
 import 'package:festou/src/models/space_model.dart';
@@ -109,8 +110,37 @@ class SpaceService {
       DocumentReference spaceDocRef = querySnapshot.docs[0].reference;
 
       // Atualize o documento do usuário com os novos dados
-      await spaceDocRef.update(newSpaceInfos);
-      //todo: update latitude and longitude too
+      //await spaceDocRef.update(newSpaceInfos);
+
+      List<String> stringImagesToAdd = [];
+      for (final file in imageFilesToDownload) {
+        final url = await uploadFile(
+          file: file,
+          spaceId: spaceId,
+        );
+        if (url == null) continue;
+        stringImagesToAdd.add(url);
+      }
+
+      List<String> stringVideosToAdd = [];
+      for (final file in videosToDownload) {
+        final url = await uploadVideoFile(
+          file: file,
+          spaceId: spaceId,
+        );
+        if (url == null) continue;
+        stringVideosToAdd.add(url);
+      }
+
+      await spaceDocRef.update(
+          {"images_url": FieldValue.arrayRemove(networkImagesToDelete)});
+      await spaceDocRef
+          .update({"videos": FieldValue.arrayRemove(networkVideosToDelete)});
+
+      await spaceDocRef
+          .update({"images_url": FieldValue.arrayUnion(stringImagesToAdd)});
+      await spaceDocRef
+          .update({"videos": FieldValue.arrayUnion(stringVideosToAdd)});
 
       log('Informações de usuário adicionadas com sucesso!');
     } else if (querySnapshot.docs.isEmpty) {

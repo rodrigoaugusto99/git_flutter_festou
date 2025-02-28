@@ -1,14 +1,19 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_mask/easy_mask.dart';
 import 'package:festou/src/services/user_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:festou/src/core/ui/helpers/messages.dart';
 import 'package:festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais_status.dart';
 import 'package:festou/src/features/bottomNavBar/profile/pages/informa%C3%A7%C3%B5es%20pessoais/informacoes_pessoais_vm.dart';
 import 'package:festou/src/features/loading_indicator.dart';
 import 'package:festou/src/models/user_model.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:search_cep/search_cep.dart';
 
 class InformacoesPessoais extends ConsumerStatefulWidget {
   const InformacoesPessoais({super.key});
@@ -62,6 +67,28 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
     avatarUrl = userModel!.avatarUrl;
     originalAvatarUrl = avatarUrl;
     setState(() {});
+  }
+
+  Future<void> onChangeCep(String value) async {
+    if (value.length != 9) return;
+    final viaCepSearchCep = ViaCepSearchCep();
+    final infoCepJSON =
+        await viaCepSearchCep.searchInfoByCep(cep: value.replaceAll('-', ''));
+    infoCepJSON.fold(
+      (error) {
+        log('Erro ao buscar informações do CEP: $error');
+      },
+      (infoCepJSON) async {
+        logradourolEC.text = infoCepJSON.logradouro ?? '';
+        bairroEC.text = infoCepJSON.bairro ?? '';
+        cidadeEC.text = infoCepJSON.localidade ?? '';
+        // uf = infoCepJSON.uf ?? '';
+        // estadoEC.text = infoCepJSON.uf ?? '';
+        //isCepAutoCompleted = true;
+        //await Future.delayed(const Duration(milliseconds: 1000));
+        setState(() {});
+      },
+    );
   }
 
   @override
@@ -299,9 +326,15 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                       enable: isEditing,
                     ),
                     myRow(
+                      inputFormatters: [
+                        TextInputMask(
+                            mask: ['999.999.999-99', '99.999.999/9999-99'],
+                            reverse: false)
+                      ],
                       label: 'CPF / CNPJ',
                       controller: cpfEC,
-                      enable: isGoogleProvider(),
+                      enable: (isGoogleProvider() ||
+                          (cpfEC.text.isEmpty && isEditing)),
                     ),
                     myRow(
                       label: 'E-mail',
@@ -309,11 +342,24 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                       enable: false,
                     ),
                     myRow(
+                      inputFormatters: [
+                        MaskTextInputFormatter(
+                          mask: '(##)#####-####',
+                          filter: {"#": RegExp(r'[0-9]')},
+                        )
+                      ],
                       label: 'Telefone',
                       controller: telefoneEC,
                       enable: isEditing,
                     ),
                     myRow(
+                      inputFormatters: [
+                        MaskTextInputFormatter(
+                          mask: '#####-###',
+                          filter: {"#": RegExp(r'[0-9]')},
+                        )
+                      ],
+                      onChanged: onChangeCep,
                       label: 'CEP',
                       controller: cepEC,
                       enable: isEditing,
@@ -358,6 +404,7 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
                             numero: numeroEC.text,
                             cidade: cidadeEC.text,
                             email: emailEC.text,
+                            cpf: cpfEC.text,
                           );
 
                           if (isImageRemoved) {
@@ -498,7 +545,9 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
   Widget myRow({
     required String label,
     required TextEditingController controller,
+    List<TextInputFormatter>? inputFormatters,
     bool enable = true,
+    final Function(String)? onChanged,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
@@ -509,6 +558,8 @@ class _InformacoesPessoaisState extends ConsumerState<InformacoesPessoais> {
           color: Colors.white,
         ),
         child: TextFormField(
+          onChanged: onChanged,
+          inputFormatters: inputFormatters,
           textInputAction: TextInputAction.done,
           enabled: enable,
           controller: controller,
