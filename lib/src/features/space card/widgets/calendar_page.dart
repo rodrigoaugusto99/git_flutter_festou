@@ -135,11 +135,18 @@ class _CalendarPageState extends State<CalendarPage> {
     for (var reservation in reservasDoEspaco) {
       if (reservation.selectedDate.toDate().toString() ==
           getDateString(previousDate)) {
-        // Se a reserva termina tarde no dia anterior, afeta o início do dia atual
-        if (reservation.checkOutTime >= 21) {
-          // termina após 20:00
-          // Adiciona hora de limpeza (primeira hora do dia atual)
-          unavailableHours.add(0);
+        // Caso 1: Contrato termina exatamente às 23:59 do dia anterior
+        if (reservation.checkOutTime == 23 &&
+            reservation.indisponibilizado == false) {
+          unavailableHours
+              .add(0); // Adiciona a primeira hora do dia atual (00:00 - 00:59)
+        }
+        // Caso 2: Contrato ultrapassa a meia-noite e continua no dia atual
+        else if (reservation.checkOutTime < reservation.checkInTime) {
+          for (int i = 0; i <= reservation.checkOutTime; i++) {
+            unavailableHours.add(
+                i); // Adiciona as horas iniciais do dia atual até o horário de término
+          }
         }
       }
     }
@@ -148,18 +155,18 @@ class _CalendarPageState extends State<CalendarPage> {
     for (var reservation in reservasDoEspaco) {
       if (reservation.selectedDate.toDate().toString() ==
           getDateString(_selectedDate!)) {
-        // Adiciona os horários da reserva
-        for (int i = reservation.checkInTime;
-            i <= reservation.checkOutTime;
-            i++) {
-          unavailableHours.add(i % 24);
-        }
-
-        if (reservation.checkOutTime < 23 &&
-            (reservation.indisponibilizado == null ||
-                reservation.indisponibilizado == false)) {
-          // Adiciona o horário de limpeza depois da reserva
-          unavailableHours.add(reservation.checkOutTime + 1 % 24);
+        if (reservation.checkOutTime <= reservation.checkInTime) {
+          // Horas do dia atual: de checkInTime até 23h
+          for (int i = reservation.checkInTime; i <= 23; i++) {
+            unavailableHours.add(i);
+          }
+        } else {
+          // Caso o contrato esteja dentro do mesmo dia
+          for (int i = reservation.checkInTime;
+              i <= reservation.checkOutTime;
+              i++) {
+            unavailableHours.add(i);
+          }
         }
 
         // Adiciona horários indisponíveis devido à regra das 4h mínimas e 1h limpeza
@@ -180,13 +187,13 @@ class _CalendarPageState extends State<CalendarPage> {
       }
     }
 
-    // Verifica reservas do dia seguinte
+    // Verifica reservas do dia seguinte ou contratos que ultrapassam a meia-noite
     for (var reservation in reservasDoEspaco) {
+      // Verifica contratos do próximo dia
       if (reservation.selectedDate.toDate().toString() ==
           getDateString(nextDate)) {
         if (reservation.checkInTime <= 4 && !isIndisponibilizar) {
           int value = 4 - (reservation.checkInTime % 24);
-
           for (int i = 1; i <= value; i++) {
             unavailableHours.add(24 - i);
           }
@@ -212,11 +219,30 @@ class _CalendarPageState extends State<CalendarPage> {
     for (var reservation in reservasDoEspaco) {
       if (reservation.selectedDate.toDate().toString() ==
           getDateString(_selectedDate!)) {
-        // Adiciona os horários da reserva
-        for (int i = reservation.checkInTime;
-            i <= reservation.checkOutTime;
-            i++) {
-          unavailableCurrentDayHours.add(i % 24);
+        // Caso o contrato ultrapasse a meia-noite
+        if (reservation.checkOutTime <= reservation.checkInTime) {
+          // Horas do dia atual: de checkInTime até 23h
+          for (int i = reservation.checkInTime; i <= 23; i++) {
+            unavailableCurrentDayHours.add(i);
+          }
+          // Horas do dia seguinte: de 0h até checkOutTime
+          for (int i = 0; i <= reservation.checkOutTime; i++) {
+            unavailableNextDayHours.add(i);
+          }
+        } else {
+          // Caso o contrato esteja dentro do mesmo dia
+          for (int i = reservation.checkInTime;
+              i <= reservation.checkOutTime;
+              i++) {
+            unavailableCurrentDayHours.add(i);
+          }
+        }
+
+        // Adiciona o horário de limpeza depois da reserva
+        if (reservation.checkOutTime < 23 &&
+            (reservation.indisponibilizado == null ||
+                reservation.indisponibilizado == false)) {
+          unavailableNextDayHours.add(reservation.checkOutTime + 1 % 24);
         }
 
         // Adiciona horários indisponíveis devido à regra de 1h anterior
@@ -238,6 +264,17 @@ class _CalendarPageState extends State<CalendarPage> {
             i <= reservation.checkOutTime;
             i++) {
           unavailableNextDayHours.add(i % 24);
+        }
+      }
+
+      // Verifica contratos do dia atual que ultrapassam a meia-noite
+      if (reservation.selectedDate.toDate().toString() ==
+          getDateString(_selectedDate!)) {
+        // Se o contrato termina no dia seguinte, bloqueia as horas do dia seguinte até o horário de término
+        if (reservation.checkOutTime < reservation.checkInTime) {
+          for (int hour = 0; hour <= reservation.checkOutTime; hour++) {
+            unavailableNextDayHours.add(hour);
+          }
         }
       }
     }
@@ -311,8 +348,6 @@ class _CalendarPageState extends State<CalendarPage> {
     dev.log('itemCount: $itemCount');
     dev.log('show24h: $show24h');
 
-    bool stop = false;
-
     return SizedBox(
       height: 65,
       child: SingleChildScrollView(
@@ -321,11 +356,7 @@ class _CalendarPageState extends State<CalendarPage> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: List.generate(itemCount, (index) {
             final int hour = (startHour + index) % 24;
-
             final bool isNextDay = hour < checkInTime!;
-            //final bool isNextDay = (startHour + index) >= 24;
-
-            // Define se o horário é indisponível, considerando o dia atual ou o seguinte
             final bool isUnavailable = reachedLimit ||
                 (isNextDay
                     ? unavailableHoursNextDay.contains(hour)
@@ -405,49 +436,58 @@ class _CalendarPageState extends State<CalendarPage> {
 
     final startHour = int.parse(dayHours.from.split(':')[0]);
     final endHour = int.parse(dayHours.to.split(':')[0]);
+
+    // Horários do próximo dia
+    final nextDayHours =
+        _getDayHours(_selectedDate!.add(const Duration(days: 1)));
+
     final unavailableHours = _getUnavailableHours(widget.isIndisponibilizar);
     final unavailableHoursCheckout =
         _getUnavailableCheckOutHours(widget.isIndisponibilizar);
+
     bool show24h = true;
+
+    // Inicializa com os horários do dia atual
     int checkinEndHour = endHour;
     int checkoutEndHour = endHour;
+
+    // Se o checkInTime for definido
     if (checkInTime != null) {
-      checkoutEndHour = (checkInTime! + 24) % 24;
+      // Se o horário de check-out ultrapassa o dia atual, usa o horário do próximo dia
+      if (nextDayHours != null && (checkInTime! >= endHour)) {
+        checkoutEndHour = int.parse(nextDayHours.to.split(':')[0]) - 1;
+      } else {
+        checkoutEndHour = (checkInTime! + 23) % 24;
+      }
 
       if (endHour != 23) {
-        checkoutEndHour = endHour - 1;
+        checkoutEndHour = endHour;
         show24h = false;
       }
     }
+
     String checkoutStringEndHour = '';
+
     if (endHour != 23) {
-      checkinEndHour = endHour - 5;
+      checkinEndHour = endHour;
       if (checkinEndHour < 0) {
         checkinEndHour = checkinEndHour + 24;
       }
     } else {
-      //se o horario final for 23, averiguar se pode mostrar o 23 mesmo
-      final nextDayHours =
-          _getDayHours(_selectedDate!.add(const Duration(days: 1)));
       if (nextDayHours == null || nextDayHours.from != '00:00') {
-        checkinEndHour = endHour - 5;
+        checkinEndHour = endHour - 3;
         if (checkinEndHour < 0) {
           checkinEndHour = checkinEndHour + 24;
         }
-        //e o checkoutEndTime deve ser 23
-        checkoutEndHour = endHour - 1;
+        checkoutEndHour = endHour;
         show24h = false;
       } else {
-        checkoutEndHour = checkoutEndHour - 1;
+        checkoutEndHour = checkoutEndHour;
       }
-      dev.log('----------');
-      dev.log('$checkoutEndHour');
     }
 
     dev.log('checkinEndHour: $checkinEndHour');
     dev.log('checkoutEndHour: $checkoutEndHour');
-
-    //if (endHour != 23) {}
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

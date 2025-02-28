@@ -77,12 +77,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        // Text(
-                        //   'Ver posts já visualizados',
-                        //   style: TextStyle(
-                        //     decoration: TextDecoration.underline,
-                        //   ),
-                        // )
                       ],
                     ),
                   ),

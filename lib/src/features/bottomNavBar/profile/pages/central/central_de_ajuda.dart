@@ -1213,10 +1213,37 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                         } else if (!snapshot.hasData ||
                             snapshot.data!.isEmpty) {
                           return const Center(
-                            child: Text(
-                              'Você não abriu nenhum ticket ainda.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 12),
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 30.0, bottom: 80.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.chat_bubble_outline,
+                                    size: 40,
+                                    color: Colors.grey,
+                                  ),
+                                  SizedBox(height: 16),
+                                  Text(
+                                    'Nenhum ticket encontrado',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    'Você ainda não abriu nenhum ticket.\nAbra o seu em "Iniciar um chamado".',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black45,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           );
                         }

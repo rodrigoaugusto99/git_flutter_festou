@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:festou/src/models/post_model.dart';
 import 'package:shimmer/shimmer.dart';
@@ -35,54 +34,34 @@ class _EachPostState extends State<EachPost> {
         future: _loadImage(widget.post.imagens[0]),
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Shimmer.fromColors(
-                    baseColor: const Color.fromARGB(255, 221, 221, 221),
-                    highlightColor: Colors.white,
-                    child: Container(
-                      color: Colors.red,
-                    ),
-                  ),
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: Shimmer.fromColors(
+                baseColor: const Color.fromARGB(255, 221, 221, 221),
+                highlightColor: Colors.white,
+                child: Container(
+                  width: 170,
+                  height: 110,
+                  color: Colors.red,
                 ),
-                const SizedBox(
-                  width: 20,
-                ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Shimmer.fromColors(
-                    baseColor: const Color.fromARGB(255, 221, 221, 221),
-                    highlightColor: Colors.white,
-                    child: Container(
-                      color: Colors.red,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Shimmer.fromColors(
-                    baseColor: const Color.fromARGB(255, 221, 221, 221),
-                    highlightColor: Colors.white,
-                    child: Container(
-                      color: Colors.red,
-                    ),
-                  ),
-                ),
-              ],
+              ),
             );
           } else if (snapshot.hasError) {
-            return const Center(child: Text('Error loading image'));
+            return const Center(child: Text('Erro ao carregar imagem'));
           } else {
             return Container(
               clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
-                //color: Colors.red,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius:
+                    BorderRadius.circular(10), // Mantendo arredondamento
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2), // Sombra suave
+                    blurRadius: 6,
+                    spreadRadius: 2,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
               ),
               width: 170,
               height: 110,
@@ -90,62 +69,64 @@ class _EachPostState extends State<EachPost> {
                 fit: StackFit.expand,
                 children: [
                   ClipRRect(
-                    //clipBehavior: Clip.none,
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network(
                       widget.post.coverPhoto,
                       fit: BoxFit.cover,
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
+                  // Gradiente para melhorar a legibilidade do texto (ocupa toda a largura)
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
                     child: Container(
-                      height: 120,
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(24),
+                          bottom: Radius.circular(
+                              10), // Mantém o mesmo arredondamento
                         ),
-                        color: const Color(0xff4300B1).withOpacity(0.5),
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.black.withOpacity(0.7),
+                            Colors.black.withOpacity(0.4),
+                          ],
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                        ),
                       ),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Align(
-                            alignment: Alignment.center,
-                            child: Stack(
-                              children: [
-                                Text(
-                                  widget.post.title,
-                                  style: const TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
+                          // Título do post
+                          Center(
+                            child: Text(
+                              widget.post.title,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          const SizedBox(height: 7),
-                          Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              maxLines: 5,
-                              widget.post.description,
-                              style: const TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                          const SizedBox(height: 4),
+                          // Descrição do post com 3 linhas e ellipses
+                          Text(
+                            widget.post.description,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.white70,
                             ),
+                            maxLines: 3, // Permite até 3 linhas antes de cortar
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             );

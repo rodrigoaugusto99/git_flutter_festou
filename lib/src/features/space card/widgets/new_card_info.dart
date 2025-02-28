@@ -1759,7 +1759,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                                   children: [
                                     Text(
                                       style: const TextStyle(
-                                          color: Color(0xff9747FF),
+                                          color: Color(0xff44300b1),
                                           fontSize: 14,
                                           fontWeight: FontWeight.w700),
                                       "R\$ ${trocarPontoPorVirgula(space!.preco)}",
@@ -1908,50 +1908,108 @@ class _NewCardInfoState extends State<NewCardInfo>
                                         return AlertDialog(
                                           content: Column(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                                CrossAxisAlignment.center,
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Center(
-                                                child: Lottie.asset(
-                                                  'lib/assets/animations/warning.json',
-                                                  width: 100,
-                                                  height: 100,
-                                                  repeat: true,
-                                                ),
+                                              Lottie.asset(
+                                                'lib/assets/animations/warning.json',
+                                                width: 80,
+                                                height: 80,
+                                                repeat: false,
                                               ),
                                               const SizedBox(height: 16),
-                                              const Center(
-                                                child: Text(
-                                                  'Exclusão do espaço',
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
+                                              const Text(
+                                                'Exclusão do espaço',
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black87,
                                                 ),
                                               ),
                                               const SizedBox(height: 12),
                                               const Text(
-                                                'Tem certeza que deseja excluir o espaços?',
+                                                'Tem certeza que deseja excluir o espaço?',
                                                 textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black54,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 30),
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: ElevatedButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop(false);
+                                                      },
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                        backgroundColor:
+                                                            Colors.grey[300],
+                                                        foregroundColor:
+                                                            Colors.black,
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(8),
+                                                        ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                vertical: 12),
+                                                      ),
+                                                      child: const Text(
+                                                        'Cancelar',
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 12),
+                                                  Expanded(
+                                                    child: ElevatedButton(
+                                                      onPressed: () {
+                                                        excluirEspaco(context,
+                                                            contextPopup);
+                                                      },
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                        backgroundColor:
+                                                            Colors.deepPurple,
+                                                        foregroundColor:
+                                                            Colors.white,
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(8),
+                                                        ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                vertical: 12),
+                                                      ),
+                                                      child: const Text(
+                                                        'Sim, excluir',
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ],
                                           ),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(contextPopup)
-                                                    .pop();
-                                              },
-                                              child: const Text('Cancelar'),
-                                            ),
-                                            TextButton(
-                                              onPressed: () async {
-                                                excluirEspaco(
-                                                    context, contextPopup);
-                                              },
-                                              child: const Text('Sim, excluir'),
-                                            ),
-                                          ],
                                         );
                                       },
                                     );
