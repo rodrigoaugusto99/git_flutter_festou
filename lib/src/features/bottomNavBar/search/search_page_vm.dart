@@ -33,7 +33,12 @@ class SearchViewModel extends ChangeNotifier {
       String searchValue = value.toLowerCase();
 
       _filteredList = _allSpaces
-          .where((space) => space.titulo.toLowerCase().contains(searchValue))
+          .where((space) =>
+              space.titulo.toLowerCase().contains(searchValue) ||
+              space.logradouro.toLowerCase().contains(searchValue) ||
+              space.cidade.toLowerCase().contains(searchValue) ||
+              space.nomeEmpresaLocadora.toLowerCase().contains(searchValue) ||
+              space.bairro.toLowerCase().contains(searchValue))
           .toList();
     }
     notifyListeners();
