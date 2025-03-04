@@ -280,6 +280,10 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
       isLiked = reaction == "isLiked";
       isDisliked = reaction == "isDisliked";
     });
+
+    myFeedback = await feedbackService.checkFeedbackModel(widget.feedback.id);
+    if (myFeedback == null) return;
+    setState(() {});
   }
 
   // updateFeedback() async {
@@ -452,7 +456,7 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                             ),
                           ),
                           const SizedBox(width: 3),
-                          Text('(${widget.feedback.likes.length})'),
+                          Text('(${myFeedback!.likes.length})'),
                           const SizedBox(width: 20),
                           GestureDetector(
                             onTap: () async {
@@ -460,6 +464,9 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                                   .toggleDislikeFeedback(widget.feedback.id);
                               // updateFeedback();
                               _checkUserReaction();
+                              // setState(() {
+                              //   widget.feedback.dislikes.length--;
+                              // });
                             },
                             child: Image.asset(
                               'lib/assets/images/icon_dislike.png',
@@ -468,7 +475,7 @@ class _AvaliacoesItemState extends State<AvaliacoesItem> {
                             ),
                           ),
                           const SizedBox(width: 3),
-                          Text('(${widget.feedback.dislikes.length})'),
+                          Text('(${myFeedback!.dislikes.length})'),
                           const Spacer(),
                           if (canShowButtons)
                             GestureDetector(
