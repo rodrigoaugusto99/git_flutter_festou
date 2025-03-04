@@ -1099,8 +1099,6 @@ class _NewCardInfoState extends State<NewCardInfo>
                       ),
                       if (isEditing)
                         decContainer(
-                          radius: 10,
-                          height: 90,
                           color: Colors.black.withOpacity(0.5),
                         ),
                       if (isEditing)
@@ -1119,7 +1117,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                           },
                           child: Image.asset(
                             'lib/assets/images/icon_lixeira.png',
-                            width: 40,
+                            scale: 1.5,
                           ),
                         ),
                     ],
@@ -1155,7 +1153,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                           },
                           child: Image.asset(
                             'lib/assets/images/icon_lixeira.png',
-                            width: 40,
+                            scale: 1.5,
                           ),
                         ),
                     ],
@@ -1169,7 +1167,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                     onTap: pickImage,
                     child: Image.asset(
                       'lib/assets/images/imagem_mais.png',
-                      width: 25,
+                      scale: 1.5,
                     ),
                   );
                 } else {
@@ -1251,7 +1249,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                           },
                           child: Image.asset(
                             'lib/assets/images/icon_lixeira.png',
-                            width: 40,
+                            scale: 1.5,
                           ),
                         ),
                     ],
@@ -1285,7 +1283,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                           },
                           child: Image.asset(
                             'lib/assets/images/icon_lixeira.png',
-                            width: 40,
+                            scale: 1.5,
                           ),
                         ),
                     ],
@@ -1299,7 +1297,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                     onTap: pickVideo,
                     child: Image.asset(
                       'lib/assets/images/imagem_mais.png',
-                      width: 25,
+                      scale: 1.5,
                     ),
                   );
                 } else {
