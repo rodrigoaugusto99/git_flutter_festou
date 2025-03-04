@@ -192,12 +192,20 @@ class _NewCardInfoState extends State<NewCardInfo>
   late AvaliacoesService feedbackService;
   late ReservaService reservaService;
   double averageRating = 0;
+
+  List<String> imagesCache = [];
+  List<String> videosCache = [];
   Future<void> init() async {
     if (!mounted) return;
     spaceService = SpaceService();
     feedbackService = AvaliacoesService();
     reservaService = ReservaService();
     space = await spaceService.getSpaceById(widget.spaceId);
+    if (space != null) {
+      imagesCache = List<String>.from(space!.imagesUrl);
+      videosCache = List<String>.from(space!.videosUrl);
+    }
+
     feedbacks = await feedbackService.getFeedbacksOrdered(widget.spaceId);
     feedbacks!.removeWhere((f) => f.deletedAt != null);
     if (feedbacks!.isNotEmpty) {
@@ -251,6 +259,8 @@ class _NewCardInfoState extends State<NewCardInfo>
       controllers.add(controller);
     }
     await spaceService.setSpaceListener(widget.spaceId, (newSpace) {
+      imagesCache = List<String>.from(newSpace.imagesUrl);
+      videosCache = List<String>.from(newSpace.videosUrl);
       if (!mounted) return;
       setState(() {
         space = newSpace;
@@ -362,11 +372,69 @@ class _NewCardInfoState extends State<NewCardInfo>
 
       saveChanges();
     }
+
+    // for (var entry in stringAndIndexMap.entries) {
+    //   space!.imagesUrl.insert(entry.value, entry.key);
+    // }
+
+    // for (var entry in videoStringAndIndexMap.entries) {
+    //   space!.videosUrl.insert(entry.value, entry.key);
+    // }
+    // for (var entry in stringAndIndexMap.entries) {
+    //   while (space!.imagesUrl.length <= entry.value) {
+    //     space!.imagesUrl
+    //         .add(""); // Adiciona um valor vazio para expandir a lista
+    //   }
+    //   space!.imagesUrl[entry.value] =
+    //       entry.key; // Agora podemos atribuir diretamente
+    // }
+
+    // for (var entry in videoStringAndIndexMap.entries) {
+    //   while (space!.videosUrl.length <= entry.value) {
+    //     space!.videosUrl.add("");
+    //   }
+    //   space!.videosUrl[entry.value] = entry.key;
+    // }
+    // Ordena stringAndIndexMap pelos valores (índices)
+//     var sortedStringAndIndexList = stringAndIndexMap.entries.toList()
+//       ..sort((a, b) => a.value.compareTo(b.value));
+
+// // Insere os elementos ordenados na lista
+//     for (var entry in sortedStringAndIndexList) {
+//       if (entry.value < space!.imagesUrl.length) {
+//         space!.imagesUrl.insert(entry.value, entry.key);
+//       } else {
+//         space!.imagesUrl.add(entry.key);
+//       }
+//     }
+
+// // Ordena videoStringAndIndexMap pelos valores (índices)
+//     var sortedVideoStringAndIndexList = videoStringAndIndexMap.entries.toList()
+//       ..sort((a, b) => a.value.compareTo(b.value));
+
+// // Insere os elementos ordenados na lista
+//     for (var entry in sortedVideoStringAndIndexList) {
+//       if (entry.value < space!.videosUrl.length) {
+//         space!.videosUrl.insert(entry.value, entry.key);
+//       } else {
+//         space!.videosUrl.add(entry.key);
+//       }
+//     }
+
+    // stringAndIndexMap.clear();
+    // videoStringAndIndexMap.clear();
+
+    space!.imagesUrl = List<String>.from(imagesCache);
+    space!.videosUrl = List<String>.from(videosCache);
+
     if (!mounted) return;
     setState(() {
       isEditing = !isEditing;
     });
   }
+
+  Map<String, int> stringAndIndexMap = {};
+  Map<String, int> videoStringAndIndexMap = {};
 
   List<String> networkImagesToDelete = [];
   List<String> networkVideosToDelete = [];
@@ -1089,6 +1157,10 @@ class _NewCardInfoState extends State<NewCardInfo>
                             setState(() {
                               networkImagesToDelete
                                   .add(space!.imagesUrl[index].toString());
+
+                              stringAndIndexMap.addEntries(({
+                                space!.imagesUrl[index]: index,
+                              }).entries);
                               space!.imagesUrl.removeAt(index);
                             });
                           },
@@ -1121,6 +1193,9 @@ class _NewCardInfoState extends State<NewCardInfo>
                         GestureDetector(
                           onTap: () {
                             if (!mounted) return;
+                            // imageFilesStringAndIndexMap.addEntries(({
+                            //     space!.imagesUrl[index]: index,
+                            //   }).entries);
                             setState(() {
                               imageFilesToDownload.removeAt(localIndex);
                             });
@@ -1213,6 +1288,9 @@ class _NewCardInfoState extends State<NewCardInfo>
                             setState(() {
                               networkVideosToDelete
                                   .add(space!.videosUrl[index]);
+                              videoStringAndIndexMap.addEntries(({
+                                space!.videosUrl[index]: index,
+                              }).entries);
                               space!.videosUrl.removeAt(index);
                               controllers[index].dispose();
                               controllers.removeAt(index);
@@ -1248,6 +1326,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                             setState(() {
                               videosToDownload.removeAt(localIndex);
                               localControllers[localIndex].dispose();
+
                               localControllers.removeAt(localIndex);
                             });
                           },
