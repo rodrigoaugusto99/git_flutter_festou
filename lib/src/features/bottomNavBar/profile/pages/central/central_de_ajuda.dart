@@ -363,27 +363,26 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                         style: const TextStyle(fontSize: 12),
                       ),
                       // Status do ticket
-                      Padding(
-                        padding: EdgeInsets.only(left: x * 0.22),
-                        child: Container(
-                          alignment: Alignment.center,
-                          width: 100,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 6, horizontal: 12),
-                          decoration: BoxDecoration(
-                            color: getStatusColor(ticket['status']),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            getStatus(ticket['status']).toUpperCase(),
-                            style: const TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                      const Spacer(),
+                      Container(
+                        alignment: Alignment.center,
+                        width: 100,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 6, horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: getStatusColor(ticket['status']),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          getStatus(ticket['status']).toUpperCase(),
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
                       ),
+                      const SizedBox(width: 20),
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -434,8 +433,8 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                                 borderRadius: BorderRadius.circular(10),
                                 child: Image.network(
                                   imageUrl,
-                                  width: 90,
-                                  height: 90,
+                                  width: 55,
+                                  height: 55,
                                   fit: BoxFit.cover,
                                 ),
                               ),
