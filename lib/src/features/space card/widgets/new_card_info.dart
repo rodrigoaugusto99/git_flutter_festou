@@ -373,59 +373,12 @@ class _NewCardInfoState extends State<NewCardInfo>
       saveChanges();
     }
 
-    // for (var entry in stringAndIndexMap.entries) {
-    //   space!.imagesUrl.insert(entry.value, entry.key);
-    // }
-
-    // for (var entry in videoStringAndIndexMap.entries) {
-    //   space!.videosUrl.insert(entry.value, entry.key);
-    // }
-    // for (var entry in stringAndIndexMap.entries) {
-    //   while (space!.imagesUrl.length <= entry.value) {
-    //     space!.imagesUrl
-    //         .add(""); // Adiciona um valor vazio para expandir a lista
-    //   }
-    //   space!.imagesUrl[entry.value] =
-    //       entry.key; // Agora podemos atribuir diretamente
-    // }
-
-    // for (var entry in videoStringAndIndexMap.entries) {
-    //   while (space!.videosUrl.length <= entry.value) {
-    //     space!.videosUrl.add("");
-    //   }
-    //   space!.videosUrl[entry.value] = entry.key;
-    // }
-    // Ordena stringAndIndexMap pelos valores (índices)
-//     var sortedStringAndIndexList = stringAndIndexMap.entries.toList()
-//       ..sort((a, b) => a.value.compareTo(b.value));
-
-// // Insere os elementos ordenados na lista
-//     for (var entry in sortedStringAndIndexList) {
-//       if (entry.value < space!.imagesUrl.length) {
-//         space!.imagesUrl.insert(entry.value, entry.key);
-//       } else {
-//         space!.imagesUrl.add(entry.key);
-//       }
-//     }
-
-// // Ordena videoStringAndIndexMap pelos valores (índices)
-//     var sortedVideoStringAndIndexList = videoStringAndIndexMap.entries.toList()
-//       ..sort((a, b) => a.value.compareTo(b.value));
-
-// // Insere os elementos ordenados na lista
-//     for (var entry in sortedVideoStringAndIndexList) {
-//       if (entry.value < space!.videosUrl.length) {
-//         space!.videosUrl.insert(entry.value, entry.key);
-//       } else {
-//         space!.videosUrl.add(entry.key);
-//       }
-//     }
-
-    // stringAndIndexMap.clear();
-    // videoStringAndIndexMap.clear();
-
     space!.imagesUrl = List<String>.from(imagesCache);
     space!.videosUrl = List<String>.from(videosCache);
+    networkImagesToDelete.clear();
+    networkVideosToDelete.clear();
+    imageFilesToDownload.clear();
+    videosToDownload.clear();
 
     if (!mounted) return;
     setState(() {
