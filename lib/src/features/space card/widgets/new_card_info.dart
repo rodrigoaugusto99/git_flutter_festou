@@ -536,6 +536,9 @@ class _NewCardInfoState extends State<NewCardInfo>
       if (selectedDate.isAfter(now) && !canceledDate) {
         Messages.showError(
             'Você não pode excluir esse espaço pois há reservas', context);
+        setState(() {
+          _isLoading = false;
+        });
         return;
       }
     }
