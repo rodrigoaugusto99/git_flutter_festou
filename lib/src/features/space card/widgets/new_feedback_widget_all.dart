@@ -111,6 +111,20 @@ class _NewFeedbackWidgetAllState extends State<NewFeedbackWidgetAll> {
                         fontSize: 16.0,
                       ),
                     ),
+                    Text(
+                      feedback.likes.length.toString(),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                      ),
+                    ),
+                    Text(
+                      feedback.dislikes.length.toString(),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                      ),
+                    ),
                   ],
                 ),
               ],

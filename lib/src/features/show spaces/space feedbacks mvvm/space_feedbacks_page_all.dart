@@ -1,4 +1,8 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:festou/src/models/avaliacoes_model.dart';
+import 'package:festou/src/services/avaliacoes_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:festou/src/features/loading_indicator.dart';
@@ -7,7 +11,7 @@ import 'package:festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space
 import 'package:festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space_feedbacks_vm.dart';
 import 'package:festou/src/models/space_model.dart';
 
-class SpaceFeedbacksPageAll extends ConsumerStatefulWidget {
+class SpaceFeedbacksPageAll extends StatefulWidget {
   final SpaceModel space;
   final List<AvaliacoesModel> feedbacks;
 
@@ -18,14 +22,41 @@ class SpaceFeedbacksPageAll extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<SpaceFeedbacksPageAll> createState() =>
-      _SpaceFeedbacksPageAllState();
+  State<SpaceFeedbacksPageAll> createState() => _SpaceFeedbacksPageAllState();
 }
 
 var selectedOption = 'date';
 var selectedOptionName = 'Mais recentes';
 
-class _SpaceFeedbacksPageAllState extends ConsumerState<SpaceFeedbacksPageAll> {
+class _SpaceFeedbacksPageAllState extends State<SpaceFeedbacksPageAll> {
+  @override
+  void initState() {
+    super.initState();
+    getFeedbacksOrdered();
+  }
+
+  List<AvaliacoesModel> avaliacoes = [];
+
+  Future<void> getFeedbacksOrdered() async {
+    try {
+      QuerySnapshot allFeedbacksDocuments = await FirebaseFirestore.instance
+          .collection('feedbacks')
+          .where('space_id', isEqualTo: widget.space.spaceId)
+          .orderBy('date', descending: true)
+          .get();
+
+      List<AvaliacoesModel> feedbackModels =
+          allFeedbacksDocuments.docs.map((feedbackDocument) {
+        return AvaliacoesService().mapFeedbackDocumentToModel(feedbackDocument);
+      }).toList();
+      avaliacoes = feedbackModels;
+      setState(() {});
+    } catch (e) {
+      log('Erro ao recuperar os feeedbacks do firestore: $e');
+      avaliacoes = [];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +75,7 @@ class _SpaceFeedbacksPageAllState extends ConsumerState<SpaceFeedbacksPageAll> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '${widget.feedbacks.length} comentários',
+                  '${avaliacoes.length} comentários',
                   style: const TextStyle(
                       fontSize: 20, fontWeight: FontWeight.bold),
                 ),
@@ -80,7 +111,7 @@ class _SpaceFeedbacksPageAllState extends ConsumerState<SpaceFeedbacksPageAll> {
             child: NewFeedbackWidgetAll(
               //data: data,
 
-              feedbacks: widget.feedbacks,
+              feedbacks: avaliacoes,
             ),
           ),
         ],
@@ -89,8 +120,6 @@ class _SpaceFeedbacksPageAllState extends ConsumerState<SpaceFeedbacksPageAll> {
   }
 
   void _showSortOptionsDialog() {
-    String tempSelectedOption = selectedOption; // Estado temporário
-    String tempSelectedOptionName = selectedOptionName; // Estado temporário
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -98,94 +127,68 @@ class _SpaceFeedbacksPageAllState extends ConsumerState<SpaceFeedbacksPageAll> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
-          content: StatefulBuilder(
-            builder: (BuildContext context, thisSetState) {
-              return SizedBox(
-                width: 300,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      'Ordenar por',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Expanded(
-                          child: Text('Mais recentes'),
-                        ),
-                        Radio(
-                          value: 'date',
-                          groupValue: tempSelectedOption,
-                          onChanged: (value) {
-                            thisSetState(() {
-                              tempSelectedOption = value as String;
-                              tempSelectedOptionName = 'Mais recentes';
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Expanded(
-                          child: Text('Avaliações mais altas'),
-                        ),
-                        Radio(
-                          value: 'rating',
-                          groupValue: tempSelectedOption,
-                          onChanged: (value) {
-                            thisSetState(() {
-                              tempSelectedOption = value as String;
-                              tempSelectedOptionName = 'Avaliações mais altas';
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                    const Divider(
-                      thickness: 0.9,
-                      color: Colors.grey,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          selectedOption = tempSelectedOption;
-                          selectedOptionName = tempSelectedOptionName;
-                        });
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10.0,
-                          vertical: 10,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: const Text(
-                          'Salvar',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Ordenar por',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              RadioListTile(
+                title: const Text('Mais recentes'),
+                value: 'date',
+                groupValue: selectedOption,
+                onChanged: (value) =>
+                    _applySorting(value as String, 'Mais recentes'),
+              ),
+              RadioListTile(
+                title: const Text('Avaliações mais altas'),
+                value: 'highest',
+                groupValue: selectedOption,
+                onChanged: (value) =>
+                    _applySorting(value as String, 'Avaliações mais altas'),
+              ),
+              RadioListTile(
+                title: const Text('Avaliações mais baixas'),
+                value: 'lowest',
+                groupValue: selectedOption,
+                onChanged: (value) =>
+                    _applySorting(value as String, 'Avaliações mais baixas'),
+              ),
+            ],
           ),
         );
       },
-    ).then((_) {
-      // Chame o método build novamente após a seleção da opção.
-      ref.read(spaceFeedbacksVmProvider(widget.space, selectedOption));
+    );
+  }
+
+  void _applySorting(String option, String optionName) {
+    setState(() {
+      selectedOption = option;
+      selectedOptionName = optionName;
+      _sortFeedbacks();
     });
+    Navigator.pop(context);
+  }
+
+  void _sortFeedbacks() {
+    setState(() {
+      if (selectedOption == 'date') {
+        avaliacoes
+            .sort((a, b) => _parseDate(b.date).compareTo(_parseDate(a.date)));
+      } else if (selectedOption == 'highest') {
+        avaliacoes.sort((a, b) => (b.likes.length - b.dislikes.length)
+            .compareTo(a.likes.length - a.dislikes.length));
+      } else if (selectedOption == 'lowest') {
+        avaliacoes.sort((a, b) => (a.likes.length - a.dislikes.length)
+            .compareTo(b.likes.length - b.dislikes.length));
+      }
+    });
+  }
+
+  DateTime _parseDate(String date) {
+    List<String> parts = date.split('/');
+    return DateTime(
+        int.parse(parts[2]), int.parse(parts[1]), int.parse(parts[0]));
   }
 }
