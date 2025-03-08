@@ -14,6 +14,7 @@ import 'package:festou/src/features/login/forgot_password_page.dart';
 import 'package:festou/src/services/auth_services.dart';
 import 'package:festou/src/services/user_service.dart';
 import 'package:lottie/lottie.dart';
+import 'package:validatorless/validatorless.dart';
 
 class LoginSeguranca extends ConsumerStatefulWidget {
   const LoginSeguranca({super.key});
@@ -578,6 +579,40 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
     }
   }
 
+  //validação senha
+  FormFieldValidator<String> validatePassword() {
+    return Validatorless.multiple([
+      Validatorless.required('Senha obrigatória'),
+      Validatorless.min(6, 'Senha deve ter no mínimo 6 caracteres'),
+      (value) {
+        if (!RegExp(r'^(?=.*[A-Z])').hasMatch(value!)) {
+          return 'Senha deve conter pelo menos uma letra maiúscula';
+        }
+        if (!RegExp(r'^(?=.*[a-z])').hasMatch(value)) {
+          return 'Senha deve conter pelo menos uma letra minúscula';
+        }
+        if (!RegExp(r'^(?=.*\d)').hasMatch(value)) {
+          return 'Senha deve conter pelo menos um número';
+        }
+        if (!RegExp(r'^(?=.*[@$!%*?&])').hasMatch(value)) {
+          return 'Senha deve conter pelo menos um caractere especial (@, \$, !, %, *, ?, &)';
+        }
+        return null;
+      },
+    ]);
+  }
+
+  final formKey = GlobalKey<FormState>();
+
+//confirmação senha
+  FormFieldValidator<String> confirmPassword(TextEditingController passwordEC) {
+    return Validatorless.multiple([
+      Validatorless.required('Confirme sua senha'),
+      Validatorless.min(6, 'Senha deve ter no minimo 6 caracteres'),
+      Validatorless.compare(passwordEC, 'Senha precisam ser iguais')
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -619,665 +654,614 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Login',
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-              ),
-              PatternedButton(
-                widget: Image.asset(
-                  'lib/assets/images/icon_password.png',
-                  width: 26,
-                  height: 26,
+          child: Form(
+            key: formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Login',
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                 ),
-                title: 'Senha',
-                textButton: !isUpdatingPassword ? 'Atualizar' : 'Cancelar',
-                onTap: () {
-                  setState(() {
-                    isUpdatingPassword = !isUpdatingPassword;
-                  });
-                },
-              ),
-              if (isUpdatingPassword) ...[
-                Column(
-                  key: const ValueKey('updatePasswordFields'),
-                  children: [
-                    if (providers.contains("password")) ...[
-                      PasswordField(
-                        controller: senhaAtualController,
-                        label: 'Senha atual',
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          InkWell(
-                              onTap: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return const ForgotPasswordPage();
-                                      },
-                                    ),
-                                  ),
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                                child: Text('Esqueci minha senha'),
-                              )),
-                        ],
-                      ),
-                    ],
-                    const SizedBox(height: 10),
-                    PasswordField(
-                      controller: novaSenhaController,
-                      label: 'Nova Senha',
-                    ),
-                    PasswordField(
-                      controller: confirmarSenhaController,
-                      label: 'Confirmar Senha',
-                    ),
-                    const SizedBox(height: 0),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20.0),
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          final user = FirebaseAuth.instance.currentUser;
-                          if (user != null) {
-                            try {
-                              String novaSenha = novaSenhaController.text;
-                              String confirmarSenha =
-                                  confirmarSenhaController.text;
-                              String senhaAtual = '';
-                              bool itsRegister = true;
-
-                              if (providers.contains("password")) {
-                                senhaAtual = senhaAtualController.text;
-                                itsRegister = false;
-                              }
-
-                              if (novaSenha.isEmpty || confirmarSenha.isEmpty) {
-                                await showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      contentPadding:
-                                          const EdgeInsets.all(16.0),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(16.0),
-                                      ),
-                                      content: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Lottie.asset(
-                                                'lib/assets/animations/info.json',
-                                                width: 100,
-                                                height: 100,
-                                                repeat: false,
-                                              ),
-                                              const Text(
-                                                'Ops...',
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 8),
-                                          const Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 16.0),
-                                            child: Text(
-                                                'As senhas não podem estar vazias!'),
-                                          )
-                                        ],
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.of(context).pop(),
-                                          child: const Text('Fechar'),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                                return;
-                              }
-
-                              if (novaSenha != confirmarSenha) {
-                                await showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      contentPadding:
-                                          const EdgeInsets.all(16.0),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(16.0),
-                                      ),
-                                      content: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Lottie.asset(
-                                                'lib/assets/animations/info.json',
-                                                width: 100,
-                                                height: 100,
-                                                repeat: false,
-                                              ),
-                                              const Text(
-                                                'Ops...',
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 8),
-                                          const Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 16.0),
-                                            child: Text(
-                                                'As senhas não coincidem!'),
-                                          )
-                                        ],
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.of(context).pop(),
-                                          child: const Text('Fechar'),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                                return;
-                              }
-
-                              if (senhaAtual.isNotEmpty || itsRegister) {
-                                // Verifica se a reautenticação foi bem-sucedida
-                                bool reauthenticated =
-                                    await reauthentication(user, senhaAtual);
-                                if (!reauthenticated) {
-                                  return; // Se falhou na reautenticação, retorna sem continuar
-                                }
-
-                                // Atualiza a senha do usuário
-                                await user.updatePassword(novaSenha);
-
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: providers.contains("password")
-                                        ? const Text(
-                                            'Senha atualizada com sucesso.')
-                                        : const Text(
-                                            'Senha cadastrada com sucesso.'),
-                                  ),
-                                );
-
-                                setState(() {
-                                  isUpdatingPassword = false;
-                                });
-
-                                // Recarregar a página atual
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          super.widget),
-                                );
-                              } else {
-                                await showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      contentPadding:
-                                          const EdgeInsets.all(16.0),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(16.0),
-                                      ),
-                                      content: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Lottie.asset(
-                                                'lib/assets/animations/info.json',
-                                                width: 100,
-                                                height: 100,
-                                                repeat: false,
-                                              ),
-                                              const Text(
-                                                'Ops...',
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 8),
-                                          const Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 16.0),
-                                            child: Text(
-                                                'É necessário informar a senha atual!'),
-                                          )
-                                        ],
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.of(context).pop(),
-                                          child: const Text('Fechar'),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                                return;
-                              }
-                            } on FirebaseAuthException catch (e) {
-                              if (e.code == 'weak-password') {
-                                await showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      contentPadding:
-                                          const EdgeInsets.all(16.0),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(16.0),
-                                      ),
-                                      content: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Lottie.asset(
-                                                'lib/assets/animations/info.json',
-                                                width: 100,
-                                                height: 100,
-                                                repeat: false,
-                                              ),
-                                              const Text(
-                                                'Ops...',
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 8),
-                                          const Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 16.0),
-                                            child: Text(
-                                                'A senha fornecida é muito fraca!'),
-                                          )
-                                        ],
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.of(context).pop(),
-                                          child: const Text('Fechar'),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              } else {
-                                log('Erro ao atualizar a senha: ${e.code}, ${e.message}');
-                              }
-                            } catch (e) {
-                              log('Erro desconhecido ao atualizar a senha: $e');
-                            }
-                          }
-                        },
-                        child: providers.contains("password")
-                            ? const Text('Alterar Senha')
-                            : const Text('Cadastrar Senha'),
-                      ),
-                    ),
-                  ],
-                )
-              ],
-              const SizedBox(height: 30),
-              const Text(
-                'Contas sociais',
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 5),
-              providers.contains("google.com")
-                  ? PatternedButton(
-                      widget: Image.asset(
-                        'lib/assets/images/logo_google.png',
-                        width: 26,
-                        height: 26,
-                      ),
-                      title: 'Google',
-                      textButton: 'Desvincular',
-                      onTap: () async {
-                        final user = FirebaseAuth.instance.currentUser;
-                        if (user != null) {
-                          try {
-                            await areYouSureAboutDisconnect(context);
-
-                            // Recarrega o usuário
-                            await FirebaseAuth.instance.currentUser?.reload();
-                          } on FirebaseAuthException catch (e) {
-                            log('Erro ao desvincular conta do Google: ${e.message}');
-                          } catch (e) {
-                            log('Erro desconhecido ao desvincular conta do Google: $e');
-                          }
-                        }
-                      },
-                    )
-                  : Container(),
-              providers.isEmpty ||
-                      (providers.length == 1 && providers.contains("password"))
-                  ? PatternedButton(
-                      widget: Image.asset(
-                        'lib/assets/images/icon_network.png',
-                        width: 26,
-                        height: 26,
-                      ),
-                      title: 'Nenhuma conta vinculada',
-                      onTap: () => (),
-                      textButton: '')
-                  : Container(),
-              const SizedBox(height: 30),
-              const Text(
-                'Conta',
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-              ),
-              PatternedButton(
+                PatternedButton(
                   widget: Image.asset(
-                    'lib/assets/images/icon_delete_account.png',
+                    'lib/assets/images/icon_password.png',
                     width: 26,
                     height: 26,
                   ),
-                  title: 'Excluir minha conta',
-                  textButton: 'Excluir',
-                  onTap: () async {
-                    final user = FirebaseAuth.instance.currentUser;
-
-                    if (user != null) {
-                      await Future.delayed(Duration.zero);
-                      await showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          final BuildContext context2 =
-                              Navigator.of(context).context;
-                          final BuildContext context3 =
-                              Navigator.of(context).context;
-                          final BuildContext context4 =
-                              Navigator.of(context).context;
-                          TextEditingController passwordController =
-                              TextEditingController();
-
-                          return Dialog(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16.0),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 24.0, horizontal: 16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Center(
-                                    child: Lottie.asset(
-                                      'lib/assets/animations/warning.json',
-                                      width: 80,
-                                      height: 80,
-                                      repeat: true,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  const Center(
-                                    child: Text(
-                                      'Exclusão de Conta',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
+                  title: 'Senha',
+                  textButton: !isUpdatingPassword ? 'Atualizar' : 'Cancelar',
+                  onTap: () {
+                    setState(() {
+                      isUpdatingPassword = !isUpdatingPassword;
+                    });
+                  },
+                ),
+                if (isUpdatingPassword) ...[
+                  Column(
+                    key: const ValueKey('updatePasswordFields'),
+                    children: [
+                      if (providers.contains("password")) ...[
+                        PasswordField(
+                          controller: senhaAtualController,
+                          label: 'Senha atual',
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            InkWell(
+                                onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return const ForgotPasswordPage();
+                                        },
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  const Text(
-                                    'Sua conta será excluída e todos os seus dados serão perdidos, '
-                                    'sem possibilidade de recuperação. Deseja continuar?',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.black54,
-                                      height: 1.5,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 30),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.grey[300],
-                                            foregroundColor: Colors.black,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
+                                child: const Padding(
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 16.0),
+                                  child: Text('Esqueci minha senha'),
+                                )),
+                          ],
+                        ),
+                      ],
+                      const SizedBox(height: 10),
+                      PasswordField(
+                        validator: validatePassword(),
+                        controller: novaSenhaController,
+                        label: 'Nova Senha',
+                      ),
+                      PasswordField(
+                        validator: confirmPassword(confirmarSenhaController),
+                        controller: confirmarSenhaController,
+                        label: 'Confirmar Senha',
+                      ),
+                      const SizedBox(height: 0),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            final user = FirebaseAuth.instance.currentUser;
+                            if (user != null) {
+                              try {
+                                String novaSenha = novaSenhaController.text;
+                                String confirmarSenha =
+                                    confirmarSenhaController.text;
+                                String senhaAtual = '';
+                                bool itsRegister = true;
+
+                                if (providers.contains("password")) {
+                                  senhaAtual = senhaAtualController.text;
+                                  itsRegister = false;
+                                }
+                                if (formKey.currentState?.validate() == false) {
+                                  return;
+                                }
+
+                                if (novaSenha.isEmpty ||
+                                    confirmarSenha.isEmpty) {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        contentPadding:
+                                            const EdgeInsets.all(16.0),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16.0),
+                                        ),
+                                        content: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Lottie.asset(
+                                                  'lib/assets/animations/info.json',
+                                                  width: 100,
+                                                  height: 100,
+                                                  repeat: false,
+                                                ),
+                                                const Text(
+                                                  'Ops...',
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 12),
+                                            const SizedBox(height: 8),
+                                            const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 16.0),
+                                              child: Text(
+                                                  'As senhas não podem estar vazias!'),
+                                            )
+                                          ],
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(),
+                                            child: const Text('Fechar'),
                                           ),
-                                          child: const Text(
-                                            'Cancelar',
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
+                                        ],
+                                      );
+                                    },
+                                  );
+                                  return;
+                                }
+
+                                if (novaSenha != confirmarSenha) {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        contentPadding:
+                                            const EdgeInsets.all(16.0),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16.0),
+                                        ),
+                                        content: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Lottie.asset(
+                                                  'lib/assets/animations/info.json',
+                                                  width: 100,
+                                                  height: 100,
+                                                  repeat: false,
+                                                ),
+                                                const Text(
+                                                  'Ops...',
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 8),
+                                            const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 16.0),
+                                              child: Text(
+                                                  'As senhas não coincidem!'),
+                                            )
+                                          ],
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(),
+                                            child: const Text('Fechar'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                  return;
+                                }
+
+                                if (senhaAtual.isNotEmpty || itsRegister) {
+                                  // Verifica se a reautenticação foi bem-sucedida
+                                  bool reauthenticated =
+                                      await reauthentication(user, senhaAtual);
+                                  if (!reauthenticated) {
+                                    return; // Se falhou na reautenticação, retorna sem continuar
+                                  }
+
+                                  // Atualiza a senha do usuário
+                                  await user.updatePassword(novaSenha);
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: providers.contains("password")
+                                          ? const Text(
+                                              'Senha atualizada com sucesso.')
+                                          : const Text(
+                                              'Senha cadastrada com sucesso.'),
+                                    ),
+                                  );
+
+                                  setState(() {
+                                    isUpdatingPassword = false;
+                                  });
+
+                                  // Recarregar a página atual
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            super.widget),
+                                  );
+                                } else {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        contentPadding:
+                                            const EdgeInsets.all(16.0),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16.0),
+                                        ),
+                                        content: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Lottie.asset(
+                                                  'lib/assets/animations/info.json',
+                                                  width: 100,
+                                                  height: 100,
+                                                  repeat: false,
+                                                ),
+                                                const Text(
+                                                  'Ops...',
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 8),
+                                            const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 16.0),
+                                              child: Text(
+                                                  'É necessário informar a senha atual!'),
+                                            )
+                                          ],
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(),
+                                            child: const Text('Fechar'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                  return;
+                                }
+                              } on FirebaseAuthException catch (e) {
+                                if (e.code == 'weak-password') {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        contentPadding:
+                                            const EdgeInsets.all(16.0),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16.0),
+                                        ),
+                                        content: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Lottie.asset(
+                                                  'lib/assets/animations/info.json',
+                                                  width: 100,
+                                                  height: 100,
+                                                  repeat: false,
+                                                ),
+                                                const Text(
+                                                  'Ops...',
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 8),
+                                            const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 16.0),
+                                              child: Text(
+                                                  'A senha fornecida é muito fraca!'),
+                                            )
+                                          ],
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(),
+                                            child: const Text('Fechar'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                } else {
+                                  log('Erro ao atualizar a senha: ${e.code}, ${e.message}');
+                                }
+                              } catch (e) {
+                                log('Erro desconhecido ao atualizar a senha: $e');
+                              }
+                            }
+                          },
+                          child: providers.contains("password")
+                              ? const Text('Alterar Senha')
+                              : const Text('Cadastrar Senha'),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+                const SizedBox(height: 30),
+                const Text(
+                  'Contas sociais',
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 5),
+                providers.contains("google.com")
+                    ? PatternedButton(
+                        widget: Image.asset(
+                          'lib/assets/images/logo_google.png',
+                          width: 26,
+                          height: 26,
+                        ),
+                        title: 'Google',
+                        textButton: 'Desvincular',
+                        onTap: () async {
+                          final user = FirebaseAuth.instance.currentUser;
+                          if (user != null) {
+                            try {
+                              await areYouSureAboutDisconnect(context);
+
+                              // Recarrega o usuário
+                              await FirebaseAuth.instance.currentUser?.reload();
+                            } on FirebaseAuthException catch (e) {
+                              log('Erro ao desvincular conta do Google: ${e.message}');
+                            } catch (e) {
+                              log('Erro desconhecido ao desvincular conta do Google: $e');
+                            }
+                          }
+                        },
+                      )
+                    : Container(),
+                providers.isEmpty ||
+                        (providers.length == 1 &&
+                            providers.contains("password"))
+                    ? PatternedButton(
+                        widget: Image.asset(
+                          'lib/assets/images/icon_network.png',
+                          width: 26,
+                          height: 26,
+                        ),
+                        title: 'Nenhuma conta vinculada',
+                        onTap: () => (),
+                        textButton: '')
+                    : Container(),
+                const SizedBox(height: 30),
+                const Text(
+                  'Conta',
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                ),
+                PatternedButton(
+                    widget: Image.asset(
+                      'lib/assets/images/icon_delete_account.png',
+                      width: 26,
+                      height: 26,
+                    ),
+                    title: 'Excluir minha conta',
+                    textButton: 'Excluir',
+                    onTap: () async {
+                      final user = FirebaseAuth.instance.currentUser;
+
+                      if (user != null) {
+                        await Future.delayed(Duration.zero);
+                        await showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            final BuildContext context2 =
+                                Navigator.of(context).context;
+                            final BuildContext context3 =
+                                Navigator.of(context).context;
+                            final BuildContext context4 =
+                                Navigator.of(context).context;
+                            TextEditingController passwordController =
+                                TextEditingController();
+
+                            return Dialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.0),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 24.0, horizontal: 16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Center(
+                                      child: Lottie.asset(
+                                        'lib/assets/animations/warning.json',
+                                        width: 80,
+                                        height: 80,
+                                        repeat: true,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    const Center(
+                                      child: Text(
+                                        'Exclusão de Conta',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    const Text(
+                                      'Sua conta será excluída e todos os seus dados serão perdidos, '
+                                      'sem possibilidade de recuperação. Deseja continuar?',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black54,
+                                        height: 1.5,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 30),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.grey[300],
+                                              foregroundColor: Colors.black,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 12),
+                                            ),
+                                            child: const Text(
+                                              'Cancelar',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          key: Keys.kDialogConfirm,
-                                          onPressed: () async {
-                                            Navigator.of(context).pop();
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            key: Keys.kDialogConfirm,
+                                            onPressed: () async {
+                                              Navigator.of(context).pop();
 
-                                            if (!providers
-                                                .contains("password")) {
-                                              await showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return AlertDialog(
-                                                    contentPadding:
-                                                        const EdgeInsets.all(
-                                                            16.0),
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
+                                              if (!providers
+                                                  .contains("password")) {
+                                                await showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      contentPadding:
+                                                          const EdgeInsets.all(
                                                               16.0),
-                                                    ),
-                                                    content: Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            Lottie.asset(
-                                                              'lib/assets/animations/info.json',
-                                                              width: 100,
-                                                              height: 100,
-                                                              repeat: false,
-                                                            ),
-                                                            const Text(
-                                                              'Ops...',
-                                                              style: TextStyle(
-                                                                fontSize: 20,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 8),
-                                                        const Padding(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  horizontal:
-                                                                      16.0),
-                                                          child: Text(
-                                                              'É necessário possuir uma senha cadastrada para prosseguir com exclusão de conta!'),
-                                                        )
-                                                      ],
-                                                    ),
-                                                    actions: <Widget>[
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                        child: const Text('Ok'),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(16.0),
                                                       ),
-                                                    ],
-                                                  );
-                                                },
-                                              );
-                                              return;
-                                            }
-
-                                            //Primeiro validar se não há contrato ativo ou espaço cadastrado
-                                            final userModel =
-                                                await UserService()
-                                                    .getCurrentUserModel();
-
-                                            final queryReservationsSnapshot =
-                                                await FirebaseFirestore.instance
-                                                    .collection('reservations')
-                                                    .where('client_id',
-                                                        isEqualTo:
-                                                            userModel!.uid)
-                                                    .where('selectedFinalDate',
-                                                        isGreaterThan:
-                                                            DateTime.now())
-                                                    .limit(1)
-                                                    .get(); // Limita para apenas verificar se existe um contrato ativo
-                                            if (queryReservationsSnapshot
-                                                .docs.isNotEmpty) {
-                                              await showDialog(
-                                                context: context2,
-                                                builder:
-                                                    (BuildContext context2) {
-                                                  return AlertDialog(
-                                                    content: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: [
-                                                        Row(children: [
-                                                          Lottie.asset(
-                                                            'lib/assets/animations/info.json',
-                                                            width: 100,
-                                                            height: 100,
-                                                            repeat: true,
+                                                      content: Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          Row(
+                                                            children: [
+                                                              Lottie.asset(
+                                                                'lib/assets/animations/info.json',
+                                                                width: 100,
+                                                                height: 100,
+                                                                repeat: false,
+                                                              ),
+                                                              const Text(
+                                                                'Ops...',
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 20,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
                                                           const SizedBox(
-                                                              height: 16),
-                                                          const Text(
-                                                            'Não permitido!',
-                                                            style: TextStyle(
-                                                              fontSize: 20,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                          ),
-                                                        ]),
-                                                        const Text(
-                                                            'O usuário possui reservas em aberto.'),
-                                                      ],
-                                                    ),
-                                                    actions: <Widget>[
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context2)
-                                                              .pop();
-                                                        },
-                                                        child: const Text('Ok'),
+                                                              height: 8),
+                                                          const Padding(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        16.0),
+                                                            child: Text(
+                                                                'É necessário possuir uma senha cadastrada para prosseguir com exclusão de conta!'),
+                                                          )
+                                                        ],
                                                       ),
-                                                    ],
-                                                  );
-                                                },
-                                              );
-                                              return;
-                                            }
+                                                      actions: <Widget>[
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          child:
+                                                              const Text('Ok'),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                                return;
+                                              }
 
-                                            final querySpacesSnapshot =
-                                                await FirebaseFirestore.instance
-                                                    .collection('spaces')
-                                                    .where('user_id',
-                                                        isEqualTo:
-                                                            userModel.uid)
-                                                    .where('deletedAt',
-                                                        isNull: true)
-                                                    .limit(1)
-                                                    .get(); // Limita para apenas verificar se existe um espacço cadastrado
+                                              //Primeiro validar se não há contrato ativo ou espaço cadastrado
+                                              final userModel =
+                                                  await UserService()
+                                                      .getCurrentUserModel();
 
-                                            if (querySpacesSnapshot
-                                                .docs.isNotEmpty) {
-                                              await showDialog(
-                                                context: context2,
-                                                builder:
-                                                    (BuildContext context2) {
-                                                  return AlertDialog(
-                                                    contentPadding:
-                                                        const EdgeInsets.all(
-                                                            16.0),
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              16.0),
-                                                    ),
-                                                    content: Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: [
-                                                        Row(
-                                                          children: [
+                                              final queryReservationsSnapshot =
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection(
+                                                          'reservations')
+                                                      .where('client_id',
+                                                          isEqualTo:
+                                                              userModel!.uid)
+                                                      .where(
+                                                          'selectedFinalDate',
+                                                          isGreaterThan:
+                                                              DateTime.now())
+                                                      .limit(1)
+                                                      .get(); // Limita para apenas verificar se existe um contrato ativo
+                                              if (queryReservationsSnapshot
+                                                  .docs.isNotEmpty) {
+                                                await showDialog(
+                                                  context: context2,
+                                                  builder:
+                                                      (BuildContext context2) {
+                                                    return AlertDialog(
+                                                      content: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          Row(children: [
                                                             Lottie.asset(
                                                               'lib/assets/animations/info.json',
                                                               width: 100,
                                                               height: 100,
-                                                              repeat: false,
+                                                              repeat: true,
                                                             ),
+                                                            const SizedBox(
+                                                                height: 16),
                                                             const Text(
-                                                              'Ops...',
+                                                              'Não permitido!',
                                                               style: TextStyle(
                                                                 fontSize: 20,
                                                                 fontWeight:
@@ -1285,213 +1269,291 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                                                         .bold,
                                                               ),
                                                             ),
-                                                          ],
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 8),
-                                                        const Padding(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  horizontal:
-                                                                      16.0),
-                                                          child: Text(
-                                                              'O usuário possui espaço cadastrado!'),
-                                                        )
-                                                      ],
-                                                    ),
-                                                    actions: <Widget>[
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context2)
-                                                              .pop();
-                                                        },
-                                                        child: const Text('Ok'),
+                                                          ]),
+                                                          const Text(
+                                                              'O usuário possui reservas em aberto.'),
+                                                        ],
                                                       ),
-                                                    ],
-                                                  );
-                                                },
-                                              );
-                                              return;
-                                            }
+                                                      actions: <Widget>[
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context2)
+                                                                .pop();
+                                                          },
+                                                          child:
+                                                              const Text('Ok'),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                                return;
+                                              }
 
-                                            await showDialog(
-                                                context: context3,
-                                                builder:
-                                                    (BuildContext context3) {
-                                                  return AlertDialog(
-                                                    title: const Text(
-                                                        'Exclusão de Conta'),
-                                                    content: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: [
-                                                        const Text(
-                                                            'Confirme sua senha para prosseguir'),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                                  top: 16.0),
-                                                          child: PasswordField(
-                                                            controller:
-                                                                passwordController,
-                                                            label: 'Senha',
-                                                            padding: 0,
+                                              final querySpacesSnapshot =
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection('spaces')
+                                                      .where('user_id',
+                                                          isEqualTo:
+                                                              userModel.uid)
+                                                      .where('deletedAt',
+                                                          isNull: true)
+                                                      .limit(1)
+                                                      .get(); // Limita para apenas verificar se existe um espacço cadastrado
+
+                                              if (querySpacesSnapshot
+                                                  .docs.isNotEmpty) {
+                                                await showDialog(
+                                                  context: context2,
+                                                  builder:
+                                                      (BuildContext context2) {
+                                                    return AlertDialog(
+                                                      contentPadding:
+                                                          const EdgeInsets.all(
+                                                              16.0),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(16.0),
+                                                      ),
+                                                      content: Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          Row(
+                                                            children: [
+                                                              Lottie.asset(
+                                                                'lib/assets/animations/info.json',
+                                                                width: 100,
+                                                                height: 100,
+                                                                repeat: false,
+                                                              ),
+                                                              const Text(
+                                                                'Ops...',
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 20,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
+                                                          const SizedBox(
+                                                              height: 8),
+                                                          const Padding(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        16.0),
+                                                            child: Text(
+                                                                'O usuário possui espaço cadastrado!'),
+                                                          )
+                                                        ],
+                                                      ),
+                                                      actions: <Widget>[
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context2)
+                                                                .pop();
+                                                          },
+                                                          child:
+                                                              const Text('Ok'),
                                                         ),
                                                       ],
-                                                    ),
-                                                    actions: <Widget>[
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context3)
-                                                              .pop();
-                                                        },
-                                                        child: const Text(
-                                                            'Cancelar'),
+                                                    );
+                                                  },
+                                                );
+                                                return;
+                                              }
+
+                                              await showDialog(
+                                                  context: context3,
+                                                  builder:
+                                                      (BuildContext context3) {
+                                                    return AlertDialog(
+                                                      title: const Text(
+                                                          'Exclusão de Conta'),
+                                                      content: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          const Text(
+                                                              'Confirme sua senha para prosseguir'),
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                                    top: 16.0),
+                                                            child:
+                                                                PasswordField(
+                                                              controller:
+                                                                  passwordController,
+                                                              label: 'Senha',
+                                                              padding: 0,
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
-                                                      TextButton(
-                                                        onPressed: () async {
-                                                          Navigator.of(context3)
-                                                              .pop();
+                                                      actions: <Widget>[
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context3)
+                                                                .pop();
+                                                          },
+                                                          child: const Text(
+                                                              'Cancelar'),
+                                                        ),
+                                                        TextButton(
+                                                          onPressed: () async {
+                                                            Navigator.of(
+                                                                    context3)
+                                                                .pop();
 
-                                                          try {
-                                                            // Reautentica o usuário antes de excluir a conta
-                                                            AuthCredential
-                                                                credential =
-                                                                EmailAuthProvider
-                                                                    .credential(
-                                                              email: userModel
-                                                                  .email,
-                                                              password:
-                                                                  passwordController
-                                                                      .text,
-                                                            );
-                                                            await user
-                                                                .reauthenticateWithCredential(
-                                                                    credential);
+                                                            try {
+                                                              // Reautentica o usuário antes de excluir a conta
+                                                              AuthCredential
+                                                                  credential =
+                                                                  EmailAuthProvider
+                                                                      .credential(
+                                                                email: userModel
+                                                                    .email,
+                                                                password:
+                                                                    passwordController
+                                                                        .text,
+                                                              );
+                                                              await user
+                                                                  .reauthenticateWithCredential(
+                                                                      credential);
 
-                                                            // Exclua a conta do usuário após a reautenticação
-                                                            await user.delete();
+                                                              // Exclua a conta do usuário após a reautenticação
+                                                              await user
+                                                                  .delete();
 
-                                                            // Redirecione o usuário para a tela de login ou execute outras ações necessárias
-                                                            await ref
-                                                                .read(
-                                                                    userFirestoreRepositoryProvider)
-                                                                .deleteUserDocument(
-                                                                    user);
-                                                            ref.read(
-                                                                logoutProvider
-                                                                    .future);
-                                                            log('Conta excluída com sucesso.');
-                                                          } on FirebaseAuthException catch (e) {
-                                                            if (e.code ==
-                                                                'invalid-credential') {
-                                                              await showDialog(
-                                                                  context:
-                                                                      context4,
-                                                                  builder:
-                                                                      (BuildContext
-                                                                          context) {
-                                                                    return AlertDialog(
-                                                                      contentPadding: const EdgeInsets
-                                                                          .all(
-                                                                          16.0),
-                                                                      shape:
-                                                                          RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(16.0),
-                                                                      ),
-                                                                      content:
-                                                                          Column(
-                                                                        mainAxisSize:
-                                                                            MainAxisSize.min,
-                                                                        children: [
-                                                                          Row(
-                                                                            children: [
-                                                                              Lottie.asset(
-                                                                                'lib/assets/animations/info.json',
-                                                                                width: 100,
-                                                                                height: 100,
-                                                                                repeat: false,
-                                                                              ),
-                                                                              const Text(
-                                                                                'Ops...',
-                                                                                style: TextStyle(
-                                                                                  fontSize: 20,
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                ),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                          const SizedBox(
-                                                                              height: 8),
-                                                                          const Padding(
-                                                                            padding:
-                                                                                EdgeInsets.symmetric(horizontal: 16.0),
-                                                                            child:
-                                                                                Text('Senha atual inválida!'),
-                                                                          )
-                                                                        ],
-                                                                      ),
-                                                                      actions: [
-                                                                        TextButton(
-                                                                          onPressed: () =>
-                                                                              Navigator.of(context4).pop(),
-                                                                          child:
-                                                                              const Text('Fechar'),
+                                                              // Redirecione o usuário para a tela de login ou execute outras ações necessárias
+                                                              await ref
+                                                                  .read(
+                                                                      userFirestoreRepositoryProvider)
+                                                                  .deleteUserDocument(
+                                                                      user);
+                                                              ref.read(
+                                                                  logoutProvider
+                                                                      .future);
+                                                              log('Conta excluída com sucesso.');
+                                                            } on FirebaseAuthException catch (e) {
+                                                              if (e.code ==
+                                                                  'invalid-credential') {
+                                                                await showDialog(
+                                                                    context:
+                                                                        context4,
+                                                                    builder:
+                                                                        (BuildContext
+                                                                            context) {
+                                                                      return AlertDialog(
+                                                                        contentPadding: const EdgeInsets
+                                                                            .all(
+                                                                            16.0),
+                                                                        shape:
+                                                                            RoundedRectangleBorder(
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(16.0),
                                                                         ),
-                                                                      ],
-                                                                    );
-                                                                  });
+                                                                        content:
+                                                                            Column(
+                                                                          mainAxisSize:
+                                                                              MainAxisSize.min,
+                                                                          children: [
+                                                                            Row(
+                                                                              children: [
+                                                                                Lottie.asset(
+                                                                                  'lib/assets/animations/info.json',
+                                                                                  width: 100,
+                                                                                  height: 100,
+                                                                                  repeat: false,
+                                                                                ),
+                                                                                const Text(
+                                                                                  'Ops...',
+                                                                                  style: TextStyle(
+                                                                                    fontSize: 20,
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                            const SizedBox(height: 8),
+                                                                            const Padding(
+                                                                              padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                                                              child: Text('Senha atual inválida!'),
+                                                                            )
+                                                                          ],
+                                                                        ),
+                                                                        actions: [
+                                                                          TextButton(
+                                                                            onPressed: () =>
+                                                                                Navigator.of(context4).pop(),
+                                                                            child:
+                                                                                const Text('Fechar'),
+                                                                          ),
+                                                                        ],
+                                                                      );
+                                                                    });
+                                                              }
+                                                              log('Erro ao excluir a conta: ${e.code}, ${e.message}');
+                                                            } catch (e) {
+                                                              log('Erro desconhecido ao excluir a conta: $e');
                                                             }
-                                                            log('Erro ao excluir a conta: ${e.code}, ${e.message}');
-                                                          } catch (e) {
-                                                            log('Erro desconhecido ao excluir a conta: $e');
-                                                          }
-                                                        },
-                                                        child: const Text(
-                                                            'Confirmar'),
-                                                      ),
-                                                    ],
-                                                  );
-                                                });
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.deepPurple,
-                                            foregroundColor: Colors.white,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
+                                                          },
+                                                          child: const Text(
+                                                              'Confirmar'),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  });
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  Colors.deepPurple,
+                                              foregroundColor: Colors.white,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 12),
                                             ),
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 12),
-                                          ),
-                                          child: const Text(
-                                            'Confirmar',
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
+                                            child: const Text(
+                                              'Confirmar',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      );
-                    } else {
-                      log('Usuário não autenticado');
-                    }
-                  }),
-            ],
+                            );
+                          },
+                        );
+                      } else {
+                        log('Usuário não autenticado');
+                      }
+                    }),
+              ],
+            ),
           ),
         ),
       ),
