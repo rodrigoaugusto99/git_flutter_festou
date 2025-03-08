@@ -321,8 +321,8 @@ class _MinhasReservasTileState extends State<MinhasReservasTile> {
                   ),
                 if (widget.reservationModel.canceledAt != null)
                   Positioned(
-                    right: 21,
-                    top: 19,
+                    right: 55,
+                    top: 16,
                     child: GestureDetector(
                       onTap: () => showCancellationReasonDialog(
                           context, widget.reservationModel.reason!),
@@ -414,34 +414,37 @@ class _MinhasReservasTileState extends State<MinhasReservasTile> {
               ],
             ),
           ),
-          if (widget.reservationModel.canceledAt == null)
-            Positioned(
-              top: 11,
-              right: 9,
-              child: InkWell(
-                child: Container(
-                  padding: const EdgeInsets.all(7),
-                  decoration: const BoxDecoration(
-                    color: Color(0xffF3F3F3),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.chat_bubble,
-                    color: Color(0xff9747FF),
-                  ),
+          Positioned(
+            top: 11,
+            right: 9,
+            child: InkWell(
+              onTap: widget.reservationModel.canceledAt == null
+                  ? () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChatPage(
+                            receiverID: widget.reservationModel.locadorId,
+                          ),
+                        ),
+                      );
+                    }
+                  : null,
+              child: Container(
+                padding: const EdgeInsets.all(7),
+                decoration: const BoxDecoration(
+                  color: Color(0xffF3F3F3),
+                  shape: BoxShape.circle,
                 ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChatPage(
-                        receiverID: widget.reservationModel.locadorId,
-                      ),
-                    ),
-                  );
-                },
+                child: Icon(
+                  Icons.chat_bubble,
+                  color: widget.reservationModel.canceledAt == null
+                      ? const Color(0xff9747FF)
+                      : Colors.grey,
+                ),
               ),
             ),
+          ),
           if (widget.reservationModel.canceledAt == null)
             Positioned(
               top: 11,

@@ -336,6 +336,9 @@ class _ChatPageState extends State<ChatPage> {
               child: FutureBuilder<String>(
                 future: getNameById(widget.receiverID),
                 builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const SizedBox();
+                  }
                   return Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Text(
@@ -438,7 +441,7 @@ class _ChatPageState extends State<ChatPage> {
               }
               if (snapshot.connectionState == ConnectionState.waiting &&
                   !notWait) {
-                return const Text("Loading");
+                return const Expanded(child: Text(""));
               }
               notWait = false;
 
