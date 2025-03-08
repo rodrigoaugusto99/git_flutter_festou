@@ -1,3 +1,4 @@
+import 'package:festou/src/features/space%20card/widgets/chat_page.dart';
 import 'package:festou/src/features/space%20card/widgets/contrato_assinado_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -413,6 +414,34 @@ class _MinhasReservasTileState extends State<MinhasReservasTile> {
               ],
             ),
           ),
+          if (widget.reservationModel.canceledAt == null)
+            Positioned(
+              top: 11,
+              right: 9,
+              child: InkWell(
+                child: Container(
+                  padding: const EdgeInsets.all(7),
+                  decoration: const BoxDecoration(
+                    color: Color(0xffF3F3F3),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.chat_bubble,
+                    color: Color(0xff9747FF),
+                  ),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChatPage(
+                        receiverID: widget.reservationModel.locadorId,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
           if (widget.reservationModel.canceledAt == null)
             Positioned(
               top: 11,

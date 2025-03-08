@@ -976,7 +976,7 @@ class _NewCardInfoState extends State<NewCardInfo>
               ),
             ],
           ],
-          if (feedbacks != null && feedbacks!.length > 2) ...[
+          if (feedbacks != null && feedbacks!.length > 3) ...[
             const SizedBox(height: 12),
             InkWell(
               child: Align(
