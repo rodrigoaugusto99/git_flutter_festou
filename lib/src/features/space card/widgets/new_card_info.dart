@@ -32,6 +32,7 @@ import 'package:festou/src/services/space_service.dart';
 import 'package:festou/src/services/user_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:social_share/social_share.dart';
 import 'package:video_player/video_player.dart';
@@ -208,6 +209,10 @@ class _NewCardInfoState extends State<NewCardInfo>
 
     feedbacks = await feedbackService.getFeedbacksOrdered(widget.spaceId);
     feedbacks!.removeWhere((f) => f.deletedAt != null);
+    final dateFormat = DateFormat('dd/MM/yyyy');
+
+    feedbacks!.sort(
+        (a, b) => dateFormat.parse(b.date).compareTo(dateFormat.parse(a.date)));
     if (feedbacks!.isNotEmpty) {
       int totalRating = 0;
       for (final feedback in feedbacks!) {
@@ -280,6 +285,10 @@ class _NewCardInfoState extends State<NewCardInfo>
       // feedbacks!.removeWhere((f) => f.deletedAt != null);
       feedbacks = await feedbackService.getFeedbacksOrdered(widget.spaceId);
       feedbacks!.removeWhere((f) => f.deletedAt != null);
+      final dateFormat = DateFormat('dd/MM/yyyy');
+
+      feedbacks!.sort((a, b) =>
+          dateFormat.parse(b.date).compareTo(dateFormat.parse(a.date)));
       setState(() {});
       log('feedbacks aai papi');
       for (var feedback in feedbacks!) {

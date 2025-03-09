@@ -56,6 +56,8 @@ class _MinhasReservasWidgetState extends State<MinhasReservasWidget> {
     setState(() {
       reservationSpaces =
           updatedReservationSpaces; // Atualiza a lista completamente
+      reservationSpaces
+          .sort((a, b) => b.reserva.createdAt!.compareTo(a.reserva.createdAt!));
     });
   }
 
