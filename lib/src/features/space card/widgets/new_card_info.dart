@@ -1336,6 +1336,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                   children: [
                     Expanded(
                       child: ListView.builder(
+                        clipBehavior: Clip.none,
                         scrollDirection: Axis.horizontal,
                         itemCount: space!.selectedServices.length,
                         itemBuilder: (context, index) {
