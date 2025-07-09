@@ -21,7 +21,7 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
   final passwordEC = TextEditingController();
   final confirmPasswordEC = TextEditingController();
   final formKey = GlobalKey<FormState>();
-
+  bool isLoading = false;
   @override
   void dispose() {
     emailEC.dispose();
@@ -54,11 +54,19 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
           // }
           Navigator.of(context)
               .pushNamedAndRemoveUntil('/emailVerification', (route) => false);
-
+          setState(() {
+            isLoading = false;
+          });
         case UserRegisterStateStatus.registrationError:
           Messages.showError('Erro ao registrar usuário', context);
+          setState(() {
+            isLoading = false;
+          });
         case UserRegisterStateStatus.formInvalid:
           Messages.showError('Formulário inválido', context);
+          setState(() {
+            isLoading = false;
+          });
       }
     });
 
@@ -208,9 +216,17 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             InkWell(
-              onTap: () {
-                userRegisterVM.validateForm(
+              onTap: () async {
+                setState(() {
+                  isLoading = true;
+                });
+                bool response = await userRegisterVM.validateForm(
                     context, formKey, emailEC, passwordEC, nameEC, cpfOuCnpjEC);
+                if (!response) {
+                  setState(() {
+                    isLoading = false;
+                  });
+                }
               },
               child: Container(
                 alignment: Alignment.center,
@@ -227,14 +243,23 @@ class _UserRegisterPageState extends ConsumerState<UserRegisterPage> {
                   ),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Text(
-                  'CADASTRAR',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
+                child: isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Text(
+                        'CADASTRAR',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
               ),
             ),
             const SizedBox(height: 16),
