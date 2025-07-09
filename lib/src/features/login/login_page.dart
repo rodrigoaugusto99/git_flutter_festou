@@ -21,6 +21,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   bool isVisible = false;
   bool _isLoggingIn = false;
+  bool isLoading = false;
 
   @override
   void dispose() {
@@ -39,13 +40,22 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           break;
         case LoginState(status: LoginStateStatus.error, :final errorMessage?):
           Messages.showError(errorMessage, context);
+          setState(() {
+            isLoading = false;
+          });
         case LoginState(status: LoginStateStatus.error):
           Messages.showError('E-mail ou senha inválidos', context);
           _isLoggingIn = false;
+          setState(() {
+            isLoading = false;
+          });
           break;
         case LoginState(status: LoginStateStatus.invalidForm):
           Messages.showInfo('Formulário inválido', context);
           _isLoggingIn = false;
+          setState(() {
+            isLoading = false;
+          });
           break;
         case LoginState(status: LoginStateStatus.userLogin):
           // if (isTest) {
@@ -57,6 +67,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           Navigator.of(context)
               .pushNamedAndRemoveUntil('/emailVerification', (route) => false);
           _isLoggingIn = false;
+          setState(() {
+            isLoading = false;
+          });
           break;
         //changeProviderDialog(dialogMessage);
       }
@@ -294,7 +307,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               bool isPasswordValid =
                                   validatePassword(passwordEC.text);
                               if (!isPasswordValid) return;
-
+                              setState(() {
+                                isLoading = true;
+                              });
                               loginVM.validateForm(
                                 context,
                                 formKey,
@@ -317,16 +332,25 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 borderRadius: BorderRadius.circular(
                                     50), // Borda arredondada
                               ),
-                              child: const Center(
-                                child: Text(
-                                  'LOGIN',
-                                  style: TextStyle(
-                                      color: Colors.white, // Cor do texto
-                                      fontSize: 12, // Tamanho do texto
-                                      fontWeight: FontWeight
-                                          .w400 // Estilo de texto em negrito
+                              child: Center(
+                                child: isLoading
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : const Text(
+                                        'LOGIN',
+                                        style: TextStyle(
+                                            color: Colors.white, // Cor do texto
+                                            fontSize: 12, // Tamanho do texto
+                                            fontWeight: FontWeight
+                                                .w400 // Estilo de texto em negrito
+                                            ),
                                       ),
-                                ),
                               ),
                             ),
                           ),

@@ -46,7 +46,10 @@ class LoginVM extends _$LoginVM {
     }
   }
 
+  bool isLoading = false;
+
   Future<void> login(String email, String password) async {
+    isLoading = true;
     final userAuthRepository = ref.watch(userAuthRepositoryProvider);
 
     final loginResult = await userAuthRepository.login(email, password);
@@ -60,12 +63,14 @@ class LoginVM extends _$LoginVM {
         ref.invalidate(feedbackFirestoreRepositoryProvider);
 
         state = state.copyWith(status: LoginStateStatus.userLogin);
+        isLoading = false;
         break;
       case Failure(exception: AuthError(:final message)):
         state = state.copyWith(
           status: LoginStateStatus.error,
           errorMessage: () => message,
         );
+        isLoading = false;
     }
   }
 
