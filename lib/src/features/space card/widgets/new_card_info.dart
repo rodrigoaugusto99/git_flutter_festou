@@ -165,7 +165,7 @@ class _NewCardInfoState extends State<NewCardInfo>
         log('reservation.id: ${reservation.id}', level: 1000);
         log('reservation.hasReview: ${reservation.hasReview}');
       }
-
+//todo; tirar as com finaldate no futuro
       return validReservations;
     } catch (e) {
       return [];

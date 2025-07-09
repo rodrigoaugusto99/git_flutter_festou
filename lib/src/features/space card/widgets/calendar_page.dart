@@ -714,7 +714,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
   Widget _buildCalendarPicker() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 0),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
