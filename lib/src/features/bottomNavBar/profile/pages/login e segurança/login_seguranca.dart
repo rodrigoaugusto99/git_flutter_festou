@@ -15,6 +15,8 @@ import 'package:festou/src/services/auth_services.dart';
 import 'package:festou/src/services/user_service.dart';
 import 'package:lottie/lottie.dart';
 import 'package:validatorless/validatorless.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/services.dart';
 
 class LoginSeguranca extends ConsumerStatefulWidget {
   const LoginSeguranca({super.key});
@@ -602,6 +604,90 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
     ]);
   }
 
+  Future<void> vincularContaGoogle() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn(
+      scopes: ['email', 'profile'],
+    ).signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    if (googleAuth == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Google auth failed'),
+        ),
+      );
+      throw Exception('Google auth failed');
+    }
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    try {
+      final userCredential = await FirebaseAuth.instance.currentUser
+          ?.linkWithCredential(credential);
+
+      // Se chegou até aqui, a vinculação foi bem-sucedida
+      if (userCredential != null) {
+        // Recarrega o usuário para obter os dados atualizados
+        await FirebaseAuth.instance.currentUser?.reload();
+
+        // Atualiza a lista de provedores
+        setState(() {
+          displayAuthProviderList();
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Conta do Google vinculada com sucesso!'),
+          ),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      log('Erro ao vincular conta do Google: ${e.code}, ${e.message}');
+      String errorMessage = 'Erro ao vincular conta do Google';
+
+      switch (e.code) {
+        case "provider-already-linked":
+          errorMessage = "A conta do Google já está vinculada.";
+          break;
+        case "invalid-credential":
+          errorMessage = "Credencial do Google inválida.";
+          break;
+        case "credential-already-in-use":
+          errorMessage =
+              "Esta conta do Google já está sendo usada por outro usuário.";
+          break;
+        case "email-already-in-use":
+          errorMessage = "Este e-mail já está sendo usado por outro usuário.";
+          break;
+        case "account-exists-with-different-credential":
+          errorMessage =
+              "Já existe uma conta com este e-mail usando outro método de login.";
+          break;
+        default:
+          errorMessage = "Erro desconhecido ao vincular conta do Google.";
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+        ),
+      );
+    } catch (e) {
+      log('Erro desconhecido ao vincular conta do Google: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Erro desconhecido ao vincular conta do Google'),
+        ),
+      );
+    }
+  }
+
   final formKey = GlobalKey<FormState>();
 
 //confirmação senha
@@ -1040,8 +1126,8 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                           height: 26,
                         ),
                         title: 'Nenhuma conta vinculada',
-                        onTap: () => (),
-                        textButton: '')
+                        onTap: () => vincularContaGoogle(),
+                        textButton: 'Vincular Google')
                     : Container(),
                 const SizedBox(height: 30),
                 const Text(
