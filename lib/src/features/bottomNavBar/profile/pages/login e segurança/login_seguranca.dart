@@ -1127,7 +1127,7 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                         ),
                         title: 'Nenhuma conta vinculada',
                         onTap: () => vincularContaGoogle(),
-                        textButton: 'Vincular Google')
+                        textButton: 'Vincular')
                     : Container(),
                 const SizedBox(height: 30),
                 const Text(
