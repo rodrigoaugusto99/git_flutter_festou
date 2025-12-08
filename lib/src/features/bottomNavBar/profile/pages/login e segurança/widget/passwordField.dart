@@ -5,6 +5,7 @@ class PasswordField extends StatefulWidget {
   final String label;
   final double padding;
   final String? errorText;
+  final String? Function(String?)? validator;
 
   const PasswordField({
     super.key,
@@ -12,6 +13,7 @@ class PasswordField extends StatefulWidget {
     required this.label,
     this.padding = 16.0,
     this.errorText,
+    this.validator,
   });
 
   @override
@@ -25,7 +27,8 @@ class _PasswordFieldState extends State<PasswordField> {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: widget.padding),
-      child: TextField(
+      child: TextFormField(
+        validator: widget.validator,
         controller: widget.controller,
         obscureText: !isPasswordVisible,
         style: const TextStyle(

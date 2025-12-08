@@ -54,7 +54,7 @@ class _FilterAndOrderPageState extends ConsumerState<FilterAndOrderPage> {
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const NotificacoesPage(locador: true),
+                  builder: (context) => const NotificacoesPage(locador: false),
                 ),
               ),
               child: const Icon(

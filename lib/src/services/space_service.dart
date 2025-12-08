@@ -132,6 +132,8 @@ class SpaceService {
         stringVideosToAdd.add(url);
       }
 
+      await spaceDocRef.update(newSpaceInfos);
+
       await spaceDocRef.update(
           {"images_url": FieldValue.arrayRemove(networkImagesToDelete)});
       await spaceDocRef
@@ -142,7 +144,7 @@ class SpaceService {
       await spaceDocRef
           .update({"videos": FieldValue.arrayUnion(stringVideosToAdd)});
 
-      log('Informações de usuário adicionadas com sucesso!');
+      log('Informações do espaço atualizadas com sucesso!');
     } else if (querySnapshot.docs.isEmpty) {
       // Nenhum documento com o userId especificado foi encontrado
       log('Usuário não encontrado no firestore.');

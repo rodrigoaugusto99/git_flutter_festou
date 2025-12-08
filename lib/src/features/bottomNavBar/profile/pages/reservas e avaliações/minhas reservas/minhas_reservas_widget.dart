@@ -1,3 +1,4 @@
+import 'package:festou/src/features/space%20card/widgets/chat_page.dart';
 import 'package:festou/src/features/space%20card/widgets/contrato_assinado_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +56,8 @@ class _MinhasReservasWidgetState extends State<MinhasReservasWidget> {
     setState(() {
       reservationSpaces =
           updatedReservationSpaces; // Atualiza a lista completamente
+      reservationSpaces
+          .sort((a, b) => b.reserva.createdAt!.compareTo(a.reserva.createdAt!));
     });
   }
 
@@ -320,8 +323,8 @@ class _MinhasReservasTileState extends State<MinhasReservasTile> {
                   ),
                 if (widget.reservationModel.canceledAt != null)
                   Positioned(
-                    right: 21,
-                    top: 19,
+                    right: 55,
+                    top: 16,
                     child: GestureDetector(
                       onTap: () => showCancellationReasonDialog(
                           context, widget.reservationModel.reason!),
@@ -411,6 +414,37 @@ class _MinhasReservasTileState extends State<MinhasReservasTile> {
                   ],
                 ),
               ],
+            ),
+          ),
+          Positioned(
+            top: 11,
+            right: 9,
+            child: InkWell(
+              onTap: widget.reservationModel.canceledAt == null
+                  ? () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChatPage(
+                            receiverID: widget.reservationModel.locadorId,
+                          ),
+                        ),
+                      );
+                    }
+                  : null,
+              child: Container(
+                padding: const EdgeInsets.all(7),
+                decoration: const BoxDecoration(
+                  color: Color(0xffF3F3F3),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.chat_bubble,
+                  color: widget.reservationModel.canceledAt == null
+                      ? const Color(0xff9747FF)
+                      : Colors.grey,
+                ),
+              ),
             ),
           ),
           if (widget.reservationModel.canceledAt == null)

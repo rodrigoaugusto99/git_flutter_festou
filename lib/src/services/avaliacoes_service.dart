@@ -147,6 +147,27 @@ se tiver like do user na coluna likedBy, nem precisa ver o deslikedBy.
     }
   }
 
+  Future<AvaliacoesModel> checkFeedbackModel(String feedbackId) async {
+    try {
+      // Obtenha o documento específico pelo feedbackId
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('feedbacks')
+          .where("id", isEqualTo: feedbackId)
+          .get();
+
+      if (querySnapshot.docs.length == 1) {
+        final userDocument = querySnapshot.docs.first;
+        final data = userDocument.data() as Map<String, dynamic>;
+
+        return AvaliacoesModel.fromMap(data);
+      } else {
+        throw Exception();
+      }
+    } catch (e) {
+      throw Exception();
+    }
+  }
+
 //todo:
 /*
 subcollection likedBy e deslikedBy, onde o id do doc vai ser o id do usuario e vai ter o campo createdAt

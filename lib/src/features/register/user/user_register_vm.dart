@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:festou/src/helpers/validators.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/core/fp/either.dart';
 import 'package:festou/src/core/providers/application_providers.dart';
@@ -113,22 +114,36 @@ class UserRegisterVm extends _$UserRegisterVm {
     ]);
   }
 
-  void validateForm(
+  Future<bool> validateForm(
       BuildContext context, formKey, emailEC, passwordEC, nameEC, cpfEC) async {
     if (formKey.currentState?.validate() == true) {
       final response = await checkIfCpfExists(cpfEC.text);
       if (response != null) {
         Messages.showError(response, context);
-        return;
+        return false;
       }
       if (cpfEC.text.length != 14 && cpfEC.text.length != 18) {
         Messages.showError('CPF ou CNPJ inválidos.', context);
-        return;
+        return false;
+      }
+      if (cpfEC.text.length == 14) {
+        String? errorMessage = Validators.cpf(cpfEC.text);
+        if (errorMessage != null) {
+          Messages.showError(errorMessage, context);
+          return false;
+        }
+      }
+      if (cpfEC.text.length == 18) {
+        String? errorMessage = Validators.cnpj(cpfEC.text);
+        if (errorMessage != null) {
+          Messages.showError(errorMessage, context);
+          return false;
+        }
       }
       final response2 = await checkIfEmailExists(emailEC.text);
       if (response2 != null) {
         Messages.showError(response2, context);
-        return;
+        return false;
       }
       register(
         email: emailEC.text,
@@ -138,7 +153,9 @@ class UserRegisterVm extends _$UserRegisterVm {
       );
     } else {
       state = UserRegisterStateStatus.formInvalid;
+      return false;
     }
+    return true;
   }
 
 //metódo de registro

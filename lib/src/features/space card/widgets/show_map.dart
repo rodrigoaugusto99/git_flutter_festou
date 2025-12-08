@@ -34,13 +34,13 @@ class _ShowMapState extends State<ShowMap> {
 
   @override
   void initState() {
-    super.initState();
     loadLocalInfo(
       cidade: widget.space.cidade,
       bairro: widget.space.bairro,
       logradouro: widget.space.logradouro,
       numero: widget.space.numero,
     );
+    super.initState();
   }
 
   Future<void> loadLocalInfo({
@@ -91,6 +91,8 @@ class _ShowMapState extends State<ShowMap> {
         setState(() {
           selectedLocation = coordinates;
         });
+        await Future.delayed(const Duration(seconds: 1));
+        setState(() {});
       } else {
         log('Nenhum resultado encontrado para o endereço: $fullAddress');
       }

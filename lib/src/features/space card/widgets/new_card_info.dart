@@ -32,6 +32,7 @@ import 'package:festou/src/services/space_service.dart';
 import 'package:festou/src/services/user_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:social_share/social_share.dart';
 import 'package:video_player/video_player.dart';
@@ -164,7 +165,7 @@ class _NewCardInfoState extends State<NewCardInfo>
         log('reservation.id: ${reservation.id}', level: 1000);
         log('reservation.hasReview: ${reservation.hasReview}');
       }
-
+//todo; tirar as com finaldate no futuro
       return validReservations;
     } catch (e) {
       return [];
@@ -192,14 +193,26 @@ class _NewCardInfoState extends State<NewCardInfo>
   late AvaliacoesService feedbackService;
   late ReservaService reservaService;
   double averageRating = 0;
+
+  List<String> imagesCache = [];
+  List<String> videosCache = [];
   Future<void> init() async {
     if (!mounted) return;
     spaceService = SpaceService();
     feedbackService = AvaliacoesService();
     reservaService = ReservaService();
     space = await spaceService.getSpaceById(widget.spaceId);
+    if (space != null) {
+      imagesCache = List<String>.from(space!.imagesUrl);
+      videosCache = List<String>.from(space!.videosUrl);
+    }
+
     feedbacks = await feedbackService.getFeedbacksOrdered(widget.spaceId);
     feedbacks!.removeWhere((f) => f.deletedAt != null);
+    final dateFormat = DateFormat('dd/MM/yyyy');
+
+    feedbacks!.sort(
+        (a, b) => dateFormat.parse(b.date).compareTo(dateFormat.parse(a.date)));
     if (feedbacks!.isNotEmpty) {
       int totalRating = 0;
       for (final feedback in feedbacks!) {
@@ -251,6 +264,8 @@ class _NewCardInfoState extends State<NewCardInfo>
       controllers.add(controller);
     }
     await spaceService.setSpaceListener(widget.spaceId, (newSpace) {
+      imagesCache = List<String>.from(newSpace.imagesUrl);
+      videosCache = List<String>.from(newSpace.videosUrl);
       if (!mounted) return;
       setState(() {
         space = newSpace;
@@ -270,6 +285,10 @@ class _NewCardInfoState extends State<NewCardInfo>
       // feedbacks!.removeWhere((f) => f.deletedAt != null);
       feedbacks = await feedbackService.getFeedbacksOrdered(widget.spaceId);
       feedbacks!.removeWhere((f) => f.deletedAt != null);
+      final dateFormat = DateFormat('dd/MM/yyyy');
+
+      feedbacks!.sort((a, b) =>
+          dateFormat.parse(b.date).compareTo(dateFormat.parse(a.date)));
       setState(() {});
       log('feedbacks aai papi');
       for (var feedback in feedbacks!) {
@@ -362,11 +381,22 @@ class _NewCardInfoState extends State<NewCardInfo>
 
       saveChanges();
     }
+
+    space!.imagesUrl = List<String>.from(imagesCache);
+    space!.videosUrl = List<String>.from(videosCache);
+    networkImagesToDelete.clear();
+    networkVideosToDelete.clear();
+    imageFilesToDownload.clear();
+    videosToDownload.clear();
+
     if (!mounted) return;
     setState(() {
       isEditing = !isEditing;
     });
   }
+
+  Map<String, int> stringAndIndexMap = {};
+  Map<String, int> videoStringAndIndexMap = {};
 
   List<String> networkImagesToDelete = [];
   List<String> networkVideosToDelete = [];
@@ -515,6 +545,9 @@ class _NewCardInfoState extends State<NewCardInfo>
       if (selectedDate.isAfter(now) && !canceledDate) {
         Messages.showError(
             'Você não pode excluir esse espaço pois há reservas', context);
+        setState(() {
+          _isLoading = false;
+        });
         return;
       }
     }
@@ -1078,8 +1111,6 @@ class _NewCardInfoState extends State<NewCardInfo>
                       ),
                       if (isEditing)
                         decContainer(
-                          radius: 10,
-                          height: 90,
                           color: Colors.black.withOpacity(0.5),
                         ),
                       if (isEditing)
@@ -1089,12 +1120,16 @@ class _NewCardInfoState extends State<NewCardInfo>
                             setState(() {
                               networkImagesToDelete
                                   .add(space!.imagesUrl[index].toString());
+
+                              stringAndIndexMap.addEntries(({
+                                space!.imagesUrl[index]: index,
+                              }).entries);
                               space!.imagesUrl.removeAt(index);
                             });
                           },
                           child: Image.asset(
                             'lib/assets/images/icon_lixeira.png',
-                            width: 40,
+                            scale: 1.5,
                           ),
                         ),
                     ],
@@ -1121,13 +1156,16 @@ class _NewCardInfoState extends State<NewCardInfo>
                         GestureDetector(
                           onTap: () {
                             if (!mounted) return;
+                            // imageFilesStringAndIndexMap.addEntries(({
+                            //     space!.imagesUrl[index]: index,
+                            //   }).entries);
                             setState(() {
                               imageFilesToDownload.removeAt(localIndex);
                             });
                           },
                           child: Image.asset(
                             'lib/assets/images/icon_lixeira.png',
-                            width: 40,
+                            scale: 1.5,
                           ),
                         ),
                     ],
@@ -1141,7 +1179,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                     onTap: pickImage,
                     child: Image.asset(
                       'lib/assets/images/imagem_mais.png',
-                      width: 25,
+                      scale: 1.5,
                     ),
                   );
                 } else {
@@ -1213,6 +1251,9 @@ class _NewCardInfoState extends State<NewCardInfo>
                             setState(() {
                               networkVideosToDelete
                                   .add(space!.videosUrl[index]);
+                              videoStringAndIndexMap.addEntries(({
+                                space!.videosUrl[index]: index,
+                              }).entries);
                               space!.videosUrl.removeAt(index);
                               controllers[index].dispose();
                               controllers.removeAt(index);
@@ -1220,7 +1261,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                           },
                           child: Image.asset(
                             'lib/assets/images/icon_lixeira.png',
-                            width: 40,
+                            scale: 1.5,
                           ),
                         ),
                     ],
@@ -1248,12 +1289,13 @@ class _NewCardInfoState extends State<NewCardInfo>
                             setState(() {
                               videosToDownload.removeAt(localIndex);
                               localControllers[localIndex].dispose();
+
                               localControllers.removeAt(localIndex);
                             });
                           },
                           child: Image.asset(
                             'lib/assets/images/icon_lixeira.png',
-                            width: 40,
+                            scale: 1.5,
                           ),
                         ),
                     ],
@@ -1267,7 +1309,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                     onTap: pickVideo,
                     child: Image.asset(
                       'lib/assets/images/imagem_mais.png',
-                      width: 25,
+                      scale: 1.5,
                     ),
                   );
                 } else {
@@ -1294,6 +1336,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                   children: [
                     Expanded(
                       child: ListView.builder(
+                        clipBehavior: Clip.none,
                         scrollDirection: Axis.horizontal,
                         itemCount: space!.selectedServices.length,
                         itemBuilder: (context, index) {

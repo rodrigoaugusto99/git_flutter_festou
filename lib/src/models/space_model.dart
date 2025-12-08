@@ -65,8 +65,8 @@ class SpaceModel {
   final String numComments;
   final String locadorName;
   final String descricao;
-  final List<String> imagesUrl;
-  final List<String> videosUrl;
+  List<String> imagesUrl;
+  List<String> videosUrl;
 
   final double latitude;
   final double longitude;

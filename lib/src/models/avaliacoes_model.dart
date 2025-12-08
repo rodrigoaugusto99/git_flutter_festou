@@ -1,4 +1,8 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:festou/src/models/space_model.dart';
 
 class AvaliacoesModel {
@@ -11,8 +15,8 @@ class AvaliacoesModel {
   final String userName;
   final String date;
   final String avatar;
-  final List<String> likes;
-  final List<String> dislikes;
+  List<String> likes;
+  List<String> dislikes;
   final SpaceModel? space;
   final Timestamp? deletedAt;
 
@@ -59,6 +63,23 @@ class AvaliacoesModel {
       likes: likes ?? this.likes,
       dislikes: dislikes ?? this.dislikes,
       deletedAt: deletedAt ?? this.deletedAt,
+    );
+  }
+
+  factory AvaliacoesModel.fromMap(Map<String, dynamic> map) {
+    return AvaliacoesModel(
+      id: map['id'] as String,
+      rating: map['rating'] as int,
+      content: map['content'] as String,
+      userId: map['user_id'] as String,
+      spaceId: map['space_id'] as String,
+      reservationId: map['reservationId'] as String,
+      userName: map['user_name'] as String,
+      date: map['date'] as String,
+      avatar: map['avatar'] as String,
+      likes: List<String>.from((map['likes'] as List<dynamic>)),
+      dislikes: List<String>.from((map['dislikes'] as List<dynamic>)),
+      deletedAt: map['deletedAt'],
     );
   }
 }

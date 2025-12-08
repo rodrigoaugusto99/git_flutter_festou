@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:festou/src/test.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +42,25 @@ Future<void> setupMain() async {
 
 Future<void> main() async {
   await setupMain();
+  // List<String> collections = [
+  //   'spaces',
+  //   'reservations',
+  //   'messages',
+  //   'tickets',
+  //   'ticket_counters',
+  //   'questions',
+  //   'answers',
+  //   'users',
+  //   'notifications',
+  //   'posts',
+  //   'banners',
+  //   'cupons'
+  // ];
+  // for (var collection in collections) {
+  //   log('Gerando schema para a coleção: $collection');
+  //   gerarSchema(collection);
+  // }
+  // return;
   runApp(const ProviderScope(child: MyApp()));
 }
 
