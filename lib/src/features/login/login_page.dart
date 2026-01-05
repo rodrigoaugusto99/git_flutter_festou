@@ -5,6 +5,7 @@ import 'package:festou/src/core/ui/helpers/messages.dart';
 import 'package:festou/src/features/login/login_state.dart';
 import 'package:festou/src/features/login/login_vm.dart';
 import 'package:glassmorphism/glassmorphism.dart';
+import 'package:festou/src/helpers/keys.dart';
 import 'forgot_password_page.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -216,6 +217,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               borderRadius: BorderRadius.circular(50.0),
                             ),
                             child: TextFormField(
+                              key: Keys.kLoginViewEmail,
                               style: const TextStyle(fontSize: 14.0),
                               controller: emailEC,
                               onTapOutside: (_) =>
@@ -241,6 +243,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               borderRadius: BorderRadius.circular(50.0),
                             ),
                             child: TextFormField(
+                              key: Keys.kLoginViewPassword,
                               style: const TextStyle(fontSize: 14.0),
                               obscureText: !isVisible,
                               controller: passwordEC,
@@ -301,6 +304,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             height: screenHeight * 0.022,
                           ),
                           InkWell(
+                            key: Keys.kLoginViewButton,
                             onTap: () {
                               bool isEmailValid = validateEmail(emailEC.text);
                               if (!isEmailValid) return;

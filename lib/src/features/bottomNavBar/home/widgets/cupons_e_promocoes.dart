@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/app_cached_image.dart';
 import 'package:festou/src/models/banner_model.dart';
 import 'package:flutter/material.dart';
 
@@ -54,10 +55,15 @@ class _CuponsEPromocoesState extends State<CuponsEPromocoes> {
       children: [
         CarouselSlider(
           items: banners
-              .map((banner) => Image.network(
-                    banner.photoUrl,
-                    fit: BoxFit.cover,
-                  ))
+              .map(
+                (banner) => appCachedNetWorkImage(
+                  imageUrl: banner.photoUrl,
+                ),
+                // Image.network(
+                //   banner.photoUrl,
+                //   fit: BoxFit.cover,
+                // ),
+              )
               .toList(),
           options: CarouselOptions(
             autoPlay: true,

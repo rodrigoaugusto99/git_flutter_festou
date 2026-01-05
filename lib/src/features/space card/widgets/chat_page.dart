@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/app_cached_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -384,8 +385,9 @@ class _ChatPageState extends State<ChatPage> {
                                               EdgeInsetsDirectional.zero,
                                           content: Hero(
                                             tag: 'x',
-                                            child: Image.network(
-                                              avatarUrl,
+                                            child: appCachedNetWorkImage(
+                                              imageUrl: avatarUrl,
+                                              // avatarUrl,
                                               fit: BoxFit.cover,
                                             ),
                                           )),
@@ -400,8 +402,8 @@ class _ChatPageState extends State<ChatPage> {
                           child: ClipOval(
                             child: Hero(
                               tag: 'x',
-                              child: Image.network(
-                                avatarUrl,
+                              child: appCachedNetWorkImage(
+                                imageUrl: avatarUrl,
                                 fit: BoxFit.cover,
                                 width: 40,
                                 height: 40,

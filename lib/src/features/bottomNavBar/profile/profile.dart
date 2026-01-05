@@ -1,3 +1,4 @@
+import 'package:festou/src/features/bottomNavBar/home/widgets/app_cached_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:festou/src/features/bottomNavBar/bottom_navbar_locatario_page.dart';
@@ -511,8 +512,9 @@ class _ProfileState extends ConsumerState<Profile> {
                                         title: const Text('Minha foto'),
                                       ),
                                       body: Center(
-                                        child: Image.network(
-                                            updatedUserModel.avatarUrl),
+                                        child: appCachedNetWorkImage(
+                                          imageUrl: updatedUserModel.avatarUrl,
+                                        ),
                                       ),
                                     );
                                   },

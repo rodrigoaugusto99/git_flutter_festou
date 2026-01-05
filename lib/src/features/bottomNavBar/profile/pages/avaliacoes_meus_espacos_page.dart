@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:festou/src/features/bottomNavBar/home/widgets/app_cached_image.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/meus%20feedbacks/minhas_avaliacoes_widgets.dart';
 import 'package:festou/src/helpers/helpers.dart';
@@ -247,8 +248,8 @@ class SpaceWidget extends StatelessWidget {
               height: screenHeight(context) * 0.09,
               child: Stack(
                 children: [
-                  Image.network(
-                    space.imagesUrl.isNotEmpty
+                  appCachedNetWorkImage(
+                    imageUrl: space.imagesUrl.isNotEmpty
                         ? space.imagesUrl[0]
                         : 'URL de uma imagem padrão ou vazia',
                     width: screenWidth(context) * 0.7,

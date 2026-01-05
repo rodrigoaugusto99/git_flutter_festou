@@ -1,3 +1,4 @@
+import 'package:festou/src/features/bottomNavBar/home/widgets/app_cached_image.dart';
 import 'package:festou/src/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/features/space%20card/widgets/new_card_info.dart';
@@ -38,10 +39,11 @@ class _EachLastSeenState extends State<EachLastSeen> {
                 child: Stack(
                   children: [
                     if (widget.space.imagesUrl.isNotEmpty) ...[
-                      Image.network(
+                      appCachedNetWorkImage(
+                        imageUrl: widget.space.imagesUrl[0],
                         width: 250,
                         height: 150,
-                        widget.space.imagesUrl[0],
+                        // widget.space.imagesUrl[0],
                         fit: BoxFit.cover,
                       ),
                     ] else ...[

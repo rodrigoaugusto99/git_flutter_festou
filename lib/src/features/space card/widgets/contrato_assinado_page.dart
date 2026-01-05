@@ -1,3 +1,4 @@
+import 'package:festou/src/helpers/keys.dart';
 import 'package:festou/src/models/card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -95,6 +96,7 @@ class _ContratoAssinadoPageState extends State<ContratoAssinadoPage> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: GestureDetector(
+          key: Keys.kContinuarReservaButton,
           onTap: () {
             if (widget.summaryData == null) {
               Navigator.of(context).pop();

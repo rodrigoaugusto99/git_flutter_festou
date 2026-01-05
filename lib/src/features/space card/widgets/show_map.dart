@@ -74,28 +74,24 @@ class _ShowMapState extends State<ShowMap> {
       }
 
       // Obter coordenadas geográficas a partir do endereço completo
-      List<Location> locations = await locationFromAddress(fullAddress);
+      // List<Location> locations = await locationFromAddress(fullAddress);
 
-      if (locations.isNotEmpty) {
-        LatLng coordinates = LatLng(
-          locations.first.latitude,
-          locations.first.longitude,
-        );
+      LatLng coordinates = LatLng(
+        widget.space.latitude,
+        widget.space.longitude,
+      );
 
-        // Atualizar a posição da câmera do GoogleMap
-        mapController?.animateCamera(
-          CameraUpdate.newLatLng(coordinates),
-        );
+      // Atualizar a posição da câmera do GoogleMap
+      mapController?.animateCamera(
+        CameraUpdate.newLatLng(coordinates),
+      );
 
-        // Definir a variável selectedLocation
-        setState(() {
-          selectedLocation = coordinates;
-        });
-        await Future.delayed(const Duration(seconds: 1));
-        setState(() {});
-      } else {
-        log('Nenhum resultado encontrado para o endereço: $fullAddress');
-      }
+      // Definir a variável selectedLocation
+      setState(() {
+        selectedLocation = coordinates;
+      });
+      await Future.delayed(const Duration(seconds: 1));
+      setState(() {});
     } catch (e) {
       // Lidar com erros, como endereço inválido ou problemas de geocodificação
       log('Erro ao obter coordenadas a partir do endereço: $e');

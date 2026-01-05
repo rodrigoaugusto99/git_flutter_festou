@@ -11,7 +11,7 @@ void main() {
       config: const PatrolTesterConfig(
           visibleTimeout: Duration(seconds: 30),
           settleTimeout: Duration(seconds: 30)),
-      'should edit task correctly', ($) async {
+      'should create space', ($) async {
     await setupMain();
     final userId = await createUserAuth();
     await createUserOnFirestore(userId!);
@@ -61,7 +61,8 @@ void main() {
     await $(Keys.kLocadorViewRegisterSpace).tap();
     await $(Keys.kFirstScreenButton).tap();
     await $(Keys.kChipWidget).tap();
-    await $(Keys.kSecondScreenButton).tap();
+    await Future.delayed(const Duration(seconds: 1));
+    await $(Keys.k5creenButton).tap(); //todo: botar no codigo la
 
     await $(Keys.kTextFormField).waitUntilExists();
     await $(Keys.kTextFormField).at(0).enterText('22221000');

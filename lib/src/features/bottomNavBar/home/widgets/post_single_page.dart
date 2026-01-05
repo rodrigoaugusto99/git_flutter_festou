@@ -1,3 +1,4 @@
+import 'package:festou/src/features/bottomNavBar/home/widgets/app_cached_image.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/models/post_model.dart';
 import 'package:festou/src/services/post_service.dart';
@@ -82,8 +83,8 @@ class _PostSinglePageState extends State<PostSinglePage> {
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(16),
-                    child: Image.network(
-                      widget.postModel.imagens.first,
+                    child: appCachedNetWorkImage(
+                      imageUrl: widget.postModel.imagens.first,
                       width: double.infinity,
                       height: 250,
                       fit: BoxFit.cover,
@@ -174,8 +175,9 @@ class _PostSinglePageState extends State<PostSinglePage> {
                             tag: widget.postModel.imagens[index],
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
-                              child: Image.network(
-                                widget.postModel.imagens[index],
+                              child: appCachedNetWorkImage(
+                                imageUrl: widget.postModel.imagens[index],
+                                //widget.postModel.imagens[index],
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -266,8 +268,8 @@ class _PhotoDetailScreenState extends State<PhotoDetailScreen> {
             height: MediaQuery.of(context).size.height / 2,
             child: Hero(
               tag: widget.photoUrls[currentIndex],
-              child: Image.network(
-                widget.photoUrls[currentIndex],
+              child: appCachedNetWorkImage(
+                imageUrl: widget.photoUrls[currentIndex],
                 fit: BoxFit.cover,
               ),
             ),

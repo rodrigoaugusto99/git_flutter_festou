@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/app_cached_image.dart';
 import 'package:festou/src/helpers/helpers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -431,8 +432,8 @@ class _CentralDeAjudaState extends State<CentralDeAjuda>
                               },
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
-                                child: Image.network(
-                                  imageUrl,
+                                child: appCachedNetWorkImage(
+                                  imageUrl: imageUrl,
                                   width: 55,
                                   height: 55,
                                   fit: BoxFit.cover,

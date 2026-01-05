@@ -14,13 +14,48 @@ class Keys {
     return Key("select_day$index");
   }
 
-  //login
+  //loginI
   static Key kLoginViewEmail = const Key("kLoginViewEmail");
   static Key kLoginViewPassword = const Key("kLoginViewPassword");
   static Key kLoginViewButton = const Key("kLoginViewButton");
 
   //home
   static Key kHomeViewProfile = const Key("kHomeViewProfile");
+  static Key kHomeScaffold = const Key("kHomeScaffold");
+  static Key kSpaceTypeCasamento = const Key("kSpaceTypeCasamento");
+
+  //space card
+  static Key kSpaceCard = const Key("kSpaceCard");
+  static Key kAlugarButton = const Key("kAlugarButton");
+
+  //calendar page
+  static Key kCalendarDay(int day) {
+    return Key("kCalendarDay_$day");
+  }
+
+  static Key kCheckInTime(int hour) {
+    return Key("kCheckInTime_$hour");
+  }
+
+  static Key kCheckOutTime(int hour) {
+    return Key("kCheckOutTime_$hour");
+  }
+
+  static Key kContinuarButton = const Key("kContinuarButton");
+
+  //resumo reserva page
+  static Key kTrocarMetodoPagamento = const Key("kTrocarMetodoPagamento");
+  static Key kLerAssinarContrato = const Key("kLerAssinarContrato");
+  static Key kReservarButton = const Key("kReservarButton");
+
+  //pagamentos page
+  static Key kPixButton = const Key("kPixButton");
+
+  //contrato page
+  static Key kAssinarContratoButton = const Key("kAssinarContratoButton");
+
+  //contrato assinado page
+  static Key kContinuarReservaButton = const Key("kContinuarReservaButton");
 
   //perfil
   static Key kProfileViewLocador = const Key("kProfileViewLocador");

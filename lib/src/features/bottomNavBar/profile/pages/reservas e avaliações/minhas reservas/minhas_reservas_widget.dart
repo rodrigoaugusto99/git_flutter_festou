@@ -1,3 +1,4 @@
+import 'package:festou/src/features/bottomNavBar/home/widgets/app_cached_image.dart';
 import 'package:festou/src/features/space%20card/widgets/chat_page.dart';
 import 'package:festou/src/features/space%20card/widgets/contrato_assinado_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -282,19 +283,23 @@ class _MinhasReservasTileState extends State<MinhasReservasTile> {
                                   0, 0, 0, 1, 0, // Alpha
                                 ],
                               ),
-                              child: Image.network(
-                                imageUrl,
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                                height: double.infinity,
+                              child: appCachedNetWorkImage(
+                                imageUrl: imageUrl,
                               ),
+                              //  Image.network(
+                              //   imageUrl,
+                              //   fit: BoxFit.cover,
+                              //   width: double.infinity,
+                              //   height: double.infinity,
+                              // ),
                             ),
                           )
                           .toList()
                       : widget.spaceShowing.imagesUrl
                           .map(
-                            (imageUrl) => Image.network(
-                              imageUrl,
+                            (imageUrl) => appCachedNetWorkImage(
+                              imageUrl: imageUrl,
+                              // imageUrl,
                               fit: BoxFit.cover,
                               width: double.infinity,
                               height: double.infinity,

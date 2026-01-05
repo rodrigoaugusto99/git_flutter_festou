@@ -1,3 +1,4 @@
+import 'package:festou/src/features/bottomNavBar/home/widgets/app_cached_image.dart';
 import 'package:flutter/material.dart';
 
 class ImageGrid extends StatelessWidget {
@@ -15,8 +16,9 @@ class ImageGrid extends StatelessWidget {
       ),
       delegate: SliverChildBuilderDelegate(
         (BuildContext context, int index) {
-          return Image.network(
-            imagesUrl[index],
+          return appCachedNetWorkImage(
+            imageUrl: imagesUrl[index],
+            // imagesUrl[index],
             fit: BoxFit.cover,
           );
         },

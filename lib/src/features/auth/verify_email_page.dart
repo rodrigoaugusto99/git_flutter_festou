@@ -132,6 +132,9 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   Widget build(BuildContext context) {
     if (isTest) {
       // return const BottomNavBarLocatarioPage();
+      if (navToLocatarioTest) {
+        return const BottomNavBarLocatarioPage();
+      }
       return const Profile();
     }
     if (isEmailVerified) {

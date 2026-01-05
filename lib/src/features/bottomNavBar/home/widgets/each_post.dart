@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:festou/src/features/bottomNavBar/home/widgets/app_cached_image.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/models/post_model.dart';
 import 'package:shimmer/shimmer.dart';
@@ -70,8 +71,8 @@ class _EachPostState extends State<EachPost> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      widget.post.coverPhoto,
+                    child: appCachedNetWorkImage(
+                      imageUrl: widget.post.coverPhoto,
                       fit: BoxFit.cover,
                     ),
                   ),

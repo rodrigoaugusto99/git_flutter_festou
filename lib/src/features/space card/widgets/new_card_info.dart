@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/app_cached_image.dart';
 import 'package:festou/src/features/bottomNavBar/home/widgets/post_single_page.dart';
 import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/meus%20feedbacks/minhas_avaliacoes_widgets.dart';
 import 'package:festou/src/features/loading_indicator.dart';
@@ -23,6 +24,7 @@ import 'package:festou/src/features/show%20spaces/space%20feedbacks%20mvvm/space
 import 'package:festou/src/features/space%20card/widgets/utils.dart';
 import 'package:festou/src/features/widgets/custom_textformfield.dart';
 import 'package:festou/src/helpers/helpers.dart';
+import 'package:festou/src/helpers/keys.dart';
 import 'package:festou/src/models/avaliacoes_model.dart';
 import 'package:festou/src/models/reservation_model.dart';
 import 'package:festou/src/models/space_model.dart';
@@ -1101,9 +1103,9 @@ class _NewCardInfoState extends State<NewCardInfo>
                           },
                           child: Hero(
                             tag: space!.imagesUrl[index],
-                            child: Image.network(
+                            child: appCachedNetWorkImage(
                               height: 90,
-                              space!.imagesUrl[index].toString(),
+                              imageUrl: space!.imagesUrl[index].toString(),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -1672,8 +1674,8 @@ class _NewCardInfoState extends State<NewCardInfo>
                           children: [
                             CarouselSlider(
                               items: space!.imagesUrl
-                                  .map((imageUrl) => Image.network(
-                                        imageUrl.toString(),
+                                  .map((imageUrl) => appCachedNetWorkImage(
+                                        imageUrl: imageUrl.toString(),
                                         fit: BoxFit.cover,
                                       ))
                                   .toList(),
@@ -1766,11 +1768,14 @@ class _NewCardInfoState extends State<NewCardInfo>
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                space!.titulo,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                              Expanded(
+                                child: Text(
+                                  space!.titulo,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    //overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
                               ),
                               const SizedBox(
@@ -1796,7 +1801,8 @@ class _NewCardInfoState extends State<NewCardInfo>
                                   ),
                                 ),
                               ),
-                              const Spacer(),
+                              //const Spacer(),
+                              const SizedBox(width: 10),
                               if (!isEditing)
                                 Column(
                                   children: [
@@ -2219,6 +2225,7 @@ class _NewCardInfoState extends State<NewCardInfo>
                             ),
                           )
                         : GestureDetector(
+                            key: Keys.kAlugarButton,
                             onTap: () async {
                               if (isMySpace) return;
                               UserModel? currentUser =

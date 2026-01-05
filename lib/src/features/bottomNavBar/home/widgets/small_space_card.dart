@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/app_cached_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:festou/src/core/providers/application_providers.dart';
@@ -65,14 +66,19 @@ class _SmallSpaceCardState extends ConsumerState<SmallSpaceCard> {
                   children: [
                     CarouselSlider(
                       items: [
-                        Image.network(
-                          widget.space.imagesUrl.isNotEmpty
+                        appCachedNetWorkImage(
+                          imageUrl: widget.space.imagesUrl.isNotEmpty
                               ? widget.space.imagesUrl[0]
                               : 'URL de uma imagem padrão ou vazia',
-                          width: double.infinity,
-                          height: double.infinity,
-                          fit: BoxFit.fill,
                         ),
+                        // Image.network(
+                        //   widget.space.imagesUrl.isNotEmpty
+                        //       ? widget.space.imagesUrl[0]
+                        //       : 'URL de uma imagem padrão ou vazia',
+                        //   width: double.infinity,
+                        //   height: double.infinity,
+                        //   fit: BoxFit.fill,
+                        // ),
                       ],
                       options: CarouselOptions(
                         autoPlay: true,

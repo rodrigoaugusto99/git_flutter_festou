@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:festou/src/features/bottomNavBar/profile/pages/login%20e%20seguran%C3%A7a/widget/patternedButton.dart';
 import 'package:festou/src/features/bottomNavBar/profile/pages/pagamentos/new_card_view.dart';
 import 'package:festou/src/features/space%20card/widgets/pix_page.dart';
+import 'package:festou/src/helpers/keys.dart';
 import 'package:festou/src/models/card_model.dart';
 import 'package:festou/src/services/encryption_service.dart';
 
@@ -153,6 +154,7 @@ class _PagamentosState extends State<Pagamentos>
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
               PatternedButton(
+                key: Keys.kPixButton,
                 widget: Image.asset(
                   'lib/assets/images/logo_pix.png',
                   width: 26,

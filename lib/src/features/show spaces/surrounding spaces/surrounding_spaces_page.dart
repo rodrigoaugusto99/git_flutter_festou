@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/app_cached_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -401,8 +402,9 @@ p decidir o isFavorited*/
                       borderRadius: BorderRadius.circular(16.0),
                       child: CarouselSlider(
                         items: spaceShowing!.imagesUrl
-                            .map((imageUrl) => Image.network(
-                                  imageUrl,
+                            .map((imageUrl) => appCachedNetWorkImage(
+                                  imageUrl: imageUrl,
+                                  // imageUrl,
                                   fit: BoxFit.cover,
                                 ))
                             .toList(),

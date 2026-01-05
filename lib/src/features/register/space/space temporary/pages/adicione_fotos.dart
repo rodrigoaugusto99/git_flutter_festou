@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:festou/src/helpers/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:festou/src/features/register/space/space%20temporary/pages/new_space_register_vm.dart';
@@ -372,7 +373,7 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
           children: [
             GestureDetector(
               key: Keys.k5creenButton,
-              onTap: _canProceed
+              onTap: isTest
                   ? () {
                       Navigator.push(
                         context,
@@ -381,7 +382,16 @@ class _AdicioneFotosState extends ConsumerState<AdicioneFotos> {
                         ),
                       );
                     }
-                  : null,
+                  : _canProceed
+                      ? () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Titulo(),
+                            ),
+                          );
+                        }
+                      : null,
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 9),

@@ -6,6 +6,7 @@ import 'package:festou/src/core/ui/helpers/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/features/space%20card/widgets/resumo_reserva_page.dart';
 import 'package:festou/src/features/space%20card/widgets/summary_data.dart';
+import 'package:festou/src/helpers/keys.dart';
 import 'package:festou/src/models/reservation_model.dart';
 import 'package:festou/src/models/space_model.dart';
 import 'package:festou/src/services/reserva_service.dart';
@@ -313,6 +314,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     style: TextStyle(fontSize: 12, color: Colors.red),
                   ),
                 GestureDetector(
+                  key: Keys.kCheckInTime(hour),
                   onTap: isUnavailable
                       ? null
                       : () => onSelectTime(hour, isCheckIn: true),
@@ -399,6 +401,7 @@ class _CalendarPageState extends State<CalendarPage> {
                               : const SizedBox.shrink()),
                     ),
                     GestureDetector(
+                      key: Keys.kCheckOutTime(hour),
                       onTap: isUnavailable
                           ? null
                           : () => onSelectTime(hour, isCheckIn: false),
@@ -577,6 +580,7 @@ class _CalendarPageState extends State<CalendarPage> {
           : Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
               child: GestureDetector(
+                key: Keys.kContinuarButton,
                 onTap: () {
                   if (_selectedDate == null ||
                       checkInTime == null ||

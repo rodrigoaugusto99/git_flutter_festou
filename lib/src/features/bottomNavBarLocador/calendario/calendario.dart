@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:festou/src/core/ui/helpers/messages.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/app_cached_image.dart';
 import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/minhas%20reservas/cancel_reservation_dialog.dart';
 import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/minhas%20reservas/minhas_reservas_widget.dart';
 import 'package:festou/src/features/loading_indicator.dart';
@@ -337,14 +338,12 @@ class SpaceWidget extends StatelessWidget {
               height: screenHeight(context) * 0.09,
               child: Stack(
                 children: [
-                  Image.network(
-                    space.imagesUrl.isNotEmpty
+                  appCachedNetWorkImage(
+                    imageUrl: space.imagesUrl.isNotEmpty
                         ? space.imagesUrl[0]
                         : 'URL de uma imagem padrão ou vazia',
                     width: screenWidth(context) * 0.7,
                     height: screenHeight(context) * 0.09,
-                    // color: Colors.green,
-
                     fit: BoxFit.cover,
                   ),
                   Positioned(

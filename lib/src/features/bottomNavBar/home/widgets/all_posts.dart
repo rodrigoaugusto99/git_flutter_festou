@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/app_cached_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/features/bottomNavBar/home/widgets/post_single_page.dart';
@@ -349,8 +350,8 @@ class AllPostsWidget extends StatelessWidget {
             children: [
               // Imagem de fundo do post
               Positioned.fill(
-                child: Image.network(
-                  postModel.coverPhoto,
+                child: appCachedNetWorkImage(
+                  imageUrl: postModel.coverPhoto,
                   fit: BoxFit.cover,
                 ),
               ),

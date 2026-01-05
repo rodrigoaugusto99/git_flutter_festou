@@ -102,6 +102,7 @@ dependencies:
   integration_test:
     sdk: flutter
   flutter_native_splash: ^2.4.1
+  skeletonizer: ^1.4.3
 
 dev_dependencies:
   flutter_test:

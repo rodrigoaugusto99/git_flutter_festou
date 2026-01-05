@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/features/show%20spaces/spaces%20by%20type/spaces_by_type_page.dart';
+import 'package:festou/src/helpers/keys.dart';
 
 class MenuSpaceTypes extends StatefulWidget {
   const MenuSpaceTypes({super.key});
@@ -22,8 +23,8 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
         scrollDirection: Axis.horizontal,
         children: [
           SizedBox(width: x * 0.03),
-          SizedBox(
-            width: 170,
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 200),
             child: ElevatedButton(
               /*onPressed: () => Navigator.of(context)
                   .pushNamed('/spaces/spaces_by_types', arguments: ['Kids']),*/
@@ -43,7 +44,7 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                   ),
                   elevation: 0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Image.asset(
                     'lib/assets/images/imagem_kids.png',
@@ -59,9 +60,10 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
             ),
           ),
           SizedBox(width: x * 0.025),
-          SizedBox(
-            width: 185,
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 170),
             child: ElevatedButton(
+              key: Keys.kSpaceTypeCasamento,
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) {
@@ -78,7 +80,7 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                   ),
                   elevation: 0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Image.asset(
                     'lib/assets/images/imagem_buque.png',
@@ -94,8 +96,8 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
             ),
           ),
           SizedBox(width: x * 0.025),
-          SizedBox(
-            width: 185,
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 170),
             child: ElevatedButton(
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
@@ -129,8 +131,8 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
             ),
           ),
           SizedBox(width: x * 0.025),
-          SizedBox(
-            width: 170,
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 170),
             child: ElevatedButton(
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
@@ -164,8 +166,8 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
             ),
           ),
           SizedBox(width: x * 0.025),
-          SizedBox(
-            width: 170,
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 170),
             child: ElevatedButton(
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
@@ -202,8 +204,8 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
             ),
           ),
           SizedBox(width: x * 0.025),
-          SizedBox(
-            width: 170,
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 170),
             child: ElevatedButton(
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
@@ -237,8 +239,8 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
             ),
           ),
           SizedBox(width: x * 0.025),
-          SizedBox(
-            width: 170,
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 170),
             child: ElevatedButton(
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(

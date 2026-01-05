@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:festou/src/features/bottomNavBar/home/widgets/app_cached_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:festou/src/core/providers/application_providers.dart';
 import 'package:festou/src/features/space%20card/widgets/new_card_info.dart';
 import 'package:festou/src/models/space_model.dart';
 import 'package:festou/src/services/user_service.dart';
+import 'package:festou/src/helpers/keys.dart';
 import 'package:lottie/lottie.dart';
 
 class NewSpaceCard extends ConsumerStatefulWidget {
@@ -63,8 +65,9 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
                 borderRadius: BorderRadius.circular(16.0),
                 child: CarouselSlider(
                   items: widget.space.imagesUrl
-                      .map((imageUrl) => Image.network(
-                            imageUrl,
+                      .map((imageUrl) => appCachedNetWorkImage(
+                            imageUrl: imageUrl,
+                            // imageUrl,
                             fit: BoxFit.cover,
                           ))
                       .toList(),
@@ -216,14 +219,17 @@ class _NewSpaceCardState extends ConsumerState<NewSpaceCard> {
 
     final userService = UserService();
     return GestureDetector(
+      key: Keys.kSpaceCard,
       onTap: () {
+        print('onTap called');
         userService.updateLastSeen(widget.space.spaceId);
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => NewCardInfo(
-                spaceId: widget.space.spaceId,
-                isLocadorFlow: widget.isLocadorFlow),
+              spaceId: widget.space.spaceId,
+              isLocadorFlow: widget.isLocadorFlow,
+            ),
           ),
         );
       },

@@ -11,6 +11,7 @@ import 'package:festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_
 import 'package:festou/src/features/show%20spaces/all%20space%20mvvm/all_spaces_vm.dart';
 import 'package:festou/src/features/bottomNavBar/home/widgets/my_last_seen_spaces.dart';
 import 'package:festou/src/features/show%20spaces/surrounding%20spaces/surrounding_spaces_page.dart';
+import 'package:festou/src/helpers/keys.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   final String? previousRoute;
@@ -42,6 +43,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         return false;
       },
       child: Scaffold(
+        key: Keys.kHomeScaffold,
         extendBody: true,
         backgroundColor: Colors.white,
         body: allSpaces.when(

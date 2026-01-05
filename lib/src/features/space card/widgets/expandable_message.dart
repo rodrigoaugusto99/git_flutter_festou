@@ -1,3 +1,4 @@
+import 'package:festou/src/features/bottomNavBar/home/widgets/app_cached_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/features/space%20card/widgets/chat_bubble.dart';
@@ -121,7 +122,7 @@ class _ExpandableMessageState extends State<ExpandableMessage> {
 
   Widget _buildMessage(String message) {
     if (message.startsWith('http') && (message.endsWith('.gif'))) {
-      return Image.network(message);
+      return appCachedNetWorkImage(imageUrl: message);
     } else {
       if (message.length > maxLength) {
         return RichText(

@@ -21,6 +21,16 @@
       "request": "launch",
       "program": "integration_test/space_register_test.dart",
       "args": ["--dart-define=IS_TEST=true"]
+    },
+    {
+      "name": "space reservation",
+      "type": "dart",
+      "request": "launch",
+      "program": "integration_test/space_reservation_test.dart",
+      "args": [
+        "--dart-define=IS_TEST=true",
+        "--dart-define=NAV_TO_LOCATARIO_TEST=true"
+      ]
     }
   ]
 }

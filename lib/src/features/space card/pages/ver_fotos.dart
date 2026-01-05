@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:festou/src/features/bottomNavBar/home/widgets/app_cached_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:festou/src/models/space_model.dart';
@@ -66,7 +67,8 @@ class _VerFotosState extends State<VerFotos> {
             if (imageUrls.isNotEmpty)
               Column(
                 children: imageUrls
-                    .map((imageUrl) => Image.network(imageUrl))
+                    .map(
+                        (imageUrl) => appCachedNetWorkImage(imageUrl: imageUrl))
                     .toList(),
               )
             else

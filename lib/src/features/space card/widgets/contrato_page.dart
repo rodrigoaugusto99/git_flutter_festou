@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:festou/src/helpers/keys.dart';
 import 'package:festou/src/models/card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -144,6 +145,7 @@ class _ContratoPageState extends State<ContratoPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
+              key: Keys.kAssinarContratoButton,
               onTap: () async {
                 final response = await Navigator.push(
                   context,

@@ -6,6 +6,7 @@ import 'dart:math';
 import 'dart:developer' as dev;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'package:festou/src/features/bottomNavBar/home/widgets/app_cached_image.dart';
 import 'package:festou/src/features/bottomNavBar/profile/pages/reservas%20e%20avalia%C3%A7%C3%B5es/reservas_avaliacoes_page.dart';
 import 'package:festou/src/features/loading_indicator.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -20,6 +21,7 @@ import 'package:festou/src/features/space%20card/widgets/html_page.dart';
 import 'package:festou/src/features/space%20card/widgets/new_space_card.dart';
 import 'package:festou/src/features/space%20card/widgets/summary_data.dart';
 import 'package:festou/src/helpers/helpers.dart';
+import 'package:festou/src/helpers/keys.dart';
 import 'package:festou/src/models/card_model.dart';
 import 'package:festou/src/models/cupom_model.dart';
 import 'package:festou/src/models/reservation_model.dart';
@@ -698,8 +700,9 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                               borderRadius: BorderRadius.circular(16.0),
                               child: CarouselSlider(
                                 items: widget.summaryData.spaceModel.imagesUrl
-                                    .map((imageUrl) => Image.network(
-                                          imageUrl,
+                                    .map((imageUrl) => appCachedNetWorkImage(
+                                          imageUrl: imageUrl,
+                                          // imageUrl,
                                           fit: BoxFit.cover,
                                         ))
                                     .toList(),
@@ -1394,6 +1397,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                     ],
                     const Spacer(),
                     GestureDetector(
+                      key: Keys.kTrocarMetodoPagamento,
                       onTap: () async {
                         dynamic response = await Navigator.push(
                           context,
@@ -1442,6 +1446,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
                 height: 15,
               ),
               GestureDetector(
+                key: Keys.kLerAssinarContrato,
                 onTap: () async {
                   //todo: ver contrato assinado
                   //todo: la dentro perguntar se quer assinar de novo
@@ -1557,6 +1562,7 @@ class _ResumoReservaPageState extends State<ResumoReservaPage> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: GestureDetector(
+          key: Keys.kReservarButton,
           onTap: () async {
             //dev.log(widget.html.toString());
             dev.log(widget.summaryData.selectedFinalDate.toString());
