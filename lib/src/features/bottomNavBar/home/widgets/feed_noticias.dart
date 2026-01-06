@@ -76,7 +76,8 @@ class _FeedNoticiasState extends State<FeedNoticias> {
                   return Row(
                     children: [
                       SizedBox(
-                        height: 244,
+                        height: 250,
+                        width: 174,
                         child: InkWell(
                           onTap: () {
                             Navigator.push(
@@ -96,7 +97,7 @@ class _FeedNoticiasState extends State<FeedNoticias> {
                       ),
                       SizedBox(
                         height: 250,
-                        width: 170,
+                        width: 174,
                         child: GestureDetector(
                           onTap: () {
                             Navigator.push(
