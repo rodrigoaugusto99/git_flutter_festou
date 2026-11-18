@@ -26,6 +26,11 @@ class SpacesByTypePage extends ConsumerStatefulWidget {
 }
 
 class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
+  static const _bg = Color(0xFFFAF7FC);
+  static const _ink = Color(0xFF1C1426);
+  static const _muted = Color(0xFF8A8096);
+  static const _accent = Color(0xFF7C3AED);
+
   List<String> searchHistory = [];
   late SpacesByTypeVm spaceByTypeViewModel;
   final PagingController<DocumentSnapshot?, SpaceModel> pagingController =
@@ -197,461 +202,407 @@ class _SpacesByTypePageState extends ConsumerState<SpacesByTypePage> {
       );
     }
 
-    Map<String, String> cds = {
-      "Debutante": "lib/assets/images/background_debutante.png",
-      "Kids": "lib/assets/images/background_kids.png",
-      "Casamento": "lib/assets/images/background_casamento.png",
-      "Reunião": "lib/assets/images/background_reuniao.png",
-      "Outros": "lib/assets/images/background_outros.png",
-      "Religioso": "lib/assets/images/background_religioso.png",
-      "Chá": "lib/assets/images/background_cha.png",
+    const bgImages = <String, String>{
+      'Debutante': 'lib/assets/images/background_debutante.png',
+      'Kids': 'lib/assets/images/background_kids.png',
+      'Casamento': 'lib/assets/images/background_casamento.png',
+      'Reunião': 'lib/assets/images/background_reuniao.png',
+      'Outros': 'lib/assets/images/background_outros.png',
+      'Religioso': 'lib/assets/images/background_religioso.png',
+      'Chá': 'lib/assets/images/background_cha.png',
     };
 
-    return SafeArea(
-      top: false,
-      child: AnimatedBuilder(
-          animation: spaceByTypeViewModel,
-          builder: (context, child) {
-            return Scaffold(
-              // backgroundColor: Colors.transparent,
-              extendBodyBehindAppBar: true,
-              appBar: PreferredSize(
-                preferredSize: const Size.fromHeight(kToolbarHeight),
-                child: Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Color(0xffFFFFFF),
-                        Color.fromARGB(209, 255, 255, 255),
-                        Color.fromARGB(178, 255, 255, 255),
-                        Color.fromARGB(0, 255, 255, 255),
+    final typeName = widget.type[0];
+    final bgAsset = bgImages[typeName];
+
+    return AnimatedBuilder(
+      animation: spaceByTypeViewModel,
+      builder: (context, child) {
+        return Scaffold(
+          backgroundColor: _bg,
+          resizeToAvoidBottomInset: true,
+          body: Container(
+            decoration: BoxDecoration(
+              color: _bg,
+              image: bgAsset == null
+                  ? null
+                  : DecorationImage(
+                      image: AssetImage(bgAsset),
+                      fit: BoxFit.cover,
+                      opacity: 0.16,
+                    ),
+            ),
+            child: SafeArea(
+              child: Column(
+                children: [
+                  _buildHeader(typeName),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                    child: Row(
+                      children: [
+                        Expanded(child: _buildSearchBox()),
+                        const SizedBox(width: 10),
+                        _buildFilterButton(() => showFilterModal(context)),
                       ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
                     ),
                   ),
-                  child: AppBar(
-                    backgroundColor: Colors.transparent,
-                    actions: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 18.0),
-                        child: Container(
-                          padding: const EdgeInsets.all(7),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 2,
-                                blurRadius: 5,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: InkWell(
-                            onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const NotificacoesPage(locador: false),
-                              ),
-                            ),
-                            child: const Icon(
-                              Icons.notifications_outlined,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                    leading: Padding(
-                      padding: const EdgeInsets.only(left: 18.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 2,
-                              blurRadius: 5,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: InkWell(
-                          onTap: () => Navigator.of(context).pop(),
-                          child: const Icon(
-                            Icons.arrow_back,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
+                  Expanded(child: _buildBody()),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildHeader(String typeName) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+      child: Row(
+        children: [
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(16),
+              onTap: () => Navigator.of(context).pop(),
+              child: Ink(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: Colors.white,
+                  border: Border.all(color: const Color(0xFFE8DFF8)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _accent.withOpacity(0.07),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
                     ),
-                    centerTitle: true,
-                    title: Text(
-                      widget.type[0],
-                      style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
-                    ),
-                    elevation: 0,
-                  ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.arrow_back_rounded,
+                  color: _ink,
+                  size: 22,
                 ),
               ),
-              resizeToAvoidBottomInset: false,
-              body: DecoratedBox(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: Image.asset(
-                      cds[widget.type[0]]!,
-                    ).image,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  typeName,
+                  style: const TextStyle(
+                    fontFamily: 'RedHatDisplay',
+                    fontWeight: FontWeight.w900,
+                    fontSize: 26,
+                    letterSpacing: -0.5,
+                    color: _ink,
                   ),
                 ),
-                child: Column(
+                const SizedBox(height: 2),
+                const Text(
+                  'Espaços disponíveis nesta categoria',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13,
+                    color: _muted,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(16),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const NotificacoesPage(locador: false),
+                  ),
+                );
+              },
+              child: Ink(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xFFF7F1FF),
+                      Color(0xFFEFE4FF),
+                    ],
+                  ),
+                  border: Border.all(color: const Color(0xFFE0D0FF)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF6100FF).withOpacity(0.08),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Stack(
+                  alignment: Alignment.center,
                   children: [
-                    const SizedBox(
-                      height: 120,
+                    const Icon(
+                      Icons.notifications_rounded,
+                      color: Color(0xFF6100FF),
+                      size: 24,
                     ),
-                    Row(
-                      children: [
-                        _buildSearchBox(x, y),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 15),
-                          child: GestureDetector(
-                            onTap: () => showFilterModal(context),
-                            child: Container(
-                              width: 35,
-                              height: 35,
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Color(0xff9747FF),
-                                    Color(0xff44300b1),
-                                  ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                ),
-                              ),
-                              child: Image.asset(
-                                  'lib/assets/images/icon_filtro.png'),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    if ((!spaceByTypeViewModel.isLoading &&
-                        spaceByTypeViewModel.getSpaces != null &&
-                        spaceByTypeViewModel.showSpacesByType &&
-                        spaceByTypeViewModel.getSpaces!.isEmpty))
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 41, right: 41, top: 281.4),
-                          child: Container(
-                            padding:
-                                const EdgeInsets.all(16), // Espaçamento interno
-                            decoration: BoxDecoration(
-                              color: Colors.white, // Fundo branco
-                              borderRadius: BorderRadius.circular(
-                                  12), // Bordas arredondadas
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black
-                                      .withOpacity(0.1), // Sombra leve
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                  offset:
-                                      const Offset(0, 3), // Direção da sombra
-                                ),
-                              ],
-                            ),
-                            child: const Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.search_off,
-                                    size: 60, color: Colors.grey),
-                                SizedBox(height: 10),
-                                Text(
-                                  "Nenhum espaço encontrado",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.center,
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  "Tente alterar os filtros ou buscar por outro termo",
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.grey),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ),
-                          ),
+                    Positioned(
+                      top: 11,
+                      right: 12,
+                      child: Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFF4D6D),
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 1.5),
                         ),
                       ),
-                    if (!spaceByTypeViewModel.isLoading &&
-                        spaceByTypeViewModel.getFiltered.isEmpty &&
-                        spaceByTypeViewModel.showFiltered)
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 41, right: 41, top: 281.4),
-                          child: Container(
-                            padding:
-                                const EdgeInsets.all(16), // Espaçamento interno
-                            decoration: BoxDecoration(
-                              color: Colors.white, // Fundo branco
-                              borderRadius: BorderRadius.circular(
-                                  12), // Bordas arredondadas
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black
-                                      .withOpacity(0.1), // Sombra leve
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                  offset:
-                                      const Offset(0, 3), // Direção da sombra
-                                ),
-                              ],
-                            ),
-                            child: const Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.search_off,
-                                    size: 60, color: Colors.grey),
-                                SizedBox(height: 10),
-                                Text(
-                                  "Nenhum espaço encontrado",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.center,
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  "Tente alterar os filtros ou buscar por outro termo",
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.grey),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    Expanded(
-                      child: spaceByTypeViewModel.isLoading
-                          ? const Center(child: CustomLoadingIndicator())
-                          : spaceByTypeViewModel.showFiltered
-                              ? ListView.builder(
-                                  padding: const EdgeInsets.only(top: 20),
-                                  itemCount:
-                                      spaceByTypeViewModel.getFiltered.length,
-                                  itemBuilder: (context, index) {
-                                    final space =
-                                        spaceByTypeViewModel.getFiltered[index];
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 20,
-                                      ),
-                                      child: NewSpaceCard(
-                                        hasHeart: true,
-                                        space: space,
-                                        isReview: false,
-                                      ),
-                                    );
-                                  },
-                                )
-                              : PagedListView<DocumentSnapshot?, SpaceModel>(
-                                  padding: const EdgeInsets.only(top: 0),
-                                  pagingController:
-                                      spaceByTypeViewModel.pagingController,
-                                  builderDelegate:
-                                      PagedChildBuilderDelegate<SpaceModel>(
-                                    itemBuilder: (context, item, index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 20,
-                                        ),
-                                        child: NewSpaceCard(
-                                          hasHeart: true,
-                                          space: item,
-                                          isReview: false,
-                                        ),
-                                      );
-                                    },
-                                    newPageProgressIndicatorBuilder:
-                                        (context) => const Center(
-                                      child: Padding(
-                                        padding: EdgeInsets.only(bottom: 20.0),
-                                        child: CustomLoadingIndicator(),
-                                      ),
-                                    ),
-                                    firstPageProgressIndicatorBuilder:
-                                        (context) => const Center(
-                                      child: CustomLoadingIndicator(),
-                                    ),
-                                    noItemsFoundIndicatorBuilder: (context) =>
-                                        Center(
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.8, // 80% da largura da tela
-                                        padding: const EdgeInsets.all(16),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color:
-                                                  Colors.black.withOpacity(0.1),
-                                              spreadRadius: 2,
-                                              blurRadius: 5,
-                                              offset: const Offset(0, 3),
-                                            ),
-                                          ],
-                                        ),
-                                        child: const Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(Icons.search_off,
-                                                size: 60, color: Colors.grey),
-                                            SizedBox(height: 10),
-                                            Text(
-                                              "Nenhum espaço encontrado",
-                                              style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                            SizedBox(height: 5),
-                                            Text(
-                                              "Tente alterar os filtros ou buscar por outro termo",
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.grey),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
                     ),
                   ],
                 ),
               ),
-            );
-          }),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildSearchBox(double x, double y) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-        child: Container(
-          padding:
-              EdgeInsets.symmetric(horizontal: x * 0.02, vertical: y * 0.007),
+  Widget _buildFilterButton(VoidCallback onTap) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Ink(
+          width: 52,
+          height: 52,
           decoration: BoxDecoration(
-              color: const Color(0xffF0F0F0),
-              borderRadius: BorderRadius.circular(10)),
-          child: Column(
+            borderRadius: BorderRadius.circular(16),
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF9747FF), Color(0xFF6100FF)],
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: _accent.withOpacity(0.28),
+                blurRadius: 12,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: Center(
+            child: Image.asset(
+              'lib/assets/images/icon_filtro.png',
+              width: 20,
+              height: 20,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchBox() {
+    final hasText = spaceByTypeViewModel.controller.text.isNotEmpty;
+
+    return Container(
+      height: 52,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFE8DFF8)),
+        boxShadow: [
+          BoxShadow(
+            color: _accent.withOpacity(0.07),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        children: [
+          const Icon(Icons.search_rounded, color: _accent, size: 22),
+          const SizedBox(width: 10),
+          Expanded(
+            child: TextField(
+              controller: spaceByTypeViewModel.controller,
+              onChanged: (value) {
+                spaceByTypeViewModel.onChangedSearch(value, widget.type);
+              },
+              onSubmitted: (_) => setState(() {}),
+              style: const TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: _ink,
+              ),
+              cursorColor: _accent,
+              decoration: const InputDecoration(
+                hintText: 'Buscar no Festou',
+                hintStyle: TextStyle(
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: _muted,
+                ),
+                border: InputBorder.none,
+                isDense: true,
+                contentPadding: EdgeInsets.zero,
+              ),
+            ),
+          ),
+          if (hasText)
+            InkWell(
+              onTap: () => spaceByTypeViewModel.clear(),
+              borderRadius: BorderRadius.circular(99),
+              child: Container(
+                width: 28,
+                height: 28,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3EBFF),
+                  borderRadius: BorderRadius.circular(99),
+                ),
+                child: const Icon(
+                  Icons.close_rounded,
+                  size: 16,
+                  color: _accent,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(24, 12, 24, 40),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(22, 28, 22, 24),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.96),
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(color: const Color(0xFFE8DFF8)),
+            boxShadow: [
+              BoxShadow(
+                color: _accent.withOpacity(0.06),
+                blurRadius: 18,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: const Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
-                children: [
-                  Icon(Icons.search, color: Colors.purple[300]),
-                  const SizedBox(width: 10.0),
-                  Expanded(
-                    child: Stack(
-                      children: [
-                        spaceByTypeViewModel.controller.text.isEmpty
-                            ? RichText(
-                                text: TextSpan(
-                                  style: TextStyle(color: Colors.blueGrey[500]),
-                                  children: const <TextSpan>[
-                                    TextSpan(text: 'Buscar no '),
-                                    TextSpan(
-                                        text: 'Festou',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                  ],
-                                ),
-                              )
-                            : Container(
-                                height: 0,
-                              ),
-                        Column(
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: TextField(
-                                    onChanged: (value) {
-                                      spaceByTypeViewModel.onChangedSearch(
-                                          value, widget.type);
-                                    },
-                                    controller: spaceByTypeViewModel.controller,
-                                    onSubmitted: (value) {
-                                      setState(() {});
-                                    },
-                                    decoration: const InputDecoration(
-                                      hintText: 'Buscar',
-                                      hintStyle:
-                                          TextStyle(color: Colors.transparent),
-                                      border: InputBorder.none,
-                                      isDense: true,
-                                      contentPadding: EdgeInsets.symmetric(
-                                          vertical: 0, horizontal: 0),
-                                    ),
-                                    style: TextStyle(
-                                        color: Colors.blueGrey[900],
-                                        fontSize: 12),
-                                    cursorColor: Colors.blueGrey[900],
-                                  ),
-                                ),
-                                Visibility(
-                                  visible: spaceByTypeViewModel
-                                      .controller.text.isNotEmpty,
-                                  child: InkWell(
-                                    onTap: () {
-                                      spaceByTypeViewModel.clear();
-                                    },
-                                    child: Icon(
-                                      Icons.clear,
-                                      color: Colors.blueGrey[900],
-                                      size: 14,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+              Icon(Icons.search_off_rounded, size: 52, color: _muted),
+              SizedBox(height: 14),
+              Text(
+                'Nenhum espaço encontrado',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'RedHatDisplay',
+                  fontWeight: FontWeight.w800,
+                  fontSize: 18,
+                  color: _ink,
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Tente outro termo ou ajuste os filtros para continuar.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  height: 1.45,
+                  color: _muted,
+                ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildBody() {
+    final vm = spaceByTypeViewModel;
+
+    if (vm.isLoading) {
+      return const Center(child: CustomLoadingIndicator());
+    }
+
+    final emptyByType = vm.getSpaces != null &&
+        vm.showSpacesByType &&
+        vm.getSpaces!.isEmpty;
+    final emptyFiltered = vm.getFiltered.isEmpty && vm.showFiltered;
+
+    if (emptyByType || emptyFiltered) {
+      return _buildEmptyState();
+    }
+
+    if (vm.showFiltered) {
+      return ListView.builder(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
+        itemCount: vm.getFiltered.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: NewSpaceCard(
+              hasHeart: true,
+              space: vm.getFiltered[index],
+              isReview: false,
+            ),
+          );
+        },
+      );
+    }
+
+    return PagedListView<DocumentSnapshot?, SpaceModel>(
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
+      pagingController: vm.pagingController,
+      builderDelegate: PagedChildBuilderDelegate<SpaceModel>(
+        itemBuilder: (context, item, index) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: NewSpaceCard(
+              hasHeart: true,
+              space: item,
+              isReview: false,
+            ),
+          );
+        },
+        newPageProgressIndicatorBuilder: (_) => const Center(
+          child: Padding(
+            padding: EdgeInsets.only(bottom: 20),
+            child: CustomLoadingIndicator(),
+          ),
+        ),
+        firstPageProgressIndicatorBuilder: (_) =>
+            const Center(child: CustomLoadingIndicator()),
+        noItemsFoundIndicatorBuilder: (_) => _buildEmptyState(),
       ),
     );
   }
