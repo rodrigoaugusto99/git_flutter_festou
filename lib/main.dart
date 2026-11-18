@@ -41,7 +41,6 @@ Future<void> setupMain() async {
 }
 
 Future<void> main() async {
-  await setupMain();
   // List<String> collections = [
   //   'spaces',
   //   'reservations',
@@ -61,6 +60,7 @@ Future<void> main() async {
   //   gerarSchema(collection);
   // }
   // return;
+  await setupMain();
   runApp(const ProviderScope(child: MyApp()));
 }
 

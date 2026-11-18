@@ -14,12 +14,51 @@ class FeedNoticias extends StatefulWidget {
 }
 
 class _FeedNoticiasState extends State<FeedNoticias> {
-  PostService postService = PostService();
+  final PostService postService = PostService();
+  late Future<_FeedData> _feedFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _feedFuture = _loadFeed();
+  }
+
+  Future<_FeedData> _loadFeed() async {
+    final unread = await postService.getPostModelsBySpaceIds() ?? [];
+    if (unread.isNotEmpty) {
+      return _FeedData(posts: unread, showingSeen: false);
+    }
+
+    final seen = await postService.getSeenPosts();
+    seen.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return _FeedData(posts: seen, showingSeen: true);
+  }
+
+  void _openPost(PostModel post) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PostSinglePage(postModel: post),
+      ),
+    ).then((_) {
+      if (!mounted) return;
+      setState(() {
+        _feedFuture = _loadFeed();
+      });
+    });
+  }
+
+  void _openAllPosts() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const AllPosts()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<PostModel>?>(
-      future: postService.getPostModelsBySpaceIds(),
+    return FutureBuilder<_FeedData>(
+      future: _feedFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return SizedBox(
@@ -51,109 +90,131 @@ class _FeedNoticiasState extends State<FeedNoticias> {
         }
 
         if (snapshot.hasError) {
-          return Center(child: Text("Error: ${snapshot.error}"));
+          return const SizedBox.shrink();
         }
 
-        if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text("Não há posts"));
+        final data = snapshot.data;
+        if (data == null || data.posts.isEmpty) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: SizedBox(
+              height: 120,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: _VerMaisCard(onTap: _openAllPosts, compact: true),
+              ),
+            ),
+          );
         }
 
-        final posts = snapshot.data!;
-
-        // posts.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+        final posts = data.posts;
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: SizedBox(
-            height: 250,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: posts.length,
-              itemBuilder: (context, index) {
-                final post = posts[index];
-
-                if (index == posts.length - 1 /*&& posts.length >= 10*/) {
-                  return Row(
-                    children: [
-                      SizedBox(
-                        height: 244,
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return PostSinglePage(
-                                      postModel: posts[index]);
-                                },
-                              ),
-                            );
-                          },
-                          child: EachPost(
-                            post: post,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 250,
-                        width: 170,
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return const AllPosts();
-                                },
-                              ),
-                            );
-                          },
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Ver todos',
-                                style: TextStyle(fontWeight: FontWeight.w700),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 5, top: 2),
-                                child: Icon(
-                                  Icons.arrow_forward_ios,
-                                  size: 15,
-                                  color: Color(0xff4300B1),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  );
-                }
-                return SizedBox(
-                  height: 250,
-                  width: 174,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return PostSinglePage(postModel: posts[index]);
-                          },
-                        ),
-                      );
-                    },
-                    child: EachPost(
-                      post: post,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (data.showingSeen)
+                const Padding(
+                  padding: EdgeInsets.only(left: 8, bottom: 6),
+                  child: Text(
+                    'Vistos recentemente',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF6B6175),
                     ),
                   ),
-                );
-              },
-            ),
+                ),
+              SizedBox(
+                height: 250,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: posts.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index == posts.length) {
+                      return _VerMaisCard(onTap: _openAllPosts);
+                    }
+
+                    final post = posts[index];
+                    return SizedBox(
+                      height: 250,
+                      width: 174,
+                      child: InkWell(
+                        onTap: () => _openPost(post),
+                        child: EachPost(post: post),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         );
       },
+    );
+  }
+}
+
+class _FeedData {
+  final List<PostModel> posts;
+  final bool showingSeen;
+
+  const _FeedData({
+    required this.posts,
+    required this.showingSeen,
+  });
+}
+
+class _VerMaisCard extends StatelessWidget {
+  final VoidCallback onTap;
+  final bool compact;
+
+  const _VerMaisCard({
+    required this.onTap,
+    this.compact = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: compact ? 96 : 244,
+      width: compact ? double.infinity : 150,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          margin: EdgeInsets.symmetric(
+            horizontal: compact ? 0 : 8,
+            vertical: compact ? 0 : 8,
+          ),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF3EBFF),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFFDCC8FF)),
+          ),
+          child: const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.arrow_forward_rounded,
+                color: Color(0xff4300B1),
+                size: 22,
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Ver mais',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                  color: Color(0xff4300B1),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

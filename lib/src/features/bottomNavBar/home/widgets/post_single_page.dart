@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:festou/src/models/post_model.dart';
 import 'package:festou/src/services/post_service.dart';
 
@@ -10,184 +11,296 @@ class PostSinglePage extends StatefulWidget {
   State<PostSinglePage> createState() => _PostSinglePageState();
 }
 
-class _PostSinglePageState extends State<PostSinglePage> {
+class _PostSinglePageState extends State<PostSinglePage>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _entrance;
+  late final Animation<double> _fadeIn;
+  late final Animation<Offset> _slideUp;
+
+  static const _bg = Color(0xFFFFF9F5);
+  static const _ink = Color(0xFF1C1426);
+  static const _muted = Color(0xFF6B6175);
+  static const _accent = Color(0xFF7C3AED);
+
   @override
   void initState() {
     super.initState();
-    if (widget.postModel.id == null) return;
-    PostService().setPostAsRead(widget.postModel.id!);
+    if (widget.postModel.id != null) {
+      PostService().setPostAsRead(widget.postModel.id!);
+    }
+
+    _entrance = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 650),
+    );
+    _fadeIn = CurvedAnimation(parent: _entrance, curve: Curves.easeOut);
+    _slideUp = Tween<Offset>(
+      begin: const Offset(0, 0.04),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _entrance, curve: Curves.easeOutCubic));
+    _entrance.forward();
+  }
+
+  @override
+  void dispose() {
+    _entrance.dispose();
+    super.dispose();
+  }
+
+  List<String> get _galleryImages {
+    final images = widget.postModel.imagens;
+    if (images.length <= 1) return const [];
+    return images.skip(1).toList();
+  }
+
+  String get _heroImage {
+    if (widget.postModel.coverPhoto.isNotEmpty) {
+      return widget.postModel.coverPhoto;
+    }
+    return widget.postModel.imagens.first;
+  }
+
+  String get _formattedDate {
+    try {
+      return DateFormat("d 'de' MMMM", 'pt_BR')
+          .format(widget.postModel.createdAt.toDate());
+    } catch (_) {
+      return '';
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final topInset = MediaQuery.of(context).padding.top;
+
     return Scaffold(
+      backgroundColor: _bg,
       body: Container(
         decoration: const BoxDecoration(
-          color: Colors.white, // Caso a imagem tenha espaços vazios
+          color: _bg,
           image: DecorationImage(
             image: AssetImage('lib/assets/images/background_confete.png'),
-            fit: BoxFit.contain, // Mantém a repetição
-            repeat: ImageRepeat.repeat, // Repete a imagem no fundo
+            fit: BoxFit.contain,
+            repeat: ImageRepeat.repeat,
+            opacity: 0.4,
           ),
         ),
-        child: Stack(
-          children: [
-            // Fundo com gradiente no topo
-            Container(
-              height: 350,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Color(0xff4300B1),
-                    Color.fromARGB(255, 255, 255, 255)
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-            ),
-
-            // Conteúdo da página
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 50),
-
-                // Botão de voltar estilizado
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 5,
-                          spreadRadius: 2,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.black),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ),
-                ),
-
-                // Imagem do post em destaque
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Image.network(
-                      widget.postModel.imagens.first,
-                      width: double.infinity,
-                      height: 250,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 18),
-
-                // Área de texto (Centralizado com fundo)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white
-                          .withOpacity(0.8), // Fundo semi-transparente
-                      borderRadius:
-                          BorderRadius.circular(12), // Bordas arredondadas
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 5,
-                          spreadRadius: 2,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Center(
-                          child: Text(
-                            widget.postModel.title,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontFamily: 'NerkoOne',
-                              fontSize: 24,
-                              color: Colors.black87,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Center(
-                          child: Text(
-                            widget.postModel.description,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontFamily: 'Marcellus',
-                              fontSize: 16,
-                              color: Colors.black54,
-                              height: 1.5,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Imagens extras em grid
-                Expanded(
+        child: FadeTransition(
+          opacity: _fadeIn,
+          child: SlideTransition(
+            position: _slideUp,
+            child: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverToBoxAdapter(child: SizedBox(height: topInset + 8)),
+                SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 8,
-                        mainAxisSpacing: 8,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: _CircleIconButton(
+                        icon: Icons.arrow_back_rounded,
+                        onTap: () => Navigator.of(context).pop(),
                       ),
-                      itemCount: widget.postModel.imagens.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PhotoDetailScreen(
-                                  photoUrls: widget.postModel.imagens,
-                                  initialIndex: index,
-                                ),
-                              ),
-                            );
-                          },
-                          child: Hero(
-                            tag: widget.postModel.imagens[index],
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.network(
-                                widget.postModel.imagens[index],
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
                     ),
                   ),
                 ),
+                const SliverToBoxAdapter(child: SizedBox(height: 14)),
+
+                // Hero
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _HeroImage(url: _heroImage),
+                  ),
+                ),
+
+                // Content
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (_formattedDate.isNotEmpty)
+                          Text(
+                            _formattedDate.toUpperCase(),
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w600,
+                              fontSize: 11,
+                              letterSpacing: 1.4,
+                              color: _accent,
+                            ),
+                          ),
+                        if (_formattedDate.isNotEmpty)
+                          const SizedBox(height: 10),
+                        Text(
+                          widget.postModel.title,
+                          style: const TextStyle(
+                            fontFamily: 'RedHatDisplay',
+                            fontWeight: FontWeight.w900,
+                            fontSize: 28,
+                            height: 1.2,
+                            letterSpacing: -0.4,
+                            color: _ink,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          widget.postModel.description,
+                          style: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16,
+                            height: 1.65,
+                            letterSpacing: 0.1,
+                            color: _muted,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                if (_galleryImages.isNotEmpty) ...[
+                  const SliverToBoxAdapter(child: SizedBox(height: 32)),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        children: [
+                          const Text(
+                            'Mais fotos',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w700,
+                              fontSize: 15,
+                              color: _ink,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            '${_galleryImages.length}',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w500,
+                              fontSize: 13,
+                              color: _muted.withOpacity(0.8),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SliverToBoxAdapter(child: SizedBox(height: 14)),
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 160,
+                      child: ListView.separated(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: _galleryImages.length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 12),
+                        itemBuilder: (context, index) {
+                          final url = _galleryImages[index];
+                          final fullIndex =
+                              widget.postModel.imagens.indexOf(url);
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => PhotoDetailScreen(
+                                    photoUrls: widget.postModel.imagens,
+                                    initialIndex:
+                                        fullIndex < 0 ? index + 1 : fullIndex,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Hero(
+                              tag: 'gallery_$url',
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(16),
+                                child: AspectRatio(
+                                  aspectRatio: 0.85,
+                                  child: Image.network(
+                                    url,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+                const SliverToBoxAdapter(child: SizedBox(height: 48)),
               ],
             ),
-          ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HeroImage extends StatelessWidget {
+  final String url;
+  const _HeroImage({required this.url});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.12),
+            blurRadius: 24,
+            offset: const Offset(0, 12),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: AspectRatio(
+          aspectRatio: 5 / 4,
+          child: Image.network(
+            url,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CircleIconButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _CircleIconButton({
+    required this.icon,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white.withOpacity(0.92),
+      shape: const CircleBorder(),
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onTap,
+        child: SizedBox(
+          width: 44,
+          height: 44,
+          child: Icon(icon, color: const Color(0xFF1C1426), size: 22),
         ),
       ),
     );
@@ -220,21 +333,17 @@ class _PhotoDetailScreenState extends State<PhotoDetailScreen> {
 
   void _previousImage() {
     setState(() {
-      if (currentIndex == 0) {
-        currentIndex = widget.photoUrls.length - 1;
-      } else if (currentIndex > 0) {
-        currentIndex--;
-      }
+      currentIndex = currentIndex == 0
+          ? widget.photoUrls.length - 1
+          : currentIndex - 1;
     });
   }
 
   void _nextImage() {
     setState(() {
-      if (currentIndex == widget.photoUrls.length - 1) {
-        currentIndex = 0;
-      } else if (currentIndex < widget.photoUrls.length - 1) {
-        currentIndex++;
-      }
+      currentIndex = currentIndex == widget.photoUrls.length - 1
+          ? 0
+          : currentIndex + 1;
     });
   }
 
@@ -242,94 +351,83 @@ class _PhotoDetailScreenState extends State<PhotoDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: IconButton(
-              icon: const Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-                size: 40,
-              ),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          Container(
-            color: Colors.grey,
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height / 2,
-            child: Hero(
-              tag: widget.photoUrls[currentIndex],
-              child: Image.network(
-                widget.photoUrls[currentIndex],
-                fit: BoxFit.cover,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: IconButton(
+                icon: const Icon(
+                  Icons.close_rounded,
+                  color: Colors.white,
+                  size: 28,
+                ),
+                onPressed: () => Navigator.of(context).pop(),
               ),
             ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: widget.photoUrls.map((url) {
-                int index = widget.photoUrls.indexOf(url);
-                return Container(
-                  width: 8.0,
-                  height: 8.0,
-                  margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: currentIndex == index
-                        ? const Color(0xff9747FF)
-                        : Colors.grey.shade300,
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                GestureDetector(
-                  onTap: _previousImage,
-                  child: Container(
-                    height: 45,
-                    width: 45,
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.white),
-                    child: const Icon(
-                      Icons.arrow_left,
-                      size: 45,
-                    ),
+            Expanded(
+              child: Center(
+                child: Hero(
+                  tag: 'gallery_${widget.photoUrls[currentIndex]}',
+                  child: Image.network(
+                    widget.photoUrls[currentIndex],
+                    fit: BoxFit.contain,
                   ),
                 ),
-                GestureDetector(
-                  onTap: _nextImage,
-                  child: Container(
-                    height: 45,
-                    width: 45,
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.white),
-                    child: const Icon(
-                      Icons.arrow_right,
-                      size: 45,
-                    ),
-                  ),
-                )
-              ],
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(widget.photoUrls.length, (index) {
+                final selected = currentIndex == index;
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  width: selected ? 18 : 8,
+                  height: 8,
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(99),
+                    color: selected ? const Color(0xff9747FF) : Colors.white38,
+                  ),
+                );
+              }),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _NavCircle(icon: Icons.chevron_left, onTap: _previousImage),
+                  _NavCircle(icon: Icons.chevron_right, onTap: _nextImage),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NavCircle extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _NavCircle({required this.icon, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 48,
+        width: 48,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white,
+        ),
+        child: Icon(icon, size: 32, color: const Color(0xFF1C1426)),
       ),
     );
   }

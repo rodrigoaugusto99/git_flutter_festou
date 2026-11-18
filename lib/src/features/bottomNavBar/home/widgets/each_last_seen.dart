@@ -15,8 +15,12 @@ class EachLastSeen extends StatefulWidget {
 }
 
 class _EachLastSeenState extends State<EachLastSeen> {
+  double get _rating => double.tryParse(widget.space.averageRating) ?? 0;
+
   @override
   Widget build(BuildContext context) {
+    final ratingColor = _getColor(_rating);
+
     return GestureDetector(
       onTap: () {
         UserService().updateLastSeen(widget.space.spaceId);
@@ -31,112 +35,127 @@ class _EachLastSeenState extends State<EachLastSeen> {
         margin: const EdgeInsets.only(right: 20),
         height: 150,
         width: 250,
-        child: Stack(
-          children: [
-            ClipRRect(
-                borderRadius: BorderRadius.circular(16.0),
-                child: Stack(
-                  children: [
-                    if (widget.space.imagesUrl.isNotEmpty) ...[
-                      Image.network(
-                        width: 250,
-                        height: 150,
-                        widget.space.imagesUrl[0],
-                        fit: BoxFit.cover,
-                      ),
-                    ] else ...[
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.12),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              if (widget.space.imagesUrl.isNotEmpty)
+                Image.network(
+                  widget.space.imagesUrl[0],
+                  fit: BoxFit.cover,
+                )
+              else
+                Container(color: Colors.grey.shade300),
+
+              // Soft fade on the right so the strip reads better
+              Align(
+                alignment: Alignment.centerRight,
+                child: Container(
+                  width: 72,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [
+                        Colors.black.withOpacity(0),
+                        Colors.black.withOpacity(0.28),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              // Vertical strip: rating only, clean and readable
+              Align(
+                alignment: Alignment.centerRight,
+                child: Container(
+                  width: 46,
+                  margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.88),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.65),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
                       Container(
-                        width: 250,
-                        height: 150,
-                        color: Colors.grey,
-                      ),
-                    ],
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Container(
-                            //padding: const EdgeInsets.all(10),
-                            alignment: Alignment.center,
-                            //width: 40,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.white.withOpacity(0.5),
+                        width: 34,
+                        height: 34,
+                        decoration: BoxDecoration(
+                          color: ratingColor,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: ratingColor.withOpacity(0.35),
+                              blurRadius: 8,
+                              offset: const Offset(0, 3),
                             ),
-                            child: Align(
-                              alignment: Alignment.bottomCenter,
-                              child: RotatedBox(
-                                quarterTurns: 3,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 5),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              widget.space.titulo,
-                                              style: const TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w700,
-                                                  overflow:
-                                                      TextOverflow.ellipsis),
-                                            ),
-                                            Text(
-                                              '${widget.space.bairro}, ${widget.space.estado}',
-                                              style: const TextStyle(
-                                                  fontSize: 7,
-                                                  fontWeight: FontWeight.w700,
-                                                  overflow:
-                                                      TextOverflow.ellipsis),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      RotatedBox(
-                                        quarterTurns: 1,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            color: _getColor(
-                                              double.parse(
-                                                  widget.space.averageRating),
-                                            ),
-                                          ),
-                                          child: Center(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text(
-                                                double.parse(widget
-                                                        .space.averageRating)
-                                                    .toStringAsFixed(1),
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.star_rounded,
+                              size: 12,
+                              color: Colors.white,
+                            ),
+                            Text(
+                              _rating.toStringAsFixed(1),
+                              style: const TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 11,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                                height: 1,
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                )),
-          ],
+                      const SizedBox(height: 10),
+                      Expanded(
+                        child: Container(
+                          width: 3,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(99),
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                ratingColor.withOpacity(0.85),
+                                ratingColor.withOpacity(0.1),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Icon(
+                        Icons.visibility_rounded,
+                        size: 16,
+                        color: ratingColor.withOpacity(0.85),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -145,10 +164,10 @@ class _EachLastSeenState extends State<EachLastSeen> {
 
 Color _getColor(double averageRating) {
   if (averageRating >= 4) {
-    return Colors.green; // Ícone verde para rating maior ou igual a 4
+    return const Color(0xFF22A06B);
   } else if (averageRating >= 2 && averageRating < 4) {
-    return Colors.orange; // Ícone laranja para rating entre 2 e 4 (exclusive)
+    return const Color(0xFFE67E22);
   } else {
-    return Colors.red; // Ícone vermelho para rating abaixo de 2
+    return const Color(0xFFE74C3C);
   }
 }
