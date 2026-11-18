@@ -25,32 +25,62 @@ class MyRow extends StatefulWidget {
 class _MyRowState extends State<MyRow> {
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      key: widget.customKey,
-      onTap: widget.onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.white,
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        key: widget.customKey,
+        onTap: widget.onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Ink(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: Colors.white,
+            border: Border.all(color: const Color(0xFFE8DFF8)),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF7C3AED).withOpacity(0.04),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
+            child: Row(
               children: [
-                SizedBox(
-                  height: widget.height ?? 20,
-                  width: widget.width ?? 20,
-                  // color: Colors.blue,
-                  child: widget.icon1,
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF7F1FF),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                    height: widget.height ?? 20,
+                    width: widget.width ?? 20,
+                    child: widget.icon1,
+                  ),
                 ),
-                const SizedBox(width: 10),
-                Text(widget.text),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    widget.text,
+                    style: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: Color(0xFF1C1426),
+                    ),
+                  ),
+                ),
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  color: Color(0xFFB5A9C5),
+                ),
               ],
             ),
-            const Icon(Icons.keyboard_arrow_right_sharp),
-          ],
+          ),
         ),
       ),
     );

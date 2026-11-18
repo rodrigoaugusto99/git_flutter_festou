@@ -435,26 +435,17 @@ class _ProfileState extends ConsumerState<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    UserService userService = UserService();
+    const bg = Color(0xFFFAF7FC);
+    const ink = Color(0xFF1C1426);
+    const muted = Color(0xFF8A8096);
+    const accent = Color(0xFF7C3AED);
+
+    final userService = UserService();
     return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
+      onWillPop: () async => false,
       child: Scaffold(
-        backgroundColor: const Color(0xffF8F8F8),
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text(
-            'Perfil',
-            style: TextStyle(
-                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
-          ),
-          elevation: 0,
-          backgroundColor: const Color(0xFFF8F8F8),
-          surfaceTintColor: const Color(0xFFF8F8F8),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 30),
+        backgroundColor: bg,
+        body: SafeArea(
           child: FutureBuilder<UserModel?>(
             future: userService.getCurrentUserModel(),
             builder: (context, snapshot) {
@@ -485,133 +476,200 @@ class _ProfileState extends ConsumerState<Profile> {
                         child: Text('Erro ao carregar os dados.'));
                   }
                   if (snapshot.hasData && !snapshot.data!.docs[0].exists) {
-                    return const Center(child: Text('Usuário não encontrado.'));
+                    return const Center(
+                        child: Text('Usuário não encontrado.'));
                   }
 
                   final data =
                       snapshot.data!.docs[0].data() as Map<String, dynamic>;
-                  UserModel updatedUserModel = UserModel.fromMap(data);
+                  final updatedUserModel = UserModel.fromMap(data);
+                  final hasPhoto = updatedUserModel.avatarUrl.isNotEmpty;
+                  final initial = updatedUserModel.name.isNotEmpty
+                      ? updatedUserModel.name[0].toUpperCase()
+                      : '?';
 
                   return SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 100),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Avatar
-                        if (updatedUserModel.avatarUrl.isNotEmpty)
-                          Align(
-                            child: GestureDetector(
-                              onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                    return Scaffold(
-                                      appBar: AppBar(
-                                        backgroundColor:
-                                            const Color(0xffffffff),
-                                        title: const Text('Minha foto'),
-                                      ),
-                                      body: Center(
-                                        child: Image.network(
-                                            updatedUserModel.avatarUrl),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  Container(
-                                    width: 110,
-                                    height: 110,
-                                    decoration: const BoxDecoration(
-                                      color: Colors.black,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  Container(
-                                    width: 105,
-                                    height: 105,
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  CircleAvatar(
-                                    radius: 50,
-                                    backgroundImage: NetworkImage(
-                                        updatedUserModel.avatarUrl),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                        else
-                          Align(
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Container(
-                                  width: 110,
-                                  height: 110,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.black,
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                                Container(
-                                  width: 105,
-                                  height: 105,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                                CircleAvatar(
-                                    radius: 50,
-                                    child: updatedUserModel.name.isNotEmpty
-                                        ? Text(
-                                            updatedUserModel.name[0],
-                                            style:
-                                                const TextStyle(fontSize: 52),
-                                          )
-                                        : const Icon(
-                                            Icons.person,
-                                            size: 40,
-                                          )),
-                              ],
-                            ),
+                        const Text(
+                          'Perfil',
+                          style: TextStyle(
+                            fontFamily: 'RedHatDisplay',
+                            fontWeight: FontWeight.w900,
+                            fontSize: 26,
+                            letterSpacing: -0.5,
+                            color: ink,
                           ),
-                        const SizedBox(height: 15),
-                        // Nome e Email
-                        Align(
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          'Gerencie sua conta e preferências',
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w500,
+                            fontSize: 13,
+                            color: muted,
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+
+                        // Card do usuário
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.fromLTRB(18, 22, 18, 20),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(22),
+                            border:
+                                Border.all(color: const Color(0xFFE8DFF8)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: accent.withOpacity(0.06),
+                                blurRadius: 18,
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
+                          ),
                           child: Column(
                             children: [
+                              GestureDetector(
+                                onTap: hasPhoto
+                                    ? () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => Scaffold(
+                                              backgroundColor: Colors.black,
+                                              appBar: AppBar(
+                                                backgroundColor: Colors.black,
+                                                foregroundColor: Colors.white,
+                                                title: const Text('Minha foto'),
+                                              ),
+                                              body: Center(
+                                                child: InteractiveViewer(
+                                                  child: Image.network(
+                                                    updatedUserModel.avatarUrl,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                    : null,
+                                child: Container(
+                                  width: 96,
+                                  height: 96,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: const LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Color(0xFF9747FF),
+                                        Color(0xFF6100FF),
+                                      ],
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(0xFF6100FF)
+                                            .withOpacity(0.22),
+                                        blurRadius: 14,
+                                        offset: const Offset(0, 6),
+                                      ),
+                                    ],
+                                  ),
+                                  padding: const EdgeInsets.all(3),
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white,
+                                    ),
+                                    padding: const EdgeInsets.all(3),
+                                    child: CircleAvatar(
+                                      backgroundColor:
+                                          const Color(0xFFF3EBFF),
+                                      backgroundImage: hasPhoto
+                                          ? NetworkImage(
+                                              updatedUserModel.avatarUrl)
+                                          : null,
+                                      child: hasPhoto
+                                          ? null
+                                          : Text(
+                                              initial,
+                                              style: const TextStyle(
+                                                fontFamily: 'Inter',
+                                                fontSize: 34,
+                                                fontWeight: FontWeight.w700,
+                                                color: accent,
+                                              ),
+                                            ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 14),
                               Text(
                                 updatedUserModel.name,
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
-                                    overflow: TextOverflow.ellipsis,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w800,
-                                    height: 1.2),
+                                  fontFamily: 'RedHatDisplay',
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 20,
+                                  letterSpacing: -0.3,
+                                  color: ink,
+                                ),
                               ),
-                              Align(
+                              const SizedBox(height: 4),
+                              Text(
+                                updatedUserModel.email,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 13,
+                                  color: muted,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF7F1FF),
+                                  borderRadius: BorderRadius.circular(99),
+                                  border: Border.all(
+                                    color: const Color(0xFFE0D0FF),
+                                  ),
+                                ),
                                 child: Text(
-                                  updatedUserModel.email,
+                                  updatedUserModel.locador
+                                      ? 'Conta locador'
+                                      : 'Conta locatário',
                                   style: const TextStyle(
-                                      fontSize: 12, color: Colors.grey),
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 12,
+                                    color: accent,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 25),
+
+                        const SizedBox(height: 22),
                         myText(text: 'Configurações'),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 12),
                         MyRowsConfig(userModel: updatedUserModel),
-                        const SizedBox(height: 25),
+                        const SizedBox(height: 22),
                         myText(text: 'Locação'),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 12),
                         MyRow(
                           customKey: Keys.kProfileViewLocador,
                           text: userModel.locador
@@ -622,9 +680,9 @@ class _ProfileState extends ConsumerState<Profile> {
                           ),
                           onTap: () => navigateBasedOnContract(context),
                         ),
-                        const SizedBox(height: 25),
+                        const SizedBox(height: 22),
                         myText(text: 'Atendimento'),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 12),
                         MyRow(
                           text: 'Central de ajuda',
                           icon1: Image.asset(
@@ -637,13 +695,11 @@ class _ProfileState extends ConsumerState<Profile> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 25),
+                        const SizedBox(height: 22),
                         myText(text: 'Jurídico'),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 12),
                         MyRow(
                           text: 'Termos de serviço',
-                          // height: 30,
-                          // width: 30,
                           icon1: Image.asset(
                             'lib/assets/images/icon_termos.png',
                           ),
@@ -651,12 +707,13 @@ class _ProfileState extends ConsumerState<Profile> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ServiceTermsPage()),
+                                builder: (context) =>
+                                    const ServiceTermsPage(),
+                              ),
                             );
                           },
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 12),
                         MyRow(
                           text: 'Política de privacidade',
                           icon1: Image.asset(
@@ -666,14 +723,15 @@ class _ProfileState extends ConsumerState<Profile> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      const PrivacyPolicyPage()),
+                                builder: (context) =>
+                                    const PrivacyPolicyPage(),
+                              ),
                             );
                           },
                         ),
-                        const SizedBox(height: 25),
+                        const SizedBox(height: 22),
                         myText(text: 'Outros'),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 12),
                         MyRow(
                           text: 'Sair do Festou',
                           icon1: Image.asset(
@@ -684,7 +742,6 @@ class _ProfileState extends ConsumerState<Profile> {
                                 context, ref);
                           },
                         ),
-                        const SizedBox(height: 40),
                       ],
                     ),
                   );
@@ -701,6 +758,12 @@ class _ProfileState extends ConsumerState<Profile> {
 Widget myText({required String text}) {
   return Text(
     text,
-    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+    style: const TextStyle(
+      fontFamily: 'RedHatDisplay',
+      fontSize: 16,
+      fontWeight: FontWeight.w800,
+      letterSpacing: -0.2,
+      color: Color(0xFF1C1426),
+    ),
   );
 }

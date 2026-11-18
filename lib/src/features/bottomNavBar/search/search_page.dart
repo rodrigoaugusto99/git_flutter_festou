@@ -15,6 +15,11 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  static const _bg = Color(0xFFFAF7FC);
+  static const _ink = Color(0xFF1C1426);
+  static const _muted = Color(0xFF8A8096);
+  static const _accent = Color(0xFF7C3AED);
+
   final _controller = TextEditingController();
   List<String> searchHistory = [];
   SearchViewModel searchViewModel = SearchViewModel();
@@ -40,14 +45,14 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _onTextChanged() {
-    String searchText = _controller.text.trim();
+    final searchText = _controller.text.trim();
     if (searchText.isNotEmpty) {
-      _pagingController.refresh(); // Recarrega a lista ao digitar
-      _fetchPage(0, searchText); // Passa o texto digitado para a busca
+      _pagingController.refresh();
+      _fetchPage(0, searchText);
     } else {
       setState(() {
-        searchViewModel.onChangedSearch(""); // Limpa a busca
-        _pagingController.refresh(); // Atualiza para lista vazia
+        searchViewModel.onChangedSearch('');
+        _pagingController.refresh();
       });
     }
   }
@@ -70,184 +75,236 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final x = MediaQuery.of(context).size.width;
-    final y = MediaQuery.of(context).size.height;
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: SafeArea(
-        child: AnimatedBuilder(
-            animation: searchViewModel,
-            builder: (context, child) {
-              return Scaffold(
-                resizeToAvoidBottomInset: true,
-                backgroundColor: Colors.white,
-                body: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: Column(
-                    children: [
-                      FadeInUp(
-                        duration: const Duration(milliseconds: 400),
-                        from: y * 0.3,
-                        child: Row(
-                          children: [
-                            _buildSearchBox(x, y),
-                            _buildCancelButton(),
-                            SizedBox(
-                              width: x * 0.03,
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: y * 0.7,
-                        child: Center(
-                          child: searchViewModel.getSpaces() != null &&
-                                  searchViewModel.getSpaces()!.isNotEmpty
-                              ? ListView.builder(
-                                  padding: const EdgeInsets.all(10),
-                                  itemCount:
-                                      searchViewModel.getSpaces()!.length,
-                                  itemBuilder: (context, index) {
-                                    return NewSpaceCard(
-                                      hasHeart: true,
-                                      space:
-                                          searchViewModel.getSpaces()![index],
-                                      isReview: false,
-                                    );
-                                  },
-                                )
-                              : searchViewModel.getSpaces() != null &&
-                                      searchViewModel.getSpaces()!.isEmpty
-                                  ? Center(
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.85,
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20, vertical: 30),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color:
-                                                  Colors.grey.withOpacity(0.3),
-                                              spreadRadius: 3,
-                                              blurRadius: 7,
-                                              offset: const Offset(0, 3),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Lottie.asset(
-                                              'lib/assets/animations/not_found.json',
-                                              width: 200,
-                                              height: 200,
-                                              repeat: true,
-                                            ),
-                                            const SizedBox(height: 20),
-                                            const Text(
-                                              'Nenhum espaço encontrado!',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black54,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 12),
-                                            const Text(
-                                              'Tente ajustar sua busca para encontrar os melhores espaços disponíveis.',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.black45,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 25),
-                                            ElevatedButton.icon(
-                                              onPressed: () {
-                                                _controller.clear();
-                                                searchViewModel
-                                                    .onChangedSearch('');
-                                                FocusScope.of(context)
-                                                    .unfocus();
-                                              },
-                                              icon: const Icon(Icons.refresh,
-                                                  color: Colors.white),
-                                              label: const Text(
-                                                  'Tentar Novamente'),
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    Colors.deepPurple,
-                                                foregroundColor: Colors.white,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 20,
-                                                        vertical: 12),
-                                                textStyle: const TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  : _buildSearchAnimation(y),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }),
+  void _clearSearch() {
+    _controller.clear();
+    searchViewModel.onChangedSearch('');
+    FocusScope.of(context).unfocus();
+  }
+
+  void _goHome() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => const BottomNavBarLocatarioPage(),
       ),
     );
   }
 
-  Widget _buildSearchAnimation(double y) {
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: AnimatedBuilder(
+        animation: searchViewModel,
+        builder: (context, child) {
+          final spaces = searchViewModel.getSpaces();
+
+          return Scaffold(
+            resizeToAvoidBottomInset: true,
+            backgroundColor: _bg,
+            body: SafeArea(
+              child: Column(
+                children: [
+                  FadeInDown(
+                    duration: const Duration(milliseconds: 320),
+                    from: 18,
+                    child: _buildHeader(),
+                  ),
+                  Expanded(
+                    child: spaces != null && spaces.isNotEmpty
+                        ? ListView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
+                            itemCount: spaces.length,
+                            itemBuilder: (context, index) {
+                              return NewSpaceCard(
+                                hasHeart: true,
+                                space: spaces[index],
+                                isReview: false,
+                              );
+                            },
+                          )
+                        : spaces != null && spaces.isEmpty
+                            ? _buildEmptyResults()
+                            : _buildIdleState(),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Buscar',
+            style: TextStyle(
+              fontFamily: 'RedHatDisplay',
+              fontWeight: FontWeight.w900,
+              fontSize: 26,
+              letterSpacing: -0.5,
+              color: _ink,
+            ),
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Encontre o espaço perfeito para sua festa',
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w500,
+              fontSize: 13,
+              color: _muted,
+            ),
+          ),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              Expanded(child: _buildSearchBox()),
+              const SizedBox(width: 10),
+              TextButton(
+                onPressed: _goHome,
+                style: TextButton.styleFrom(
+                  foregroundColor: _accent,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 12,
+                  ),
+                ),
+                child: const Text(
+                  'Cancelar',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w700,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchBox() {
+    final hasText = _controller.text.isNotEmpty;
+
+    return Container(
+      height: 52,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFE8DFF8)),
+        boxShadow: [
+          BoxShadow(
+            color: _accent.withOpacity(0.07),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.search_rounded,
+            color: _accent,
+            size: 22,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              autofocus: true,
+              onChanged: (value) {
+                searchViewModel.onChangedSearch(value);
+              },
+              style: const TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: _ink,
+              ),
+              cursorColor: _accent,
+              decoration: const InputDecoration(
+                hintText: 'Buscar no Festou',
+                hintStyle: TextStyle(
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: _muted,
+                ),
+                border: InputBorder.none,
+                isDense: true,
+                contentPadding: EdgeInsets.zero,
+              ),
+            ),
+          ),
+          if (hasText)
+            InkWell(
+              onTap: _clearSearch,
+              borderRadius: BorderRadius.circular(99),
+              child: Container(
+                width: 28,
+                height: 28,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3EBFF),
+                  borderRadius: BorderRadius.circular(99),
+                ),
+                child: const Icon(
+                  Icons.close_rounded,
+                  size: 16,
+                  color: _accent,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIdleState() {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(40.0),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(32, 12, 32, 40),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Lottie.asset(
               'lib/assets/animations/searchAnimation.json',
-              width: 220, // Maior para melhor visualização
-              height: y * 0.3,
+              width: 200,
+              height: 200,
               repeat: true,
             ),
-            const SizedBox(
-                height: 24), // Maior espaçamento entre animação e texto
+            const SizedBox(height: 8),
             const Text(
-              'Explore os melhores espaços para o seu Festou!',
+              'Explore os melhores espaços',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 18, // Fonte maior e mais legível
-                fontWeight: FontWeight.bold,
-                color: Colors.black87, // Tom mais escuro para melhor contraste
+                fontFamily: 'RedHatDisplay',
+                fontWeight: FontWeight.w800,
+                fontSize: 20,
+                letterSpacing: -0.3,
+                color: _ink,
               ),
             ),
             const SizedBox(height: 8),
             const Text(
-              'Use a barra de busca acima para encontrar espaços perfeitos para o seu evento.',
+              'Digite na barra acima para encontrar o lugar ideal para o seu evento.',
               textAlign: TextAlign.center,
               style: TextStyle(
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w500,
                 fontSize: 14,
-                color: Colors.black54,
+                height: 1.45,
+                color: _muted,
               ),
             ),
           ],
@@ -256,132 +313,83 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _buildSearchBox(double x, double y) {
-    Duration fadeInDuration = const Duration(milliseconds: 400);
-    return Expanded(
-      child: Column(
-        children: [
-          Padding(
-            padding:
-                EdgeInsets.symmetric(horizontal: x * 0.03, vertical: y * 0.02),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(8.0),
-                onTap: () {
-                  Navigator.of(context)
-                      .pushReplacementNamed('/home/search_page');
-                },
-                child: FadeInDown(
-                  duration: fadeInDuration,
-                  from: y * 0.1,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: x * 0.02, vertical: y * 0.01),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(8.0),
+  Widget _buildEmptyResults() {
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(24, 12, 24, 40),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(22, 28, 22, 24),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(color: const Color(0xFFE8DFF8)),
+            boxShadow: [
+              BoxShadow(
+                color: _accent.withOpacity(0.06),
+                blurRadius: 18,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Lottie.asset(
+                'lib/assets/animations/not_found.json',
+                width: 170,
+                height: 170,
+                repeat: true,
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Nenhum espaço encontrado',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'RedHatDisplay',
+                  fontWeight: FontWeight.w800,
+                  fontSize: 18,
+                  color: _ink,
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Tente outro termo ou limpe a busca para explorar novamente.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  height: 1.45,
+                  color: _muted,
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _clearSearch,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _accent,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
                     ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.search, color: Colors.purple[300]),
-                        const SizedBox(width: 10.0),
-                        Expanded(
-                          child: Stack(
-                            children: [
-                              _controller.text.isEmpty
-                                  ? RichText(
-                                      text: TextSpan(
-                                        style: TextStyle(
-                                            color: Colors.blueGrey[500]),
-                                        children: const <TextSpan>[
-                                          TextSpan(text: 'Buscar no '),
-                                          TextSpan(
-                                              text: 'Festou',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold)),
-                                        ],
-                                      ),
-                                    )
-                                  : Container(
-                                      height: 0,
-                                    ),
-                              Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: TextField(
-                                          onChanged: (value) {
-                                            searchViewModel
-                                                .onChangedSearch(value);
-                                          },
-                                          controller: _controller,
-                                          autofocus: true,
-                                          decoration: const InputDecoration(
-                                            hintText: 'Buscar no Festou',
-                                            hintStyle: TextStyle(
-                                                color: Colors.transparent),
-                                            border: InputBorder.none,
-                                            isDense: true,
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                    vertical: 0, horizontal: 0),
-                                          ),
-                                          style: TextStyle(
-                                              color: Colors.blueGrey[900],
-                                              fontSize: 12),
-                                          cursorColor: Colors.blueGrey[900],
-                                        ),
-                                      ),
-                                      Visibility(
-                                        visible: _controller.text.isNotEmpty,
-                                        child: InkWell(
-                                          onTap: () {
-                                            _controller.clear();
-                                          },
-                                          child: Icon(
-                                            Icons.clear,
-                                            color: Colors.blueGrey[900],
-                                            size: 14,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 20,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                  ),
+                  child: const Text(
+                    'Limpar busca',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w700,
+                      fontSize: 14,
                     ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCancelButton() {
-    return InkWell(
-      splashColor: Colors.transparent,
-      highlightColor: Colors.transparent,
-      onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => const BottomNavBarLocatarioPage(),
-      )),
-      child: Text(
-        'Cancelar',
-        style: TextStyle(
-          color: Colors.purple[300],
-          fontWeight: FontWeight.bold,
-          fontSize: 12,
         ),
       ),
     );
