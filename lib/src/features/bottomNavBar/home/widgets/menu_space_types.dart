@@ -25,19 +25,17 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
           SizedBox(
             width: 170,
             child: ElevatedButton(
-              /*onPressed: () => Navigator.of(context)
-                  .pushNamed('/spaces/spaces_by_types', arguments: ['Kids']),*/
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) {
                     return const SpacesByTypePage(
                       type: ['Kids'],
-                    ); // Substitua NovaPagina com o widget da sua nova tela
+                    );
                   },
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[100],
+                  backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -67,12 +65,12 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                   builder: (context) {
                     return const SpacesByTypePage(
                       type: ['Casamento'],
-                    ); // Substitua NovaPagina com o widget da sua nova tela
+                    );
                   },
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[100],
+                  backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -102,12 +100,12 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                   builder: (context) {
                     return const SpacesByTypePage(
                       type: ['Debutante'],
-                    ); // Substitua NovaPagina com o widget da sua nova tela
+                    );
                   },
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[100],
+                  backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -137,12 +135,12 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                   builder: (context) {
                     return const SpacesByTypePage(
                       type: ['Religioso'],
-                    ); // Substitua NovaPagina com o widget da sua nova tela
+                    );
                   },
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[100],
+                  backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -172,12 +170,12 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                   builder: (context) {
                     return const SpacesByTypePage(
                       type: ['Chá'],
-                    ); // Substitua NovaPagina com o widget da sua nova tela
+                    );
                   },
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[100],
+                  backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -210,12 +208,12 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                   builder: (context) {
                     return const SpacesByTypePage(
                       type: ['Reunião'],
-                    ); // Substitua NovaPagina com o widget da sua nova tela
+                    );
                   },
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[100],
+                  backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -245,12 +243,12 @@ class _MenuSpaceTypesState extends State<MenuSpaceTypes> {
                   builder: (context) {
                     return const SpacesByTypePage(
                       type: ['Outros'],
-                    ); // Substitua NovaPagina com o widget da sua nova tela
+                    );
                   },
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[100],
+                  backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),

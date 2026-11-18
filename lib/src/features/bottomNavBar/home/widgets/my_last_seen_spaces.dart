@@ -5,17 +5,14 @@ import 'package:festou/src/services/user_service.dart';
 import 'package:shimmer/shimmer.dart';
 
 class MyLastSeenSpaces extends StatefulWidget {
-  const MyLastSeenSpaces({
-    super.key,
-  });
+  const MyLastSeenSpaces({super.key});
 
   @override
   State<MyLastSeenSpaces> createState() => _MyLastSeenSpacesState();
 }
-//todo: chamar func p inserir id do space no array do user fire
 
 class _MyLastSeenSpacesState extends State<MyLastSeenSpaces> {
-  UserService userService = UserService();
+  final UserService userService = UserService();
 
   @override
   Widget build(BuildContext context) {
@@ -23,35 +20,54 @@ class _MyLastSeenSpacesState extends State<MyLastSeenSpaces> {
       future: userService.getLastSeenSpaces(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          //return const SizedBox();
           return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 16, bottom: 16, top: 30),
-                  child: Text(''),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(16, 22, 16, 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Últimos vistos',
+                      style: TextStyle(
+                        fontFamily: 'RedHatDisplay',
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.3,
+                        color: Color(0xFF1C1426),
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Espaços que você visitou há pouco',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF8A8096),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.only(left: 16),
+              SizedBox(
                 height: 150,
-                width: 250,
                 child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   scrollDirection: Axis.horizontal,
-                  itemCount: 5,
+                  itemCount: 4,
                   itemBuilder: (context, index) {
                     return Container(
-                      margin: const EdgeInsets.only(right: 20),
+                      margin: const EdgeInsets.only(right: 14),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(16),
                         child: Shimmer.fromColors(
-                          baseColor: const Color.fromARGB(255, 221, 221, 221),
+                          baseColor: const Color(0xFFEDE7F6),
                           highlightColor: Colors.white,
                           child: Container(
-                            width: 250,
-                            color: Colors.red,
+                            width: 240,
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -63,12 +79,10 @@ class _MyLastSeenSpacesState extends State<MyLastSeenSpaces> {
           );
         }
 
-        if (snapshot.hasError) {
-          return Center(child: Text("Error: ${snapshot.error}"));
-        }
-
-        if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Container();
+        if (snapshot.hasError ||
+            !snapshot.hasData ||
+            snapshot.data!.isEmpty) {
+          return const SizedBox.shrink();
         }
 
         final spaces = snapshot.data!;
@@ -77,27 +91,42 @@ class _MyLastSeenSpacesState extends State<MyLastSeenSpaces> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Padding(
-              padding: EdgeInsets.only(left: 16, bottom: 16, top: 10),
-              child: Text('Últimos vistos',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  )),
+              padding: EdgeInsets.fromLTRB(16, 22, 16, 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Últimos vistos',
+                    style: TextStyle(
+                      fontFamily: 'RedHatDisplay',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.3,
+                      color: Color(0xFF1C1426),
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'Espaços que você visitou há pouco',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF8A8096),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            // ...spaces.asMap().entries.map((entry) {
-            //   final space = entry.value;
-            //   return EachLastSeen(space: space);
-            // }),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+            SizedBox(
               height: 150,
               child: ListView.builder(
                 clipBehavior: Clip.none,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 scrollDirection: Axis.horizontal,
                 itemCount: spaces.length,
                 itemBuilder: (context, index) {
-                  final space = spaces[index];
-                  return EachLastSeen(space: space);
+                  return EachLastSeen(space: spaces[index]);
                 },
               ),
             ),

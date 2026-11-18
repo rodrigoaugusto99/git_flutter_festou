@@ -109,48 +109,47 @@ class _FeedNoticiasState extends State<FeedNoticias> {
 
         final posts = data.posts;
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (data.showingSeen)
-                const Padding(
-                  padding: EdgeInsets.only(left: 8, bottom: 6),
-                  child: Text(
-                    'Vistos recentemente',
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF6B6175),
-                    ),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (data.showingSeen)
+              const Padding(
+                padding: EdgeInsets.only(left: 16, bottom: 8),
+                child: Text(
+                  'Vistos recentemente',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF6B6175),
                   ),
                 ),
-              SizedBox(
-                height: 250,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: posts.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index == posts.length) {
-                      return _VerMaisCard(onTap: _openAllPosts);
-                    }
-
-                    final post = posts[index];
-                    return SizedBox(
-                      height: 250,
-                      width: 174,
-                      child: InkWell(
-                        onTap: () => _openPost(post),
-                        child: EachPost(post: post),
-                      ),
-                    );
-                  },
-                ),
               ),
-            ],
-          ),
+            SizedBox(
+              height: 250,
+              child: ListView.builder(
+                padding: const EdgeInsets.only(left: 8),
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                itemCount: posts.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == posts.length) {
+                    return _VerMaisCard(onTap: _openAllPosts);
+                  }
+
+                  final post = posts[index];
+                  return SizedBox(
+                    height: 250,
+                    width: 174,
+                    child: InkWell(
+                      onTap: () => _openPost(post),
+                      child: EachPost(post: post),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         );
       },
     );

@@ -12,44 +12,70 @@ class SearchButton extends StatefulWidget {
 class _SearchButtonState extends State<SearchButton> {
   @override
   Widget build(BuildContext context) {
-    final x = MediaQuery.of(context).size.width;
-    final y = MediaQuery.of(context).size.height;
-
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: x * 0.03, vertical: y * 0.02),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(8.0),
-          onTap: () {
-            Navigator.of(context).pushReplacementNamed('/home/search_page');
-          },
-          child: FadeInDown(
-            duration: widget.fadeInDuration,
-            from: y * 0.1,
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: x * 0.02, vertical: y * 0.01),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+      child: FadeInDown(
+        duration: widget.fadeInDuration,
+        from: 24,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(18),
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed('/home/search_page');
+            },
+            child: Ink(
+              height: 52,
               decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.search, color: Colors.purple[300]),
-                  const SizedBox(width: 10.0),
-                  RichText(
-                    text: TextSpan(
-                      style: TextStyle(color: Colors.blueGrey[500]),
-                      children: const <TextSpan>[
-                        TextSpan(text: 'Buscar no '),
-                        TextSpan(
-                            text: 'Festou',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                      ],
-                    ),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: const Color(0xFFE8DFF8)),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF7C3AED).withOpacity(0.07),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
                   ),
                 ],
+              ),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.search_rounded,
+                      color: Color(0xFF7C3AED),
+                      size: 22,
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: Text.rich(
+                        TextSpan(
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 14,
+                            color: Color(0xFF8A8096),
+                          ),
+                          children: [
+                            TextSpan(text: 'Buscar no '),
+                            TextSpan(
+                              text: 'Festou',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF1C1426),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Icon(
+                      Icons.tune_rounded,
+                      color: Color(0xFFB5A9C5),
+                      size: 18,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
