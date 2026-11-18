@@ -148,33 +148,7 @@ p decidir o isFavorited*/
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 18.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.7),
-              shape: BoxShape.circle,
-            ),
-            child: InkWell(
-              onTap: () => Navigator.of(context).pop(),
-              child: const Icon(
-                Icons.arrow_back,
-                color: Colors.black,
-              ),
-            ),
-          ),
-        ),
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        title: const Text(
-          'Buscar',
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-      ),
+      backgroundColor: Colors.white,
       body: allSpaces.when(
         data: (SurroundingSpacesState data) {
           // Atualiza o estado anterior quando os dados são carregados
@@ -225,7 +199,13 @@ p decidir o isFavorited*/
 
   // Extrai o código do mapa para um método separado
   int currentIndex = 0;
+
+  static const _ink = Color(0xFF1C1426);
+  static const _accent = Color(0xFF7C3AED);
+
   Widget buildMap(SurroundingSpacesState data, BuildContext context) {
+    final topInset = MediaQuery.of(context).padding.top;
+
     return Stack(
       alignment: Alignment.topCenter,
       children: [
@@ -255,138 +235,140 @@ p decidir o isFavorited*/
               ),
           onCameraMove: (CameraPosition cameraPosition) async {
             currentCameraPosition = cameraPosition;
-            // Esta função será chamada sempre que a câmera do mapa for movida
-
-            // Agora você pode usar a visibleRegion para obter os limites visíveis do mapa
-            // e realizar qualquer lógica adicional, como chamar o Firestore para recuperar espaços dentro desses limites.
           },
-          // circles: {
-          //   ...data.spaces.map((space) {
-          //     return Circle(
-          //       circleId: CircleId(space.spaceId.toString()),
-          //       center: LatLng(space.latitude, space.longitude),
-          //       radius: 1000,
-          //       strokeWidth: 0,
-          //       fillColor: Colors.red.withOpacity(0.3),
-          //     );
-          //   }),
-          // },
           markers: data.spaces.map((space) {
             return Marker(
               onTap: () => showSnippet(space),
-              /*
-              call method to show snippet
-              showSnippet(space: space)
-               */
               markerId: MarkerId(space.spaceId),
               position: LatLng(space.latitude, space.longitude),
             );
           }).toSet(),
         ),
-        // Positioned(
-        //   top: 105,
-        //   left: 20,
-        //   right: 20,
-        //   child: Container(
-        //     padding: const EdgeInsets.symmetric(horizontal: 5),
-        //     decoration: BoxDecoration(
-        //       color: Colors.white,
-        //       borderRadius: BorderRadius.circular(10),
-        //     ),
-        //     child: Column(
-        //       children: [
-        //         Row(
-        //           children: [
-        //             const Icon(
-        //               Icons.search,
-        //               color: Color(0xff9747FF),
-        //             ),
-        //             const SizedBox(width: 15),
-        //             Expanded(
-        //               child: TextField(
-        //                 onChanged: (c) {
-        //                   log(c);
-        //                   onChangedSearch(c);
 
-        //                   setState(() {});
-        //                 },
-        //                 decoration: const InputDecoration(
-        //                   hintText: 'Buscar',
-        //                   hintStyle: TextStyle(fontSize: 12),
-        //                   border: InputBorder.none,
-        //                 ),
-        //               ),
-        //             ),
-        //           ],
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // ),
-        // if (filteredList != [])
-        //   Positioned(
-        //     top: 150,
-        //     left: 20,
-        //     right: 20,
-        //     child: Container(
-        //       color: filteredList == [] ? Colors.white : Colors.transparent,
-        //       height: 120,
-        //       child: ListView.builder(
-        //         padding: EdgeInsetsDirectional.zero,
-        //         itemCount: filteredList.length,
-        //         itemBuilder: (context, index) => Container(
-        //           color: Colors.white,
-        //           child: Padding(
-        //             padding: const EdgeInsets.symmetric(vertical: 5),
-        //             child: Text(
-        //               filteredList[index].titulo.toString(),
-        //               style: const TextStyle(fontSize: 16, color: Colors.black),
-        //             ),
-        //           ),
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // if (filteredList.isEmpty)
+        // Header flutuante
         Positioned(
-          top: 115,
-          left: 110,
-          right: 110,
-          child: GestureDetector(
-            onTap: canRefresh != false
-                ? () async {
-                    LatLngBounds visibleRegion =
-                        await mapController!.getVisibleRegion();
-
-                    log('Visible Region: $visibleRegion');
-
-                    setState(() {
-                      rioDeJaneiroBounds = visibleRegion;
-                    });
-                    canRefresh = false;
-                  }
-                : null,
-            child: Column(
-              children: [
-                Container(
+          top: topInset + 8,
+          left: 16,
+          right: 16,
+          child: Row(
+            children: [
+              _MapCircleButton(
+                icon: Icons.arrow_back_rounded,
+                onTap: () => Navigator.of(context).pop(),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Container(
+                  height: 48,
                   alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(vertical: 10),
                   decoration: BoxDecoration(
-                    color: Colors.purple.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: const Color(0x14000000)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.10),
+                        blurRadius: 18,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
                   ),
                   child: const Text(
-                    'Mostrar nessa área',
+                    'Buscar no mapa',
                     style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w900),
+                      fontFamily: 'RedHatDisplay',
+                      fontWeight: FontWeight.w800,
+                      fontSize: 16,
+                      letterSpacing: -0.2,
+                      color: _ink,
+                    ),
                   ),
                 ),
-              ],
+              ),
+            ],
+          ),
+        ),
+
+        // Botão "Mostrar nessa área"
+        Positioned(
+          top: topInset + 72,
+          left: 0,
+          right: 0,
+          child: IgnorePointer(
+            ignoring: !canRefresh,
+            child: AnimatedOpacity(
+              opacity: canRefresh ? 1 : 0,
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOut,
+              child: AnimatedSlide(
+                offset: canRefresh ? Offset.zero : const Offset(0, -0.15),
+                duration: const Duration(milliseconds: 220),
+                curve: Curves.easeOutCubic,
+                child: Center(
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(99),
+                      onTap: () async {
+                        if (mapController == null) return;
+                        final visibleRegion =
+                            await mapController!.getVisibleRegion();
+                        log('Visible Region: $visibleRegion');
+                        setState(() {
+                          rioDeJaneiroBounds = visibleRegion;
+                          canRefresh = false;
+                        });
+                      },
+                      child: Ink(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(99),
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF9747FF), Color(0xFF6100FF)],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: _accent.withOpacity(0.35),
+                              blurRadius: 16,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 18,
+                            vertical: 12,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.my_location_rounded,
+                                size: 18,
+                                color: Colors.white,
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                'Mostrar nessa área',
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 13.5,
+                                  letterSpacing: -0.1,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ),
+
         if (isShowingSomeSpace)
           Positioned(
             bottom: 90,
@@ -580,6 +562,45 @@ p decidir o isFavorited*/
             ),
           ),
       ],
+    );
+  }
+}
+
+class _MapCircleButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _MapCircleButton({
+    required this.icon,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white,
+      shape: const CircleBorder(),
+      elevation: 0,
+      shadowColor: Colors.black26,
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onTap,
+        child: Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.10),
+                blurRadius: 14,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: Icon(icon, color: const Color(0xFF1C1426), size: 22),
+        ),
+      ),
     );
   }
 }
