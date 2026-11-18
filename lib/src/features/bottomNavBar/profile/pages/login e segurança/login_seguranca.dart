@@ -792,57 +792,106 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
     ]);
   }
 
+  static const _bg = Color(0xFFFAF7FC);
+  static const _ink = Color(0xFF1C1426);
+  static const _muted = Color(0xFF8A8096);
+  static const _accent = Color(0xFF7C3AED);
+
+  Widget _sectionTitle(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontFamily: 'RedHatDisplay',
+        fontWeight: FontWeight.w800,
+        fontSize: 16,
+        letterSpacing: -0.2,
+        color: _ink,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 250, 247, 247),
-      appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 18.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 2,
-                  blurRadius: 5,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: InkWell(
-              onTap: () => Navigator.of(context).pop(),
-              child: const Icon(
-                Icons.arrow_back,
-                color: Colors.black,
+      backgroundColor: _bg,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+              child: Row(
+                children: [
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Ink(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          color: Colors.white,
+                          border: Border.all(color: const Color(0xFFE8DFF8)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: _accent.withOpacity(0.07),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.arrow_back_rounded,
+                          color: _ink,
+                          size: 22,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Login e segurança',
+                          style: TextStyle(
+                            fontFamily: 'RedHatDisplay',
+                            fontWeight: FontWeight.w900,
+                            fontSize: 22,
+                            letterSpacing: -0.4,
+                            color: _ink,
+                          ),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          'Senha, contas vinculadas e exclusão',
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w500,
+                            fontSize: 13,
+                            color: _muted,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-        ),
-        centerTitle: true,
-        title: const Text(
-          'Login e segurança',
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Form(
-            key: formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Login',
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                ),
-                PatternedButton(
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 28),
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _sectionTitle('Login'),
+                      const SizedBox(height: 8),
+                      PatternedButton(
                   widget: Image.asset(
                     'lib/assets/images/icon_password.png',
                     width: 26,
@@ -880,8 +929,16 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                                     ),
                                 child: const Padding(
                                   padding:
-                                      EdgeInsets.symmetric(horizontal: 16.0),
-                                  child: Text('Esqueci minha senha'),
+                                      EdgeInsets.symmetric(horizontal: 4.0),
+                                  child: Text(
+                                    'Esqueci minha senha',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 13,
+                                      color: _accent,
+                                    ),
+                                  ),
                                 )),
                           ],
                         ),
@@ -899,8 +956,19 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                       ),
                       const SizedBox(height: 0),
                       Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: ElevatedButton(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 52,
+                          child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _accent,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
                           onPressed: () async {
                             final user = FirebaseAuth.instance.currentUser;
                             if (user != null) {
@@ -1169,20 +1237,25 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                               }
                             }
                           },
-                          child: providers.contains("password")
-                              ? const Text('Alterar Senha')
-                              : const Text('Cadastrar Senha'),
+                          child: Text(
+                            providers.contains("password")
+                                ? 'Alterar senha'
+                                : 'Cadastrar senha',
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
                         ),
                       ),
                     ],
                   )
                 ],
-                const SizedBox(height: 30),
-                const Text(
-                  'Contas sociais',
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 22),
+                _sectionTitle('Contas sociais'),
+                const SizedBox(height: 8),
                 providers.contains("google.com")
                     ? PatternedButton(
                         widget: Image.asset(
@@ -1222,11 +1295,9 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                         onTap: () => vincularContaGoogle(),
                         textButton: 'Vincular')
                     : Container(),
-                const SizedBox(height: 30),
-                const Text(
-                  'Conta',
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                ),
+                const SizedBox(height: 22),
+                _sectionTitle('Conta'),
+                const SizedBox(height: 8),
                 PatternedButton(
                     widget: Image.asset(
                       'lib/assets/images/icon_delete_account.png',
@@ -1731,9 +1802,12 @@ class _LoginSegurancaState extends ConsumerState<LoginSeguranca>
                         log('Usuário não autenticado');
                       }
                     }),
-              ],
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );

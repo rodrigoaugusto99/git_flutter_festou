@@ -20,6 +20,11 @@ class Pagamentos extends StatefulWidget {
 
 class _PagamentosState extends State<Pagamentos>
     with SingleTickerProviderStateMixin {
+  static const _bg = Color(0xFFFAF7FC);
+  static const _ink = Color(0xFF1C1426);
+  static const _muted = Color(0xFF8A8096);
+  static const _accent = Color(0xFF7C3AED);
+
   final encryptionService =
       EncryptionService("criptfestouaplic", "2199478465899478");
   String userId = FirebaseAuth.instance.currentUser!.uid;
@@ -31,41 +36,33 @@ class _PagamentosState extends State<Pagamentos>
 
   Future<List<CardModel>> fetchFromFirestore() async {
     try {
-      // Obter o documento do usuário pelo `userId`
       final querySnapshot = await FirebaseFirestore.instance
           .collection('users')
           .where('uid', isEqualTo: userId)
           .get();
 
-      // Garantir que os documentos retornados não estejam vazios
       if (querySnapshot.docs.isNotEmpty) {
-        final userDoc = querySnapshot.docs.first; // Primeiro usuário encontrado
+        final userDoc = querySnapshot.docs.first;
 
-        // Acessar a subcoleção `cards` dentro do usuário
         final cardsSnapshot = await FirebaseFirestore.instance
             .collection('users')
-            .doc(userDoc.id) // ID do usuário
-            .collection('cards') // Subcoleção
+            .doc(userDoc.id)
+            .collection('cards')
             .get();
 
-        // Mapear os documentos da subcoleção `cards` para `CardModel`
         return cardsSnapshot.docs.map((cardDoc) {
           final data = cardDoc.data();
 
-          // Descriptografar os campos sensíveis
           return CardModel(
             id: cardDoc.id,
             name: data['name'],
             cardName: data['cardName'],
-            number: encryptionService
-                .decrypt(data['number']), // Descriptografar número
-            validateDate: encryptionService
-                .decrypt(data['validateDate']), // Descriptografar validade
-            cvv: encryptionService.decrypt(data['cvv']), // Descriptografar CVV
+            number: encryptionService.decrypt(data['number']),
+            validateDate: encryptionService.decrypt(data['validateDate']),
+            cvv: encryptionService.decrypt(data['cvv']),
           );
         }).toList();
       } else {
-        // Caso nenhum usuário seja encontrado, retorne uma lista vazia
         return [];
       }
     } catch (e) {
@@ -82,7 +79,7 @@ class _PagamentosState extends State<Pagamentos>
       duration: const Duration(milliseconds: 200),
     );
     _iconRotationAnimation = Tween<double>(begin: 0, end: 0.5)
-        .animate(_animationController); // 0 a 0.5 (180° de rotação)
+        .animate(_animationController);
   }
 
   @override
@@ -94,7 +91,7 @@ class _PagamentosState extends State<Pagamentos>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    getCards(); // Recarrega os cartões sempre que a tela for exibida
+    getCards();
   }
 
   Future<void> getCards() async {
@@ -105,231 +102,306 @@ class _PagamentosState extends State<Pagamentos>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0XFFF8F8F8),
-      appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 18.0),
-          child: Container(
-            decoration: BoxDecoration(
-              //color: Colors.white.withOpacity(0.7),
-              color: Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 2,
-                  blurRadius: 5,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: InkWell(
-              onTap: () => Navigator.of(context).pop(),
-              child: const Icon(
-                Icons.arrow_back,
-                color: Colors.black,
-              ),
-            ),
-          ),
-        ),
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        title: const Text(
-          'Métodos de Pagamento',
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Pix',
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-              ),
-              PatternedButton(
-                widget: Image.asset(
-                  'lib/assets/images/logo_pix.png',
-                  width: 26,
-                  height: 26,
-                ),
-                title: 'Pagar com Pix',
-                textButton: '',
-                buttonWithTextLink: false,
-                onTap: () {
-                  if (widget.isReservationFlow) {
-                    Navigator.pop(context, true);
-                    return;
-                  }
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const PixPage(),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 30),
-              const Text(
-                'Cartões',
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 5),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  decoration: BoxDecoration(
-                    color: isExpanded ? const Color(0xff4300B1) : Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isExpanded = !isExpanded;
-                            if (isExpanded) {
-                              _animationController.forward();
-                            } else {
-                              _animationController.reverse();
-                            }
-                          });
-                        },
-                        child: Container(
-                          height: 55,
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: Row(
-                            children: [
-                              Image.asset(
-                                'lib/assets/images/icon_card_color.png',
-                                height: 26,
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Text(
-                                  'Pagar com Cartao de Crédito',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: isExpanded
-                                        ? Colors.white
-                                        : Colors.black,
-                                  ),
-                                ),
-                              ),
-                              RotationTransition(
-                                turns: _iconRotationAnimation,
-                                child: Icon(
-                                  Icons.expand_more,
-                                  color:
-                                      isExpanded ? Colors.white : Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+      backgroundColor: _bg,
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildHeader(),
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 28),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _sectionTitle('Pix'),
+                    const SizedBox(height: 8),
+                    PatternedButton(
+                      widget: Image.asset(
+                        'lib/assets/images/logo_pix.png',
+                        width: 22,
+                        height: 22,
                       ),
-                      SizeTransition(
-                        sizeFactor: _animationController,
-                        child: Column(
-                          children: [
-                            ...cards.map((card) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0),
-                                child: PatternedButton(
+                      title: 'Pagar com Pix',
+                      textButton: '',
+                      buttonWithTextLink: false,
+                      onTap: () {
+                        if (widget.isReservationFlow) {
+                          Navigator.pop(context, true);
+                          return;
+                        }
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PixPage(),
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 22),
+                    _sectionTitle('Cartões'),
+                    const SizedBox(height: 8),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(18),
+                        color: Colors.white,
+                        border: Border.all(color: const Color(0xFFE8DFF8)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: _accent.withOpacity(0.05),
+                            blurRadius: 14,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(18),
+                              onTap: () {
+                                setState(() {
+                                  isExpanded = !isExpanded;
+                                  if (isExpanded) {
+                                    _animationController.forward();
+                                  } else {
+                                    _animationController.reverse();
+                                  }
+                                });
+                              },
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                height: 58,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 14),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(18),
+                                  gradient: isExpanded
+                                      ? const LinearGradient(
+                                          colors: [
+                                            Color(0xFF9747FF),
+                                            Color(0xFF6100FF),
+                                          ],
+                                        )
+                                      : null,
+                                  color: isExpanded ? null : Colors.transparent,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: isExpanded
+                                            ? Colors.white.withOpacity(0.18)
+                                            : const Color(0xFFF7F1FF),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: Image.asset(
+                                        'lib/assets/images/icon_card_color.png',
+                                        height: 22,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        'Cartão de crédito',
+                                        style: TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14,
+                                          color: isExpanded
+                                              ? Colors.white
+                                              : _ink,
+                                        ),
+                                      ),
+                                    ),
+                                    RotationTransition(
+                                      turns: _iconRotationAnimation,
+                                      child: Icon(
+                                        Icons.expand_more_rounded,
+                                        color: isExpanded
+                                            ? Colors.white
+                                            : const Color(0xFFB5A9C5),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizeTransition(
+                            sizeFactor: _animationController,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                              child: Column(
+                                children: [
+                                  ...cards.map((card) {
+                                    return PatternedButton(
+                                      textButton: '',
+                                      buttonWithTextLink: false,
+                                      title: card.cardName,
+                                      widget: Image.asset(
+                                        'lib/assets/images/icon_card_color.png',
+                                        height: 22,
+                                      ),
+                                      onTap: () async {
+                                        if (widget.isReservationFlow) {
+                                          Navigator.pop(context, card);
+                                          return;
+                                        }
+                                        final result = await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => NewCardView(
+                                              id: card.id,
+                                              name: card.name,
+                                              cardName: card.cardName,
+                                              number: card.number,
+                                              validateDate: card.validateDate,
+                                              cvv: card.cvv,
+                                            ),
+                                          ),
+                                        );
+
+                                        if (result is String &&
+                                            result == 'deleted') {
+                                          setState(() {
+                                            cards.removeWhere(
+                                                (c) => c.id == card.id);
+                                          });
+                                        } else if (result is CardModel) {
+                                          setState(() {
+                                            final index = cards.indexWhere(
+                                                (c) => c.id == result.id);
+                                            if (index != -1) {
+                                              cards[index] = result;
+                                            } else {
+                                              cards.add(result);
+                                            }
+                                          });
+                                        }
+                                      },
+                                    );
+                                  }),
+                                  PatternedButton(
                                     textButton: '',
                                     buttonWithTextLink: false,
-                                    title: card.cardName,
+                                    title: 'Adicionar cartão de crédito',
                                     widget: Image.asset(
-                                      'lib/assets/images/icon_card_color.png',
-                                      height: 26,
+                                      'lib/assets/images/icon_add_card.png',
+                                      height: 22,
                                     ),
                                     onTap: () async {
-                                      if (widget.isReservationFlow) {
-                                        Navigator.pop(context, card);
-                                        return;
-                                      }
-                                      final result = await Navigator.push(
+                                      final CardModel? newCard =
+                                          await Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => NewCardView(
-                                            id: card.id,
-                                            name: card.name,
-                                            cardName: card.cardName,
-                                            number: card.number,
-                                            validateDate: card.validateDate,
-                                            cvv: card.cvv,
-                                          ),
+                                          builder: (context) => NewCardView(),
                                         ),
                                       );
 
-                                      // Verifica o tipo do retorno
-                                      if (result is String &&
-                                          result == 'deleted') {
+                                      if (newCard != null) {
                                         setState(() {
-                                          cards.removeWhere(
-                                              (c) => c.id == card.id);
-                                        });
-                                      } else if (result is CardModel) {
-                                        // Atualiza ou adiciona o cartão na lista local
-                                        setState(() {
-                                          final index = cards.indexWhere(
-                                              (c) => c.id == result.id);
-                                          if (index != -1) {
-                                            cards[index] =
-                                                result; // Atualiza o cartão existente
-                                          } else {
-                                            cards.add(
-                                                result); // Adiciona o novo cartão
-                                          }
+                                          cards.add(newCard);
                                         });
                                       }
-                                    }),
-                              );
-                            }),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: PatternedButton(
-                                textButton: '',
-                                buttonWithTextLink: false,
-                                title: 'Adicionar cartão de crédito',
-                                widget: Image.asset(
-                                    'lib/assets/images/icon_add_card.png'),
-                                onTap: () async {
-                                  final CardModel? newCard =
-                                      await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => NewCardView(),
-                                    ),
-                                  );
-
-                                  if (newCard != null) {
-                                    setState(() {
-                                      cards.add(
-                                          newCard); // Adiciona o novo cartão à lista local
-                                    });
-                                  }
-                                },
+                                    },
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+      child: Row(
+        children: [
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(16),
+              onTap: () => Navigator.of(context).pop(),
+              child: Ink(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: Colors.white,
+                  border: Border.all(color: const Color(0xFFE8DFF8)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _accent.withOpacity(0.07),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.arrow_back_rounded,
+                  color: _ink,
+                  size: 22,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Métodos de pagamento',
+                  style: TextStyle(
+                    fontFamily: 'RedHatDisplay',
+                    fontWeight: FontWeight.w900,
+                    fontSize: 22,
+                    letterSpacing: -0.4,
+                    color: _ink,
+                  ),
+                ),
+                SizedBox(height: 2),
+                Text(
+                  'Gerencie Pix e cartões salvos',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13,
+                    color: _muted,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _sectionTitle(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontFamily: 'RedHatDisplay',
+        fontWeight: FontWeight.w800,
+        fontSize: 16,
+        letterSpacing: -0.2,
+        color: _ink,
       ),
     );
   }

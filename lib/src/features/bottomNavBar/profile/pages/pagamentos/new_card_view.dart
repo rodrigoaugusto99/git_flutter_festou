@@ -233,61 +233,114 @@ class _NewCardViewState extends State<NewCardView> {
     return Validatorless.required('Campo obrigatório');
   }
 
+  static const _bg = Color(0xFFFAF7FC);
+  static const _ink = Color(0xFF1C1426);
+  static const _muted = Color(0xFF8A8096);
+  static const _accent = Color(0xFF7C3AED);
+
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: const Color(0XFFF8F8F8),
-      appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 18.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 2,
-                  blurRadius: 5,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: InkWell(
-              onTap: () => Navigator.of(context).pop(null),
-              child: const Icon(
-                Icons.arrow_back,
-                color: Colors.black,
-              ),
-            ),
-          ),
-        ),
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        title: Text(
-          _isNewCard ? 'Adicionar cartão' : 'Editar cartão',
-          style: const TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-      ),
-      body: SingleChildScrollView(
+      backgroundColor: _bg,
+      body: SafeArea(
         child: Column(
           children: [
-            Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Container(
-                    height: screenWidth / 2,
-                    width: screenWidth,
-                    decoration: BoxDecoration(
-                      color: const Color(0xff4300B1),
-                      borderRadius: BorderRadius.circular(10),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
+              child: Row(
+                children: [
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: () => Navigator.of(context).pop(null),
+                      child: Ink(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          color: Colors.white,
+                          border: Border.all(color: const Color(0xFFE8DFF8)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: _accent.withOpacity(0.07),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.arrow_back_rounded,
+                          color: _ink,
+                          size: 22,
+                        ),
+                      ),
                     ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _isNewCard ? 'Adicionar cartão' : 'Editar cartão',
+                          style: const TextStyle(
+                            fontFamily: 'RedHatDisplay',
+                            fontWeight: FontWeight.w900,
+                            fontSize: 22,
+                            letterSpacing: -0.4,
+                            color: _ink,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          _isNewCard
+                              ? 'Cadastre um novo cartão'
+                              : 'Atualize os dados do cartão',
+                          style: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w500,
+                            fontSize: 13,
+                            color: _muted,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  children: [
+                    Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Container(
+                            height: screenWidth / 2,
+                            width: screenWidth,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Color(0xFF9747FF),
+                                  Color(0xFF6100FF),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: _accent.withOpacity(0.28),
+                                  blurRadius: 18,
+                                  offset: const Offset(0, 8),
+                                ),
+                              ],
+                            ),
                     child: Padding(
                       padding: const EdgeInsets.only(
                           left: 31, right: 22, top: 22, bottom: 11),
@@ -406,17 +459,21 @@ class _NewCardViewState extends State<NewCardView> {
                 ),
               ],
             ),
-            const SizedBox(height: 10),
-            const Text(
-              'Preencha com os dados exatos do seu cartão.',
-              style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
-            ),
-            const SizedBox(height: 45),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 17),
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+              child: Text(
+                'Preencha com os dados exatos do seu cartão.',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: _muted,
+                ),
+              ),
+            ),
+            const SizedBox(height: 18),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Form(
                 key: formKey,
                 child: Column(
@@ -430,7 +487,7 @@ class _NewCardViewState extends State<NewCardView> {
                       controller: nameEC,
                       validator: validate(),
                     ),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 12),
                     CustomTextformfield(
                       onChanged: (p0) => setState(() {}),
                       ddd: 0,
@@ -444,7 +501,7 @@ class _NewCardViewState extends State<NewCardView> {
                       svgPath: 'lib/assets/images/card-number.png',
                       validator: validate(),
                     ),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 12),
                     Row(
                       children: [
                         Expanded(
@@ -460,7 +517,7 @@ class _NewCardViewState extends State<NewCardView> {
                             hintText: 'CVV',
                           ),
                         ),
-                        const SizedBox(width: 20),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: CustomTextformfield(
                             onChanged: (p0) => setState(() {}),
@@ -486,7 +543,7 @@ class _NewCardViewState extends State<NewCardView> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 12),
                     CustomTextformfield(
                       onChanged: (p0) => setState(() {}),
                       ddd: 0,
@@ -500,201 +557,296 @@ class _NewCardViewState extends State<NewCardView> {
                 ),
               ),
             ),
-            const SizedBox(height: 15),
             Padding(
-              padding: EdgeInsets.only(
-                bottom: screenHeight * 0.01,
-                top: screenHeight * 0.05,
-                left: screenWidth * 0.05,
-                right: screenWidth * 0.05,
-              ),
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 28),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(right: screenWidth * 0.04),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Checkbox(
-                          side: const BorderSide(),
-                          splashRadius: 0,
-                          checkColor: Colors.white,
-                          value: _isChecked,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              _isChecked = value ?? false;
-                            });
-                          },
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(14),
+                      onTap: () {
+                        setState(() => _isChecked = !_isChecked);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              value: _isChecked,
+                              activeColor: _accent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  _isChecked = value ?? false;
+                                });
+                              },
+                            ),
+                            const Expanded(
+                              child: Text(
+                                'Definir como método de pagamento principal',
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                  color: _ink,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        const Text(
-                          'Definir como método de pagamento principal',
-                          style: TextStyle(fontSize: 12),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                  SizedBox(height: _isNewCard ? 50 : 30),
-                  GestureDetector(
+                  const SizedBox(height: 16),
+                  _primaryButton(
+                    label: _isNewCard
+                        ? 'Adicionar cartão'
+                        : 'Salvar alterações',
                     onTap: () async {
                       if (formKey.currentState?.validate() == false) {
                         return;
                       }
 
-                      // Cria o modelo do cartão com os dados criptografados
-                      CardModel card = CardModel(
+                      final card = CardModel(
                         id: widget.id,
                         name: nameEC.text,
                         cardName: cardNameEC.text,
-                        number: encryptionService.encrypt(numberEC.text
-                            .replaceAll(' ', '')), // Criptografar o número
-                        validateDate: encryptionService.encrypt(validateDateEC
-                            .text
-                            .replaceAll('/', '')), // Criptografar validade
-                        cvv: encryptionService
-                            .encrypt(cvvEC.text), // Criptografar CVV
+                        number: encryptionService.encrypt(
+                            numberEC.text.replaceAll(' ', '')),
+                        validateDate: encryptionService.encrypt(
+                            validateDateEC.text.replaceAll('/', '')),
+                        cvv: encryptionService.encrypt(cvvEC.text),
                       );
 
                       try {
                         saveOrUpdateCard(card);
-
-                        Navigator.of(context)
-                            .pop(card); // Retorna o cartão atualizado ou novo
+                        Navigator.of(context).pop(card);
                       } on Exception catch (e) {
                         log(e.toString());
                         Messages.showError('Erro ao salvar o cartão', context);
                       }
                     },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [
-                              Color(0xff9747FF),
-                              Color(0xff4300B1),
-                            ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                          borderRadius: BorderRadius.circular(50)),
-                      child: Text(
-                        _isNewCard ? 'Adicionar cartão' : 'Salvar alterações',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 12),
-                      ),
-                    ),
                   ),
-                  const SizedBox(height: 5),
-                  _isNewCard
-                      ? const SizedBox.shrink()
-                      : GestureDetector(
-                          onTap: () async {
-                            try {
-                              final BuildContext context2 =
-                                  Navigator.of(context).context;
-                              await showDialog(
-                                context: context2,
-                                builder: (BuildContext context2) {
-                                  return AlertDialog(
-                                    title: const Text('Excluir cartão'),
-                                    content: const Text(
-                                        'Tem certeza de que deseja excluir o cartão?'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.of(context2).pop(),
-                                        child: const Text('Cancelar'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () async {
-                                          Navigator.of(context2).pop();
-
-                                          if (widget.id != null) {
-                                            final cardSnapshot =
-                                                await FirebaseFirestore.instance
-                                                    .collection('users')
-                                                    .doc(userModel?.docId)
-                                                    .collection('cards')
-                                                    .doc(widget.id)
-                                                    .get();
-
-                                            if (cardSnapshot.exists) {
-                                              await cardSnapshot.reference
-                                                  .delete();
-
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                const SnackBar(
-                                                  content: Text(
-                                                      'Cartão excluído com sucesso!'),
-                                                ),
-                                              );
-
-                                              Navigator.of(context)
-                                                  .pop('deleted');
-                                            } else {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                const SnackBar(
-                                                  content: Text(
-                                                      'Cartão não encontrado!'),
-                                                ),
-                                              );
-                                            }
-                                          } else {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              const SnackBar(
-                                                content: Text(
-                                                    'Erro: número do cartão inválido!'),
-                                              ),
-                                            );
-                                          }
-                                        },
-                                        child: const Text('Excluir'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            } catch (e) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content:
-                                        Text('Erro ao excluir cartão: $e')),
-                              );
-                            }
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Color(0xff9747FF),
-                                    Color(0xff4300B1),
-                                  ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
+                  if (!_isNewCard) ...[
+                    const SizedBox(height: 10),
+                    _dangerButton(
+                      label: 'Excluir cartão',
+                      onTap: () async {
+                        try {
+                          await showDialog(
+                            context: context,
+                            builder: (BuildContext dialogContext) {
+                              return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18),
                                 ),
-                                borderRadius: BorderRadius.circular(50)),
-                            child: const Text(
-                              'Excluir cartão',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 12),
-                            ),
-                          ),
-                        ),
+                                title: const Text(
+                                  'Excluir cartão',
+                                  style: TextStyle(
+                                    fontFamily: 'RedHatDisplay',
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                                content: const Text(
+                                  'Tem certeza de que deseja excluir o cartão?',
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(dialogContext).pop(),
+                                    child: const Text('Cancelar'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      Navigator.of(dialogContext).pop();
+
+                                      if (widget.id != null) {
+                                        final cardSnapshot =
+                                            await FirebaseFirestore.instance
+                                                .collection('users')
+                                                .doc(userModel?.docId)
+                                                .collection('cards')
+                                                .doc(widget.id)
+                                                .get();
+
+                                        if (cardSnapshot.exists) {
+                                          await cardSnapshot.reference
+                                              .delete();
+
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                  'Cartão excluído com sucesso!'),
+                                            ),
+                                          );
+
+                                          Navigator.of(context).pop('deleted');
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                  'Cartão não encontrado!'),
+                                            ),
+                                          );
+                                        }
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                'Erro: número do cartão inválido!'),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    child: const Text(
+                                      'Excluir',
+                                      style: TextStyle(
+                                        color: Color(0xFFFF4D6D),
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text('Erro ao excluir cartão: $e')),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                  const SizedBox(height: 10),
+                  _secondaryButton(
+                    label: 'Voltar',
+                    onTap: () => Navigator.of(context).pop(null),
+                  ),
                 ],
               ),
             ),
+                  ],
+                ),
+              ),
+            ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _primaryButton({
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Ink(
+          height: 52,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            gradient: const LinearGradient(
+              colors: [Color(0xFF9747FF), Color(0xFF6100FF)],
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: _accent.withOpacity(0.28),
+                blurRadius: 14,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w700,
+                fontSize: 14,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _secondaryButton({
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Ink(
+          height: 52,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: Colors.white,
+            border: Border.all(color: const Color(0xFFE0D0FF)),
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w700,
+                fontSize: 14,
+                color: _accent,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _dangerButton({
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Ink(
+          height: 52,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: Colors.white,
+            border: Border.all(color: const Color(0xFFFFD0D8)),
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w700,
+                fontSize: 14,
+                color: Color(0xFFFF4D6D),
+              ),
+            ),
+          ),
         ),
       ),
     );
